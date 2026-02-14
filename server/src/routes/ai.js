@@ -18,6 +18,7 @@ import { aiCompletionSchema, aiStreamSchema, agentRequestSchema, structuredOutpu
 import { ProviderType, ProviderConfig, getDefaultProvider } from '../types/ai.js';
 import { ContextSettingsService } from '../context/settings-service.js';
 import { DynamicContextAssembler } from '../context/context-assembler.js';
+import { unifiedContextService } from '../services/unified-context-service.js';
 import { systemPromptManager } from '../ai/system-prompts.js';
 import { buildToolkit, getToolkitDescriptions } from '../ai/tools/index.js';
 import { aiTelemetry } from '../ai/middleware/telemetry.js';
@@ -59,20 +60,28 @@ function requireUserId(req, res, next) {
 }
 
 /**
- * Build context bundles for a conversation
+ * Build context for a conversation using the unified context service
  */
-async function buildContextBundles(userId, conversationId) {
+async function buildContextBundles(userId, conversationId, options = {}) {
   try {
-    // Attempt to use the dynamic context assembler
-    if (conversationId && process.env.USE_DYNAMIC_CONTEXT === 'true') {
-      // This would integrate with the full DynamicContextAssembler
-      // For now, return empty — the system prompt manager handles basics
-      return [];
+    if (conversationId && conversationId !== 'new-chat') {
+      const result = await unifiedContextService.generateContextForChat(conversationId, {
+        userMessage: options.userMessage || '',
+        personaId: options.personaId,
+        deviceId: options.deviceId
+      });
+      
+      return {
+        systemPrompt: result.systemPrompt,
+        layers: result.layers,
+        stats: result.stats,
+        engineUsed: result.engineUsed
+      };
     }
-    return [];
+    return null;
   } catch (error) {
     logger.warn({ error: error.message }, 'Context assembly failed, proceeding without');
-    return [];
+    return null;
   }
 }
 
@@ -117,12 +126,16 @@ router.post('/complete', async (req, res) => {
     const providerApiKey = req.headers['x-provider-key'];
 
     // Build context
-    const contextBundles = await buildContextBundles(userId, conversationId);
+    const contextResult = await buildContextBundles(userId, conversationId, {
+      userMessage: messages?.[messages.length - 1]?.content || '',
+      personaId: options?.personaId
+    });
     const secondBrainStats = await getSecondBrainStats(userId);
-    const systemPrompt = systemPromptManager.buildPrompt({
+    
+    const systemPrompt = contextResult?.systemPrompt || systemPromptManager.buildPrompt({
       mode: conversationId ? 'continuation' : 'fresh',
       userId,
-      contextBundles,
+      contextBundles: [],
       secondBrainStats,
     });
 
@@ -191,12 +204,16 @@ router.post('/stream', async (req, res) => {
     const userId = getUserId(req);
 
     // Build context
-    const contextBundles = await buildContextBundles(userId, conversationId);
+    const contextResult = await buildContextBundles(userId, conversationId, {
+      userMessage: messages?.[messages.length - 1]?.content || '',
+      personaId: options?.personaId
+    });
     const secondBrainStats = await getSecondBrainStats(userId);
-    const systemPrompt = systemPromptManager.buildPrompt({
+    
+    const systemPrompt = contextResult?.systemPrompt || systemPromptManager.buildPrompt({
       mode: conversationId ? 'continuation' : 'fresh',
       userId,
-      contextBundles,
+      contextBundles: [],
       secondBrainStats,
     });
 
@@ -243,7 +260,10 @@ router.post('/agent', async (req, res) => {
     const userId = getUserId(req);
 
     // Build context
-    const contextBundles = await buildContextBundles(userId, conversationId);
+    const contextResult = await buildContextBundles(userId, conversationId, {
+      userMessage: messages?.[messages.length - 1]?.content || '',
+      personaId
+    });
     const secondBrainStats = await getSecondBrainStats(userId);
 
     // Resolve model
@@ -259,7 +279,7 @@ router.post('/agent', async (req, res) => {
       conversationId,
       mode,
       personaId,
-      contextBundles,
+      contextBundles: contextResult,
       secondBrainStats,
       customInstructions,
       maxSteps,
@@ -318,7 +338,10 @@ router.post('/agent/stream', async (req, res) => {
     const userId = getUserId(req);
 
     // Build context
-    const contextBundles = await buildContextBundles(userId, conversationId);
+    const contextResult = await buildContextBundles(userId, conversationId, {
+      userMessage: messages?.[messages.length - 1]?.content || '',
+      personaId
+    });
     const secondBrainStats = await getSecondBrainStats(userId);
 
     // Resolve model
@@ -335,7 +358,7 @@ router.post('/agent/stream', async (req, res) => {
       conversationId,
       mode,
       personaId,
-      contextBundles,
+      contextBundles: contextResult,
       secondBrainStats,
       customInstructions,
       maxSteps,
@@ -439,12 +462,15 @@ router.post('/chat', async (req, res) => {
     }
 
     // Build context
-    const contextBundles = await buildContextBundles(userId, conversationId);
+    const contextResult = await buildContextBundles(userId, conversationId, {
+      userMessage: messages[messages.length - 1]?.content || message
+    });
     const secondBrainStats = await getSecondBrainStats(userId);
-    const systemPrompt = systemPromptManager.buildPrompt({
+    
+    const systemPrompt = contextResult?.systemPrompt || systemPromptManager.buildPrompt({
       mode: conversationId ? 'continuation' : 'fresh',
       userId,
-      contextBundles,
+      contextBundles: [],
       secondBrainStats,
     });
 

@@ -74,6 +74,7 @@ export async function syncConversationsFromBackend(): Promise<SyncResult> {
         const errorMsg = error instanceof Error ? error.message : 'Unknown error';
         result.errors.push(`Failed to sync ${conv.id}: ${errorMsg}`);
         log.sync.error(`Failed to sync conversation ${conv.id}`, error as Error);
+        console.error(`[SYNC] Failed to sync conversation ${conv.id}:`, error);
       }
     }
 
@@ -103,15 +104,128 @@ function convertBackendToExtractionFormat(backendConv: any): {
   exportedAt?: string;
 } {
   // Map backend format to extraction format
-  const messages = (backendConv.messages || []).map((msg: any) => ({
-    id: msg.id,
-    role: msg.role,
-    content: msg.parts || [],
-    timestamp: msg.createdAt,
-    metadata: msg.metadata || {}
-  }));
+  const messages = (backendConv.messages || []).map((msg: any) => {
+    // Convert parts to ContentPart[] format
+    const contentParts = (msg.parts || []).map((part: any) => {
+      if (typeof part === 'string') {
+        return { type: 'text', content: part };
+      }
+      
+      // Handle different part types
+      switch (part.type) {
+        case 'text':
+          return {
+            type: 'text',
+            content: part.content || part.text || '',
+            metadata: part.metadata || {}
+          };
+        case 'code':
+          return {
+            type: 'code',
+            content: part.content || part.text || '',
+            metadata: {
+              language: part.language || 'javascript',
+              ...part.metadata
+            }
+          };
+        case 'image':
+          return {
+            type: 'image',
+            content: part.content || part.url || '',
+            metadata: {
+              alt: part.alt || '',
+              ...part.metadata
+            }
+          };
+        case 'latex':
+        case 'math':
+          return {
+            type: 'latex',
+            content: part.content || part.text || '',
+            metadata: part.metadata || {}
+          };
+        case 'table':
+          return {
+            type: 'table',
+            content: part.content || { headers: [], rows: [] },
+            metadata: part.metadata || {}
+          };
+        case 'mermaid':
+          return {
+            type: 'mermaid',
+            content: part.content || part.text || '',
+            metadata: {
+              diagramType: part.diagramType || 'flowchart',
+              ...part.metadata
+            }
+          };
+        case 'tool_call':
+          return {
+            type: 'tool_call',
+            content: {
+              id: part.id || '',
+              name: part.name || '',
+              arguments: part.arguments || {}
+            },
+            metadata: part.metadata || {}
+          };
+        case 'tool_result':
+          return {
+            type: 'tool_result',
+            content: {
+              tool_call_id: part.tool_call_id || '',
+              result: part.result || {}
+            },
+            metadata: part.metadata || {}
+          };
+        default:
+          // Fallback to text for unknown types
+          return {
+            type: 'text',
+            content: typeof part === 'string' ? part : JSON.stringify(part),
+            metadata: {}
+          };
+      }
+    });
+
+    return {
+      id: msg.id,
+      role: msg.role,
+      content: contentParts,
+      timestamp: msg.createdAt || msg.timestamp,
+      metadata: msg.metadata || {},
+      parts: contentParts // Keep parts for backward compatibility
+    };
+  });
+
+  // Calculate stats if not provided
+  const totalWords = messages.reduce((acc: number, msg: any) => {
+    if (Array.isArray(msg.content)) {
+      return acc + msg.content.reduce((wordAcc: number, part: any) => {
+        return wordAcc + (part.content ? part.content.split(/\s+/).length : 0);
+      }, 0);
+    }
+    return acc + (msg.content ? msg.content.split(/\s+/).length : 0);
+  }, 0);
+
+  const totalCharacters = messages.reduce((acc: number, msg: any) => {
+    if (Array.isArray(msg.content)) {
+      return acc + msg.content.reduce((charAcc: number, part: any) => {
+        return charAcc + (part.content ? part.content.length : 0);
+      }, 0);
+    }
+    return acc + (msg.content ? msg.content.length : 0);
+  }, 0);
+
+  const totalCodeBlocks = messages.reduce((acc: number, msg: any) => {
+    if (Array.isArray(msg.content)) {
+      return acc + msg.content.filter((part: any) => part.type === 'code').length;
+    }
+    return acc;
+  }, 0);
 
   return {
+    id: backendConv.id,
     title: backendConv.title,
     provider: backendConv.provider,
     sourceUrl: backendConv.sourceUrl,
@@ -124,14 +238,16 @@ function convertBackendToExtractionFormat(backendConv: any): {
     },
     stats: {
       totalMessages: backendConv.messageCount || messages.length,
-      totalWords: backendConv.totalWords || 0,
-      totalCharacters: backendConv.totalCharacters || 0,
-      totalCodeBlocks: backendConv.totalCodeBlocks || 0,
+      totalWords: backendConv.totalWords || totalWords,
+      totalCharacters: backendConv.totalCharacters || totalCharacters,
+      totalCodeBlocks: backendConv.totalCodeBlocks || totalCodeBlocks,
       totalMermaidDiagrams: backendConv.totalMermaidDiagrams || 0,
       totalImages: backendConv.totalImages || 0,
       totalTables: backendConv.totalTables || 0,
+      totalLatexBlocks: backendConv.totalLatexBlocks || 0,
+      totalToolCalls: backendConv.totalToolCalls || 0,
       firstMessageAt: backendConv.createdAt,
-      lastMessageAt: backendConv.updatedAt
+      lastMessageAt: backendConv.updatedAt || backendConv.createdAt
     },
     createdAt: backendConv.createdAt,
     exportedAt: backendConv.capturedAt || backendConv.updatedAt

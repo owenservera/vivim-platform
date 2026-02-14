@@ -386,22 +386,7 @@ function extractChatgptRichContent($el, $, richFormatting = true) {
     }
   });
 
-  // 6. Identify links
-  $clone.find('a[href]').each((index, elem) => {
-    const $elem = $(elem);
-    const href = $elem.attr('href');
-    const text = $elem.text().trim();
-    if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
-      contentBlocks.push({
-        type: 'link',
-        url: href,
-        text: text || href
-      });
-    }
-    $elem.remove();
-  });
-
-  // 7. Handle remaining text and potential hidden diagrams
+  // 6. Handle remaining text and potential hidden diagrams
   const remainingText = $clone.text().trim();
   
   const mermaidRegex = /(?:^|\n)\s*(graph\s+[LRTDBC]{2}[\s\S]*?(?=\-\-|\n|###|Goal:|1\s+|2\s+))/gi;

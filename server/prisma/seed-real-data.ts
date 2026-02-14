@@ -6,11 +6,11 @@
  * in the database just as the real system would.
  */
 
-import { PrismaClient } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 import { createHash } from 'crypto';
+import { getPrismaClient } from '../src/lib/database.js';
 
-const prisma = new PrismaClient();
+const prisma = getPrismaClient();
 
 // Sample conversation data based on the chat links provided
 const sampleConversations = [

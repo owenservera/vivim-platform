@@ -418,15 +418,24 @@ export const apiClient = {
       });
     }
 
+    url.searchParams.append('_t', String(Date.now()));
+
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${getApiKey()}`,
         'X-API-Key': getApiKey(),
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
         ...config.headers
       }
     });
+
+    if (response.status === 304) {
+      return { data: { conversations: [], pagination: { total: 0, limit: 0, offset: 0, hasMore: false } }, status: 304 };
+    }
 
     if (!response.ok) {
        const errorBody = await response.json().catch(() => ({}));

@@ -111,8 +111,24 @@ class YjsSyncManager {
         useSyncStore.getState().setStatus('idle');
       } else if (status === 'disconnected') {
         useSyncStore.getState().setStatus('offline');
+      } else if (status === 'connecting') {
+        useSyncStore.getState().setStatus('syncing');
       }
     });
+
+    // Handle connection errors gracefully
+    this.wsProvider.on('connection-error', (error: Error) => {
+      console.warn('⚠️ WebSocket connection error:', error.message);
+      useSyncStore.getState().setStatus('offline');
+    });
+
+    // Timeout to stop trying after 10 seconds
+    setTimeout(() => {
+      if (this.wsProvider && this.wsProvider.wsconnected === false) {
+        console.warn('⚠️ WebSocket connection timed out. Running in offline mode.');
+        useSyncStore.getState().setStatus('offline');
+      }
+    }, 10000);
     
     // Sync events
     this.wsProvider.on('sync', (isSynced: boolean) => {

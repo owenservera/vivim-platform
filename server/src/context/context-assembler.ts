@@ -17,6 +17,8 @@ import { BudgetAlgorithm } from './budget-algorithm';
 import { BundleCompiler } from './bundle-compiler';
 import { HybridRetrievalService } from './hybrid-retrieval';
 import { getVIVIMSystemPrompt } from './vivim-identity-service';
+import { getContextCache } from './index';
+import { logger } from '../lib/logger.js';
 
 interface ContextAssemblerConfig {
   prisma: PrismaClient;
@@ -62,6 +64,7 @@ export class DynamicContextAssembler {
   private tokenEstimator: ITokenEstimator;
   private bundleCompiler: BundleCompiler;
   private hybridRetrieval: HybridRetrievalService;
+  private cache = getContextCache();
 
   constructor(config: ContextAssemblerConfig) {
     this.prisma = config.prisma;
@@ -73,6 +76,13 @@ export class DynamicContextAssembler {
 
   async assemble(params: AssemblyParams): Promise<AssembledContext> {
     const startTime = Date.now();
+
+    const cacheKey = `ctx:${params.userId}:${params.conversationId}:${params.userMessage.substring(0, 50)}`;
+    const cached = this.cache.get<AssembledContext>('bundle', cacheKey);
+    if (cached) {
+      logger.debug({ cacheKey }, 'Context assembly cache hit');
+      return cached;
+    }
 
     // Fetch conversation stats if conversationId provided
     let conversationStats = {
@@ -132,7 +142,7 @@ export class DynamicContextAssembler {
 
     await this.trackUsage(bundles, params.conversationId);
 
-    return {
+    const result: AssembledContext = {
       systemPrompt,
       budget,
       bundlesUsed: bundles.map(b => b.bundleType as any),
@@ -144,6 +154,10 @@ export class DynamicContextAssembler {
         conversationStats
       },
     };
+
+    this.cache.set('bundle', cacheKey, result, 5 * 60 * 1000);
+
+    return result;
   }
 
   private async detectMessageContext(

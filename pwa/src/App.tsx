@@ -54,7 +54,8 @@ function AppInitializer() {
     const initSync = async () => {
       try {
         await syncManager.initialize(peerId);
-        const wsUrl = apiBaseUrl.replace('http', 'ws').replace('/api/v1', '');
+        const wsUrl = import.meta.env.VITE_WS_URL || apiBaseUrl.replace('http', 'ws').replace('/api/v1', '');
+        console.log('🔌 Connecting to WebSocket:', wsUrl);
         syncManager.connectWebSocket(wsUrl);
         console.log('✅ Sync initialized');
       } catch (error) {

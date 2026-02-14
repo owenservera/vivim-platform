@@ -1,17 +1,14 @@
-/**
- * OpenScroll Storage V2 - IndexedDB Object Store
- *
- * Content-addressed object storage backed by IndexedDB.
- * Supports batch operations and efficient querying.
- */
-
+import EventEmitter from 'eventemitter3';
 import type {
   Hash,
   Node,
   ObjectStore,
   BatchOperation,
   ConversationRoot,
-  ConversationSnapshot
+  ConversationSnapshot,
+  ISO8601,
+  Signature,
+  DID
 } from './types';
 import { log } from '../logger';
 
@@ -35,11 +32,12 @@ const STORES = {
 // IndexedDB Object Store Implementation
 // ============================================================================
 
-export class IndexedDBObjectStore implements ObjectStore {
+export class IndexedDBObjectStore extends EventEmitter implements ObjectStore {
   private db: IDBDatabase | null = null;
   private initPromise: Promise<IDBDatabase> | null = null;
 
   constructor() {
+    super();
     this.initPromise = this.init();
   }
 
@@ -129,6 +127,7 @@ export class IndexedDBObjectStore implements ObjectStore {
       const request = store.put(node);
       request.onsuccess = () => {
         log.storage.debug(`IDB_PUT [objects]: ${node.id.slice(0, 10)}... (${node.type})`);
+        this.emit('change', { type: 'put', store: STORES.OBJECTS, key: node.id, value: node });
         resolve(node.id as Hash);
       };
       request.onerror = () => reject(request.error);
@@ -176,7 +175,10 @@ export class IndexedDBObjectStore implements ObjectStore {
 
     return new Promise((resolve, reject) => {
       const request = store.delete(hash);
-      request.onsuccess = () => resolve();
+      request.onsuccess = () => {
+        this.emit('change', { type: 'delete', store: STORES.OBJECTS, key: hash });
+        resolve();
+      };
       request.onerror = () => reject(request.error);
     });
   }
@@ -198,7 +200,10 @@ export class IndexedDBObjectStore implements ObjectStore {
         }
       }
 
-      tx.oncomplete = () => resolve();
+      tx.oncomplete = () => {
+        this.emit('change', { type: 'batch', store: STORES.OBJECTS, operations });
+        resolve();
+      };
       tx.onerror = () => reject(tx.error);
     });
   }
@@ -328,19 +333,19 @@ export class ConversationStore {
   ): Promise<ConversationRoot> {
     const { sha256 } = await import('./crypto');
 
-    const conversationId = await sha256(`${title}:${Date.now()}:${author}`);
+    const conversationId = await sha256(`${title}:${Date.now()}:${author}`) as Hash;
 
     const root: ConversationRoot = {
       id: conversationId,
       type: 'root',
-      timestamp: new Date().toISOString(),
-      author,
-      signature: '', // Will be set by caller
+      timestamp: new Date().toISOString() as ISO8601,
+      author: author as DID,
+      signature: '' as Signature, // Will be set by caller
       title,
       conversationId,
       metadata: {
         ...metadata,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString() as ISO8601
       }
     };
 
@@ -370,7 +375,7 @@ export class ConversationStore {
    * List all conversations
    */
   async list(): Promise<ConversationMetadata[]> {
-    const db = await this.objectStore.ready();
+    const db = await (this.objectStore as any).ready();
     const tx = db.transaction(STORES.CONVERSATIONS, 'readonly');
     const store = tx.objectStore(STORES.CONVERSATIONS);
 
@@ -378,10 +383,14 @@ export class ConversationStore {
       const request = store.getAll();
       request.onsuccess = () => {
         const result = request.result;
+        console.log(`[ConversationStore.list()] Retrieved ${result.length} conversations from IndexedDB.`, result);
         log.storage.debug(`IDB_LIST [conversations]: Found ${result.length} entries.`);
         resolve(result);
       };
-      request.onerror = () => reject(request.error);
+      request.onerror = () => {
+        console.error(`[ConversationStore.list()] Failed to retrieve conversations from IndexedDB.`, request.error);
+        reject(request.error);
+      };
     });
   }
 
@@ -389,7 +398,7 @@ export class ConversationStore {
    * Update conversation index
    */
   async updateIndex(root: ConversationRoot): Promise<void> {
-    const db = await this.objectStore.ready();
+    const db = await (this.objectStore as any).ready();
     const tx = db.transaction(STORES.CONVERSATIONS, 'readwrite');
     const store = tx.objectStore(STORES.CONVERSATIONS);
 
@@ -408,10 +417,14 @@ export class ConversationStore {
     return new Promise((resolve, reject) => {
       const request = store.put(index);
       request.onsuccess = () => {
+        console.log(`[ConversationStore.updateIndex()] Successfully indexed conversation: ${root.title} (${root.conversationId.slice(0, 10)}...)`);
         log.storage.debug(`IDB_PUT [conversations]: Indexed ${root.conversationId.slice(0, 10)}...`);
         resolve();
       };
-      request.onerror = () => reject(request.error);
+      request.onerror = () => {
+        console.error(`[ConversationStore.updateIndex()] Failed to index conversation: ${root.title}`, request.error);
+        reject(request.error);
+      };
     });
   }
 
@@ -419,7 +432,7 @@ export class ConversationStore {
    * Delete a conversation
    */
   async delete(conversationId: Hash): Promise<void> {
-    const db = await this.objectStore.ready();
+    const db = await (this.objectStore as any).ready();
     const tx = db.transaction([STORES.OBJECTS, STORES.CONVERSATIONS], 'readwrite');
 
     await new Promise<void>((resolve, reject) => {
@@ -433,7 +446,7 @@ export class ConversationStore {
   }
 
   async save(root: ConversationRoot): Promise<void> {
-    const db = await this.objectStore.ready();
+    const db = await (this.objectStore as any).ready();
     const tx = db.transaction([STORES.OBJECTS, STORES.CONVERSATIONS], 'readwrite');
 
     await new Promise<void>((resolve, reject) => {
@@ -483,19 +496,19 @@ export class SnapshotStore {
   ): Promise<ConversationSnapshot> {
     const { sha256 } = await import('./crypto');
 
-    const id = await sha256(`${conversationId}:${name}:${Date.now()}`);
+    const id = await sha256(`${conversationId}:${name}:${Date.now()}`) as Hash;
 
     const snapshot: ConversationSnapshot = {
       id,
       conversationId,
       name,
       head,
-      createdAt: new Date().toISOString(),
-      author,
+      createdAt: new Date().toISOString() as ISO8601,
+      author: author as DID,
       description
     };
 
-    const db = await this.objectStore.ready();
+    const db = await (this.objectStore as any).ready();
     const tx = db.transaction(STORES.SNAPSHOTS, 'readwrite');
     const store = tx.objectStore(STORES.SNAPSHOTS);
 
@@ -512,7 +525,7 @@ export class SnapshotStore {
    * Get a snapshot
    */
   async get(snapshotId: Hash): Promise<ConversationSnapshot | null> {
-    const db = await this.objectStore.ready();
+    const db = await (this.objectStore as any).ready();
     const tx = db.transaction(STORES.SNAPSHOTS, 'readonly');
     const store = tx.objectStore(STORES.SNAPSHOTS);
 
@@ -527,7 +540,7 @@ export class SnapshotStore {
    * Get snapshots for a conversation
    */
   async getByConversation(conversationId: Hash): Promise<ConversationSnapshot[]> {
-    const db = await this.objectStore.ready();
+    const db = await (this.objectStore as any).ready();
     const tx = db.transaction(STORES.SNAPSHOTS, 'readonly');
     const store = tx.objectStore(STORES.SNAPSHOTS);
     const index = store.index('conversationId');

@@ -422,11 +422,11 @@ const server = app.listen(config.port, '0.0.0.0', () => {
 });
 
 // ============================================================================
-// SIGNALING SERVER (WebRTC + Yjs Sync)
+// SOCKET SERVICE (Data Sync + Signaling)
 // ============================================================================
-import { createSignalingServer } from './sync/signaling.js';
-const signalingServer = createSignalingServer(server);
-logger.info('🔌 Signaling server ready for P2P connections');
+import { socketService } from './services/socket.ts';
+socketService.initialize(server);
+logger.info('🔌 Socket service ready for Data Sync & P2P');
 
 // ============================================================================
 // GRACEFUL SHUTDOWN

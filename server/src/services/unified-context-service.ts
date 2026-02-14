@@ -8,11 +8,12 @@
  */
 
 import { getPrismaClient } from '../lib/database.js';
-import { DynamicContextAssembler, createEmbeddingService, createLLMService, LibrarianWorker, BundleCompiler, BudgetAlgorithm } from '../context/index.js';
+import { DynamicContextAssembler, createEmbeddingService, createLLMService, LibrarianWorker, BundleCompiler, BudgetAlgorithm, getContextTelemetry } from '../context/index.js';
 import * as oldContextGenerator from '../services/context-generator.js';
 import { logger } from '../lib/logger.js';
 
 const prisma = getPrismaClient();
+const telemetry = getContextTelemetry();
 
 export interface UnifiedContextServiceConfig {
   enableNewContextEngine?: boolean;
@@ -116,6 +117,34 @@ export class UnifiedContextService {
           tokens: result.budget.totalUsed,
           layers: result.bundlesUsed.length
         }, 'Context generated with new engine');
+
+        telemetry.record({
+          timestamp: Date.now(),
+          userId,
+          conversationId,
+          totalDurationMs: result.metadata.assemblyTimeMs,
+          embeddingDurationMs: 0,
+          detectionDurationMs: 0,
+          retrievalDurationMs: 0,
+          compilationDurationMs: result.metadata.assemblyTimeMs,
+          tokenBudget: result.budget.totalAvailable,
+          tokenUsed: result.budget.totalUsed,
+          tokenEfficiency: result.budget.totalUsed / result.budget.totalAvailable,
+          bundlesCacheHits: 0,
+          bundlesCacheMisses: 0,
+          cacheHitRate: result.metadata.cacheHitRate,
+          topicsDetected: result.metadata.detectedTopics,
+          entitiesDetected: result.metadata.detectedEntities,
+          acusRetrieved: 0,
+          memoriesRetrieved: 0,
+          bundlesUsed: result.bundlesUsed.length,
+          avgSimilarityScore: 0,
+          coverageScore: result.bundlesUsed.length / 5,
+          freshnessScore: 1,
+          engineUsed: 'legacy',
+          parallelFactor: 1,
+          errors: []
+        });
 
         return {
           systemPrompt: result.systemPrompt,

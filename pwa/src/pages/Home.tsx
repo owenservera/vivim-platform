@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Bot, Sparkles } from 'lucide-react';
+import { Plus, Bot, Sparkles, RefreshCw, Wifi, WifiOff } from 'lucide-react';
 import { conversationService } from '../lib/service/conversation-service';
+import { conversationSyncService } from '../lib/conversation-sync-service';
 import { listConversationsForRecommendation, getForYouFeed } from '../lib/recommendation';
-import { syncConversationsFromBackend } from '../lib/db-sync';
 import { logger } from '../lib/logger';
 import {
   IOSStories,
@@ -18,10 +18,11 @@ import {
   useIOSToast,
   toast,
 } from '../components/ios';
-import { 
-  useBookmarks, 
-  useCircles, 
-  useFeatureCapabilities 
+import { ErrorBoundary } from '../components/ErrorBoundary';
+import {
+  useBookmarks,
+  useCircles,
+  useFeatureCapabilities
 } from '../lib/feature-hooks';
 import { featureService } from '../lib/feature-service';
 import type { RecommendationItem } from '../lib/recommendation/types';
@@ -32,6 +33,9 @@ export const Home: React.FC = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [recommendations, setRecommendations] = useState<RecommendationItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [syncError, setSyncError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [aiPanelOpen, setAiPanelOpen] = useState(false);
@@ -51,6 +55,8 @@ export const Home: React.FC = () => {
   const loadConversations = useCallback(async (pageNum = 1) => {
     try {
       setError(null);
+      setLoading(pageNum === 1); // Only show loading for initial load
+
       const list = await conversationService.getAllConversations();
       const pageSize = 10;
       const start = (pageNum - 1) * pageSize;
@@ -62,22 +68,30 @@ export const Home: React.FC = () => {
         setConversations((prev) => [...prev, ...pagedList]);
       }
 
-      const metadataPromises = pagedList.map(async (convo) => {
-        const metadata = await featureService.getMetadata(convo.id);
-        return { id: convo.id, metadata };
-      });
+      // Load metadata for conversations (with timeout protection)
+      if (pagedList.length > 0) {
+        const metadataPromises = pagedList.map(async (convo) => {
+          try {
+            const metadata = await featureService.getMetadata(convo.id);
+            return { id: convo.id, metadata, error: null };
+          } catch (err) {
+            logger.error(`Failed to load metadata for conversation ${convo.id}`, { error: err });
+            return { id: convo.id, metadata: null, error: err };
+          }
+        });
 
-      const metadataResults = await Promise.all(metadataPromises);
-      const newPinnedIds = new Set<string>();
-      const newArchivedIds = new Set<string>();
+        const metadataResults = await Promise.all(metadataPromises);
+        const newPinnedIds = new Set<string>();
+        const newArchivedIds = new Set<string>();
 
-      metadataResults.forEach(({ id, metadata }) => {
-        if (metadata?.isPinned) newPinnedIds.add(id);
-        if (metadata?.isArchived) newArchivedIds.add(id);
-      });
+        metadataResults.forEach(({ id, metadata }) => {
+          if (metadata?.isPinned) newPinnedIds.add(id);
+          if (metadata?.isArchived) newArchivedIds.add(id);
+        });
 
-      setPinnedIds(newPinnedIds);
-      setArchivedIds(newArchivedIds);
+        setPinnedIds(newPinnedIds);
+        setArchivedIds(newArchivedIds);
+      }
 
     } catch (err) {
       logger.error('Failed to load conversations', { error: err });
@@ -99,6 +113,7 @@ export const Home: React.FC = () => {
       }
     } catch (err) {
       logger.error('Failed to load recommendations', { error: err });
+      // Don't show error for recommendations as it's not critical
     }
   }, []);
 
@@ -108,19 +123,76 @@ export const Home: React.FC = () => {
   }, [loadConversations, loadRecommendations]);
 
   useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  useEffect(() => {
     const syncFromBackend = async () => {
+      if (!isOnline) {
+        setSyncError('Offline - changes will sync when online');
+        return;
+      }
+
       try {
-        const result = await syncConversationsFromBackend();
-        if (result.synced > 0) {
-          logger.info(`Synced ${result.synced} conversations from backend`);
-          await loadConversations(1);
+        setSyncing(true);
+        setSyncError(null);
+
+        // Check if sync is needed and perform sync
+        const needsSync = await conversationSyncService.needsSync();
+        if (needsSync) {
+          const result = await conversationSyncService.syncConversations();
+          
+          if (result && result.success && result.synced > 0) {
+            await loadConversations(1);
+          } else if (result && Array.isArray(result.errors) && result.errors.length > 0) {
+            setSyncError(result.errors.join('; '));
+          }
         }
       } catch (err) {
-        logger.error('Failed to sync from backend', { error: err });
+        const errorMessage = err instanceof Error ? err.message : typeof err === 'string' ? err : 'Unknown error';
+        setSyncError(`Sync failed: ${errorMessage}.`);
+      } finally {
+        setSyncing(false);
       }
     };
     syncFromBackend();
-  }, [loadConversations]);
+  }, [loadConversations, isOnline]);
+
+  const handleManualSync = useCallback(async () => {
+    if (!isOnline || syncing) return;
+
+    try {
+      setSyncing(true);
+      setSyncError(null);
+
+      const result = await conversationSyncService.syncConversations({ force: true });
+
+      if (result && result.success) {
+        if (result.synced > 0) {
+          showToast(toast.success(`Synced ${result.synced} conversations`));
+          await loadConversations(1);
+        } else {
+          showToast(toast.info('Already up to date'));
+        }
+      } else if (result) {
+        showToast(toast.error(`Sync failed: ${result.errors.join('; ')}`));
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : typeof err === 'string' ? err : 'Unknown error';
+      showToast(toast.error(`Sync failed: ${errorMessage}`));
+    } finally {
+      setSyncing(false);
+    }
+  }, [isOnline, syncing, loadConversations, showToast, toast]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -262,9 +334,76 @@ export const Home: React.FC = () => {
         </div>
       )}
 
+      {(syncing || syncError || !isOnline) && (
+        <div className="flex items-center justify-between px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800">
+          <div className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400">
+            {syncing ? (
+              <>
+                <RefreshCw className="w-4 h-4 animate-spin" />
+                <span>Syncing...</span>
+              </>
+            ) : !isOnline ? (
+              <>
+                <WifiOff className="w-4 h-4" />
+                <span>Offline - changes saved locally</span>
+              </>
+            ) : (
+              <>
+                <Wifi className="w-4 h-4" />
+                <span>{syncError || 'Ready to sync'}</span>
+              </>
+            )}
+          </div>
+          {!isOnline && (
+            <button
+              onClick={handleManualSync}
+              disabled={syncing}
+              className="text-xs text-blue-600 dark:text-blue-400 hover:underline disabled:opacity-50"
+            >
+              Retry
+            </button>
+          )}
+        </div>
+      )}
+
       <div className="flex-1 px-4 py-4">
         {loading && conversations.length === 0 ? (
-          <IOSSkeletonList count={5} showAvatar />
+          <div className="space-y-4">
+            <div className="text-center py-8">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 mb-4">
+                <RefreshCw className="w-6 h-6 text-blue-600 dark:text-blue-400 animate-spin" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                Loading Conversations
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Please wait while we fetch your conversations...
+              </p>
+            </div>
+            <IOSSkeletonList count={5} showAvatar />
+          </div>
+        ) : error ? (
+          <div className="text-center py-8">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-900 mb-4">
+              <WifiOff className="w-6 h-6 text-red-600 dark:text-red-400" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+              Failed to Load Conversations
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              {error}
+            </p>
+            <button
+              onClick={() => {
+                setError(null);
+                loadConversations(1);
+              }}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Retry
+            </button>
+          </div>
         ) : conversations.length === 0 ? (
           <EmptyMessages
             onAction={() => {
@@ -274,20 +413,26 @@ export const Home: React.FC = () => {
         ) : (
           <div className="space-y-3">
             {sortedConversations.map((convo) => (
-              <ConversationCard
+              <ErrorBoundary
                 key={convo.id}
-                conversation={convo}
-                isPinned={pinnedIds.has(convo.id)}
-                isArchived={archivedIds.has(convo.id)}
-                onContinue={handleContinue}
-                onFork={handleFork}
-                onPinToggle={handlePinToggle}
-                onArchiveToggle={handleArchiveToggle}
-                onDelete={handleDelete}
-                onDuplicate={handleDuplicate}
-                onAIClick={handleAIClick}
-                onShare={handleShare}
-              />
+                onError={(error) => {
+                  logger.error(`Error rendering conversation card ${convo.id}`, { error });
+                }}
+              >
+                <ConversationCard
+                  conversation={convo}
+                  isPinned={pinnedIds.has(convo.id)}
+                  isArchived={archivedIds.has(convo.id)}
+                  onContinue={handleContinue}
+                  onFork={handleFork}
+                  onPinToggle={handlePinToggle}
+                  onArchiveToggle={handleArchiveToggle}
+                  onDelete={handleDelete}
+                  onDuplicate={handleDuplicate}
+                  onAIClick={handleAIClick}
+                  onShare={handleShare}
+                />
+              </ErrorBoundary>
             ))}
           </div>
         )}

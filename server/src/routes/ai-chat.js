@@ -1,15 +1,16 @@
 // apps/server/src/routes/ai-chat.js
 // ═══════════════════════════════════════════════════════════════════════════
-// FRESH AI CHAT - Standalone conversations, no context system
+// FRESH AI CHAT - Standalone conversations with optional context system
 // ═══════════════════════════════════════════════════════════════════════════
 //
-// This route handles FRESH conversations — lightweight, no database context.
+// This route handles FRESH conversations — lightweight with optional context.
 // In-memory conversation state for the duration of the session.
-// Supports personas, provider switching, and streaming.
+// Supports personas, provider switching, streaming, and context integration.
 
 import { Router } from 'express';
 import { unifiedProvider } from '../ai/unified-provider.js';
 import { systemPromptManager } from '../ai/system-prompts.js';
+import { unifiedContextService } from '../services/unified-context-service.js';
 import { logger } from '../lib/logger.js';
 import { ProviderConfig, getDefaultProvider } from '../types/ai.js';
 import { freshChatSchema } from '../validators/ai.js';
@@ -118,8 +119,19 @@ router.post('/send', async (req, res) => {
     const provider = overrideProvider || conv.provider;
     const model = overrideModel || conv.model;
 
-    // Build persona-aware system prompt
-    const systemPrompt = systemPromptManager.buildPrompt({
+    let contextResult = null;
+    if (userId) {
+      try {
+        contextResult = await unifiedContextService.generateContextForChat(conversationId, {
+          userMessage: message,
+          personaId: conv.personaId
+        });
+      } catch (ctxError) {
+        logger.warn({ error: ctxError.message }, 'Context assembly failed for fresh chat');
+      }
+    }
+
+    const systemPrompt = contextResult?.systemPrompt || systemPromptManager.buildPrompt({
       mode: 'fresh',
       personaId: conv.personaId,
       userId,
@@ -187,8 +199,20 @@ router.post('/stream', async (req, res) => {
     const provider = requestedProvider || getDefaultProvider();
     const model = requestedModel || ProviderConfig[provider]?.defaultModel;
 
-    // Build persona-aware system prompt
-    const systemPrompt = systemPromptManager.buildPrompt({
+    let contextResult = null;
+    const convId = `fresh_${Date.now()}`;
+    if (userId) {
+      try {
+        contextResult = await unifiedContextService.generateContextForChat(convId, {
+          userMessage: message,
+          personaId: personaId || 'default'
+        });
+      } catch (ctxError) {
+        logger.warn({ error: ctxError.message }, 'Context assembly failed for fresh stream');
+      }
+    }
+
+    const systemPrompt = contextResult?.systemPrompt || systemPromptManager.buildPrompt({
       mode: 'fresh',
       personaId: personaId || 'default',
       userId,
