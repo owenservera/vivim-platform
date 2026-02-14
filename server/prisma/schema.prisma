@@ -1001,11 +1001,11 @@ model SharingIntent {
   contentType     ContentType
   contentIds      String[]       
   contentScope    ContentScope   @default(FULL)
-  includeACUs     String[]?      
-  excludeACUs     String[]?      
+  includeACUs     String[]       @default([])
+  excludeACUs     String[]       @default([])
   audienceType    AudienceType
-  circleIds       String[]?      
-  userDids        String[]?      
+  circleIds       String[]       @default([])
+  userDids        String[]       @default([])      
   linkId          String?        @unique
   permissions     Json           
   schedule        Json?          
