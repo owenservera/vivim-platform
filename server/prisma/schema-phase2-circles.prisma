@@ -1,0 +1,257 @@
+// ============================================================================
+// PHASE 2: CIRCLE SYSTEM & SOCIAL GRAPH
+// Enhanced Circle models for advanced privacy controls
+// ============================================================================
+
+// Enhanced Circle model with Phase 2 features
+model Circle {
+  id          String   @id @default(uuid())
+  ownerId     String
+  
+  // Basic info
+  name        String
+  description String?
+  icon        String?  // Emoji or icon identifier
+  color       String?  // Hex color for UI
+  
+  // Circle type determines behavior
+  type        String   @default("manual") // manual, smart, shared, ephemeral, interest, proximity, interaction
+  
+  // Visibility - can others see this circle exists?
+  visibility  String   @default("private") // secret, private, visible
+  
+  // For smart circles - auto-population rules
+  smartRules  Json?    // SmartCircleRules JSON
+  
+  // For ephemeral circles - time bounds
+  expiresAt   DateTime? @db.Timestamptz(6)
+  
+  // For shared circles - co-owners
+  isShared    Boolean  @default(false)
+  coOwners    String[] @default([]) // Array of userIds
+  
+  // Auto-suggest new members
+  autoSuggest Boolean  @default(true)
+  
+  // Metadata
+  memberCount Int      @default(0)
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  metadata    Json     @default("{}")
+  
+  // Relations
+  members     CircleMember[]
+  owner       User     @relation("CircleOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  
+  // Content shared to this circle
+  sharedContent CircleContent[]
+  
+  // Access grants
+  accessGrants  CircleAccessGrant[]
+
+  @@index([ownerId])
+  @@index([type])
+  @@index([visibility])
+  @@index([ownerId, type])
+  @@map("circles")
+}
+
+// Enhanced CircleMember with granular permissions
+model CircleMember {
+  id          String   @id @default(uuid())
+  circleId    String
+  userId      String
+  
+  // Role in circle
+  role        String   @default("member") // owner, admin, moderator, member, viewer
+  
+  // Granular permissions (override role defaults)
+  permissions Json?    // CirclePermissions JSON
+  
+  // How they were added
+  addedBy     String   // userId who added them
+  addedAt     DateTime @default(now()) @db.Timestamptz(6)
+  
+  // Membership status
+  status      String   @default("active") // active, pending, suspended, left
+  
+  // For smart circles - why they were added
+  matchReason Json?    // Why smart circle matched this user
+  
+  // Trust/computed metrics
+  trustScore        Float?   // Computed trust with circle owner
+  interactionFreq   String?  // daily, weekly, monthly, rarely
+  lastInteractionAt DateTime? @db.Timestamptz(6)
+  
+  // Relations
+  circle Circle @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([circleId, userId])
+  @@index([circleId, status])
+  @@index([userId])
+  @@index([circleId, role])
+  @@map("circle_members")
+}
+
+// Track content shared to circles
+model CircleContent {
+  id          String   @id @default(uuid())
+  circleId    String
+  contentId   String   // Conversation or other content ID
+  contentType String   @default("conversation") // conversation, acu, note, etc.
+  
+  // Who shared it
+  sharedBy    String
+  sharedAt    DateTime @default(now()) @db.Timestamptz(6)
+  
+  // Sharing permissions for this content in this circle
+  canView     Boolean  @default(true)
+  canComment  Boolean  @default(true)
+  canShare    Boolean  @default(false)
+  canReact    Boolean  @default(true)
+  
+  // Circle relation
+  circle Circle @relation(fields: [circleId], references: [id], onDelete: Cascade)
+
+  @@index([circleId])
+  @@index([contentId])
+  @@unique([circleId, contentId, sharedBy])
+  @@map("circle_content")
+}
+
+// Social graph - following/followers
+model SocialConnection {
+  id          String   @id @default(uuid())
+  
+  // Who is following whom
+  followerId  String   // User who follows
+  followingId String   // User being followed
+  
+  // Connection type
+  type        String   @default("follow") // follow, friend, block, mute
+  
+  // For friend requests
+  status      String   @default("active") // active, pending, accepted, rejected
+  
+  // Metadata
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  
+  // Relations
+  follower  User @relation("Following", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("Followers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+  @@index([followerId, type])
+  @@map("social_connections")
+}
+
+// Temporary access grants (for ephemeral sharing)
+model CircleAccessGrant {
+  id          String   @id @default(uuid())
+  circleId    String
+  
+  // Who gets access
+  grantedTo   String   // userId or did
+  grantedBy   String   // userId who granted
+  
+  // Access level
+  accessLevel String   @default("view") // view, interact, full
+  
+  // Time bounds
+  grantedAt   DateTime @default(now()) @db.Timestamptz(6)
+  expiresAt   DateTime? @db.Timestamptz(6)
+  
+  // Status
+  status      String   @default("active") // active, revoked, expired
+  
+  // Relations
+  circle Circle @relation(fields: [circleId], references: [id], onDelete: Cascade)
+
+  @@index([circleId])
+  @@index([grantedTo])
+  @@index([status])
+  @@map("circle_access_grants")
+}
+
+// Smart circle suggestions (for AI recommendations)
+model CircleSuggestion {
+  id          String   @id @default(uuid())
+  userId      String   // User to suggest to
+  
+  // Suggested user
+  suggestedUserId String
+  
+  // Which circles this user could join
+  suggestedCircles String[] // Array of circleIds
+  
+  // Why this suggestion
+  reason      String   // mutual_friends, shared_interests, interaction_pattern, etc.
+  confidence  Float    // 0-1 confidence score
+  
+  // Metadata
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  dismissedAt DateTime? @db.Timestamptz(6)
+  actedAt     DateTime? @db.Timestamptz(6) // If user acted on suggestion
+  
+  @@index([userId])
+  @@index([suggestedUserId])
+  @@index([createdAt])
+  @@map("circle_suggestions")
+}
+
+// Circle activity log (for transparency)
+model CircleActivityLog {
+  id          String   @id @default(uuid())
+  circleId    String
+  
+  // What happened
+  action      String   // member_added, member_removed, content_shared, settings_changed
+  actorId     String   // Who did it
+  
+  // Details
+  targetId    String?  // Who/what was affected
+  details     Json?    // Additional context
+  
+  // Timestamp
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([circleId])
+  @@index([circleId, createdAt])
+  @@map("circle_activity_logs")
+}
+
+// ============================================================================
+// Types (for reference)
+// ============================================================================
+
+/*
+SmartCircleRules {
+  minInteractions?: number
+  recencyWindow?: number // days
+  sharedInterests?: string[]
+  mutualConnections?: number
+  engagementRate?: number // 0-1
+  location?: {
+    maxDistance?: number // km
+    countries?: string[]
+  }
+  activeHours?: {
+    start: string // HH:mm
+    end: string
+    timezone: string
+  }[]
+}
+
+CirclePermissions {
+  canInvite: boolean
+  canShare: boolean
+  canSeeOthers: boolean
+  canPost: boolean
+  canModerate: boolean
+  canManageSettings: boolean
+}
+*/

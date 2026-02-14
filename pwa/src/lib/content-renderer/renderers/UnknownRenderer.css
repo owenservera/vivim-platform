@@ -1,0 +1,174 @@
+/**
+ * Unknown Renderer Styles
+ */
+
+.content-unknown-renderer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 1rem);
+  padding: var(--space-6, 1.5rem);
+  background-color: var(--warning-50, #fffbeb);
+  border: 1px solid var(--warning-200, #fcd34d);
+  border-radius: var(--content-radius);
+  box-shadow: var(--content-shadow);
+}
+
+[data-theme='dark'] .content-unknown-renderer {
+  background-color: rgba(245, 158, 11, 0.1);
+  border-color: var(--warning-500, #f59e0b);
+}
+
+/* Icon */
+.content-unknown-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto var(--space-4, 1rem);
+  background-color: var(--warning-100, #fef3c7);
+  border-radius: 50%;
+}
+
+.content-unknown-icon-svg {
+  width: 24px;
+  height: 24px;
+  color: var(--warning-500, #f59e0b);
+}
+
+/* Content */
+.content-unknown-content {
+  text-align: center;
+}
+
+.content-unknown-title {
+  font-size: var(--text-lg, 1.125rem);
+  font-weight: var(--font-semibold, 600);
+  color: var(--content-text-primary);
+  margin: 0 0 var(--space-2, 0.5rem) 0;
+}
+
+.content-unknown-description {
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--content-text-secondary);
+  margin: 0;
+}
+
+/* Preview */
+.content-unknown-preview {
+  background-color: var(--content-bg-primary);
+  border: 1px solid var(--content-border);
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+}
+
+.content-unknown-preview-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  padding: var(--space-3, 0.75rem);
+  background-color: var(--content-bg-secondary);
+  border-bottom: 1px solid var(--content-border);
+}
+
+.content-unknown-preview-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--content-text-tertiary);
+}
+
+.content-unknown-preview-title {
+  font-size: var(--text-xs, 0.75rem);
+  font-weight: var(--font-semibold, 600);
+  color: var(--content-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.content-unknown-preview-content {
+  padding: var(--space-4, 1rem);
+  overflow-x: auto;
+  max-height: 200px;
+}
+
+.content-unknown-preview-code {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--text-xs, 0.75rem);
+  color: var(--content-text-secondary);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.content-unknown-show-more {
+  display: block;
+  width: 100%;
+  padding: var(--space-2, 0.5rem);
+  margin-top: var(--space-2, 0.5rem);
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: var(--font-medium, 500);
+  color: var(--content-accent);
+  background-color: transparent;
+  border: 1px solid var(--content-accent);
+  border-radius: var(--radius-md, 8px);
+  cursor: pointer;
+  transition: all var(--content-transition);
+}
+
+.content-unknown-show-more:hover {
+  background-color: var(--content-accent);
+  color: white;
+}
+
+/* Actions */
+.content-unknown-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-4, 1rem);
+}
+
+.content-unknown-action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: var(--font-medium, 500);
+  color: var(--content-accent);
+  background-color: var(--content-bg-secondary);
+  border: 1px solid var(--content-accent);
+  border-radius: var(--radius-lg, 12px);
+  cursor: pointer;
+  transition: all var(--content-transition);
+}
+
+.content-unknown-action-button:hover {
+  background-color: var(--content-accent);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--content-shadow-hover);
+}
+
+.content-unknown-action-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.content-unknown-action-text {
+  line-height: 1;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .content-unknown-renderer {
+    padding: var(--space-4, 1rem);
+  }
+  
+  .content-unknown-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .content-unknown-title {
+    font-size: var(--text-base, 1rem);
+  }
+}

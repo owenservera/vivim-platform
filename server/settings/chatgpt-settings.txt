@@ -1,0 +1,15 @@
+# ChatGPT Link - SingleFile CLI Settings
+# URL: https://chatgpt.com/share/6972e35f-2944-8006-a2ea-b005ff22c02c
+
+node single-file-node.js "URL" "OUTPUT" \
+  --browser-wait-until=load \
+  --browser-wait-delay=2000 \
+  --browser-load-max-time=10000 \
+  --browser-capture-max-time=10000 \
+  --browser-width=1920 \
+  --browser-height=1080 \
+  --block-scripts=false \
+  --load-deferred-images=true \
+  --load-deferred-images-max-idle-time=2000 \
+  --remove-hidden-elements=false \
+  --compress-HTML=false

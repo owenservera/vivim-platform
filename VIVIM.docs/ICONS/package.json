@@ -1,0 +1,47 @@
+{
+  "name": "@vivim/icons",
+  "version": "1.0.0",
+  "description": "VIVIM Icon Library - A comprehensive collection of custom SVG icons",
+  "main": "index.ts",
+  "bin": {
+    "vivim-icons": "./cli.mjs"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "bun run viewer",
+    "viewer": "bunx serve .",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "cli": "bun run ./cli.mjs",
+    "build-cli": "bun build --outfile cli.mjs --target=bun cli.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "icons",
+    "svg",
+    "react",
+    "ui",
+    "components",
+    "vivim"
+  ],
+  "author": "VIVIM Team",
+  "license": "MIT",
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.1.4",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "vite": "^7.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "@types/react": "^19.2.13",
+    "@types/react-dom": "^19.2.3",
+    "tsx": "^3.12.0",
+    "typescript": "^5.9.3",
+    "serve": "^14.2.0"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0 || ^19.0.0"
+  }
+}

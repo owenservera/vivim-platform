@@ -1,0 +1,23 @@
+import React from 'react';
+
+const VersionTag = ({ size = 24, ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0L22 9.41V2z" />
+    <path d="M12 8v4" />
+    <path d="M8 12h8" />
+    <path d="M12 16h.01" />
+  </svg>
+);
+
+export default VersionTag;

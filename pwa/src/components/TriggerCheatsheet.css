@@ -1,0 +1,141 @@
+/**
+ * Trigger Cheatsheet CSS
+ */
+
+.trigger-cheatsheet {
+  background: linear-gradient(135deg, rgba(30, 30, 40, 0.9), rgba(20, 20, 30, 0.95));
+  border: 1px solid rgba(100, 100, 120, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.trigger-cheatsheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.trigger-cheatsheet-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.trigger-cheatsheet-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.trigger-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.trigger-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 8px;
+  background: rgba(50, 50, 60, 0.4);
+  border: 1px solid rgba(100, 100, 120, 0.2);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.trigger-card:hover {
+  background: rgba(70, 70, 90, 0.5);
+  border-color: rgba(120, 120, 150, 0.4);
+  transform: translateY(-2px);
+}
+
+.trigger-icon-wrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trigger-info {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.trigger-char {
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: monospace;
+}
+
+.trigger-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.trigger-description {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.trigger-examples {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(100, 100, 120, 0.2);
+}
+
+.trigger-examples-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.trigger-example {
+  font-size: 11px;
+  font-family: monospace;
+  color: rgba(100, 150, 255, 0.8);
+  background: rgba(100, 150, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Compact version */
+.trigger-cheatsheet-compact {
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  background: rgba(40, 40, 50, 0.6);
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.trigger-chip-compact {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(60, 60, 70, 0.5);
+  border: 1px solid rgba(100, 100, 120, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.trigger-chip-compact:hover {
+  background: rgba(80, 80, 100, 0.6);
+  transform: scale(1.1);
+}

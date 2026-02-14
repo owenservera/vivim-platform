@@ -1,0 +1,27 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "Running pre-commit checks..."
+
+# Run ESLint
+echo "Running ESLint..."
+npm run lint -- --fix || {
+  echo "ESLint failed. Fix the errors and try again."
+  exit 1
+}
+
+# Run tests
+echo "Running tests..."
+npm run test || {
+  echo "Tests failed. Fix the failing tests and try again."
+  exit 1
+}
+
+# Check code formatting
+echo "Checking formatting..."
+npm run format || {
+  echo "Formatting failed. Run 'npm run format' and commit again."
+  exit 1
+}
+
+echo "Pre-commit checks passed!"

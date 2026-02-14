@@ -1,0 +1,349 @@
+// ============================================================================
+// PHASE 5: DATA PORTABILITY & ACCOUNT MIGRATION
+// Complete data sovereignty with export, import, and migration tools
+// ============================================================================
+
+// Data export jobs
+model DataExport {
+  id            String   @id @default(uuid())
+  userId        String
+  
+  // Export configuration
+  exportType    String   @default("full") // full, partial, selective
+  formats       String[] @default(["json"]) // json, activitypub, atproto, markdown, html
+  
+  // Data scope
+  includeContent    Boolean @default(true)
+  includeCircles    Boolean @default(true)
+  includeSocialGraph Boolean @default(true)
+  includeSettings   Boolean @default(true)
+  includeAnalytics  Boolean @default(false)
+  
+  // Privacy options
+  anonymizeOthers   Boolean @default(false) // Remove other users' identifying info
+  includePrivateContent Boolean @default(true)
+  includeDeletedContent Boolean @default(false)
+  
+  // Status
+  status        String   @default("pending") // pending, processing, completed, failed
+  progress      Float    @default(0) // 0-100
+  
+  // Results
+  fileUrls      String[] // URLs to download exported files
+  fileSizes     Json?    // { format: sizeInBytes }
+  expiresAt     DateTime? @db.Timestamptz(6)
+  
+  // Error handling
+  errorMessage  String?
+  retryCount    Int      @default(0)
+  
+  // Timestamps
+  createdAt     DateTime @default(now()) @db.Timestamptz(6)
+  completedAt   DateTime? @db.Timestamptz(6)
+  
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
+  @@map("data_exports")
+}
+
+// Account migration tracking
+model AccountMigration {
+  id              String   @id @default(uuid())
+  userId          String
+  
+  // Migration direction
+  direction       String   // export_from_platform, import_to_platform
+  
+  // Source/Destination
+  fromPds         String?  // Source Personal Data Server URL
+  toPds           String?  // Destination PDS URL
+  
+  // What to migrate
+  migrateIdentity     Boolean @default(true)
+  migrateContent      Boolean @default(true)
+  migrateSocialGraph  Boolean @default(true)
+  migrateSettings     Boolean @default(true)
+  
+  // Status
+  status          String   @default("preparing") // preparing, in_progress, verifying, completed, failed, cancelled
+  progress        Float    @default(0)
+  
+  // Steps tracking
+  steps           Json     // [{ step: string, status: string, startedAt, completedAt }]
+  
+  // Results
+  oldDid          String?  // Previous DID (if changed)
+  newDid          String?  // New DID (if changed)
+  handleRedirectionEnabled Boolean @default(false)
+  
+  // Verification
+  verificationHash String? // Hash to verify data integrity
+  itemsMigrated   Int      @default(0)
+  itemsFailed     Int      @default(0)
+  
+  // Rollback
+  canRollback     Boolean  @default(false)
+  rollbackData    Json?    // Backup of previous state
+  
+  // Error handling
+  errorMessage    String?
+  errorDetails    Json?
+  
+  // Timestamps
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  startedAt       DateTime? @db.Timestamptz(6)
+  completedAt     DateTime? @db.Timestamptz(6)
+  
+  @@index([userId])
+  @@index([status])
+  @@map("account_migrations")
+}
+
+// Self-hosted instance tracking
+model SelfHostedInstance {
+  id              String   @id @default(uuid())
+  ownerId         String
+  
+  // Instance details
+  instanceUrl     String   @unique
+  instanceName    String
+  
+  // Deployment info
+  deploymentType  String   // docker, kubernetes, bare_metal, cloud
+  version         String
+  
+  // Sync configuration
+  syncEnabled     Boolean  @default(true)
+  syncFrequency   String   @default("hourly") // realtime, hourly, daily, manual
+  lastSyncAt      DateTime? @db.Timestamptz(6)
+  
+  // Status
+  status          String   @default("active") // active, paused, error, decommissioned
+  healthCheckUrl  String?
+  
+  // Security
+  apiKeyHash      String?  // For authentication
+  encryptionEnabled Boolean @default(true)
+  
+  // Timestamps
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(6)
+  lastHealthCheck DateTime? @db.Timestamptz(6)
+  
+  @@index([ownerId])
+  @@index([status])
+  @@map("self_hosted_instances")
+}
+
+// Data import jobs
+model DataImport {
+  id            String   @id @default(uuid())
+  userId        String
+  
+  // Source
+  sourceType    String   // export_file, external_platform, self_hosted
+  sourceUrl     String?  // URL or file path
+  
+  // Import configuration
+  formats       String[] // json, activitypub, atproto, etc.
+  
+  // What to import
+  importContent     Boolean @default(true)
+  importCircles     Boolean @default(true)
+  importSocialGraph Boolean @default(false) // Usually false for privacy
+  importSettings    Boolean @default(true)
+  
+  // Conflict resolution
+  conflictStrategy  String @default("skip") // skip, overwrite, merge, rename
+  
+  // Validation
+  validationPassed  Boolean @default(false)
+  validationErrors  Json?    // List of validation issues
+  
+  // Status
+  status        String   @default("uploading") // uploading, validating, processing, completed, failed
+  progress      Float    @default(0)
+  
+  // Results
+  itemsImported   Int      @default(0)
+  itemsSkipped    Int      @default(0)
+  itemsFailed     Int      @default(0)
+  
+  // Error handling
+  errorMessage    String?
+  errorDetails    Json?
+  
+  // Timestamps
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  completedAt     DateTime? @db.Timestamptz(6)
+  
+  @@index([userId])
+  @@index([status])
+  @@map("data_imports")
+}
+
+// Interoperability bridges (ActivityPub, AT Protocol, etc.)
+model InteroperabilityBridge {
+  id              String   @id @default(uuid())
+  userId          String
+  
+  // Bridge configuration
+  protocol        String   // activitypub, atproto, matrix, etc.
+  remoteHandle    String   // @user@instance.tld or did:plc:...
+  remoteUrl       String   // Base URL of remote instance
+  
+  // Authentication
+  credentials     Json?    // Encrypted credentials for remote
+  
+  // Sync settings
+  syncDirection   String   @default("bidirectional") // to_remote, from_remote, bidirectional
+  syncContent     Boolean  @default(true)
+  syncReplies     Boolean  @default(true)
+  syncLikes       Boolean  @default(false)
+  
+  // Filters
+  contentFilters  Json?    // { includeCircles: [], excludeTopics: [] }
+  
+  // Status
+  status          String   @default("active") // active, paused, error, disconnected
+  lastSyncAt      DateTime? @db.Timestamptz(6)
+  lastError       String?
+  
+  // Stats
+  itemsSynced     Int      @default(0)
+  
+  // Timestamps
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(6)
+  
+  @@unique([userId, protocol, remoteHandle])
+  @@index([userId])
+  @@index([status])
+  @@map("interoperability_bridges")
+}
+
+// Data deletion requests (GDPR/CCPA compliance)
+model DataDeletionRequest {
+  id              String   @id @default(uuid())
+  userId          String
+  
+  // Scope
+  scope           String   @default("full") // full, selective
+  includeBackups  Boolean  @default(true)
+  includeShared   Boolean  @default(false) // Content shared to others
+  gracePeriodDays Int      @default(30) // Days before actual deletion
+  
+  // Status
+  status          String   @default("pending") // pending, processing, completed, cancelled
+  
+  // Verification
+  verificationMethod String // email, password, mfa
+  verifiedAt      DateTime? @db.Timestamptz(6)
+  
+  // Deletion tracking
+  itemsDeleted    Int      @default(0)
+  itemsRemaining  Int      @default(0)
+  
+  // Cancellation
+  canCancelUntil  DateTime? @db.Timestamptz(6)
+  cancelledAt     DateTime? @db.Timestamptz(6)
+  cancellationReason String?
+  
+  // Timestamps
+  requestedAt     DateTime @default(now()) @db.Timestamptz(6)
+  scheduledFor    DateTime? @db.Timestamptz(6)
+  completedAt     DateTime? @db.Timestamptz(6)
+  
+  @@index([userId])
+  @@index([status])
+  @@index([scheduledFor])
+  @@map("data_deletion_requests")
+}
+
+// Archive storage (cold storage for old data)
+model DataArchive {
+  id              String   @id @default(uuid())
+  userId          String
+  
+  // Content reference
+  contentId       String
+  contentType     String
+  
+  // Archive details
+  archiveUrl      String   // URL to archived data
+  archiveSize     Int      // Size in bytes
+  archiveFormat   String   // zip, tar.gz, etc.
+  
+  // Metadata
+  contentSnapshot Json     // Snapshot of content at archive time
+  
+  // Status
+  status          String   @default("active") // active, restored, deleted
+  
+  // Retention
+  expiresAt       DateTime? @db.Timestamptz(6)
+  
+  // Timestamps
+  archivedAt      DateTime @default(now()) @db.Timestamptz(6)
+  restoredAt      DateTime? @db.Timestamptz(6)
+  
+  @@index([userId])
+  @@index([status])
+  @@index([expiresAt])
+  @@map("data_archives")
+}
+
+// ============================================================================
+// Export Format Types (Reference)
+// ============================================================================
+
+/*
+VIVIM Export Format (JSON):
+{
+  exportMetadata: {
+    version: "1.0",
+    exportedAt: ISO8601,
+    exportedBy: DID,
+    format: "vivim-export-v1"
+  },
+  identity: {
+    did: string,
+    handle: string,
+    publicKey: string,
+    profile: {...}
+  },
+  content: {
+    conversations: [...],
+    acus: [...],
+    notes: [...]
+  },
+  circles: [...],
+  socialGraph: {
+    following: [...],
+    followers: [...]
+  },
+  settings: {...},
+  accessLog: [...] // If requested
+}
+
+ActivityPub Export:
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "type": "Person",
+  "id": "https://vivim.social/users/handle",
+  "following": {...},
+  "followers": {...},
+  "outbox": {...}
+}
+
+AT Protocol Export:
+{
+  did: "did:plc:...",
+  handle: "handle.vivim.social",
+  records: {
+    app.bsky.feed.post: [...],
+    app.bsky.graph.follow: [...]
+  }
+}
+*/

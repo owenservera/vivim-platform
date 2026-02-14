@@ -1,0 +1,458 @@
+{
+  "id": "c6bc93ad-c580-4923-8c7c-58d89f57d5a5",
+  "provider": "chatgpt",
+  "sourceUrl": "https://chatgpt.com/share/6975bd12-8b90-8006-b569-c6133bf4bafe",
+  "title": "ChatGPT - Text Output Showcase",
+  "model": "ChatGPT",
+  "createdAt": "2026-01-25T14:22:28.183Z",
+  "updatedAt": "2026-01-25T14:22:28.183Z",
+  "capturedAt": "2026-01-25T14:22:28.183Z",
+  "messages": [
+    {
+      "id": "9d860d3b-beb9-4e50-8a6d-18ba090bab0f",
+      "role": "user",
+      "author": "User",
+      "parts": [
+        {
+          "type": "text",
+          "content": "Here is a comprehensive prompt designed to force ChatGPT (or any advanced LLM) to generate a response with maximum structural variety, ensuring it hits every edge case we covered in this chat.\n\n### 📋 The \"Parser Torture Test\" Prompt\n\n**Copy and paste the text below:**\n\n---\n\n> **Act as a QA Automation Engineer specializing in Content Parsing and Rendering engines.**\n> I am building a universal content parser that needs to handle every possible format an LLM might output. I need you to generate a single, massive response that acts as a **\"Ultimate Stress Test\"** for my system.\n> Your response must include **ALL** of the following elements, organized into clearly labeled sections with headings:\n> **1. Typography & Nesting:**\n> * Include **bold**, *italics*, ~~strikethrough~~, inline code, and ***bold italics***.\n> * Create a deep nested list (at least 4 levels) mixing bullets and numbers.\n> * Use blockquotes with nested blockquotes and lists inside them.\n> * Include a wide variety of Unicode emojis (🚀, 🌈, 👨‍💻) and special characters (©, ™, ½).\n> \n> \n> **2. Complex Code Blocks (Polyglot):**\n> * **Python:** A function using decorators (@dataclass), type hinting, and docstrings.\n> * **JavaScript/TypeScript:** An async function with a try/catch block and a JSON object.\n> * **HTML/XML:** A block showing raw HTML tags like <div> and <span style=\"color:red\">.\n> * **Diff/Patch:** A code block using diff syntax (lines starting with + and -).\n> * **Data:** A raw JSON block and a YAML configuration block.\n> \n> \n> **3. Advanced Mathematics (LaTeX):**\n> * Write **Maxwell's Equations** or the **Schrödinger Equation** using block-level LaTeX (\n> \n> ).\n> * Include complex syntax: integrals (), summations (), fractions, square roots, and matrices.\n> * Try to use color in LaTeX if possible (e.g., \\color{red}).\n> * Include inline math equations mixed into a sentence.\n> \n> \n> **4. Structured Tables:**\n> * Create a table with 4 columns: Text, Numbers, Code (inline), and Links.\n> * Use different text alignments (Left, Center, Right).\n> * Include a row that uses empty cells or dashes.\n> \n> \n> **5. Visual Diagrams (Mermaid.js):**\n> * Provide **three distinct** Mermaid code blocks:\n> 1. A standard **Flowchart** () with decision nodes and subgraphs.\n> 2. A **Sequence Diagram** () with loops and notes.\n> 3. A **Gantt Chart** or **Class Diagram** to test different renderers.\n> \n> \n> \n> \n> **6. Edge Cases & Hybrid Content:**\n> * Use HTML <details> and <summary> tags to create a collapsible section.\n> * Include a **Task List** (Checkboxes [ ] and [x]).\n> * Add **Footnotes** (e.g., [^1]) and their corresponding references at the bottom.\n> * Include distinct \"Tool Call\" or \"Citation\" simulations (text that looks like a source reference).\n> \n> \n> **7. Media Simulation:**\n> * Include an image placeholder using standard Markdown syntax ![Alt Text](URL).\n> * Write a prompt for an AI image generator in a blockquote.\n> \n> \n> **Goal:** The output should be dense, technical, and visually varied. Do not simplify; use complex examples.\n\n---\n\n### 💡 Why this prompt works:\n\n1. **Role Definition:** Setting the persona to \"QA Automation Engineer\" stops the AI from trying to be \"helpful\" by simplifying things. It understands the goal is *complexity*.\n2. **Explicit Syntax Requests:** It specifically asks for things that often break parsers, like **Diff syntax** (colors often fail), **Footnotes** (links often break), and **HTML mixing** (security sanitizers often strip this).\n3. **\"Polyglot\" Requirement:** By forcing Python, JS, JSON, and YAML, you test your syntax highlighter's ability to switch languages dynamically.\n4. **Visual Variety:** Asking for 3 specific Mermaid types ensures you test your diagram rendering logic (e.g., Gantt charts render very differently from Flowcharts)."
+        },
+        {
+          "type": "mermaid",
+          "content": "graph TD",
+          "metadata": {
+            "diagramType": "graph TD"
+          }
+        },
+        {
+          "type": "mermaid",
+          "content": "sequenceDiagram",
+          "metadata": {
+            "diagramType": "sequenceDiagram"
+          }
+        }
+      ],
+      "createdAt": null,
+      "status": "completed",
+      "timestamp": "2026-01-25T14:22:28.326Z",
+      "contentHash": "a368a0f9c7dcb30fdebe0ed98a33a9758fc80bc24999ba7c6958a6ef9dcd9057"
+    },
+    {
+      "id": "408d4aca-fb61-40d0-87da-99d3d2930780",
+      "role": "assistant",
+      "author": "ChatGPT",
+      "parts": [
+        {
+          "type": "code",
+          "content": "{\n  \"123e4567-e89b-12d3-a456-426614174000\": {\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"message\": {\n      \"id\": \"223e4567-e89b-12d3-a456-426614174001\",\n      \"author\": {\n        \"role\": \"assistant\",\n        \"name\": \"Text Output Showcase\",\n        \"metadata\": {}\n      },\n      \"create_time\": 1760000000,\n      \"update_time\": null,\n      \"content\": {\n        \"content_type\": \"text\",\n        \"parts\": [],\n        \"text\": \"# Ultimate Parser Torture Test\\n\\n## 1. Typography & Nesting\\nThis paragraph includes **bold**, *italics*, ~~strikethrough~~, `inline code`, and ***bold italics*** with emojis 🚀🌈👨‍💻 and symbols ©™½.\\n\\n- Level 1\\n  1. Level 2\\n     - Level 3\\n       1. Level 4\\n\\n> Blockquote level 1\\n> > Nested blockquote level 2\\n> > - List item A\\n> >   - List item B\\n\\n## 2. Complex Code Blocks (Polyglot)\\n\\n```python\\nfrom dataclasses import dataclass\\n\\n@dataclass\\nclass User:\\n    id: int\\n    name: str\\n\\n    def greet(self) -> str:\\n        \\\"\\\"\\\"Return a greeting.\\\"\\\"\\\"\\n        return f\\\"Hello, {self.name}\\\" \\n```\\n\\n```typescript\\nasync function fetchData(): Promise<any> {\\n  try {\\n    const res = await fetch('/api');\\n    return await res.json();\\n  } catch (e) {\\n    console.error(e);\\n  }\\n}\\n```\\n\\n```html\\n<div><span style=\\\"color:red\\\">Red Text</span></div>\\n```\\n\\n```diff\\n- old line\\n+ new line\\n```\\n\\n```json\\n{ \\\"a\\\": 1, \\\"b\\\": true }\\n```\\n\\n```yaml\\nconfig:\\n  enabled: true\\n```\\n\\n## 3. Advanced Mathematics (LaTeX)\\nInline math example: $E=mc^2$ mixed in text.\\n\\n$$\\n\\\\color{red}{\\\\nabla \\\\cdot \\\\mathbf{E} = \\\\frac{\\\\rho}{\\\\varepsilon_0}}\\\\\\\\\\n\\\\nabla \\\\times \\\\mathbf{B} = \\\\mu_0 \\\\mathbf{J} + \\\\mu_0\\\\varepsilon_0 \\\\frac{\\\\partial \\\\mathbf{E}}{\\\\partial t}\\n$$\\n\\nMatrix:\\n$$\\n\\\\begin{bmatrix}\\n1 & 2\\\\\\\\\\n3 & 4\\n\\\\end{bmatrix}\\n$$\\n\\n## 4. Structured Tables\\n\\n| Text | Numbers | Code | Links |\\n|:-----|:-------:|-----:|:------|\\n| Left |   123   | `x=1` | https://example.com |\\n|  —   |         |  —    |        |\\n\\n## 5. Visual Diagrams (Mermaid.js)\\n\\n```mermaid\\ngraph TD\\nA-->B{Decision}\\nB-->|Yes|C\\nB-->|No|D\\n```\\n\\n```mermaid\\nsequenceDiagram\\nparticipant A\\nparticipant B\\nA->>B: Request\\nloop Retry\\nB-->>A: Response\\nend\\n```\\n\\n```mermaid\\ngantt\\nsection Test\\nTask1: a1, 2024-01-01, 10d\\n```\\n\\n## 6. Edge Cases & Hybrid Content\\n\\n<details>\\n<summary>Collapsible</summary>\\nHidden content\\n</details>\\n\\n- [x] Done\\n- [ ] Pending\\n\\nFootnote reference[^1].\\n\\n[^1]: Footnote text.\\n\\nCitation Simulation: [SOURCE:internal_doc_v1]\\n\\n## 7. Media Simulation\\n\\n![Alt Text](https://example.com/image.png)\\n\\n> AI Image Prompt: \\\"A futuristic dashboard visualizing data streams\\\"\",\n        \"url\": \"\",\n        \"domain\": \"\",\n        \"title\": \"\",\n        \"tether_id\": null,\n        \"end_time\": 1760000001,\n        \"final_expression_output\": null,\n        \"timeout_triggered\": null\n      },\n      \"status\": \"complete\",\n      \"end_turn\": true,\n      \"weight\": 1,\n      \"metadata\": {\n        \"finish_details\": {\n          \"type\": \"stop\",\n          \"stop_tokens\": []\n        },\n        \"is_complete\": true,\n        \"citations\": [],\n        \"content_references\": [],\n        \"gizmo_id\": \"text-output-showcase\",\n        \"request_id\": \"req-001\",\n        \"message_type\": \"assistant\",\n        \"model_slug\": \"gpt-5.2\",\n        \"default_model_slug\": \"gpt-5.2\",\n        \"thinking_effort\": \"high\",\n        \"parent_id\": \"00000000-0000-0000-0000-000000000000\",\n        \"timestamp_\": \"2026-01-25T00:00:00Z\",\n        \"is_visually_hidden_from_conversation\": false\n      },\n      \"recipient\": \"user\",\n      \"channel\": \"final\"\n    },\n    \"parent\": \"00000000-0000-0000-0000-000000000000\",\n    \"children\": []\n  }\n}",
+          "metadata": {
+            "language": "json"
+          }
+        }
+      ],
+      "createdAt": null,
+      "status": "completed",
+      "timestamp": "2026-01-25T14:22:28.344Z",
+      "contentHash": "2c4ab7da2b106f3a606b9e5419ba456c2bbdc1f14fb948aca8590356afc7b10a"
+    },
+    {
+      "id": "dca10157-fc47-47fb-8e53-992e4a85a095",
+      "role": "user",
+      "author": "User",
+      "parts": [
+        {
+          "type": "text",
+          "content": "now actually create all"
+        }
+      ],
+      "createdAt": null,
+      "status": "completed",
+      "timestamp": "2026-01-25T14:22:28.344Z",
+      "contentHash": "5a7d257e4886d3d7d4faba0e8b6f57d9b056aa11800de17b54415a2f1838e44c"
+    },
+    {
+      "id": "be5e1cb5-0315-4915-acfd-9aa97806db4d",
+      "role": "assistant",
+      "author": "ChatGPT",
+      "parts": [
+        {
+          "type": "code",
+          "content": "{\n  \"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa\": {\n    \"id\": \"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa\",\n    \"message\": {\n      \"id\": \"bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb\",\n      \"author\": {\n        \"role\": \"assistant\",\n        \"name\": \"Text Output Showcase\",\n        \"metadata\": {}\n      },\n      \"create_time\": 1760000100,\n      \"update_time\": null,\n      \"content\": {\n        \"content_type\": \"text\",\n        \"parts\": [],\n        \"text\": \"## TEXT & LISTS\\n\\nHere is an example of plain text.\\n\\nHere is an example of a bullet list:\\n- Alpha\\n- Beta\\n\\nHere is an example of a numbered list:\\n1. One\\n2. Two\\n\\nHere is an example of indented paragraphs:\\n    This paragraph is indented.\\n        This one is further indented.\\n\\n## TYPOGRAPHY & NESTING\\n**Bold**, *italic*, ~~strikethrough~~, `inline code`, and ***bold italic*** with emojis 🚀🌈👨‍💻 and symbols ©™½.\\n\\n- Level 1\\n  1. Level 2\\n     - Level 3\\n       1. Level 4\\n\\n> Blockquote\\n> > Nested quote\\n> > - Item A\\n> >   1. Item B\\n\\n## CODE & LOGIC\\n\\nHere is a Python code block:\\n```python\\nfrom dataclasses import dataclass\\n\\n@dataclass\\nclass User:\\n    id: int\\n    name: str\\n\\n    def greet(self) -> str:\\n        \\\"\\\"\\\"Return greeting\\\"\\\"\\\"\\n        return f\\\"Hi {self.name}\\\"\\n```\\n\\nHere is a JavaScript/TypeScript code block:\\n```typescript\\nasync function load(): Promise<any> {\\n  try {\\n    const r = await fetch('/api');\\n    return await r.json();\\n  } catch (e) {\\n    console.error(e);\\n  }\\n}\\n```\\n\\nHere is pseudocode:\\n```\\nFOR each item IN list\\n  IF valid THEN process\\nEND\\n```\\n\\nHere is a regex pattern:\\n```\\n^[a-z0-9_]+@[a-z]+\\\\.com$\\n```\\n\\n## MARKDOWN FORMATS\\n\\n# H1\\n## H2\\n### H3\\n#### H4\\n##### H5\\n###### H6\\n\\nThis has **bold** and *italic* text.\\n\\n> This is a blockquote.\\n\\n---\\n\\nInline code example: `sum(a, b)`\\n\\nNested list:\\n- A\\n  - B\\n    - C\\n\\n## LATEX & MATH\\n\\nInline math example: $a^2 + b^2 = c^2$.\\n\\nBlock math:\\n$$\\\\int_0^1 x^2 dx = \\\\frac{1}{3}$$\\n\\nMatrix:\\n$$\\\\begin{bmatrix}1 & 2\\\\\\\\3 & 4\\\\end{bmatrix}$$\\n\\nTensor:\\n$$T_{ij}^{k}$$\\n\\nUnits table:\\n| Quantity | Value | Unit |\\n| Length | 5 | m |\\n\\nChemical equation:\\n$$2H_2 + O_2 \\\\rightarrow",
+          "metadata": {
+            "language": "json"
+          }
+        }
+      ],
+      "createdAt": null,
+      "status": "completed",
+      "timestamp": "2026-01-25T14:22:28.344Z",
+      "contentHash": "2c4ab7da2b106f3a606b9e5419ba456c2bbdc1f14fb948aca8590356afc7b10a"
+    },
+    {
+      "id": "5677ce71-48b0-47c3-b1e2-50c568502dab",
+      "role": "user",
+      "author": "User",
+      "parts": [
+        {
+          "type": "text",
+          "content": "no- not in a json format in your regular output formats all of them"
+        }
+      ],
+      "createdAt": null,
+      "status": "completed",
+      "timestamp": "2026-01-25T14:22:28.344Z",
+      "contentHash": "5a7d257e4886d3d7d4faba0e8b6f57d9b056aa11800de17b54415a2f1838e44c"
+    },
+    {
+      "id": "5513db84-4a4d-4de7-bf78-0ecb25eada5c",
+      "role": "user",
+      "author": "User",
+      "parts": [
+        {
+          "type": "text",
+          "content": "Below is the full “Parser Torture Test” output, rendered in regular Markdown with all requested formats, sections, and edge cases. Nothing is wrapped in JSON.\n\n🧪 Ultimate Parser Torture Test\nRole: QA Automation Engineer – Content Parsing & Rendering\n\n1. Typography & Nesting\nThis sentence contains bold, italics, bold italics, strikethrough, and inline code, plus emojis 🚀 🌈 👨‍💻 and symbols © ™ ½.\nDeep Nested List (4+ Levels)\n\n\nLevel 1 (bullet)\n\n\nLevel 2 (number)\n\n\nLevel 3 (bullet)\n\n\nLevel 4 (number)\n\n\nLevel 5 (bullet, bonus)\n\n\n\n\n\n\n\n\n\n\nBlockquotes with Nesting\n\nThis is a blockquote.\n\nThis is a nested blockquote.\n\n\nItem A\n\n\nItem B\n\n\nItem C\n\n\n\n\n\n\n\nTriple-nested quote for stress testing.\n\n\n\n\n2. Complex Code Blocks (Polyglot)\n🐍 Python (Decorators, Type Hints, Docstrings)\n\n🌐 TypeScript (Async / Await + try/catch)\n\n🧱 HTML / XML (Raw Tags)\n\n🧩 Diff / Patch\n\n📦 Raw JSON\n\n⚙️ YAML Configuration\n\n\n3. Advanced Mathematics (LaTeX)\nInline math inside a sentence: The famous equation is $E = mc^2$ and it relates energy to mass.\nMaxwell’s Equations (Block LaTeX with Color)\n\n\nMatrix Representation\n\nIntegral, Summation, Fraction, Root\n\n\n4. Structured Tables\n\n\n5. Visual Diagrams (Mermaid.js)\n5.1 Flowchart\nmermaidCopy code\n5.2 Sequence Diagram\nmermaidCopy code\n5.3 Gantt Chart\nmermaidCopy code\n\n6. Edge Cases & Hybrid Content\nCollapsible HTML Section\n<details>\n<summary>Click to expand</summary>\nThis content is hidden by default and tests HTML sanitization.\n</details>\nTask List\n\n\n Handle Markdown\n\n\n Handle Code Blocks\n\n\n Handle Everything Without Crashing\n\n\nFootnotes\nThis sentence references a footnote1.\nCitation / Tool Call Simulation\n\n\n7. Media Simulation\nMarkdown Image Placeholder\n\nAI Image Generator Prompt (Blockquote)\n\nPrompt:\n“A futuristic QA dashboard visualizing data pipelines, glowing nodes, dark UI, ultra-detailed, cyberpunk style”\n\n\n✅ End of Stress Test\nIf a parser survives this output intact, it deserves a promotion.\nFootnotes\n\n\nThis is the footnote content used for parser testing. ↩"
+        },
+        {
+          "type": "mermaid",
+          "content": "graph TD\n  A[Start] --> B{Valid?}\n  B -->|Yes| C[Process]\n  B -->|No| D[Reject]\n  subgraph Cleanup\n    C --> E[Log]\n  end",
+          "metadata": {
+            "diagramType": "graph TD"
+          }
+        },
+        {
+          "type": "mermaid",
+          "content": "sequenceDiagram\n  participant User\n  participant API\n  User->>API: Request\n  loop Retry up to 3x\n    API-->>User: Response\n  end\n  Note right of API: Rate limited",
+          "metadata": {
+            "diagramType": "sequenceDiagram"
+          }
+        },
+        {
+          "type": "mermaid",
+          "content": "gantt\n  title Parser Test Timeline\n  section Phase 1\n  Design        :a1, 2024-01-01, 5d\n  Implementation:a2, after a1, 7d",
+          "metadata": {
+            "diagramType": "gantt"
+          }
+        },
+        {
+          "type": "code",
+          "content": "from dataclasses import dataclass\n\n@dataclass\nclass User:\n    id: int\n    name: str\n\n    def greet(self) -> str:\n        \"\"\"Return a friendly greeting.\"\"\"\n        return f\"Hello, {self.name}\"",
+          "metadata": {
+            "language": "python"
+          }
+        },
+        {
+          "type": "code",
+          "content": "async function fetchData(): Promise<{ status: string }> {\n  try {\n    const response = await fetch(\"/api/data\");\n    return await response.json();\n  } catch (error) {\n    console.error(\"Fetch failed\", error);\n    throw error;\n  }\n}",
+          "metadata": {
+            "language": "typescript"
+          }
+        },
+        {
+          "type": "code",
+          "content": "<div>\n  <span style=\"color:red\">Danger Zone</span>\n</div>",
+          "metadata": {
+            "language": "html"
+          }
+        },
+        {
+          "type": "code",
+          "content": "- const enabled = false;\n+ const enabled = true;",
+          "metadata": {
+            "language": "diff"
+          }
+        },
+        {
+          "type": "code",
+          "content": "{\n  \"name\": \"parser-test\",\n  \"active\": true,\n  \"count\": 3\n}",
+          "metadata": {
+            "language": "json"
+          }
+        },
+        {
+          "type": "code",
+          "content": "service:\n  name: parser\n  enabled: true\n  retries: 5",
+          "metadata": {
+            "language": "yaml"
+          }
+        },
+        {
+          "type": "code",
+          "content": "[CITATION: internal_doc_v2.3 §4.1]\n[TOOL_CALL] parser.validate(input=\"payload\")",
+          "metadata": {
+            "language": "text"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "\\color{red}{\n\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}\n}",
+          "metadata": {
+            "display": "block"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "\\nabla \\times \\mathbf{B} =\n\\mu_0 \\mathbf{J} + \\mu_0 \\varepsilon_0\n\\frac{\\partial \\mathbf{E}}{\\partial t}",
+          "metadata": {
+            "display": "block"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "\\begin{bmatrix}\n1 & 2 & 3 \\\\\n4 & 5 & 6\n\\end{bmatrix}",
+          "metadata": {
+            "display": "block"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "\\int_0^\\infty e^{-x^2} dx = \\frac{\\sqrt{\\pi}}{2},\n\\quad\n\\sum_{n=1}^{\\infty} \\frac{1}{n^2}",
+          "metadata": {
+            "display": "block"
+          }
+        },
+        {
+          "type": "table",
+          "content": {
+            "headers": [
+              "Text (Left)",
+              "Numbers (Center)",
+              "Code (Right)",
+              "Links"
+            ],
+            "rows": [
+              [
+                "Alpha",
+                "42",
+                "x += 1",
+                "https://example.com"
+              ],
+              [
+                "Beta",
+                "3.14",
+                "return y",
+                "https://openai.com"
+              ],
+              [
+                "—",
+                "",
+                "—",
+                ""
+              ]
+            ]
+          },
+          "metadata": {
+            "format": "html"
+          }
+        }
+      ],
+      "createdAt": null,
+      "status": "completed",
+      "timestamp": "2026-01-25T14:22:28.344Z",
+      "contentHash": "5a7d257e4886d3d7d4faba0e8b6f57d9b056aa11800de17b54415a2f1838e44c"
+    },
+    {
+      "id": "8f67c2d4-4240-4317-bbb4-c110345682f5",
+      "role": "user",
+      "author": "User",
+      "parts": [
+        {
+          "type": "text",
+          "content": "now test the 30 most popular languages in their native script"
+        }
+      ],
+      "createdAt": null,
+      "status": "completed",
+      "timestamp": "2026-01-25T14:22:28.344Z",
+      "contentHash": "5a7d257e4886d3d7d4faba0e8b6f57d9b056aa11800de17b54415a2f1838e44c"
+    },
+    {
+      "id": "c579cc38-7e41-43a6-bc23-6fa6cb33e909",
+      "role": "assistant",
+      "author": "ChatGPT",
+      "parts": [
+        {
+          "type": "text",
+          "content": "Below is a stress-test list of 30 of the most popular languages, each shown in its native script, with a short natural sentence (not transliteration). This is designed to test Unicode handling, directionality, combining marks, and font fallback.\n\n🌍 30 Popular Languages — Native Script Test\n\n\nEnglish (Latin)\nThis system must handle many languages correctly.\n\n\nSpanish (Latin)\nEste sistema debe manejar muchos idiomas correctamente.\n\n\nFrench (Latin)\nCe système doit gérer correctement de nombreuses langues.\n\n\nGerman (Latin)\nDieses System muss viele Sprachen korrekt verarbeiten.\n\n\nPortuguese (Latin)\nEste sistema deve lidar corretamente com muitos idiomas.\n\n\nItalian (Latin)\nQuesto sistema deve gestire correttamente molte lingue.\n\n\nDutch (Latin)\nDit systeem moet veel talen correct verwerken.\n\n\nPolish (Latin)\nTen system musi poprawnie obsługiwać wiele języków.\n\n\nTurkish (Latin)\nBu sistem birçok dili doğru şekilde işlemelidir.\n\n\nRussian (Cyrillic)\nЭта система должна корректно обрабатывать многие языки.\n\n\nUkrainian (Cyrillic)\nЦя система повинна правильно обробляти багато мов.\n\n\nGreek (Greek)\nΑυτό το σύστημα πρέπει να χειρίζεται σωστά πολλές γλώσσες.\n\n\nArabic (Arabic, RTL)\nيجب على هذا النظام معالجة العديد من اللغات بشكل صحيح.\n\n\nHebrew (Hebrew, RTL)\nהמערכת הזו חייבת לטפל בשפות רבות בצורה נכונה.\n\n\nPersian / Farsi (Arabic script, RTL)\nاین سیستم باید زبان‌های زیادی را به‌درستی پردازش کند.\n\n\nHindi (Devanagari)\nयह प्रणाली कई भाषाओं को सही ढंग से संभालनी चाहिए।\n\n\nBengali (Bengali script)\nএই সিস্টেমটি অনেক ভাষা সঠিকভাবে পরিচালনা করতে হবে।\n\n\nTamil (Tamil script)\nஇந்த அமைப்பு பல மொழிகளை சரியாக கையாள வேண்டும்.\n\n\nTelugu (Telugu script)\nఈ వ్యవస్థ అనేక భాషలను సరిగా నిర్వహించాలి.\n\n\nThai (Thai script)\nระบบนี้ต้องสามารถจัดการหลายภาษาได้อย่างถูกต้อง\n\n\nVietnamese (Latin + diacritics)\nHệ thống này phải xử lý chính xác nhiều ngôn ngữ.\n\n\nChinese (Simplified Han)\n这个系统必须正确处理多种语言。\n\n\nChinese (Traditional Han)\n這個系統必須正確處理多種語言。\n\n\nJapanese (Kanji + Hiragana)\nこのシステムは多くの言語を正しく処理する必要があります。\n\n\nKorean (Hangul)\n이 시스템은 많은 언어를 올바르게 처리해야 합니다.\n\n\nIndonesian (Latin)\nSistem ini harus menangani banyak bahasa dengan benar.\n\n\nMalay (Latin)\nSistem ini mesti mengendalikan banyak bahasa dengan betul.\n\n\nSwahili (Latin)\nMfumo huu lazima ushughulikie lugha nyingi kwa usahihi.\n\n\nUrdu (Arabic script, RTL)\nاس نظام کو بہت سی زبانوں کو درست طریقے سے سنبھالنا چاہیے۔\n\n\nAmharic (Geʽez script)\nይህ ስርዓት ብዙ ቋንቋዎችን በትክክል መ处理 አለበት።\n\n\n\n✅ Coverage Highlights\n\n\nLTR & RTL scripts\n\n\nComplex shaping (Arabic, Indic)\n\n\nDiacritics & combining marks\n\n\nCJK ideographs\n\n\nMixed-script languages\n\n\nIf you want, I can now:\n\n\nAdd emoji + script mixing\n\n\nTest zero-width joiners & bidirectional edge cases\n\n\nOutput the same set as JSON / CSV / XML / SQL seed data"
+        }
+      ],
+      "createdAt": null,
+      "status": "completed",
+      "timestamp": "2026-01-25T14:22:28.344Z",
+      "contentHash": "2c4ab7da2b106f3a606b9e5419ba456c2bbdc1f14fb948aca8590356afc7b10a"
+    },
+    {
+      "id": "714566e2-63d9-4b85-b7e1-62b160cf787c",
+      "role": "user",
+      "author": "User",
+      "parts": [
+        {
+          "type": "text",
+          "content": "you are missing all the asian"
+        }
+      ],
+      "createdAt": null,
+      "status": "completed",
+      "timestamp": "2026-01-25T14:22:28.344Z",
+      "contentHash": "5a7d257e4886d3d7d4faba0e8b6f57d9b056aa11800de17b54415a2f1838e44c"
+    },
+    {
+      "id": "56d088c1-75b6-48b9-8884-9d303a6499d7",
+      "role": "assistant",
+      "author": "ChatGPT",
+      "parts": [
+        {
+          "type": "text",
+          "content": "You’re right — let’s explicitly cover Asia and do it cleanly and unambiguously.\nBelow is a dedicated Asian-language stress test, focusing on major East, South, Southeast, and Central Asian languages, all written exclusively in their native scripts with natural sentences.\n\n🌏 Asian Languages — Native Script Stress Test\n🇨🇳 🇹🇼 Chinese (Sinitic)\n\n\nMandarin Chinese (Simplified)\n这个系统必须能够正确处理多种语言。\n\n\nMandarin Chinese (Traditional)\n這個系統必須能夠正確處理多種語言。\n\n\n\n🇯🇵 Japanese\n\n\nJapanese (Kanji + Hiragana + Katakana)\nこのシステムは多くの言語を正しく処理する必要があります。\n\n\n\n🇰🇷 Korean\n\n\nKorean (Hangul)\n이 시스템은 다양한 언어를 정확하게 처리해야 합니다.\n\n\n\n🇮🇳 South Asian (Indic Scripts)\n\n\nHindi (Devanagari)\nयह प्रणाली कई भाषाओं को सही ढंग से संभालनी चाहिए।\n\n\nBengali (Bengali)\nএই সিস্টেমটি অনেক ভাষা সঠিকভাবে পরিচালনা করতে হবে।\n\n\nTamil (Tamil)\nஇந்த அமைப்பு பல மொழிகளை சரியாக கையாள வேண்டும்.\n\n\nTelugu (Telugu)\nఈ వ్యవస్థ అనేక భాషలను సరిగా నిర్వహించాలి.\n\n\nMarathi (Devanagari)\nही प्रणाली अनेक भाषा योग्यरित्या हाताळली पाहिजे.\n\n\nUrdu (Arabic, RTL)\nاس نظام کو کئی زبانوں کو درست طریقے سے سنبھالنا چاہیے۔\n\n\nPunjabi (Gurmukhi)\nਇਹ ਪ੍ਰਣਾਲੀ ਕਈ ਭਾਸ਼ਾਵਾਂ ਨੂੰ ਠੀਕ ਤਰ੍ਹਾਂ ਸੰਭਾਲਣੀ ਚਾਹੀਦੀ ਹੈ।\n\n\nGujarati (Gujarati)\nઆ સિસ્ટમને અનેક ભાષાઓ યોગ્ય રીતે સંભાળવી જોઈએ।\n\n\nKannada (Kannada)\nಈ ವ್ಯವಸ್ಥೆ ಅನೇಕ ಭಾಷೆಗಳನ್ನು ಸರಿಯಾಗಿ ನಿರ್ವಹಿಸಬೇಕು.\n\n\nMalayalam (Malayalam)\nഈ സംവിധാനം പല ഭാഷകളും ശരിയായി കൈകാര്യം ചെയ്യണം.\n\n\nSinhala (Sinhala)\nමෙම පද්ධතිය බොහෝ භාෂා නිවැරදිව හැසිරවිය යුතුය.\n\n\n\n🇹🇭 🇰🇭 🇲🇲 🇱🇦 Southeast Asia\n\n\nThai (Thai)\nระบบนี้ต้องสามารถจัดการหลายภาษาได้อย่างถูกต้อง\n\n\nKhmer (Khmer)\nប្រព័ន្ធនេះត្រូវតែអាចដំណើរការភាសាច្រើនបានត្រឹមត្រូវ។\n\n\nBurmese / Myanmar (Myanmar)\nဤစနစ်သည် ဘာသာစကားများစွာကို မှန်ကန်စွာ ကိုင်တွယ်နိုင်ရမည်။\n\n\nLao (Lao)\nລະບົບນີ້ຈຳເປັນຕ້ອງຈັດການຫຼາຍພາສາໃຫ້ຖືກຕ້ອງ\n\n\nVietnamese (Latin + tone marks)\nHệ thống này phải xử lý chính xác nhiều ngôn ngữ.\n\n\n\n🇮🇩 🇲🇾 Maritime Southeast Asia\n\n\nIndonesian (Latin)\nSistem ini harus menangani banyak bahasa dengan benar.\n\n\nJavanese (Javanese script)\nꦱꦶꦱ꧀ꦠꦺꦩꦶꦏꦶꦪꦤ꧀ ꦏꦸꦝꦸ ꦤꦒꦤ꧀ꦝꦼꦭꦤ꧀ꦠꦫꦶ ꦧꦱꦗꦺꦴꦒꦼꦴ\n\n\n\n🇲🇳 🇹🇼 🇨🇳 Central & Inner Asia\n\n\nMongolian (Cyrillic)\nЭнэ систем олон хэлийг зөв боловсруулах ёстой.\n\n\nTibetan (Tibetan)\nརིག་གནས་འདིས་སྐད་ཡིག་མང་པོ་ཡང་དག་པར་བསྒྲུབ་དགོས།\n\n\n\n🇮🇷 🇦🇫 🇵🇰 West / Central Asia\n\n\nPersian / Farsi (Arabic, RTL)\nاین سامانه باید زبان‌های زیادی را به‌درستی پردازش کند.\n\n\nPashto (Arabic, RTL)\nدا سیستم باید ګڼې ژبې په سمه توګه اداره کړي.\n\n\n\n🇵🇭 Philippines\n\n\nTagalog (Latin)\nKailangang maayos na hawakan ng sistemang ito ang maraming wika.\n\n\n\n🧪 Why this matters (parser-wise)\nThis set tests:\n\n\nRTL vs LTR (Arabic-family scripts)\n\n\nComplex shaping (Indic, Thai, Khmer)\n\n\nStacked diacritics (Vietnamese)\n\n\nAbugidas & syllabaries\n\n\nRare Unicode blocks (Tibetan, Javanese)\n\n\nMixed-script normalization edge cases\n\n\nIf you want next-level torture, I can add:\n\n\nZero-width joiners & non-joiners\n\n\nBiDi override characters\n\n\nEmoji + CJK mixing\n\n\nSame content serialized as JSON / CSV / SQL / Protobuf\n\n\nJust say the word."
+        }
+      ],
+      "createdAt": null,
+      "status": "completed",
+      "timestamp": "2026-01-25T14:22:28.344Z",
+      "contentHash": "2c4ab7da2b106f3a606b9e5419ba456c2bbdc1f14fb948aca8590356afc7b10a"
+    },
+    {
+      "id": "6026f4ca-9b81-4d1f-bedb-20c0379fb112",
+      "role": "user",
+      "author": "User",
+      "parts": [
+        {
+          "type": "text",
+          "content": "now the ones that would potantially have weird unicode"
+        }
+      ],
+      "createdAt": null,
+      "status": "completed",
+      "timestamp": "2026-01-25T14:22:28.344Z",
+      "contentHash": "5a7d257e4886d3d7d4faba0e8b6f57d9b056aa11800de17b54415a2f1838e44c"
+    },
+    {
+      "id": "c566e8d9-c11f-47a6-a115-8e0c6c0a611e",
+      "role": "assistant",
+      "author": "ChatGPT",
+      "parts": [
+        {
+          "type": "text",
+          "content": "Below is a focused Unicode torture set: languages, scripts, and writing systems that are notorious for breaking parsers, renderers, tokenizers, or font stacks due to combining marks, shaping, directionality, normalization, or rare Unicode blocks.\nAll examples are native script, short, and intentional.\n\n🧨 High-Risk Unicode Languages & Scripts\n1. Right-to-Left + Shaping + Ligatures\nArabic (Arabic script, RTL)\nيجب على هذا النِّظامِ التَّعامُلُ مع النُّصوصِ المُعقَّدةِ.\nPersian / Farsi (RTL, contextual letters)\nاین سیستم باید نویسه‌های یونیکد را درست پردازش کند.\nUrdu (RTL + Nastaliq shaping)\nیہ نظام پیچیدہ یونیکوڈ متن کو سنبھالنا چاہیے۔\nPashto (RTL, extra letters)\nدا سیسټم باید نادر یونیکوډ نښې سمې وښيي۔\n\n2. Bidirectional + Mixed Direction\nHebrew (RTL + punctuation)\nהמערכת הזאת חייבת לטפל בטקסטים מורכבים.\nArabic + English Mix (BiDi nightmare)\nهذا system يجب أن يتعامل مع RTL و LTR معًا.\n\n3. Indic Scripts (Combining Marks, Reordering)\nHindi (Devanagari – matras & ligatures)\nयह प्रणाली संयुक्त अक्षरों को सही ढंग से संभाले।\nBengali (Stacked consonants)\nএই সিস্টেমটি যুক্তাক্ষর সঠিকভাবে দেখাতে হবে।\nTamil (Contextual vowels)\nஇந்த அமைப்பு கூட்டு எழுத்துகளை சரியாக கையாள வேண்டும்.\nMalayalam (Extreme ligatures)\nഈ സംവിധാനം സങ്കീർണ്ണ ലിഗേചറുകൾ ശരിയായി കാണിക്കണം.\nSinhala (Pre-base vowels)\nමෙම පද්ධතිය සංකීර්ණ අක්ෂර හසුරවිය යුතුය.\n\n4. Southeast Asian (No Word Spacing)\nThai (No spaces, tone marks)\nระบบนี้ต้องแสดงอักขระซับซ้อนให้ถูกต้อง\nLao (Similar to Thai, fewer fonts)\nລະບົບນີ້ຕ້ອງຮອງຮັບ Unicode ຢ່າງຖືກຕ້ອງ\nKhmer (Heavy combining marks)\nប្រព័ន្ធនេះត្រូវបង្ហាញអក្សររួមបានត្រឹមត្រូវ\nBurmese / Myanmar (Stacking + tone)\nဤစနစ်သည် အက္ခရာပေါင်းများကို မှန်ကန်စွာ ပြသရမည်။\n\n5. East Asian (Wide Glyphs, Ambiguity)\nChinese (Han ideographs)\n这个系统必须正确处理汉字。\nJapanese (Kanji + Kana mix)\nこのシステムは漢字とかなを正しく処理する必要があります。\nKorean (Hangul syllable composition)\n이 시스템은 한글 조합 문자를 처리해야 합니다.\n\n6. Rare / Exotic Unicode Blocks\nTibetan (Stacked consonants)\nརིག་གནས་འདིས་སྐད་ཡིག་དཀའ་ངལ་ལྡན་པ་བསྒྲུབ་དགོས།\nJavanese (Historic script)\nꦱꦶꦱ꧀ꦠꦺꦩ꧀ ꦗꦮ ꦲꦤꦕꦫ ꦪꦸꦤꦶꦏꦺꦴꦢ꧀\nMongolian (Cyrillic vs vertical legacy)\nЭнэ систем ховор Unicode тэмдэгтүүдийг дэмжих ёстой.\nGeorgian (Mkhedruli)\nეს სისტემა რთულ იუნიკოდ ტექსტს უნდა ამუშავებდეს.\nArmenian\nԱյս համակարգը պետք է ճիշտ ցուցադրի Յունիկոդ տեքստը։\n\n7. Combining-Mark Torture (Same Letter, Different Unicode)\nLatin base + combining marks\na̐ é ö̲ ñ\n(Each glyph above is multiple Unicode code points.)\n\n8. Zero-Width Characters (Invisible Killers)\nText with Zero-Width Joiner (ZWJ):\n👨‍👩‍👧‍👦\nText with Zero-Width Non-Joiner (ZWNJ):\nक्‌ष (looks like क्ष but isn’t)\n\n9. Normalization Edge Cases\nPrecomposed vs decomposed:\n\n\né → U+00E9\n\n\ne + ́ → U+0065 U+0301\n\n\nThey look identical but are not byte-equal.\n\n10. Emoji + Script Mixing (Parser Hell)\nArabic + emoji:\nمرحبا 👋🌍\nJapanese + emoji + punctuation:\nテスト中です🔥⚠️\n\n✅ Why these break systems\nThis set stresses:\n\n\nUnicode normalization (NFC/NFD)\n\n\nBiDi reordering\n\n\nGlyph shaping engines\n\n\nFont fallback\n\n\nTokenization boundaries\n\n\nInvisible control characters\n\n\nWidth ambiguity (CJK vs Latin)\n\n\nCopy/paste corruption\n\n\nIf you want the final boss, I can next output:\n\n\nRaw Unicode codepoints (U+XXXX) side-by-side\n\n\nSame text serialized as UTF-8 bytes\n\n\nIntentional Unicode confusables (homoglyph attacks)\n\n\nSQL / JSON / XML versions with encoding traps\n\n\nJust say how evil you want it."
+        }
+      ],
+      "createdAt": null,
+      "status": "completed",
+      "timestamp": "2026-01-25T14:22:28.344Z",
+      "contentHash": "2c4ab7da2b106f3a606b9e5419ba456c2bbdc1f14fb948aca8590356afc7b10a"
+    },
+    {
+      "id": "4028110d-4772-4207-ad0d-0acf1387c206",
+      "role": "user",
+      "author": "User",
+      "parts": [
+        {
+          "type": "text",
+          "content": "try to break the parser"
+        }
+      ],
+      "createdAt": null,
+      "status": "completed",
+      "timestamp": "2026-01-25T14:22:28.344Z",
+      "contentHash": "5a7d257e4886d3d7d4faba0e8b6f57d9b056aa11800de17b54415a2f1838e44c"
+    },
+    {
+      "id": "fc5ba8c1-b349-40af-8053-1a6f2d681713",
+      "role": "assistant",
+      "author": "ChatGPT",
+      "parts": [
+        {
+          "type": "text",
+          "content": "Below is a deliberately hostile, parser-breaking stress payload.\nIt is pure text, safe, but engineered to trigger edge cases: Unicode traps, BiDi overrides, broken Markdown, malformed nesting, invisible characters, confusables, and structure corruption.\n\n☠️ PARSER BREAK ATTEMPT — DO NOT “FIX” ☠️\n\n1. Unicode Control Characters (Invisible but Active)\nBiDi Override Injection (RTL/LTR confusion):\nEnglish text before\n‮This text is visually reversed but logically LTR‮\nEnglish text after\n(Contains RLO / PDF characters)\n\nZero-Width Characters (you cannot see them):\nABC\nA‌B‌C\nA‍B‍C\n(Above lines differ by ZWSP / ZWNJ / ZWJ)\n\n2. Unicode Confusables (Looks identical, isn’t)\nThese look the same:\n\n\npassword\n\n\npаssword   ← (Cyrillic “а”, not Latin)\n\n\npasswоrd   ← (Cyrillic “о”)\n\n\n\n3. Normalization Bomb (NFC vs NFD)\nThey render the same:\n\n\né\n\n\né\n\n\nBut compare bytes. They are not equal.\n\n4. Broken Markdown (Intentional)\nUnclosed emphasis\nThis text starts **bold and never ends\nThis text starts *italic and never ends\nThis text starts ***both and never ends\nMismatched nesting\n\n\nItem 1\n\n\nItem 2\n\n\nItem 3\n\n\n\n\nItem 4\n\n\n\n\n\n\n\n\n5. Code Fence Collision (Language Confusion)\n\n\n\n\n\n6. HTML That Should Terrify Sanitizers\n<div>\n  <span>\n    <b><i><u>Unclosed tags\n</div>\n<details>\n<summary>Click me</summary>\n<p>Paragraph\n<details>\n<summary>Nested details never closed\n\n7. Directionality + Numbers (Classic BiDi Bug)\nOrder should be: 1 2 3 4\nBut renders weird:\n123‮456‬789\nArabic digits + Latin mix:\nسنة 2024 هي year ٢٠٢٤\n\n8. Emoji ZWJ Sequences (Single Glyph, Many Codepoints)\n👨‍👩‍👧‍👦\n👩🏽‍🚀\n🏳️‍🌈\n(Each is multiple Unicode scalars, not “one character”)\n\n9. Overlapping Structures\n\nBlockquote starts\n\n\n\nList item\n\nNested quote\n\n\n\n\n\n\n10. Table Corruption\n| Header | Header | Header |\n|-------|--------|\n| Cell | Cell | Cell |\n| Cell | Cell\n| Cell | Cell | Cell | Extra |\n\n11. Footnote Without Anchor\nThis sentence references a footnote1.\n\n12. Invisible Math Operators\na − b ≠ a - b\n(That minus is U+2212, not ASCII hyphen)\n\n13. Look-Alike Punctuation\n“Smart quotes” vs \"ASCII quotes\"\n— em dash\n\n\nhyphen\n– en dash\n\n\n\n14. Mixed Script Identifier (Security Nightmare)\nvariable = 1\nvаriable = 2   ← different identifier, looks identical\n\n15. Final Kill Shot: Everything Combined\n‮**Bold RTL starts\n*Italic LTR continues\n`Inline code never ends\n👨‍💻‍👨‍💻‍👨‍💻\n<div><span><b>  \n```  \nBroken  \n```\n\n✅ If your parser survived this:\n\n\nIt handled Unicode normalization\n\n\nIt respected BiDi rules\n\n\nIt didn’t collapse ZW characters\n\n\nIt didn’t panic on malformed Markdown\n\n\nIt didn’t mis-tokenize emoji clusters\n\n\nIt didn’t auto-fix invalid HTML\n\n\nIt didn’t assume “one glyph = one character”\n\n\n\nIf you want the absolute final boss, next I can generate:\n\n\nUTF-8 byte-level dumps\n\n\nIntentional homoglyph phishing payloads\n\n\nJSON that is valid but hostile\n\n\nSQL strings with Unicode sneaking past sanitizers\n\n\nA version that crashes naive regex parsers\n\n\nJust say “final boss”.\nFootnotes\n\n\n↩"
+        },
+        {
+          "type": "code",
+          "content": "Code block starts\nbut never ends…",
+          "metadata": {
+            "language": "text"
+          }
+        },
+        {
+          "type": "code",
+          "content": "print(\"This looks like Python\")",
+          "metadata": {
+            "language": "python"
+          }
+        },
+        {
+          "type": "code",
+          "content": "{\n  \"this\": \"JSON block\"",
+          "metadata": {
+            "language": "json"
+          }
+        },
+        {
+          "type": "code",
+          "content": "key: value\n- list",
+          "metadata": {
+            "language": "yaml"
+          }
+        },
+        {
+          "type": "code",
+          "content": "This fence uses four backticks\n```python\nNow we are nested incorrectly",
+          "metadata": {
+            "language": "text"
+          }
+        },
+        {
+          "type": "code",
+          "content": "function test() {\n  return \"> still inside?\"",
+          "metadata": {
+            "language": "js"
+          }
+        },
+        {
+          "type": "code",
+          "content": "still broken",
+          "metadata": {
+            "language": "broken"
+          }
+        }
+      ],
+      "createdAt": null,
+      "status": "completed",
+      "timestamp": "2026-01-25T14:22:28.344Z",
+      "contentHash": "2c4ab7da2b106f3a606b9e5419ba456c2bbdc1f14fb948aca8590356afc7b10a"
+    }
+  ],
+  "metadata": {
+    "provider": "chatgpt",
+    "model": "ChatGPT"
+  },
+  "messageCount": 14,
+  "userMessageCount": 8,
+  "aiMessageCount": 6,
+  "totalWords": 2654,
+  "totalCharacters": 25253,
+  "totalCodeBlocks": 16,
+  "totalMermaidDiagrams": 5,
+  "totalImages": 0,
+  "totalTables": 1,
+  "totalLatexBlocks": 4,
+  "totalToolCalls": 0,
+  "firstMessageAt": "2026-01-25T14:22:28.183Z",
+  "lastMessageAt": "2026-01-25T14:22:28.183Z",
+  "exportedAt": "2026-01-25T14:22:28.183Z",
+  "stats": {
+    "messageCount": 14,
+    "userMessageCount": 8,
+    "aiMessageCount": 6,
+    "totalWords": 2654,
+    "totalCharacters": 25253,
+    "totalCodeBlocks": 16,
+    "totalMermaidDiagrams": 5,
+    "totalImages": 0,
+    "totalTables": 1,
+    "totalLatexBlocks": 4,
+    "totalToolCalls": 0,
+    "firstMessageAt": "2026-01-25T14:22:28.184Z",
+    "lastMessageAt": "2026-01-25T14:22:28.184Z"
+  },
+  "_storedAt": "2026-01-25T14:22:32.755Z",
+  "_storageType": "filesystem-fallback"
+}

@@ -1,0 +1,341 @@
+// ============================================================================
+// PHASE 4: DISCOVERY & FEED PERSONALIZATION
+// Privacy-preserving recommendations with algorithmic transparency
+// ============================================================================
+
+// User feed preferences and customization
+model FeedPreferences {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  
+  // Feed algorithm settings
+  algorithmVersion  String   @default("v1")
+  
+  // Content sources
+  showFromCircles   Boolean  @default(true)
+  showFromNetwork   Boolean  @default(true)  // Friends-of-friends
+  showFromTopics    Boolean  @default(true)
+  showTrending      Boolean  @default(true)
+  showDiscoverable  Boolean  @default(true)
+  
+  // Content types
+  showConversations Boolean  @default(true)
+  showACUs          Boolean  @default(true)
+  showNotes         Boolean  @default(true)
+  
+  // Ranking weights (0-100)
+  recencyWeight     Int      @default(30)
+  relevanceWeight   Int      @default(40)
+  socialProofWeight Int      @default(20)
+  diversityWeight   Int      @default(10)
+  
+  // Privacy budget (how much data to use for personalization)
+  privacyBudget     Int      @default(50)   // 0-100
+  
+  // Filters
+  excludedTopics    String[] @default([])
+  excludedUsers     String[] @default([])
+  minQualityScore   Float    @default(0.3)
+  
+  // Time range
+  timeRangeHours    Int      @default(168)  // 1 week default
+  
+  // Metadata
+  createdAt         DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime @updatedAt @db.Timestamptz(6)
+  
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("feed_preferences")
+}
+
+// Feed items - pre-computed for performance
+model FeedItem {
+  id              String   @id @default(uuid())
+  userId          String   // Who this feed is for
+  
+  // Content reference
+  contentId       String
+  contentType     String   // conversation, acu, note, etc.
+  authorId        String
+  
+  // Why this was included
+  source          String   // circle, network, topic, trending, discoverable, suggested
+  sourceDetails   Json?    // { circleId, topicSlug, reason }
+  
+  // Ranking score
+  score           Float
+  rankingFactors  Json     // { recency, relevance, socialProof, diversity }
+  
+  // Position in feed
+  position        Int
+  
+  // Status
+  status          String   @default("active") // active, viewed, dismissed, hidden
+  
+  // Interaction tracking
+  wasViewed       Boolean  @default(false)
+  wasEngaged      Boolean  @default(false)
+  wasShared       Boolean  @default(false)
+  viewDuration    Int?     // Seconds
+  
+  // Timestamps
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  expiresAt       DateTime @db.Timestamptz(6) // When to refresh
+  
+  @@index([userId])
+  @@index([userId, status])
+  @@index([userId, score(sort: Desc)])
+  @@index([expiresAt])
+  @@map("feed_items")
+}
+
+// Discovery recommendations (non-feed)
+model DiscoveryItem {
+  id              String   @id @default(uuid())
+  userId          String
+  
+  // What is being recommended
+  contentId       String?
+  userIdRecommended String?  // For "people to follow"
+  circleId        String?    // For "circles to join"
+  
+  // Recommendation type
+  type            String     // content, user, circle, topic
+  
+  // Why recommended
+  reasons         Json[]     // Array of RecommendationReason
+  
+  // Confidence score
+  confidence      Float
+  
+  // Feedback
+  wasShown        Boolean    @default(false)
+  wasClicked      Boolean    @default(false)
+  wasDismissed    Boolean    @default(false)
+  feedbackScore   Int?       // -1 to 1 (thumbs down/up)
+  
+  // Timestamps
+  createdAt       DateTime   @default(now()) @db.Timestamptz(6)
+  expiresAt       DateTime   @db.Timestamptz(6)
+
+  @@index([userId])
+  @@index([userId, type])
+  @@index([confidence(sort: Desc)])
+  @@map("discovery_items")
+}
+
+// Algorithmic decision explanations
+model AlgorithmicDecision {
+  id              String   @id @default(uuid())
+  userId          String
+  
+  // What was decided
+  decisionType    String   // feed_ranking, content_recommendation, user_suggestion
+  contentId       String?  // If about specific content
+  
+  // Explanation
+  explanation     Json     // Human-readable explanation with factors
+  
+  // Raw factors (for transparency)
+  factors         Json[]   // [{ name, weight, value, impact }]
+  
+  // Model info
+  modelVersion    String
+  modelParams     Json?    // What parameters were used
+  
+  // Privacy budget used
+  privacyBudgetUsed Float
+  
+  // Timestamps
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([userId])
+  @@index([userId, decisionType])
+  @@index([createdAt(sort: Desc)])
+  @@map("algorithmic_decisions")
+}
+
+// User interactions for recommendation training (privacy-preserving)
+model UserInteraction {
+  id              String   @id @default(uuid())
+  userId          String
+  
+  // What was interacted with
+  contentId       String
+  contentType     String
+  authorId        String
+  
+  // Interaction type
+  action          String   // view, like, comment, share, bookmark, dismiss, hide
+  
+  // Context
+  context         Json?    // { feedPosition, source, timeOfDay }
+  
+  // Engagement metrics
+  duration        Int?     // Seconds spent
+  completionRate  Float?   // 0-1 for content consumption
+  
+  // Privacy
+  isAnonymized    Boolean  @default(false)
+  privacyNoise    Float?   // Differential privacy noise added
+  
+  // Timestamps
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([userId])
+  @@index([userId, action])
+  @@index([contentId])
+  @@index([createdAt(sort: Desc)])
+  @@map("user_interactions")
+}
+
+// Trending content tracking
+model TrendingContent {
+  id              String   @id @default(uuid())
+  contentId       String   @unique
+  contentType     String
+  
+  // Metrics
+  viewCount       Int      @default(0)
+  engagementCount Int      @default(0)
+  shareCount      Int      @default(0)
+  velocity        Float    @default(0)  // Rate of change
+  
+  // Time windows
+  views1h         Int      @default(0)
+  views24h        Int      @default(0)
+  views7d         Int      @default(0)
+  
+  // Ranking
+  trendScore      Float    @default(0)
+  category        String?  // Topic/category
+  
+  // Timestamps
+  lastCalculatedAt DateTime @default(now()) @db.Timestamptz(6)
+  expiresAt        DateTime @db.Timestamptz(6)
+
+  @@index([trendScore(sort: Desc)])
+  @@index([category])
+  @@index([expiresAt])
+  @@map("trending_content")
+}
+
+// Content similarity graph (for recommendations)
+model ContentSimilarity {
+  id              String   @id @default(uuid())
+  sourceId        String
+  targetId        String
+  
+  // Similarity metrics
+  similarityScore Float
+  similarityType  String   // topic, author, engagement_pattern, embedding
+  
+  // Factors
+  factors         Json?    // { topicOverlap: 0.8, sharedAudience: 0.6 }
+  
+  // Timestamps
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  expiresAt       DateTime @db.Timestamptz(6)
+
+  @@unique([sourceId, targetId, similarityType])
+  @@index([sourceId])
+  @@index([targetId])
+  @@index([similarityScore(sort: Desc)])
+  @@map("content_similarities")
+}
+
+// User topic preferences (for topic-based recommendations)
+model UserTopicPreference {
+  id              String   @id @default(uuid())
+  userId          String
+  topicSlug       String
+  
+  // Affinity score (-1 to 1, negative = hide)
+  affinity        Float    @default(0)
+  
+  // How this was computed
+  factors         Json?    // { explicit: 0.5, implicit: 0.3, social: 0.2 }
+  
+  // Engagement stats
+  viewsInTopic    Int      @default(0)
+  engagements     Int      @default(0)
+  
+  // Timestamps
+  lastEngagedAt   DateTime? @db.Timestamptz(6)
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([userId, topicSlug])
+  @@index([userId])
+  @@index([userId, affinity(sort: Desc)])
+  @@map("user_topic_preferences")
+}
+
+// ============================================================================
+// Types Reference
+// ============================================================================
+
+/*
+RecommendationReason {
+  type: 'social' | 'interest' | 'trending' | 'similarity' | 'network'
+  description: string
+  weight: number  // 0-1
+  
+  // Type-specific data
+  social?: {
+    circle: string
+    mutualInteractions: number
+    friendsEngaged: string[]
+  }
+  
+  interest?: {
+    topic: string
+    affinityScore: number
+    overlap: string[]
+  }
+  
+  trending?: {
+    rank: number
+    velocity: number
+    category: string
+  }
+  
+  similarity?: {
+    similarTo: string[]
+    similarityScore: number
+  }
+  
+  network?: {
+    degree: number  // 1 = friend, 2 = friend-of-friend
+    path: string[]
+  }
+}
+
+RankingFactors {
+  recency: number      // Time since creation (decay function)
+  relevance: number    // Match to user interests
+  socialProof: number  // Friends who engaged
+  diversity: number    // How different from recent items
+  quality: number      // Content quality score
+  personalization: number // Match to explicit preferences
+}
+
+AlgorithmExplanation {
+  summary: string
+  factors: Array<{
+    name: string
+    description: string
+    weight: number
+    value: any
+    impact: 'high' | 'medium' | 'low'
+  }>
+  controls: {
+    seeMoreLikeThis: boolean
+    seeLessLikeThis: boolean
+    adjustPreference: string
+    whyThis: string
+  }
+}
+*/

@@ -1,0 +1,22 @@
+# Bun Configuration for OpenScroll PWA
+
+[install]
+# Add specific Bun lockfile settings
+lockfile = true
+# Use Bun's trusted dependencies for faster installs
+trusted = ["esbuild", "rolldown-vite"]
+# Set cache directory explicitly
+cache = "C:\\Users\\VIVIM.inc\\AppData\\Local\\Temp\\bun-cache"
+# Set global cache directory
+globalCacheDir = "C:\\Users\\VIVIM.inc\\AppData\\Local\\Temp\\bun-cache\\global"
+
+# Preload commonly used packages (add under [install] if needed)
+# preload = ["@types/node", "vite"]
+
+[test]
+# Test configuration matches vitest.config.ts
+root = "./src"
+
+[run]
+# Make sure bun uses the right working directory
+cwd = "."

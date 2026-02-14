@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIVIM Icon Library Viewer</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: #f8fafc;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        input, select {
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        input {
+            flex-grow: 1;
+            min-width: 200px;
+        }
+        
+        .size-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 20px;
+        }
+        
+        .icon-card {
+            text-align: center;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            transition: box-shadow 0.2s;
+        }
+        
+        .icon-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .icon-container {
+            height: 64px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .icon-name {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #64748b;
+            word-break: break-word;
+        }
+        
+        .categories {
+            margin: 30px 0;
+        }
+        
+        .category-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 6px 12px;
+            background-color: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        button.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>VIVIM Icon Library Viewer</h1>
+        
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="Search icons...">
+            
+            <select id="categorySelect">
+                <option value="all">All Categories</option>
+            </select>
+            
+            <div class="size-control">
+                <label for="sizeSlider">Size:</label>
+                <input type="range" id="sizeSlider" min="12" max="64" value="32">
+                <span id="sizeValue">32px</span>
+            </div>
+        </div>
+        
+        <div class="categories">
+            <h3>Quick Category Access</h3>
+            <div class="category-buttons" id="categoryButtons">
+                <!-- Category buttons will be added here by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="icon-grid" id="iconGrid">
+            <!-- Icons will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Define icon categories
+        const CATEGORIES = [
+            'actions', 'acu', 'acu-evolution', 'analytics', 'backend', 
+            'collaboration', 'content', 'editor', 'files', 'knowledge-graph', 
+            'knowledgebase', 'navigation', 'providers', 'security', 
+            'settings', 'social', 'status', 'sync'
+        ];
+
+        // Simple icon definitions (in a real implementation, these would be loaded from the actual icon files)
+        const ICONS = [
+            // Navigation
+            { name: 'home-feed', category: 'navigation' },
+            { name: 'search', category: 'navigation' },
+            { name: 'vault-closed', category: 'navigation' },
+            { name: 'user-profile', category: 'navigation' },
+            { name: 'arrow-back', category: 'navigation' },
+            { name: 'arrow-forward', category: 'navigation' },
+            { name: 'chevron-down', category: 'navigation' },
+            { name: 'chevron-right', category: 'navigation' },
+            { name: 'chevron-up', category: 'navigation' },
+            { name: 'close-x', category: 'navigation' },
+            { name: 'bell-notification', category: 'navigation' },
+            { name: 'settings-cog', category: 'navigation' },
+            
+            // Actions
+            { name: 'add-plus', category: 'actions' },
+            { name: 'edit-pencil', category: 'actions' },
+            { name: 'delete-trash', category: 'actions' },
+            { name: 'copy-duplicate', category: 'actions' },
+            { name: 'refresh-circular', category: 'actions' },
+            { name: 'cancel-slash', category: 'actions' },
+            { name: 'import-arrow', category: 'actions' },
+            { name: 'export-arrow', category: 'actions' },
+            { name: 'download-arrow', category: 'actions' },
+            { name: 'upload-arrow', category: 'actions' },
+            { name: 'create-new', category: 'actions' },
+            { name: 'sync-indicator', category: 'actions' },
+            { name: 'menu-hamburger', category: 'actions' },
+            { name: 'chevron-left', category: 'actions' },
+            { name: 'capture-download', category: 'actions' },
+            { name: 'save-floppy', category: 'actions' },
+            { name: 'git-branch', category: 'actions' },
+            { name: 'git-fork-branch', category: 'actions' },
+            { name: 'git-merge', category: 'actions' },
+            { name: 'share-network', category: 'actions' },
+            { name: 'retry-arrow', category: 'actions' },
+            { name: 'move-arrow', category: 'actions' },
+            { name: 'rename-label', category: 'actions' },
+            { name: 'search-header', category: 'actions' },
+            
+            // Social
+            { name: 'heart-like', category: 'social' },
+            { name: 'fork-branch', category: 'social' },
+            { name: 'bookmark-ribbon', category: 'social' },
+            
+            // Status
+            { name: 'success-check', category: 'status' },
+            { name: 'error-x', category: 'status' },
+            { name: 'warning-exclamation', category: 'status' },
+            
+            // Security
+            { name: 'lock-closed', category: 'security' },
+            { name: 'lock-open', category: 'security' },
+            { name: 'shield-check', category: 'security' },
+            { name: 'shield-alert', category: 'security' },
+            
+            // Settings
+            { name: 'settings-gear', category: 'settings' },
+            { name: 'filter-options', category: 'settings' },
+            { name: 'visibility-on', category: 'settings' },
+            { name: 'visibility-off', category: 'settings' },
+            
+            // Editor
+            { name: 'bold-text', category: 'editor' },
+            { name: 'italic-text', category: 'editor' },
+            { name: 'underline-text', category: 'editor' },
+            { name: 'list-bullets', category: 'editor' },
+            { name: 'list-numbers', category: 'editor' },
+            { name: 'quote', category: 'editor' },
+            
+            // Files
+            { name: 'file-document', category: 'files' },
+            { name: 'file-image', category: 'files' },
+            { name: 'file-pdf', category: 'files' },
+            { name: 'folder-open', category: 'files' },
+            { name: 'folder-closed', category: 'files' },
+            { name: 'archive-box', category: 'files' },
+            
+            // Providers
+            { name: 'openai-logo', category: 'providers' },
+            { name: 'anthropic-logo', category: 'providers' },
+            { name: 'gemini-logo', category: 'providers' },
+            { name: 'ollama-logo', category: 'providers' },
+            
+            // ACU
+            { name: 'acu-core', category: 'acu' },
+            { name: 'acu-chat', category: 'acu' },
+            { name: 'acu-thought', category: 'acu' },
+            { name: 'acu-action', category: 'acu' },
+            
+            // Knowledge Graph
+            { name: 'graph-network', category: 'knowledge-graph' },
+            { name: 'graph-node', category: 'knowledge-graph' },
+            { name: 'graph-relation', category: 'knowledge-graph' },
+            { name: 'vault-sense', category: 'knowledge-graph' },
+            
+            // Knowledgebase
+            { name: 'knowledge-base', category: 'knowledgebase' },
+            { name: 'document-search', category: 'knowledgebase' },
+            { name: 'memory-chip', category: 'knowledgebase' },
+            
+            // Collaboration
+            { name: 'user-group', category: 'collaboration' },
+            { name: 'user-add', category: 'collaboration' },
+            { name: 'user-shared', category: 'collaboration' },
+            
+            // Analytics
+            { name: 'chart-bar', category: 'analytics' },
+            { name: 'chart-pie', category: 'analytics' },
+            { name: 'trending-up', category: 'analytics' },
+            { name: 'trending-down', category: 'analytics' },
+            
+            // Backend
+            { name: 'server-computer', category: 'backend' },
+            { name: 'database-storage', category: 'backend' },
+            { name: 'api-interface', category: 'backend' },
+            { name: 'cloud-upload', category: 'backend' },
+            { name: 'cloud-download', category: 'backend' },
+            
+            // ACU Evolution
+            { name: 'evolution-chain', category: 'acu-evolution' },
+            { name: 'acu-lineage', category: 'acu-evolution' },
+            { name: 'acu-history', category: 'acu-evolution' },
+            
+            // Sync
+            { name: 'sync-active', category: 'sync' },
+            { name: 'sync-pending', category: 'sync' },
+            { name: 'sync-error', category: 'sync' },
+            { name: 'realtime-update', category: 'sync' }
+        ];
+
+        // Populate category dropdown
+        const categorySelect = document.getElementById('categorySelect');
+        CATEGORIES.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+            categorySelect.appendChild(option);
+        });
+
+        // Populate category buttons
+        const categoryButtonsContainer = document.getElementById('categoryButtons');
+        CATEGORIES.forEach(category => {
+            const button = document.createElement('button');
+            button.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+            button.onclick = () => {
+                document.getElementById('categorySelect').value = category;
+                filterIcons();
+                
+                // Update active button
+                document.querySelectorAll('#categoryButtons button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                button.classList.add('active');
+            };
+            categoryButtonsContainer.appendChild(button);
+        });
+
+        // Size slider event
+        const sizeSlider = document.getElementById('sizeSlider');
+        const sizeValue = document.getElementById('sizeValue');
+        sizeSlider.oninput = function() {
+            sizeValue.textContent = this.value + 'px';
+            renderIcons();
+        };
+
+        // Search and category change events
+        document.getElementById('searchInput').addEventListener('input', filterIcons);
+        document.getElementById('categorySelect').addEventListener('change', filterIcons);
+
+        // Current filtered icons
+        let currentIcons = [...ICONS];
+
+        // Filter icons based on search and category
+        function filterIcons() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const selectedCategory = document.getElementById('categorySelect').value;
+
+            currentIcons = ICONS.filter(icon => {
+                const matchesSearch = icon.name.toLowerCase().includes(searchTerm);
+                const matchesCategory = selectedCategory === 'all' || icon.category === selectedCategory;
+                return matchesSearch && matchesCategory;
+            });
+
+            renderIcons();
+        }
+
+        // Render icons to the grid
+        function renderIcons() {
+            const iconGrid = document.getElementById('iconGrid');
+            const iconSize = document.getElementById('sizeSlider').value;
+            
+            iconGrid.innerHTML = '';
+            
+            if (currentIcons.length === 0) {
+                const noResults = document.createElement('div');
+                noResults.className = 'no-results';
+                noResults.textContent = 'No icons found matching your criteria';
+                iconGrid.appendChild(noResults);
+                return;
+            }
+            
+            currentIcons.forEach(icon => {
+                const iconCard = document.createElement('div');
+                iconCard.className = 'icon-card';
+                
+                // Create a simple SVG placeholder for the icon
+                // In a real implementation, this would load the actual icon component
+                const iconContainer = document.createElement('div');
+                iconContainer.className = 'icon-container';
+                
+                // Create a simple SVG placeholder
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('width', iconSize);
+                svg.setAttribute('height', iconSize);
+                svg.setAttribute('viewBox', '0 0 24 24');
+                svg.setAttribute('fill', 'none');
+                svg.setAttribute('stroke', '#3b82f6');
+                svg.setAttribute('strokeWidth', '1.5');
+                svg.setAttribute('strokeLinecap', 'round');
+                svg.setAttribute('strokeLinejoin', 'round');
+                
+                // Draw a simple shape based on the icon name
+                if (icon.name.includes('arrow')) {
+                    // Arrow-like shape
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('d', 'M7 17L17 7M17 7H7M17 7V17');
+                    svg.appendChild(path);
+                } else if (icon.name.includes('plus') || icon.name.includes('add')) {
+                    // Plus sign
+                    const line1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line1.setAttribute('x1', '12');
+                    line1.setAttribute('y1', '5');
+                    line1.setAttribute('x2', '12');
+                    line1.setAttribute('y2', '19');
+                    svg.appendChild(line1);
+                    
+                    const line2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line2.setAttribute('x1', '5');
+                    line2.setAttribute('y1', '12');
+                    line2.setAttribute('x2', '19');
+                    line2.setAttribute('y2', '12');
+                    svg.appendChild(line2);
+                } else if (icon.name.includes('cog') || icon.name.includes('gear') || icon.name.includes('settings')) {
+                    // Gear-like shape
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('d', 'M12 15A3 3 0 1 0 12 9 3 3 0 1 0 12 15Z');
+                    svg.appendChild(path);
+                    
+                    const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+                    polyline.setAttribute('points', '19.4 15 14.7 11 19.4 7');
+                    svg.appendChild(polyline);
+                    
+                    const polyline2 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+                    polyline2.setAttribute('points', '4.6 15 9.3 11 4.6 7');
+                    svg.appendChild(polyline2);
+                } else if (icon.name.includes('home')) {
+                    // House-like shape
+                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    path.setAttribute('d', 'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z');
+                    svg.appendChild(path);
+                    
+                    const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+                    polyline.setAttribute('points', '9,22 9,12 15,12 15,22');
+                    svg.appendChild(polyline);
+                } else if (icon.name.includes('search')) {
+                    // Search magnifying glass
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', '11');
+                    circle.setAttribute('cy', '11');
+                    circle.setAttribute('r', '8');
+                    svg.appendChild(circle);
+                    
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', '21');
+                    line.setAttribute('y1', '21');
+                    line.setAttribute('x2', '16.65');
+                    line.setAttribute('y2', '16.65');
+                    svg.appendChild(line);
+                } else {
+                    // Default circle
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', '12');
+                    circle.setAttribute('cy', '12');
+                    circle.setAttribute('r', '8');
+                    svg.appendChild(circle);
+                }
+                
+                iconContainer.appendChild(svg);
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'icon-name';
+                nameDiv.textContent = icon.name;
+                
+                iconCard.appendChild(iconContainer);
+                iconCard.appendChild(nameDiv);
+                
+                iconGrid.appendChild(iconCard);
+            });
+        }
+
+        // Initialize the viewer
+        filterIcons();
+    </script>
+</body>
+</html>

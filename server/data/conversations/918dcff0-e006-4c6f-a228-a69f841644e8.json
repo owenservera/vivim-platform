@@ -1,0 +1,589 @@
+{
+  "title": "New Chat",
+  "createdAt": "2026-01-25T19:15:38.901Z",
+  "messages": [
+    {
+      "id": "a4be5646-4b79-419c-a7aa-ecdbea359f73",
+      "role": "user",
+      "content": "design a series of  mremaid visualizaitons that would help me understand how to properly leverage the following /// - **Pester**: A testing framework for PowerShell, ideal for beginners learning to write and run tests to verify that scripts and modules work correctly without errors.\n- **PSScriptAnalyzer**: A tool that checks PowerShell scripts for common mistakes, best practices, and potential issues, similar to a spell-checker for code.\n- **Terminal-Icons**: Adds colorful icons and visual enhancements to file and folder listings in the PowerShell terminal, making directory navigation more intuitive.\n- **PSfzf**: Integrates a fast fuzzy finder into PowerShell, allowing quick searching and selection of files, commands, or history entries with minimal typing.\n- **Microsoft.PowerShell.SecretManagement**: Helps securely store and retrieve sensitive information like passwords, keeping secrets safe without hardcoding them in scripts.\n- **PSReadLine**: Improves the PowerShell command-line experience with features like syntax highlighting, auto-completion, and better history navigation.\n- **z**: Enables quick navigation to frequently visited directories by typing partial names, learning from past directory changes.\n- **Microsoft.WinGet.Client**: Provides access to the Windows Package Manager (winget) for installing, updating, and managing applications directly from PowerShell.\n- **PSWindowsUpdate**: Allows management of Windows updates via PowerShell, including scanning, downloading, installing, or hiding specific updates.\n- **PSDepend**: Manages dependencies for PowerShell scripts and modules, ensuring required components are available during deployment.\n- **Plaster**: A templating tool for scaffolding new PowerShell modules, scripts, or projects with consistent structure and placeholders.\n- **BurntToast**: Creates and displays Windows toast notifications from PowerShell, useful for alerting users about script completion or events.\n- **PSWritePDF**: Enables creation, editing, merging, and splitting of PDF files directly in PowerShell without external software.\n- **PSWriteWord**: Allows generation and modification of Microsoft Word documents from PowerShell scripts, no Word installation required.\n- **ImportExcel**: Facilitates importing from and exporting to Excel files in PowerShell, perfect for data manipulation without opening Excel.\n- **PSNeo4j**: A wrapper for interacting with Neo4j graph databases, simplifying queries and data management for beginners exploring graph technology.\n- **ModuleBuilder**: Assists in building and packaging PowerShell modules, automating compilation of script modules into single files.\n- **platyPS**: Helps create and maintain PowerShell help documentation in Markdown format, convertible to standard help files.\n- **InvokeBuild**: A build automation tool for PowerShell projects, executing tasks like testing, packaging, and deployment in sequence.\n- **PackageManagement**: Core module for discovering, installing, and managing packages from repositories like PowerShell Gallery.\n- **PowerShellGet**: Essential module for finding, installing, updating, and publishing PowerShell modules and resources from the Gallery.",
+      "timestamp": "2026-01-25T19:15:39.088Z",
+      "contentHash": "667cd08c7d0908e7adfe68a859e173dd6876b8bf4b97d1fd61c1b801ef0332e1"
+    },
+    {
+      "id": "ebe37c2d-9486-4128-a476-03a2bf86d1e9",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "content": "Here is a series of Mermaid visualizations designed to help you understand how to leverage these tools effectively. I have grouped them by their primary function in a modern PowerShell workflow: Environment Setup, Project Lifecycle, Data & Automation, and Operational Excellence. 1. The \"Ideal\" PowerShell Environment Goal: Understand how these tools layer together to turn a basic command prompt into a powerful IDE-like terminal. This diagram shows the progression from a raw shell to a fully equipped development environment."
+        },
+        {
+          "type": "text",
+          "content": "Goal: Visualize the workflow of creating a professional module from scratch to publication. This diagram illustrates the \"Pipeline\" tools (Plaster, Pester, Build, Publish)."
+        },
+        {
+          "type": "text",
+          "content": "Goal: How to generate professional outputs and handle data without opening Excel or Word manually. This diagram shows the flow of data processing into various formats."
+        },
+        {
+          "type": "text",
+          "content": "Goal: Clarify the relationship between the core package managers and the tools that rely on them. This diagram distinguishes between managing Windows Apps, PowerShell Modules, and Project Dependencies."
+        },
+        {
+          "type": "text",
+          "content": "Goal: Visualize how tools interact to keep your code clean and functional over time.      sequenceDiagram    participant Dev as Developer    participant SA as PSScriptAnalyzer    participant P as Pester    participant IB as InvokeBuild    Dev->>Dev: Write Code    Dev->>SA: Check Syntax & Style    alt Code is messy        SA-->>Dev: Return Warnings/Errors        Dev->>Dev: Fix Code    end        Dev->>P: Run Tests    alt Tests Fail        P-->>Dev: Return Failure Details        Dev->>Dev: Fix Logic    end    Dev->>IB: Request Build    IB->>SA: Double Check    IB->>P: Run Full Suite    IB->>IB: Create Module    IB-->>Dev: Return Build Artifact InvokeBuildPesterPSScriptAnalyzerDeveloperInvokeBuildPesterPSScriptAnalyzerDeveloper#mermaid-bf6babe2-f585-45ad-83d4-eabbe2ed9fa3{font-family:\"trebuchet ms\",verdana,arial,sans-serif;font-size:16px;fill:#333}#mermaid-bf6babe2-f585-45ad-83d4-eabbe2ed9fa3 .actor{stroke:hsl(259.6261682243,59.7765363128%,87.9019607843%);fill:#ECECFF}#mermaid-bf6babe2-f585-45ad-83d4-eabbe2ed9fa3 text.actor>tspan{fill:black;stroke:none}#mermaid-bf6babe2-f585-45ad-83d4-eabbe2ed9fa3 .actor-line{stroke:hsl(259.6261682243,59.7765363128%,87.9019607843%)}#mermaid-bf6babe2-f585-45ad-83d4-eabbe2ed9fa3 .messageLine0{stroke-width:1.5;stroke-dasharray:none;stroke:#333}#mermaid-bf6babe2-f585-45ad-83d4-eabbe2ed9fa3 .messageLine1{stroke-width:1.5;stroke-dasharray:2,2;stroke:#333}#mermaid-bf6babe2-f585-45ad-83d4-eabbe2ed9fa3 #arrowhead path{fill:#333;stroke:#333}#mermaid-bf6babe2-f585-45ad-83d4-eabbe2ed9fa3 #sequencenumber{fill:#333}#mermaid-bf6babe2-f585-45ad-83d4-eabbe2ed9fa3 #crosshead path{fill:#333;stroke:#333}#mermaid-bf6babe2-f585-45ad-83d4-eabbe2ed9fa3 .messageText{fill:#333;stroke:none}#mermaid-bf6babe2-f585-45ad-83d4-eabbe2ed9fa3 .labelBox{stroke:hsl(259.6261682243,59.7765363128%,87.9019607843%);fill:#ECECFF}#mermaid-bf6babe2-f585-45ad-83d4-eabbe2ed9fa3 .labelText{fill:black;stroke:none}#mermaid-bf6babe2-f585-45ad-83d4-eabbe2ed9fa3 .loopText,#mermaid-bf6babe2-f585-45ad-83d4-eabbe2ed9fa3 .loopText>tspan{fill:black;stroke:none}#mermaid-bf6babe2-f585-45ad-83d4-eabbe2ed9fa3 .loopLine{stroke-width:2px;stroke-dasharray:2,2;stroke:hsl(259.6261682243,59.7765363128%,87.9019607843%);fill:hsl(259.6261682243,59.7765363128%,87.9019607843%)}#mermaid-bf6babe2-f585-45ad-83d4-eabbe2ed9fa3 line{fill:#ECECFF;stroke-width:2px}alt[Code is messy]alt[Tests Fail]Write CodeCheck Syntax & StyleReturn Warnings/ErrorsFix CodeRun TestsReturn Failure DetailsFix LogicRequest BuildDouble CheckRun Full SuiteCreate ModuleReturn Build Artifact  How to Leverage:  PSScriptAnalyzer is your spellchecker. Pester is your proofreader. InvokeBuild is your publisher. Don't publish if Build fails."
+        },
+        {
+          "type": "code",
+          "content": "cd",
+          "language": "text"
+        },
+        {
+          "type": "image",
+          "content": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI1LjMuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDMwIDMwIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAzMCAzMDsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtvcGFjaXR5OjAuMztmaWxsOiNFMkU0RTc7fQoJLnN0MXtvcGFjaXR5OjAuODtmaWxsOiNFMkU0RTc7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLXdpZHRoOjU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MntmaWxsOnVybCgjU1ZHSURfMV8pO30KCS5zdDN7ZmlsbDpub25lO3N0cm9rZTojRTBFNEU5O3N0cm9rZS13aWR0aDowLjI1O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDR7ZmlsbDpub25lO30KCS5zdDV7ZmlsbDojOURBMUE1O30KCS5zdDZ7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDpub25lO30KCS5zdDd7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDojREZFMkU3O30KCS5zdDh7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDojQ0RENERBO30KCS5zdDl7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDojQjNCQ0M3O30KCS5zdDEwe2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6IzlEQUFCNzt9Cgkuc3QxMXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiM4Njk4QTg7fQoJLnN0MTJ7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDp1cmwoI1NWR0lEXzJfKTt9Cgkuc3QxM3tmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfM18pO30KCS5zdDE0e2ZpbGw6IzFGNjNFQzt9Cgkuc3QxNXtmaWxsOiMyRDJEMkQ7fQoJLnN0MTZ7ZmlsbDpub25lO3N0cm9rZTojRTBFNEU5O3N0cm9rZS13aWR0aDowLjU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTd7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDp1cmwoI1NWR0lEXzRfKTt9Cgkuc3QxOHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNV8pO30KCS5zdDE5e2ZpbGw6bm9uZTtzdHJva2U6IzY3NzM4MDtzdHJva2Utd2lkdGg6MC41O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDIwe2ZpbGw6bm9uZTtzdHJva2U6dXJsKCNTVkdJRF82Xyk7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MjF7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDp1cmwoI1NWR0lEXzdfKTt9Cgkuc3QyMntmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfOF8pO30KCS5zdDIze2ZpbGw6I0ZGRkZGRjt9Cgkuc3QyNHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiMyRDJEMkQ7fQoJLnN0MjV7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMTBfKTt9Cgkuc3QyNntjbGlwLXBhdGg6dXJsKCNTVkdJRF8xMl8pO30KCS5zdDI3e2ZpbGw6dXJsKCNTVkdJRF8xM18pO30KCS5zdDI4e2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6dXJsKCNTVkdJRF8xNF8pO30KCS5zdDI5e2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6dXJsKCNTVkdJRF8xNV8pO30KCS5zdDMwe2NsaXAtcGF0aDp1cmwoI1NWR0lEXzE3Xyk7fQoJLnN0MzF7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMTlfKTt9Cgkuc3QzMntmaWxsOnVybCgjU1ZHSURfMjBfKTt9Cgkuc3QzM3tmaWxsOm5vbmU7c3Ryb2tlOnVybCgjU1ZHSURfMjFfKTtzdHJva2Utd2lkdGg6MjtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QzNHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfMjJfKTt9Cgkuc3QzNXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfMjNfKTt9Cgkuc3QzNntjbGlwLXBhdGg6dXJsKCNTVkdJRF8yNV8pO30KCS5zdDM3e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzI3Xyk7fQoJLnN0Mzh7ZmlsbDp1cmwoI1NWR0lEXzI4Xyk7fQoJLnN0Mzl7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMzBfKTt9Cgkuc3Q0MHtjbGlwLXBhdGg6dXJsKCNTVkdJRF8zMl8pO30KCS5zdDQxe2ZpbGw6dXJsKCNTVkdJRF8zM18pO30KCS5zdDQye2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6IzEyNkVGNjt9Cgkuc3Q0M3tmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiNGRkZGRkY7fQoJLnN0NDR7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMzVfKTt9Cgkuc3Q0NXtjbGlwLXBhdGg6dXJsKCNTVkdJRF8zN18pO30KCS5zdDQ2e2ZpbGw6dXJsKCNTVkdJRF8zOF8pO30KCS5zdDQ3e2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6IzlEQTFBNTt9Cgkuc3Q0OHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfMzlfKTt9Cgkuc3Q0OXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDBfKTt9Cgkuc3Q1MHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDFfKTt9Cgkuc3Q1MXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDJfKTt9Cgkuc3Q1MntmaWxsOm5vbmU7c3Ryb2tlOnVybCgjU1ZHSURfNDNfKTtzdHJva2Utd2lkdGg6MjtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3Q1M3tmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOm5vbmU7c3Ryb2tlOiNFMEU0RTk7c3Ryb2tlLXdpZHRoOjAuNTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3Q1NHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDRfKTt9Cgkuc3Q1NXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDVfKTt9Cgkuc3Q1NntmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDZfKTt9Cgkuc3Q1N3tmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDdfKTt9Cgkuc3Q1OHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDhfKTt9Cgkuc3Q1OXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDlfKTt9Cgkuc3Q2MHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNTBfKTt9Cgkuc3Q2MXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNTFfKTt9Cgkuc3Q2MntmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNTJfKTt9Cgkuc3Q2M3tmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNTNfKTt9Cgkuc3Q2NHtjbGlwLXBhdGg6dXJsKCNTVkdJRF81NV8pO30KCS5zdDY1e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzU3Xyk7fQoJLnN0NjZ7ZmlsbDp1cmwoI1NWR0lEXzU4Xyk7fQoJLnN0Njd7Y2xpcC1wYXRoOnVybCgjU1ZHSURfNjBfKTt9Cgkuc3Q2OHtjbGlwLXBhdGg6dXJsKCNTVkdJRF82Ml8pO30KCS5zdDY5e2ZpbGw6dXJsKCNTVkdJRF82M18pO30KCS5zdDcwe2ZpbGw6bm9uZTtzdHJva2U6dXJsKCNTVkdJRF82NF8pO3N0cm9rZS13aWR0aDoyO3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDcxe2NsaXAtcGF0aDp1cmwoI1NWR0lEXzY2Xyk7fQoJLnN0NzJ7Y2xpcC1wYXRoOnVybCgjU1ZHSURfNjhfKTt9Cgkuc3Q3M3tmaWxsOnVybCgjU1ZHSURfNjlfKTt9Cgkuc3Q3NHtjbGlwLXBhdGg6dXJsKCNTVkdJRF83MV8pO30KCS5zdDc1e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzczXyk7fQoJLnN0NzZ7ZmlsbDp1cmwoI1NWR0lEXzc0Xyk7fQoJLnN0Nzd7Y2xpcC1wYXRoOnVybCgjU1ZHSURfNzZfKTt9Cgkuc3Q3OHtjbGlwLXBhdGg6dXJsKCNTVkdJRF83OF8pO30KCS5zdDc5e2ZpbGw6dXJsKCNTVkdJRF83OV8pO30KCS5zdDgwe2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6dXJsKCNTVkdJRF84MF8pO30KCS5zdDgxe2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6dXJsKCNTVkdJRF84MV8pO30KCS5zdDgye2NsaXAtcGF0aDp1cmwoI1NWR0lEXzgzXyk7fQoJLnN0ODN7Y2xpcC1wYXRoOnVybCgjU1ZHSURfODVfKTt9Cgkuc3Q4NHtmaWxsOnVybCgjU1ZHSURfODZfKTt9Cgkuc3Q4NXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfODdfKTt9Cgkuc3Q4NntmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfODhfKTt9Cgkuc3Q4N3tjbGlwLXBhdGg6dXJsKCNTVkdJRF85MF8pO30KCS5zdDg4e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzkyXyk7fQoJLnN0ODl7ZmlsbDp1cmwoI1NWR0lEXzkzXyk7fQoJLnN0OTB7ZmlsbDpub25lO3N0cm9rZTp1cmwoI1NWR0lEXzk0Xyk7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0OTF7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDp1cmwoI1NWR0lEXzk1Xyk7fQoJLnN0OTJ7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDp1cmwoI1NWR0lEXzk2Xyk7fQoJLnN0OTN7Y2xpcC1wYXRoOnVybCgjU1ZHSURfOThfKTt9Cgkuc3Q5NHtjbGlwLXBhdGg6dXJsKCNTVkdJRF8xMDBfKTt9Cgkuc3Q5NXtmaWxsOnVybCgjU1ZHSURfMTAxXyk7fQoJLnN0OTZ7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMTAzXyk7fQoJLnN0OTd7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMTA1Xyk7fQoJLnN0OTh7ZmlsbDp1cmwoI1NWR0lEXzEwNl8pO30KCS5zdDk5e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzEwOF8pO30KCS5zdDEwMHtjbGlwLXBhdGg6dXJsKCNTVkdJRF8xMTBfKTt9Cgkuc3QxMDF7ZmlsbDp1cmwoI1NWR0lEXzExMV8pO30KCS5zdDEwMntmaWxsOiNGRkZGRkY7c3Ryb2tlOiNCM0JDQzc7c3Ryb2tlLXdpZHRoOjAuMjc1O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDEwM3tjbGlwLXBhdGg6dXJsKCNTVkdJRF8xMTNfKTt9Cgkuc3QxMDR7ZmlsbDojRkREMTM4O30KCS5zdDEwNXtmaWxsOiNGQ0E2MkY7fQoJLnN0MTA2e2ZpbGw6I0ZCNzkyNzt9Cgkuc3QxMDd7ZmlsbDojRjQ0QjIyO30KCS5zdDEwOHtmaWxsOiNEODE5MTU7fQoJLnN0MTA5e2ZpbGw6IzJEMkQyRDtzdHJva2U6I0ZGRkZGRjtzdHJva2Utd2lkdGg6MC4zMzU0O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDExMHtmaWxsOm5vbmU7c3Ryb2tlOiM2NTcyN0Y7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTExe2ZpbGw6bm9uZTtzdHJva2U6IzY1NzI3RjtzdHJva2Utd2lkdGg6MC43NTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMTJ7ZmlsbDp1cmwoI1NWR0lEXzExNF8pO30KCS5zdDExM3tmaWxsOiNEMDZDNTA7fQoJLnN0MTE0e2ZpbGw6IzJEMkQyRDtzdHJva2U6I0IzQkNDNztzdHJva2Utd2lkdGg6MC4yNzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTE1e29wYWNpdHk6MC4yO30KCS5zdDExNntmaWxsOm5vbmU7c3Ryb2tlOiM2NzczODA7c3Ryb2tlLXdpZHRoOjAuMzU2NDtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMTd7ZmlsbDpub25lO3N0cm9rZTojNjc3MzgwO3N0cm9rZS13aWR0aDowLjM1NjQ7c3Ryb2tlLW1pdGVybGltaXQ6MTA7c3Ryb2tlLWRhc2hhcnJheToxLjAyMTIsMS4wMjEyO30KCS5zdDExOHtmaWxsOm5vbmU7c3Ryb2tlOiM2NzczODA7c3Ryb2tlLXdpZHRoOjAuMzU2NDtzdHJva2UtbWl0ZXJsaW1pdDoxMDtzdHJva2UtZGFzaGFycmF5OjEuMDIwNSwxLjAyMDU7fQoJLnN0MTE5e29wYWNpdHk6MC4yO2ZpbGw6bm9uZTt9Cgkuc3QxMjB7ZmlsbDpub25lO3N0cm9rZTojNjc3MzgwO3N0cm9rZS13aWR0aDowLjM2ODk7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTIxe2ZpbGw6bm9uZTtzdHJva2U6IzY3NzM4MDtzdHJva2Utd2lkdGg6MC4zNjg5O3N0cm9rZS1taXRlcmxpbWl0OjEwO3N0cm9rZS1kYXNoYXJyYXk6MS4wNTA5LDEuMDUwOTt9Cgkuc3QxMjJ7b3BhY2l0eTowLjM7ZmlsbDojMUY2M0VDO30KCS5zdDEyM3tmaWxsOiMyRDJEMkQ7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLXdpZHRoOjAuMzE2MjtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMjR7ZmlsbDojRkZGRkZGO3N0cm9rZTojQjNCQ0M3O3N0cm9rZS13aWR0aDowLjMxNjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTI1e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzExOF8pO30KCS5zdDEyNntmaWxsOnVybCgjU1ZHSURfMTE5Xyk7fQoJLnN0MTI3e2ZpbGw6bm9uZTtzdHJva2U6I0RGRTJFNztzdHJva2Utd2lkdGg6MC43NTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMjh7ZmlsbDojOURBMUE1O3N0cm9rZTojRkZGRkZGO3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDEyOXtmaWxsOnVybCgjU1ZHSURfMTIwXyk7fQoJLnN0MTMwe2ZpbGw6bm9uZTtzdHJva2U6IzY3NzM4MDtzdHJva2Utd2lkdGg6MC43NTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMzF7b3BhY2l0eTowLjQ7fQoJLnN0MTMye2NsaXAtcGF0aDp1cmwoI1NWR0lEXzEyMl8pO30KCS5zdDEzM3tjbGlwLXBhdGg6dXJsKCNTVkdJRF8xMjRfKTt9Cgkuc3QxMzR7ZmlsbDp1cmwoI1NWR0lEXzEyNV8pO30KCS5zdDEzNXtmaWxsOm5vbmU7c3Ryb2tlOiM4MzkyQTM7c3Ryb2tlLXdpZHRoOjAuMzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTM2e2ZpbGw6bm9uZTtzdHJva2U6IzgzOTJBMztzdHJva2Utd2lkdGg6MC4zNTtzdHJva2UtbWl0ZXJsaW1pdDoxMDtzdHJva2UtZGFzaGFycmF5OjAuOTk1MSwwLjk5NTE7fQoJLnN0MTM3e2ZpbGw6bm9uZTtzdHJva2U6IzgzOTJBMztzdHJva2Utd2lkdGg6MC4zNTtzdHJva2UtbWl0ZXJsaW1pdDoxMDtzdHJva2UtZGFzaGFycmF5OjEuMDA0LDEuMDA0O30KCS5zdDEzOHtmaWxsOm5vbmU7c3Ryb2tlOnVybCgjU1ZHSURfMTI2Xyk7c3Ryb2tlLXdpZHRoOjEuNTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMzl7ZmlsbDp1cmwoI1NWR0lEXzEyN18pO30KCS5zdDE0MHtmaWxsOm5vbmU7c3Ryb2tlOiNEREUwRTQ7c3Ryb2tlLXdpZHRoOjAuMzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTQxe2ZpbGw6IzJEMkQyRDtzdHJva2U6I0E5QjNCRTtzdHJva2Utd2lkdGg6MC4yNzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTQye2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6IzEyNkVGNDt9Cgkuc3QxNDN7ZmlsbDojRkZGRkZGO3N0cm9rZTojQjFCQUM0O3N0cm9rZS13aWR0aDowLjI3NTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxNDR7ZmlsbDojQ0U2QzUwO30KCS5zdDE0NXtmaWxsOiM1QjVCNUI7fQoJLnN0MTQ2e2ZpbGw6IzgzOTJBMzt9Cgkuc3QxNDd7ZmlsbDpub25lO3N0cm9rZTp1cmwoI1NWR0lEXzEyOF8pO3N0cm9rZS13aWR0aDoxLjU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTQ4e2ZpbGw6dXJsKCNTVkdJRF8xMjlfKTt9Cgkuc3QxNDl7ZmlsbDpub25lO3N0cm9rZTojQjVCREM0O3N0cm9rZS13aWR0aDowLjc7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTUwe29wYWNpdHk6MC42O2ZpbGw6bm9uZTtzdHJva2U6Izc4ODM4RTtzdHJva2Utd2lkdGg6MC4zNTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxNTF7b3BhY2l0eTowLjI7ZmlsbDpub25lO3N0cm9rZTojODM5MkEzO3N0cm9rZS13aWR0aDowLjM1O3N0cm9rZS1taXRlcmxpbWl0OjEwO3N0cm9rZS1kYXNoYXJyYXk6MSwxO30KCS5zdDE1MntmaWxsOm5vbmU7c3Ryb2tlOiNEREUwRTQ7c3Ryb2tlLXdpZHRoOjAuNzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTUze2ZpbGw6bm9uZTtzdHJva2U6IzgzOTJBMztzdHJva2Utd2lkdGg6MC41O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDE1NHtvcGFjaXR5OjAuMjtmaWxsOm5vbmU7c3Ryb2tlOiM2NzczODA7c3Ryb2tlLXdpZHRoOjAuMzU2NDtzdHJva2UtbWl0ZXJsaW1pdDoxMDtzdHJva2UtZGFzaGFycmF5OjEuMDE4MiwxLjAxODI7fQoJLnN0MTU1e2ZpbGw6bm9uZTtzdHJva2U6I0RERTBFNDtzdHJva2Utd2lkdGg6MC43NjU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTU2e2ZpbGw6dXJsKCNTVkdJRF8xMzBfKTt9Cgkuc3QxNTd7ZmlsbDp1cmwoI1NWR0lEXzEzMV8pO30KCS5zdDE1OHtmaWxsOiNCMUJBQzQ7fQoJLnN0MTU5e2ZpbGw6I0NCRDFEODt9Cgkuc3QxNjB7ZmlsbDojMEIxQjJCO30KCS5zdDE2MXtmaWxsOiM5MUQxMTk7fQoJLnN0MTYye29wYWNpdHk6MC43O30KCS5zdDE2M3tmaWxsOiNGRkZGRkY7c3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjAuNDQxODtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxNjR7ZmlsbDpub25lO3N0cm9rZTojOTM5Q0FBO3N0cm9rZS13aWR0aDowLjIyMDk7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTY1e2ZpbGw6bm9uZTtzdHJva2U6I0ZGRkZGRjtzdHJva2Utd2lkdGg6My4wOTI0O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDE2NntmaWxsOnVybCgjU1ZHSURfMTMyXyk7fQoJLnN0MTY3e2ZpbGw6bm9uZTtzdHJva2U6dXJsKCNTVkdJRF8xMzNfKTtzdHJva2Utd2lkdGg6MS43MTQ7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTY4e2ZpbGw6dXJsKCNTVkdJRF8xMzRfKTt9Cgkuc3QxNjl7ZmlsbDp1cmwoI1NWR0lEXzEzNV8pO30KCS5zdDE3MHtmaWxsOnVybCgjU1ZHSURfMTM2Xyk7fQoJLnN0MTcxe2ZpbGw6dXJsKCNTVkdJRF8xMzdfKTt9Cgkuc3QxNzJ7ZmlsbDp1cmwoI1NWR0lEXzEzOF8pO30KCS5zdDE3M3tmaWxsOnVybCgjU1ZHSURfMTM5Xyk7fQoJLnN0MTc0e2ZpbGw6dXJsKCNTVkdJRF8xNDBfKTt9Cgkuc3QxNzV7ZmlsbDp1cmwoI1NWR0lEXzE0MV8pO30KCS5zdDE3NntmaWxsOnVybCgjU1ZHSURfMTQyXyk7fQoJLnN0MTc3e2ZpbGw6dXJsKCNTVkdJRF8xNDNfKTt9Cgkuc3QxNzh7ZmlsbDp1cmwoI1NWR0lEXzE0NF8pO30KCS5zdDE3OXtmaWxsOm5vbmU7c3Ryb2tlOiMxRjYzRUM7c3Ryb2tlLXdpZHRoOjQ7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTgwe2ZpbGw6bm9uZTtzdHJva2U6IzBCMUIyQjtzdHJva2Utd2lkdGg6NDtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxODF7ZmlsbDpub25lO3N0cm9rZTojNjc3MzgwO3N0cm9rZS13aWR0aDowLjM5ODk7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTgye2ZpbGw6bm9uZTtzdHJva2U6IzY3NzM4MDtzdHJva2Utd2lkdGg6MC4zOTg5O3N0cm9rZS1taXRlcmxpbWl0OjEwO3N0cm9rZS1kYXNoYXJyYXk6MS4xNCwxLjE0O30KCS5zdDE4M3tmaWxsOiMyNTdBRjE7fQoJLnN0MTg0e29wYWNpdHk6MC4zO2ZpbGw6I0ZGRkZGRjt9Cgkuc3QxODV7ZmlsbDpub25lO3N0cm9rZTojOThBNUIyO3N0cm9rZS13aWR0aDo0O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDE4NntmaWxsOm5vbmU7c3Ryb2tlOiM2NTcyN0Y7c3Ryb2tlLXdpZHRoOjAuMzk4OTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxODd7ZmlsbDpub25lO3N0cm9rZTojNjU3MjdGO3N0cm9rZS13aWR0aDowLjM5ODk7c3Ryb2tlLW1pdGVybGltaXQ6MTA7c3Ryb2tlLWRhc2hhcnJheToxLjE0LDEuMTQ7fQoJLnN0MTg4e2ZpbGw6bm9uZTtzdHJva2U6I0REREZFNDtzdHJva2Utd2lkdGg6MC43NTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxODl7ZmlsbDojOUE5RUEyO30KCS5zdDE5MHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiMzMjY3QUM7fQoJLnN0MTkxe2ZpbGw6I0ZGRkZGRjtzdHJva2U6I0FGQjhDMztzdHJva2Utd2lkdGg6MC4yNzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTkye2ZpbGw6I0M1Njk0RTt9Cgkuc3QxOTN7ZmlsbDojODE5MkEyO30KCS5zdDE5NHtmaWxsOiMyRDJEMkQ7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLXdpZHRoOjAuNjMxNztzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cjwvc3R5bGU+CjxnIGlkPSLlm77lsYJfMiI+CjwvZz4KPGcgaWQ9IuWbvuWxgl8xIj4KCTxwYXRoIGNsYXNzPSJzdDE5NCIgZD0iTTI0LjUxLDI4LjUxSDUuNDljLTIuMjEsMC00LTEuNzktNC00VjUuNDljMC0yLjIxLDEuNzktNCw0LTRoMTkuMDNjMi4yMSwwLDQsMS43OSw0LDR2MTkuMDMKCQlDMjguNTEsMjYuNzIsMjYuNzIsMjguNTEsMjQuNTEsMjguNTF6Ii8+Cgk8Zz4KCQk8Zz4KCQkJPGc+CgkJCQk8Zz4KCQkJCQk8cGF0aCBjbGFzcz0ic3QyMyIgZD0iTTE1LjQ3LDcuMWwtMS4zLDEuODVjLTAuMiwwLjI5LTAuNTQsMC40Ny0wLjksMC40N2gtNy4xVjcuMDlDNi4xNiw3LjEsMTUuNDcsNy4xLDE1LjQ3LDcuMXoiLz4KCQkJCQk8cG9seWdvbiBjbGFzcz0ic3QyMyIgcG9pbnRzPSIyNC4zLDcuMSAxMy4xNCwyMi45MSA1LjcsMjIuOTEgMTYuODYsNy4xIAkJCQkJIi8+CgkJCQkJPHBhdGggY2xhc3M9InN0MjMiIGQ9Ik0xNC41MywyMi45MWwxLjMxLTEuODZjMC4yLTAuMjksMC41NC0wLjQ3LDAuOS0wLjQ3aDcuMDl2Mi4zM0gxNC41M3oiLz4KCQkJCTwvZz4KCQkJPC9nPgoJCTwvZz4KCTwvZz4KPC9nPgo8L3N2Zz4K",
+          "alt": "profile"
+        },
+        {
+          "type": "mermaid",
+          "content": "graph LR    Core[PowerShell Core]    subgraph UI_Experience [User Interface & Experience]        PSReadLine[PSReadLine<br/>Syntax Highlighting & History]        TerminalIcons[Terminal-Icons<br/>Visual Directory Listings]        PSfzf[PSfzf<br/>Fuzzy Search History/Files]        z[z<br/>Smart Directory Jumping]    end    subgraph Sys_Admin [System & Package Management]        WinGet[Microsoft.WinGet.Client<br/>App Management]        PSWindowsUpdate[PSWindowsUpdate<br/>OS Updates]        SecretStore[SecretManagement<br/>Secure Credential Storage]    end    Core --> UI_Experience    Core --> Sys_Admin    style PSReadLine fill:#e1f5fe,stroke:#01579b    style TerminalIcons fill:#e1f5fe,stroke:#01579b    style z fill:#e1f5fe,stroke:#01579b    style PSfzf fill:#e1f5fe,stroke:#01579b #mermaid-edcef83d-2cb0-4aef-8cba-cce1a1d56e23{font-family:\"trebuchet ms\",verdana,arial,sans-serif;font-size:16px;fill:#333}#mermaid-edcef83d-2cb0-4aef-8cba-cce1a1d56e23 .edge-thickness-normal{stroke-width:1px}#mermaid-edcef83d-2cb0-4aef-8cba-cce1a1d56e23 .edge-pattern-solid{stroke-dasharray:0}#mermaid-edcef83d-2cb0-4aef-8cba-cce1a1d56e23 .marker{fill:#333333;stroke:#333333}#mermaid-edcef83d-2cb0-4aef-8cba-cce1a1d56e23 .marker.cross{stroke:#333333}#mermaid-edcef83d-2cb0-4aef-8cba-cce1a1d56e23 p{margin:0}#mermaid-edcef83d-2cb0-4aef-8cba-cce1a1d56e23 .label{font-family:\"trebuchet ms\",verdana,arial,sans-serif;color:#333}#mermaid-edcef83d-2cb0-4aef-8cba-cce1a1d56e23 .cluster-label span p{background-color:transparent}#mermaid-edcef83d-2cb0-4aef-8cba-cce1a1d56e23 span{fill:#333;color:#333}#mermaid-edcef83d-2cb0-4aef-8cba-cce1a1d56e23 .node rect{fill:#ECECFF;stroke:#9370DB;stroke-width:1px}#mermaid-edcef83d-2cb0-4aef-8cba-cce1a1d56e23 .node .label{text-align:center}#mermaid-edcef83d-2cb0-4aef-8cba-cce1a1d56e23 .flowchart-link{stroke:#333333;fill:none}#mermaid-edcef83d-2cb0-4aef-8cba-cce1a1d56e23 .edgeLabel{background-color:rgba(232,232,232,0.8);text-align:center}#mermaid-edcef83d-2cb0-4aef-8cba-cce1a1d56e23 .labelBkg{background-color:rgba(232,232,232,0.5)}#mermaid-edcef83d-2cb0-4aef-8cba-cce1a1d56e23 .cluster rect{fill:#ffffde;stroke:#aaaa33;stroke-width:1px}#mermaid-edcef83d-2cb0-4aef-8cba-cce1a1d56e23 .cluster span{color:#333}System & Package ManagementMicrosoft.WinGet.ClientApp ManagementPSWindowsUpdateOS UpdatesSecretManagementSecure Credential StorageUser Interface & ExperiencePSReadLineSyntax Highlighting & HistoryTerminal-IconsVisual Directory ListingsPSfzfFuzzy Search History/FileszSmart Directory JumpingPowerShell Core  How to Leverage: PSReadLine comes installed usually; tweak the settings for colors. z and PSfzf replace traditional  and arrow-key history searching. SecretManagement replaces saving passwords in plain text files. 2. The PowerShell Project Lifecycle (DevOps)"
+        },
+        {
+          "type": "mermaid",
+          "content": "graph LR    subgraph Init [1. Initialization]        Plaster[Plaster<br/>Scaffold Project]        PSDepend[PSDepend<br/>Install Dependencies]    end    subgraph Dev [2. Development]        PSScriptAnalyzer[PSScriptAnalyzer<br/>Linting/Spell-check]    end    subgraph Verify [3. Quality Assurance]        Pester[Pester<br/>Unit/Integration Tests]    end    subgraph Build [4. Build & Package]        InvokeBuild[InvokeBuild<br/>Automation Orchestration]        ModuleBuilder[ModuleBuilder<br/>Compile .psm1]    end    subgraph Docs [5. Documentation]        platyPS[platyPS<br/>Generate Markdown Help]    end    subgraph Publish [6. Distribution]        PowerShellGet[PowerShellGet<br/>Publish to Gallery]    end    Plaster --> PSDepend    PSDepend --> Dev    Dev --> PSScriptAnalyzer    PSScriptAnalyzer --> Verify    Verify --> Pester    Pester --> InvokeBuild    InvokeBuild --> ModuleBuilder    ModuleBuilder --> platyPS    platyPS --> Publish #mermaid-8f2b6cbb-0659-46e8-82dd-4d06087227ce{font-family:\"trebuchet ms\",verdana,arial,sans-serif;font-size:16px;fill:#333}#mermaid-8f2b6cbb-0659-46e8-82dd-4d06087227ce .edge-thickness-normal{stroke-width:1px}#mermaid-8f2b6cbb-0659-46e8-82dd-4d06087227ce .edge-pattern-solid{stroke-dasharray:0}#mermaid-8f2b6cbb-0659-46e8-82dd-4d06087227ce .marker{fill:#333333;stroke:#333333}#mermaid-8f2b6cbb-0659-46e8-82dd-4d06087227ce .marker.cross{stroke:#333333}#mermaid-8f2b6cbb-0659-46e8-82dd-4d06087227ce p{margin:0}#mermaid-8f2b6cbb-0659-46e8-82dd-4d06087227ce .label{font-family:\"trebuchet ms\",verdana,arial,sans-serif;color:#333}#mermaid-8f2b6cbb-0659-46e8-82dd-4d06087227ce span{fill:#333;color:#333}#mermaid-8f2b6cbb-0659-46e8-82dd-4d06087227ce .node rect{fill:#ECECFF;stroke:#9370DB;stroke-width:1px}#mermaid-8f2b6cbb-0659-46e8-82dd-4d06087227ce .node .label{text-align:center}#mermaid-8f2b6cbb-0659-46e8-82dd-4d06087227ce .flowchart-link{stroke:#333333;fill:none}#mermaid-8f2b6cbb-0659-46e8-82dd-4d06087227ce .edgeLabel{background-color:rgba(232,232,232,0.8);text-align:center}#mermaid-8f2b6cbb-0659-46e8-82dd-4d06087227ce .labelBkg{background-color:rgba(232,232,232,0.5)}#mermaid-8f2b6cbb-0659-46e8-82dd-4d06087227ce .cluster rect{fill:#ffffde;stroke:#aaaa33;stroke-width:1px}#mermaid-8f2b6cbb-0659-46e8-82dd-4d06087227ce .cluster span{color:#333}Unsupported markdown: listUnsupported markdown: listUnsupported markdown: listUnsupported markdown: listUnsupported markdown: listUnsupported markdown: listPowerShellGetPublish to GalleryPlasterScaffold ProjectPSDependInstall DependenciesPSScriptAnalyzerLinting/Spell-checkPesterUnit/Integration TestsInvokeBuildAutomation OrchestrationModuleBuilderCompile .psm1platyPSGenerate Markdown Help  How to Leverage:  Use Plaster to never start from a blank file. Run PSScriptAnalyzer every time you save. Run Pester every time you commit code. Use InvokeBuild to run the testing and building steps automatically. 3. Data Manipulation & Reporting"
+        },
+        {
+          "type": "mermaid",
+          "content": "graph LR    Input[Raw Data<br/>APIs, CSVs, DB]    subgraph Process [Processing]        PSNeo4j[PSNeo4j<br/>Graph DB Interactions]    end    subgraph Output [Output Generation]        ImportExcel[ImportExcel<br/>Spreadsheets]        PSWriteWord[PSWriteWord<br/>Word Docs]        PSWritePDF[PSWritePDF<br/>PDF Reports]    end    subgraph Alert [User Notification]        BurntToast[BurntToast<br/>Toast Notifications]    end    Input --> Process    Input --> Output        Process --> Output    Output --> BurntToast    style ImportExcel fill:#c8e6c9,stroke:#1b5e20    style BurntToast fill:#ffccbc,stroke:#bf360c #mermaid-da85e441-7dd4-4c6f-84d9-4b31449570f9{font-family:\"trebuchet ms\",verdana,arial,sans-serif;font-size:16px;fill:#333}#mermaid-da85e441-7dd4-4c6f-84d9-4b31449570f9 .edge-thickness-normal{stroke-width:1px}#mermaid-da85e441-7dd4-4c6f-84d9-4b31449570f9 .edge-pattern-solid{stroke-dasharray:0}#mermaid-da85e441-7dd4-4c6f-84d9-4b31449570f9 .marker{fill:#333333;stroke:#333333}#mermaid-da85e441-7dd4-4c6f-84d9-4b31449570f9 .marker.cross{stroke:#333333}#mermaid-da85e441-7dd4-4c6f-84d9-4b31449570f9 p{margin:0}#mermaid-da85e441-7dd4-4c6f-84d9-4b31449570f9 .label{font-family:\"trebuchet ms\",verdana,arial,sans-serif;color:#333}#mermaid-da85e441-7dd4-4c6f-84d9-4b31449570f9 .cluster-label span p{background-color:transparent}#mermaid-da85e441-7dd4-4c6f-84d9-4b31449570f9 span{fill:#333;color:#333}#mermaid-da85e441-7dd4-4c6f-84d9-4b31449570f9 .node rect{fill:#ECECFF;stroke:#9370DB;stroke-width:1px}#mermaid-da85e441-7dd4-4c6f-84d9-4b31449570f9 .node .label{text-align:center}#mermaid-da85e441-7dd4-4c6f-84d9-4b31449570f9 .flowchart-link{stroke:#333333;fill:none}#mermaid-da85e441-7dd4-4c6f-84d9-4b31449570f9 .edgeLabel{background-color:rgba(232,232,232,0.8);text-align:center}#mermaid-da85e441-7dd4-4c6f-84d9-4b31449570f9 .labelBkg{background-color:rgba(232,232,232,0.5)}#mermaid-da85e441-7dd4-4c6f-84d9-4b31449570f9 .cluster rect{fill:#ffffde;stroke:#aaaa33;stroke-width:1px}#mermaid-da85e441-7dd4-4c6f-84d9-4b31449570f9 .cluster span{color:#333}User NotificationOutput GenerationImportExcelSpreadsheetsPSWriteWordWord DocsPSWritePDFPDF ReportsProcessingPSNeo4jGraph DB InteractionsRaw DataAPIs, CSVs, DBBurntToastToast Notifications  How to Leverage:  ImportExcel is not just for reading; use it to format beautiful reports without the Excel COM object overhead. BurntToast allows for long-running scripts to notify you when they finish, even if you are minimized. 4. The Package Management Ecosystem"
+        },
+        {
+          "type": "mermaid",
+          "content": "graph TD    User[You / Your Script]    subgraph Core_Managers [Core Package Managers]        PackMan[PackageManagement<br/>Underlying Provider]        PSGallery[PowerShellGet<br/>Module Management]    end    subgraph App_Layer [Application / OS Layer]        WinGet[Microsoft.WinGet.Client<br/>Windows Apps]        PSUp[PSWindowsUpdate<br/>Windows Updates]    end    subgraph Project_Layer [Project Dependency Layer]        PSDepend[PSDepend<br/>Declares<br/>Required Modules]    end    User -->|Install Module| PSGallery    PSGallery -->|Uses| PackMan        User -->|Install App| WinGet    User -->|Manage Updates| PSUp    User -->|Check Requirements| PSDepend    PSDepend -->|Calls| PSGallery    style PSGallery fill:#e3f2fd,stroke:#1565c0    style WinGet fill:#f3e5f5,stroke:#7b1fa2    style PSDepend fill:#fff8e1,stroke:#ff8f00 #mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2{font-family:\"trebuchet ms\",verdana,arial,sans-serif;font-size:16px;fill:#333}#mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2 .edge-thickness-normal{stroke-width:1px}#mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2 .edge-pattern-solid{stroke-dasharray:0}#mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2 .marker{fill:#333333;stroke:#333333}#mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2 .marker.cross{stroke:#333333}#mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2 p{margin:0}#mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2 .label{font-family:\"trebuchet ms\",verdana,arial,sans-serif;color:#333}#mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2 .cluster-label span p{background-color:transparent}#mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2 span{fill:#333;color:#333}#mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2 .node rect{fill:#ECECFF;stroke:#9370DB;stroke-width:1px}#mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2 .node .label{text-align:center}#mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2 .flowchart-link{stroke:#333333;fill:none}#mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2 .edgeLabel{background-color:rgba(232,232,232,0.8);text-align:center}#mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2 .edgeLabel p{background-color:rgba(232,232,232,0.8)}#mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2 .labelBkg{background-color:rgba(232,232,232,0.5)}#mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2 .cluster rect{fill:#ffffde;stroke:#aaaa33;stroke-width:1px}#mermaid-9af303e5-3377-4a9e-a0f8-cfc67fea70a2 .cluster span{color:#333}Project Dependency LayerApplication / OS LayerCore Package ManagersInstall ModuleUsesInstall AppManage UpdatesCheck RequirementsCallsYou / Your ScriptPackageManagementUnderlying ProviderPowerShellGetModule ManagementMicrosoft.WinGet.ClientWindows AppsPSWindowsUpdateWindows UpdatesPSDependDeclaresRequired Modules  How to Leverage:  Use PowerShellGet for your PowerShell tools (like Pester, PSReadLine). Use WinGet for installing actual software (like Chrome, VS Code, Notepad++). Use PSDepend inside your projects so that when someone else downloads your script, it automatically installs everything it needs to run. 5. The Feedback Loop"
+        }
+      ],
+      "timestamp": "2025-12-27T23:16:00.000Z",
+      "contentHash": "2982c463f4b084bb1ff9accae8a870dad9e316982aa7f726e322e0489fc7092f"
+    },
+    {
+      "id": "9e045a67-03e6-4e4f-92ef-36ed3b37c3c8",
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "content": "PROJECT_SOURCE_CODE_20251227_231710.txt TXT 1.3 MB     what is missing for this project top top productivitiy"
+        },
+        {
+          "type": "image",
+          "content": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgaWQ9InR4dCI+CjxyZWN0IGlkPSJSZWN0YW5nbGUgMzQ5OCIgeD0iMTkuNTk5NiIgeT0iMTAiIHdpZHRoPSI4LjQiIGhlaWdodD0iMTgiIHJ4PSIzIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfNDYzXzIzNzUpIi8+CjxwYXRoIGlkPSJVbmlvbiIgZD0iTTIwIDRDMjEuNjU2OSA0IDIzIDUuMzQzMTUgMjMgN1YyNEgyNS41VjI4SDdDNS4zNDMxNSAyOCA0IDI2LjY1NjkgNCAyNVY3QzQgNS4zNDMxNSA1LjM0MzE1IDQgNyA0SDIwWiIgZmlsbD0idXJsKCNwYWludDFfbGluZWFyXzQ2M18yMzc1KSIvPgo8cGF0aCBpZD0iUmVjdGFuZ2xlIDM0OTkiIGQ9Ik0yMyAyNEMyMyAyMi42MTkzIDI0LjExOTMgMjEuNSAyNS41IDIxLjVDMjYuODgwNyAyMS41IDI4IDIyLjYxOTMgMjggMjRWMjUuNUMyOCAyNi44ODA3IDI2Ljg4MDcgMjggMjUuNSAyOEMyNC4xMTkzIDI4IDIzIDI2Ljg4MDcgMjMgMjUuNVYyNFoiIGZpbGw9IiMzMjg4ODUiLz4KPGcgaWQ9IlRYVCI+CjxwYXRoIGlkPSJWZWN0b3IiIGQ9Ik0xOC4yMDU1IDE5LjA2M0gxNy4yODE1VjE0LjQ1SDE1LjY4NTVWMTMuNTgySDE5Ljc5NDVWMTQuNDVIMTguMjA1NVYxOS4wNjNaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBpZD0iVmVjdG9yXzIiIGQ9Ik0xMy43NjM5IDE2LjJMMTUuNjMyOSAxOS4wNjNIMTQuNDk4OUwxMy4yMTA5IDE2Ljk3TDExLjk3MTkgMTkuMDYzSDEwLjgzNzlMMTIuNjkyOSAxNi4xNjVMMTAuOTQ5OSAxMy41ODJIMTIuMDY5OUwxMy4yNTk5IDE1LjQyM0wxNC40MDA5IDEzLjU4MkgxNS41MTM5TDEzLjc2MzkgMTYuMloiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGlkPSJWZWN0b3JfMyIgZD0iTTkuMTk1NzggMTkuMDYzSDguMjcxNzhWMTQuNDVINi42NzU3OFYxMy41ODJIMTAuNzg0OFYxNC40NUg5LjE5NTc4VjE5LjA2M1oiIGZpbGw9IndoaXRlIi8+CjwvZz4KPC9nPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzQ2M18yMzc1IiB4MT0iMjcuNDk5NSIgeTE9IjExIiB4Mj0iMjUuNDk5NSIgeTI9IjIyLjUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzNDQkVBNiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzMTgzODEiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDFfbGluZWFyXzQ2M18yMzc1IiB4MT0iNiIgeTE9IjUuNSIgeDI9IjIxLjk3MDEiIHkyPSIyOS42ODk3IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMzQ0I1QkUiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNUJEQUNCIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+Cg==",
+          "alt": "Text"
+        }
+      ],
+      "timestamp": "2026-01-25T19:15:39.089Z",
+      "contentHash": "3b3320d8adc7d0bd14f5b408cc0c46eed227e97a63475478032fdb20e794b13b"
+    },
+    {
+      "id": "241f9340-14d6-468c-8f36-8c3ed5cc006f",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "content": "Thought Process    嗯，用户想要了解如何让这个PowerShell Workspace项目达到顶级生产力水平。从提供的项目代码结构来看，这是一个相当全面的PowerShell自动化框架，包含了AI集成、上下文管理、自动化桥接等功能。 用户可能是一个PowerShell开发者或系统管理员，正在寻找提升这个项目生产力的方法。我需要从开发效率、功能完整性、安全性和协作性等多个维度来分析。 我看到的搜索结果中有很多有用的信息。关于PowerShell开发环境，php +2 提到了VSCode配置PowerShell开发环境的最佳实践，包括安装扩展、配置调试器、设置代码分析等。这些对于提升开发效率很重要。 在模块化开发方面，blog.csdn +2 介绍了PowerShell模块开发模板工具，如Plaster、PSModuleDevelopment和Catesta，这些可以标准化项目结构并提高开发效率。 关于AI集成，blog.csdn +2 讨论了PowerShell与AI的结合，包括PSAI模块和Qwen3等工具，这与用户项目中的AI.ps1组件相关。 安全性方面，cfanz +2 提供了PowerShell凭据管理的最佳实践，包括使用SecretManagement模块和SecureString来安全存储敏感信息。 代码质量方面，blog.csdn  提供了详细的PowerShell最佳实践和风格指南，包括命名规范、代码布局和函数结构等。 我打算从几个关键维度来构建回答：开发环境与工具链、模块化与可维护性、AI与自动化能力、安全性与合规性、测试与质量保证、文档与知识管理，以及部署与运维。每个维度都会分析现状和改进建议，并提供具体的实施步骤。 我会使用一些可视化工具来增强回答的效果，比如Mermaid流程图展示CI/CD流程，表格对比不同开发工具的特点，以及徽章标识重要程度。还会使用折叠区域来包含一些技术细节，保持主回答的简洁性。 对于开发环境，我会重点推荐VSCode配置和模块化工具；对于AI能力，会建议集成更多AI服务；对于安全性，会强调凭证管理和执行策略；对于测试，会推荐Pester框架；对于文档，会建议使用platyPS。 最后，我会提供一个实施路线图，帮助用户按优先级逐步实施这些改进建议，确保项目能够持续提升生产力。   Based on the PWS project structure and the PowerShell ecosystem, I'll analyze what's missing for achieving top-tier productivity and provide a comprehensive improvement plan. The analysis considers your existing components (AI integration, context management, automation) and gaps in modern PowerShell development practices. 🚀 Current PWS Project Assessment Your PWS (PowerShell Workspace) project already has a strong foundation with AI integration (), context management (, ), automation bridging (), and a UI system. However, achieving top-tier productivity requires addressing gaps in development environment, modularity, security, testing, documentation, and CI/CD. 📊 Productivity Gap Analysis Category Current State Missing for Top Productivity Impact  Development EnvironmentBasic scripting setupVSCode integration, debugging, PSScriptAnalyzer rules⚠️ Reduces coding efficiency by 40-60% Modular ArchitectureCore modules presentStandardized module structure, proper manifest files⚠️ Limits code reuse and distribution SecurityBasic automationSecret management, credential handling, execution policies⚠️ High security risk for production use Testing FrameworkSome test files presentComprehensive Pester tests, code coverage, CI integration⚠️ Unreliable code, deployment failures DocumentationBasic code commentsPlatyps help generation, API documentation, README⚠️ Poor usability, knowledge transfer issues AI IntegrationOpenAI integration in PSAI module, agent framework, automated task planning⚠️ AI capabilities underutilized CI/CDManual build scriptsAutomated testing, publishing, versioning⚠️ Slow, error-prone deployments    🔧 Essential Productivity Enhancements 1. Modern Development Environment Setup Your project would benefit significantly from a professional development environment. Currently, you have some scripts like , but lack integrated tooling.      flowchart LR    A[VSCode Setup] --> B[PowerShell Extension]    A --> C[Code Formatting]    A --> D[Debugger Config]    A --> E[Task Runner]        B --> F[Intelligent Syntax]    B --> G[Module Auto-loading]    B --> H[PSScriptAnalyzer Integration]        C --> I[PSFormat Module]    C --> J[Invoke-Formatter Auto-fix]        D --> K[Launch.json Configuration]    D --> L[Breakpoint Debugging]    D --> M[Variable Inspection]        E --> N[Build Tasks]    E --> O[Test Tasks]    E --> P[Publish Tasks]        style A fill:#e3f2fd,stroke:#2196f3,color:#0d47a1    style F fill:#bbdefb,stroke:#2196f3,color:#0d47a1    style G fill:#bbdefb,stroke:#2196f3,color:#0d47a1    style H fill:#bbdefb,stroke:#2196f3,color:#0d47a1 #mermaid-ca9be589-5a32-4d38-b4c0-ec22dc7f439d{font-family:\"trebuchet ms\",verdana,arial,sans-serif;font-size:16px;fill:#333}#mermaid-ca9be589-5a32-4d38-b4c0-ec22dc7f439d .edge-thickness-normal{stroke-width:1px}#mermaid-ca9be589-5a32-4d38-b4c0-ec22dc7f439d .edge-pattern-solid{stroke-dasharray:0}#mermaid-ca9be589-5a32-4d38-b4c0-ec22dc7f439d .marker{fill:#333333;stroke:#333333}#mermaid-ca9be589-5a32-4d38-b4c0-ec22dc7f439d .marker.cross{stroke:#333333}#mermaid-ca9be589-5a32-4d38-b4c0-ec22dc7f439d p{margin:0}#mermaid-ca9be589-5a32-4d38-b4c0-ec22dc7f439d .label{font-family:\"trebuchet ms\",verdana,arial,sans-serif;color:#333}#mermaid-ca9be589-5a32-4d38-b4c0-ec22dc7f439d span{fill:#333;color:#333}#mermaid-ca9be589-5a32-4d38-b4c0-ec22dc7f439d .node rect{fill:#ECECFF;stroke:#9370DB;stroke-width:1px}#mermaid-ca9be589-5a32-4d38-b4c0-ec22dc7f439d .node .label{text-align:center}#mermaid-ca9be589-5a32-4d38-b4c0-ec22dc7f439d .flowchart-link{stroke:#333333;fill:none}#mermaid-ca9be589-5a32-4d38-b4c0-ec22dc7f439d .edgeLabel{background-color:rgba(232,232,232,0.8);text-align:center}#mermaid-ca9be589-5a32-4d38-b4c0-ec22dc7f439d .labelBkg{background-color:rgba(232,232,232,0.5)}VSCode SetupPowerShell ExtensionCode FormattingDebugger ConfigTask RunnerIntelligent SyntaxModule Auto-loadingPSScriptAnalyzer IntegrationPSFormat ModuleInvoke-Formatter Auto-fixLaunch.json ConfigurationBreakpoint DebuggingVariable InspectionBuild TasksTest TasksPublish Tasks  Implementation Steps: Install VSCode PowerShell Extension:powershell    code --install-extension ms-vscode.PowerShell    Configure PSScriptAnalyzer in :json    {    \"powershell.scriptAnalysis.enable\": true,    \"powershell.scriptAnalysis.settingsPath\": \"./PSScriptAnalyzerSettings.psd1\",    \"powershell.codeFormatting.preset\": \"OTBS\",    \"powershell.codeFormatting.alignPropertyValuePairs\": true,    \"powershell.codeFormatting.useConstantCorrectnessCasing\": true}    Create PSScriptAnalyzer Settings ():powershell    @{    Rules = @{        PSAvoidUsingCmdletAliases = @{Enable = $true}        PSUseShouldProcessForStateChangingFunctions = @{Enable = $true}        PSUseSingularNouns = @{Enable = $true}        PSUseDeclaredVarsMoreThanAssignments = @{Enable = $true}        PSUseToExportFieldsInManifest = @{Enable = $true}    }}    2. Modular Architecture Enhancement Your project has core modules but lacks standard module manifests and proper structure for distribution. Missing Components:  Module Manifest (.psd1) for versioning and dependency management Proper directory structure following PowerShell module conventions Public/Private function separation for cleaner API Recommended Structure:     PWS/├── PWS.psd1 (module manifest)├── PWS.psm1 (root module)├── Public/│   ├── AI.ps1│   ├── ContextManagement.ps1│   └── Automation.ps1├── Private/│   ├── InternalHelpers.ps1│   └── SecretHandlers.ps1├── Tests/│   └── PWS.Tests.ps1├── Docs/│   └── en-US/│       └── about_PWS.help.txt└── Examples/    └── BasicUsage.ps1   Generate Manifest with Plaster: powershell    # Install PlasterInstall-Module Plaster -Scope CurrentUser# Create template $plasterParams = @{    TemplatePath = \"https://github.com/PowerShell/Plaster/raw/master/Templates/ModuleTemplate\"    DestinationPath = \".\\PWS\"    ModuleName = \"PWS\"    ModuleDescription = \"PowerShell-based AI assistant with context management\"    Version = \"1.0.0\"    Author = \"VIVIM.inc\"    FunctionsToExport = @(\"Invoke-AI\", \"Get-Context\", \"Start-Automation\")}Invoke-Plaster @plasterParams   3. Security & Credential Management Your project includes some automation but lacks secure credential handling, which is critical for production use. Current Gaps:  ❌ No secret management system ❌ Hardcoded credentials possible ❌ No execution policy enforcement ❌ No constrained language mode for untrusted scripts Implementation with SecretManagement: powershell    # Install required modulesInstall-Module Microsoft.PowerShell.SecretManagement -Scope CurrentUserInstall-Module Microsoft.PowerShell.SecretStore -Scope CurrentUser# Register local secret vaultRegister-SecretVault -Name PWSVault -Module Microsoft.PowerShell.SecretStore -DefaultVault# Set a secret (credential) $credential = Get-CredentialSet-Secret -Name \"OpenAI-API-Key\" -Secret $credential# Retrieve secret in scripts $apiCredential = Get-Secret -Name \"OpenAI-API-Key\" -AsPlainText   Execution Policy Configuration: powershell    # Set execution policy for development machinesSet-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser# For production, consider AllSigned with code signing# Protect scripts from tampering using Authenticode signing   4. Comprehensive Testing Framework You have test files but they're not comprehensive or integrated into a CI/CD pipeline. Missing Testing Capabilities:  ❌ Unit tests for all functions ❌ Integration tests for automation workflows ❌ Code coverage reporting ❌ Continuous testing during development Pester Test Structure: powershell    # PWS.Tests.ps1BeforeAll {    $moduleRoot = Split-Path -Parent $PSScriptRoot    Import-Module \"$moduleRoot\\PWS.psd1\" -Force}Describe 'AI Integration' {    Context 'OpenAI API Calls' {        BeforeEach {            Mock Invoke-RestMethod {                return @{ choices = @{ message = @{ content = \"Test response\" } } }            }        }                It 'Should invoke AI with correct parameters' {            $result = Invoke-AI -Prompt \"Test prompt\"            $result | Should -Not -BeNullOrEmpty        }                It 'Should handle API errors gracefully' {            Mock Invoke-RestMethod { throw [System.Net.WebException]::new() }            { Invoke-AI -Prompt \"Test\" } | Should -Not -Throw        }    }}Describe 'Context Management' {    It 'Should create context pool correctly' {        $pool = New-ContextPool        $pool.Contexts.Count | Should -Be 0    }}   Code Coverage Integration: powershell    # Install Pester and coverageInstall-Module Pester -MinimumVersion 5.0 -Scope CurrentUser# Run tests with coverage $config = New-PesterConfiguration $config.Run.PassThru = $true $config.CodeCoverage.Enabled = $true $config.CodeCoverage.Path = \".\\PWS\\Public\\*.ps1\" $config.CodeCoverage.OutputPath = \".\\coverage.xml\" $config.TestResult.Enabled = $true $config.TestResult.OutputPath = \".\\testResults.xml\"Invoke-Pester -Configuration $config   5. Documentation & Help System Your code has some comments but lacks comprehensive documentation and help files. Missing Documentation Elements:  ❌ Comment-based help for functions ❌ About topics for conceptual help ❌ API documentation generation ❌ Examples and usage scenarios Implement Comment-Based Help: powershell    <#.SYNOPSIS    Invokes the AI assistant with context awareness..DESCRIPTION    The Invoke-AI function sends prompts to the configured AI model    with automatic context injection from the context pool. It supports    streaming responses and error handling..PARAMETER Prompt    The user prompt to send to the AI model..PARAMETER ContextName    The name of the context to inject into the prompt..PARAMETER Model    The AI model to use (default: gpt-4)..EXAMPLE    Invoke-AI -Prompt \"What is PowerShell?\" -ContextName \"PowerShellBasics\".EXAMPLE    Invoke-AI -Prompt \"Generate a script\" | Out-File -FilePath \".\\script.ps1\".INPUTS    System.String.OUTPUTS    System.String    The AI-generated response..NOTES    Author: VIVIM.inc    Version: 1.0.0#>function Invoke-AI {   Generate External Help with Platyps: powershell    # Install PlatypsInstall-Module platyPS -Scope CurrentUser# Generate markdown from comment-based help $markdownParams = @{    Module = \"PWS\"    OutputFolder = \".\\Docs\\Markdown\"    Force = $true}New-MarkdownHelp @markdownParams# Update help files when code changesUpdate-MarkdownHelpModule -Path \".\\Docs\\Markdown\" -RefreshHelpPage# Create external help from markdownNew-ExternalHelp -Path \".\\Docs\\Markdown\" -OutputPath \".\\PWS\\en-US\" -Force   6. Enhanced AI Integration Your  already has OpenAI integration, but you can expand it with a more powerful agent framework. Missing AI Capabilities:  ❌ Agent-based task planning ❌ Tool calling functions ❌ Memory and context persistence ❌ Multi-model support Implement PSAI Module: powershell    # Install PSAI moduleInstall-Module PSAI -Scope CurrentUser# Create AI agent with tools $agentParams = @{    Name = \"PWSAgent\"    Model = \"gpt-4\"    Tools = @(        \"FileSystemTool\",       # File operations        \"PowerShellTool\",      # Execute PowerShell        \"WebSearchTool\",       # Internet search        \"ContextInjectionTool\" # Use PWS context    )    Instructions = @\"    You are a PowerShell automation assistant with access to context management.    Always use the ContextInjectionTool before answering to provide relevant context.    Execute PowerShell commands only when explicitly requested.    Maintain context of previous conversations in the PWS context pool.\"@} $agent = New-PSAIAgent @agentParams# Use agent for complex tasks $response = $agent | Invoke-PSAIAgent -Prompt \"Automate the deployment of this web application\"# Agent will automatically:# 1. Inject relevant context# 2. Plan the deployment steps# 3. Execute necessary PowerShell commands# 4. Search the web for best practices# 5. Generate documentation   7. CI/CD Pipeline Implementation Your project has some build scripts () but lacks automated testing and publishing. CI/CD Pipeline with GitHub Actions: yaml    # .github/workflows/test-and-publish.ymlname: Test and Publish PWSon:  push:    branches: [ main, develop ]  pull_request:    branches: [ main ]jobs:  test:    runs-on: ubuntu-latest    steps:    - uses: actions/checkout@v3        - name: Install PowerShell      uses: pwsh-actions/setup-powershell@v1        - name: Install dependencies      run: |        Install-Module -Name Pester -MinimumVersion 5.0 -Force        Install-Module -Name PSScriptAnalyzer -Force        Install-Module -Name platyPS -Force        - name: Run Pester tests      run: |        $config = New-PesterConfiguration        $config.Run.Path = \".\\Tests\"        $config.TestResult.Enabled = $true        $config.TestResult.OutputPath = \".\\testResults.xml\"        $config.CodeCoverage.Enabled = $true        $config.CodeCoverage.Path = \".\\PWS\\Public\\*.ps1\"        $config.CodeCoverage.OutputPath = \".\\coverage.xml\"        Invoke-Pester -Configuration $config        - name: Upload test results   📋 Implementation Roadmap To achieve top productivity without overwhelming yourself, follow this phased implementation:  99123456789101112131415161718timeline    title PWS Productivity Enhancement Timeline    section Phase 1: Foundation (Week 1-2)        Setup VSCode Environment : Install extensions, configure PSScriptAnalyzer        Basic Testing Structure : Create Pester test framework        Security Foundation : Implement SecretManagement    section Phase 2: Structure (Week 3-4)        Modular Architecture : Reorganize into proper module structure        Documentation : Add comment-based help        Build System : Enhance AutoBuild.ps1 with InvokeBuild    section Phase 3: Enhancement (Week 5-6)        Advanced AI Integration : Implement PSAI agents        Comprehensive Testing : Add integration tests, coverage        CI/CD Pipeline : Set up GitHub Actions    section Phase 4: Optimization (Week 7-8)        Performance Tuning : Optimize context management        Documentation Generation : Use Platyps for external help        Publishing : Publish to PowerShell Gallery 🎯 Priority Implementation Matrix Enhancement Effort Impact Priority  VSCode + PSScriptAnalyzerLowHigh🔥 Critical SecretManagement SetupLowHigh🔥 Critical Basic Pester TestsMediumHigh🔥 Critical Module StructureHighHigh⭐ High Comment-Based HelpLowMedium⭐ High Platyps DocumentationMediumMedium📈 Medium PSAI IntegrationMediumHigh📈 Medium CI/CD PipelineHighHigh📈 Medium Advanced AI AgentsHighMedium🔵 Low    🔐 Security & Best Practices Checklist  💡 Critical Security Implementations:  Implement SecretManagement for all credentials Set execution policy to RemoteSigned or AllSigned Use constrained language mode for untrusted scripts Implement JEA (Just Enough Administration) endpoints Enable PowerShell script block logging Use code signing for production scripts  📚 Recommended PowerShell Modules Category Module Purpose Install  DevelopmentPSScriptAnalyzerCode analysis and linting TestingPesterUnit testing framework DocumentationplatyPSGenerate help documentation SecuritySecretManagementSecure credential storage AutomationPSAIAI agent framework BuildInvokeBuildBuild automation tool PackagingModuleBuilderCreate module packages    🚀 Quick Wins for Immediate Productivity If you want to start improving productivity today, implement these three changes: VSCode Configuration (15 minutes): powershell    # Install VSCode extensioncode --install-extension ms-vscode.PowerShell# Create .vscode/settings.json@'{    \"powershell.scriptAnalysis.enable\": true,    \"powershell.codeFormatting.preset\": \"OTBS\",    \"powershell.integratedConsole.showOnStartup\": false}'@ | Out-File -FilePath .vscode\\settings.json -Encoding utf8    Basic Pester Test (30 minutes): powershell    # Install PesterInstall-Module Pester -MinimumVersion 5.0 -Scope CurrentUser# Create basic test file@'Describe 'PWS Basic Tests' {    It 'Should import module successfully' {        { Import-Module .\\PWS.psd1 -ErrorAction Stop } | Should -Not -Throw    }}'@ | Out-File -FilePath Tests\\PWS.Tests.ps1 -Encoding utf8# Run testsInvoke-Pester -Path .\\Tests    Secret Management (20 minutes): powershell    # Install SecretManagementInstall-Module Microsoft.PowerShell.SecretManagement -Scope CurrentUserInstall-Module Microsoft.PowerShell.SecretStore -Scope CurrentUser# Register vaultRegister-SecretVault -Name PWSVault -Module Microsoft.PowerShell.SecretStore -DefaultVault# Store your first secretSet-Secret -Name \"TestSecret\" -Secret \"MySecureValue\"# Retrieve itGet-Secret -Name \"TestSecret\" -AsPlainText    📖 Conclusion: Your Path to Top Productivity Your PWS project has excellent potential with its AI integration and context management. By implementing the missing components outlined above, you'll transform it from a good automation tool into a professional, enterprise-ready PowerShell framework. The key is to start with the critical foundation (development environment, security, testing) before moving to advanced features (AI agents, CI/CD). Follow the phased roadmap to avoid overwhelming yourself, and prioritize quick wins for immediate productivity gains.  🎯 Remember: Productivity isn't just about writing code faster—it's about creating a maintainable, secure, and collaborative development environment that scales with your needs. The investments in testing, documentation, and automation will pay dividends many times over in the long run.            Sources"
+        },
+        {
+          "type": "code",
+          "content": "AI.ps1",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ContextPool",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ContextInjector",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ComputerUseBridge",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "AI.ps1",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "concat_source_code.ps1",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": ".vscode/settings.json",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "PSScriptAnalyzerSettings.psd1",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "AI.ps1",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "AutoBuild.ps1",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Install-Module PSScriptAnalyzer",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Install-Module Pester -MinimumVersion 5.0",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Install-Module platyPS",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Install-Module Microsoft.PowerShell.SecretManagement",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Install-Module PSAI",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Install-Module InvokeBuild",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Install-Module ModuleBuilder",
+          "language": "text"
+        },
+        {
+          "type": "image",
+          "content": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI1LjMuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDMwIDMwIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAzMCAzMDsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtvcGFjaXR5OjAuMztmaWxsOiNFMkU0RTc7fQoJLnN0MXtvcGFjaXR5OjAuODtmaWxsOiNFMkU0RTc7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLXdpZHRoOjU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MntmaWxsOnVybCgjU1ZHSURfMV8pO30KCS5zdDN7ZmlsbDpub25lO3N0cm9rZTojRTBFNEU5O3N0cm9rZS13aWR0aDowLjI1O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDR7ZmlsbDpub25lO30KCS5zdDV7ZmlsbDojOURBMUE1O30KCS5zdDZ7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDpub25lO30KCS5zdDd7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDojREZFMkU3O30KCS5zdDh7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDojQ0RENERBO30KCS5zdDl7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDojQjNCQ0M3O30KCS5zdDEwe2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6IzlEQUFCNzt9Cgkuc3QxMXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiM4Njk4QTg7fQoJLnN0MTJ7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDp1cmwoI1NWR0lEXzJfKTt9Cgkuc3QxM3tmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfM18pO30KCS5zdDE0e2ZpbGw6IzFGNjNFQzt9Cgkuc3QxNXtmaWxsOiMyRDJEMkQ7fQoJLnN0MTZ7ZmlsbDpub25lO3N0cm9rZTojRTBFNEU5O3N0cm9rZS13aWR0aDowLjU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTd7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDp1cmwoI1NWR0lEXzRfKTt9Cgkuc3QxOHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNV8pO30KCS5zdDE5e2ZpbGw6bm9uZTtzdHJva2U6IzY3NzM4MDtzdHJva2Utd2lkdGg6MC41O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDIwe2ZpbGw6bm9uZTtzdHJva2U6dXJsKCNTVkdJRF82Xyk7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MjF7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDp1cmwoI1NWR0lEXzdfKTt9Cgkuc3QyMntmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfOF8pO30KCS5zdDIze2ZpbGw6I0ZGRkZGRjt9Cgkuc3QyNHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiMyRDJEMkQ7fQoJLnN0MjV7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMTBfKTt9Cgkuc3QyNntjbGlwLXBhdGg6dXJsKCNTVkdJRF8xMl8pO30KCS5zdDI3e2ZpbGw6dXJsKCNTVkdJRF8xM18pO30KCS5zdDI4e2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6dXJsKCNTVkdJRF8xNF8pO30KCS5zdDI5e2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6dXJsKCNTVkdJRF8xNV8pO30KCS5zdDMwe2NsaXAtcGF0aDp1cmwoI1NWR0lEXzE3Xyk7fQoJLnN0MzF7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMTlfKTt9Cgkuc3QzMntmaWxsOnVybCgjU1ZHSURfMjBfKTt9Cgkuc3QzM3tmaWxsOm5vbmU7c3Ryb2tlOnVybCgjU1ZHSURfMjFfKTtzdHJva2Utd2lkdGg6MjtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QzNHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfMjJfKTt9Cgkuc3QzNXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfMjNfKTt9Cgkuc3QzNntjbGlwLXBhdGg6dXJsKCNTVkdJRF8yNV8pO30KCS5zdDM3e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzI3Xyk7fQoJLnN0Mzh7ZmlsbDp1cmwoI1NWR0lEXzI4Xyk7fQoJLnN0Mzl7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMzBfKTt9Cgkuc3Q0MHtjbGlwLXBhdGg6dXJsKCNTVkdJRF8zMl8pO30KCS5zdDQxe2ZpbGw6dXJsKCNTVkdJRF8zM18pO30KCS5zdDQye2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6IzEyNkVGNjt9Cgkuc3Q0M3tmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiNGRkZGRkY7fQoJLnN0NDR7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMzVfKTt9Cgkuc3Q0NXtjbGlwLXBhdGg6dXJsKCNTVkdJRF8zN18pO30KCS5zdDQ2e2ZpbGw6dXJsKCNTVkdJRF8zOF8pO30KCS5zdDQ3e2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6IzlEQTFBNTt9Cgkuc3Q0OHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfMzlfKTt9Cgkuc3Q0OXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDBfKTt9Cgkuc3Q1MHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDFfKTt9Cgkuc3Q1MXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDJfKTt9Cgkuc3Q1MntmaWxsOm5vbmU7c3Ryb2tlOnVybCgjU1ZHSURfNDNfKTtzdHJva2Utd2lkdGg6MjtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3Q1M3tmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOm5vbmU7c3Ryb2tlOiNFMEU0RTk7c3Ryb2tlLXdpZHRoOjAuNTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3Q1NHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDRfKTt9Cgkuc3Q1NXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDVfKTt9Cgkuc3Q1NntmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDZfKTt9Cgkuc3Q1N3tmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDdfKTt9Cgkuc3Q1OHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDhfKTt9Cgkuc3Q1OXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDlfKTt9Cgkuc3Q2MHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNTBfKTt9Cgkuc3Q2MXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNTFfKTt9Cgkuc3Q2MntmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNTJfKTt9Cgkuc3Q2M3tmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNTNfKTt9Cgkuc3Q2NHtjbGlwLXBhdGg6dXJsKCNTVkdJRF81NV8pO30KCS5zdDY1e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzU3Xyk7fQoJLnN0NjZ7ZmlsbDp1cmwoI1NWR0lEXzU4Xyk7fQoJLnN0Njd7Y2xpcC1wYXRoOnVybCgjU1ZHSURfNjBfKTt9Cgkuc3Q2OHtjbGlwLXBhdGg6dXJsKCNTVkdJRF82Ml8pO30KCS5zdDY5e2ZpbGw6dXJsKCNTVkdJRF82M18pO30KCS5zdDcwe2ZpbGw6bm9uZTtzdHJva2U6dXJsKCNTVkdJRF82NF8pO3N0cm9rZS13aWR0aDoyO3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDcxe2NsaXAtcGF0aDp1cmwoI1NWR0lEXzY2Xyk7fQoJLnN0NzJ7Y2xpcC1wYXRoOnVybCgjU1ZHSURfNjhfKTt9Cgkuc3Q3M3tmaWxsOnVybCgjU1ZHSURfNjlfKTt9Cgkuc3Q3NHtjbGlwLXBhdGg6dXJsKCNTVkdJRF83MV8pO30KCS5zdDc1e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzczXyk7fQoJLnN0NzZ7ZmlsbDp1cmwoI1NWR0lEXzc0Xyk7fQoJLnN0Nzd7Y2xpcC1wYXRoOnVybCgjU1ZHSURfNzZfKTt9Cgkuc3Q3OHtjbGlwLXBhdGg6dXJsKCNTVkdJRF83OF8pO30KCS5zdDc5e2ZpbGw6dXJsKCNTVkdJRF83OV8pO30KCS5zdDgwe2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6dXJsKCNTVkdJRF84MF8pO30KCS5zdDgxe2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6dXJsKCNTVkdJRF84MV8pO30KCS5zdDgye2NsaXAtcGF0aDp1cmwoI1NWR0lEXzgzXyk7fQoJLnN0ODN7Y2xpcC1wYXRoOnVybCgjU1ZHSURfODVfKTt9Cgkuc3Q4NHtmaWxsOnVybCgjU1ZHSURfODZfKTt9Cgkuc3Q4NXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfODdfKTt9Cgkuc3Q4NntmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfODhfKTt9Cgkuc3Q4N3tjbGlwLXBhdGg6dXJsKCNTVkdJRF85MF8pO30KCS5zdDg4e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzkyXyk7fQoJLnN0ODl7ZmlsbDp1cmwoI1NWR0lEXzkzXyk7fQoJLnN0OTB7ZmlsbDpub25lO3N0cm9rZTp1cmwoI1NWR0lEXzk0Xyk7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0OTF7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDp1cmwoI1NWR0lEXzk1Xyk7fQoJLnN0OTJ7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDp1cmwoI1NWR0lEXzk2Xyk7fQoJLnN0OTN7Y2xpcC1wYXRoOnVybCgjU1ZHSURfOThfKTt9Cgkuc3Q5NHtjbGlwLXBhdGg6dXJsKCNTVkdJRF8xMDBfKTt9Cgkuc3Q5NXtmaWxsOnVybCgjU1ZHSURfMTAxXyk7fQoJLnN0OTZ7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMTAzXyk7fQoJLnN0OTd7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMTA1Xyk7fQoJLnN0OTh7ZmlsbDp1cmwoI1NWR0lEXzEwNl8pO30KCS5zdDk5e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzEwOF8pO30KCS5zdDEwMHtjbGlwLXBhdGg6dXJsKCNTVkdJRF8xMTBfKTt9Cgkuc3QxMDF7ZmlsbDp1cmwoI1NWR0lEXzExMV8pO30KCS5zdDEwMntmaWxsOiNGRkZGRkY7c3Ryb2tlOiNCM0JDQzc7c3Ryb2tlLXdpZHRoOjAuMjc1O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDEwM3tjbGlwLXBhdGg6dXJsKCNTVkdJRF8xMTNfKTt9Cgkuc3QxMDR7ZmlsbDojRkREMTM4O30KCS5zdDEwNXtmaWxsOiNGQ0E2MkY7fQoJLnN0MTA2e2ZpbGw6I0ZCNzkyNzt9Cgkuc3QxMDd7ZmlsbDojRjQ0QjIyO30KCS5zdDEwOHtmaWxsOiNEODE5MTU7fQoJLnN0MTA5e2ZpbGw6IzJEMkQyRDtzdHJva2U6I0ZGRkZGRjtzdHJva2Utd2lkdGg6MC4zMzU0O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDExMHtmaWxsOm5vbmU7c3Ryb2tlOiM2NTcyN0Y7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTExe2ZpbGw6bm9uZTtzdHJva2U6IzY1NzI3RjtzdHJva2Utd2lkdGg6MC43NTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMTJ7ZmlsbDp1cmwoI1NWR0lEXzExNF8pO30KCS5zdDExM3tmaWxsOiNEMDZDNTA7fQoJLnN0MTE0e2ZpbGw6IzJEMkQyRDtzdHJva2U6I0IzQkNDNztzdHJva2Utd2lkdGg6MC4yNzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTE1e29wYWNpdHk6MC4yO30KCS5zdDExNntmaWxsOm5vbmU7c3Ryb2tlOiM2NzczODA7c3Ryb2tlLXdpZHRoOjAuMzU2NDtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMTd7ZmlsbDpub25lO3N0cm9rZTojNjc3MzgwO3N0cm9rZS13aWR0aDowLjM1NjQ7c3Ryb2tlLW1pdGVybGltaXQ6MTA7c3Ryb2tlLWRhc2hhcnJheToxLjAyMTIsMS4wMjEyO30KCS5zdDExOHtmaWxsOm5vbmU7c3Ryb2tlOiM2NzczODA7c3Ryb2tlLXdpZHRoOjAuMzU2NDtzdHJva2UtbWl0ZXJsaW1pdDoxMDtzdHJva2UtZGFzaGFycmF5OjEuMDIwNSwxLjAyMDU7fQoJLnN0MTE5e29wYWNpdHk6MC4yO2ZpbGw6bm9uZTt9Cgkuc3QxMjB7ZmlsbDpub25lO3N0cm9rZTojNjc3MzgwO3N0cm9rZS13aWR0aDowLjM2ODk7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTIxe2ZpbGw6bm9uZTtzdHJva2U6IzY3NzM4MDtzdHJva2Utd2lkdGg6MC4zNjg5O3N0cm9rZS1taXRlcmxpbWl0OjEwO3N0cm9rZS1kYXNoYXJyYXk6MS4wNTA5LDEuMDUwOTt9Cgkuc3QxMjJ7b3BhY2l0eTowLjM7ZmlsbDojMUY2M0VDO30KCS5zdDEyM3tmaWxsOiMyRDJEMkQ7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLXdpZHRoOjAuMzE2MjtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMjR7ZmlsbDojRkZGRkZGO3N0cm9rZTojQjNCQ0M3O3N0cm9rZS13aWR0aDowLjMxNjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTI1e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzExOF8pO30KCS5zdDEyNntmaWxsOnVybCgjU1ZHSURfMTE5Xyk7fQoJLnN0MTI3e2ZpbGw6bm9uZTtzdHJva2U6I0RGRTJFNztzdHJva2Utd2lkdGg6MC43NTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMjh7ZmlsbDojOURBMUE1O3N0cm9rZTojRkZGRkZGO3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDEyOXtmaWxsOnVybCgjU1ZHSURfMTIwXyk7fQoJLnN0MTMwe2ZpbGw6bm9uZTtzdHJva2U6IzY3NzM4MDtzdHJva2Utd2lkdGg6MC43NTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMzF7b3BhY2l0eTowLjQ7fQoJLnN0MTMye2NsaXAtcGF0aDp1cmwoI1NWR0lEXzEyMl8pO30KCS5zdDEzM3tjbGlwLXBhdGg6dXJsKCNTVkdJRF8xMjRfKTt9Cgkuc3QxMzR7ZmlsbDp1cmwoI1NWR0lEXzEyNV8pO30KCS5zdDEzNXtmaWxsOm5vbmU7c3Ryb2tlOiM4MzkyQTM7c3Ryb2tlLXdpZHRoOjAuMzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTM2e2ZpbGw6bm9uZTtzdHJva2U6IzgzOTJBMztzdHJva2Utd2lkdGg6MC4zNTtzdHJva2UtbWl0ZXJsaW1pdDoxMDtzdHJva2UtZGFzaGFycmF5OjAuOTk1MSwwLjk5NTE7fQoJLnN0MTM3e2ZpbGw6bm9uZTtzdHJva2U6IzgzOTJBMztzdHJva2Utd2lkdGg6MC4zNTtzdHJva2UtbWl0ZXJsaW1pdDoxMDtzdHJva2UtZGFzaGFycmF5OjEuMDA0LDEuMDA0O30KCS5zdDEzOHtmaWxsOm5vbmU7c3Ryb2tlOnVybCgjU1ZHSURfMTI2Xyk7c3Ryb2tlLXdpZHRoOjEuNTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMzl7ZmlsbDp1cmwoI1NWR0lEXzEyN18pO30KCS5zdDE0MHtmaWxsOm5vbmU7c3Ryb2tlOiNEREUwRTQ7c3Ryb2tlLXdpZHRoOjAuMzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTQxe2ZpbGw6IzJEMkQyRDtzdHJva2U6I0E5QjNCRTtzdHJva2Utd2lkdGg6MC4yNzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTQye2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6IzEyNkVGNDt9Cgkuc3QxNDN7ZmlsbDojRkZGRkZGO3N0cm9rZTojQjFCQUM0O3N0cm9rZS13aWR0aDowLjI3NTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxNDR7ZmlsbDojQ0U2QzUwO30KCS5zdDE0NXtmaWxsOiM1QjVCNUI7fQoJLnN0MTQ2e2ZpbGw6IzgzOTJBMzt9Cgkuc3QxNDd7ZmlsbDpub25lO3N0cm9rZTp1cmwoI1NWR0lEXzEyOF8pO3N0cm9rZS13aWR0aDoxLjU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTQ4e2ZpbGw6dXJsKCNTVkdJRF8xMjlfKTt9Cgkuc3QxNDl7ZmlsbDpub25lO3N0cm9rZTojQjVCREM0O3N0cm9rZS13aWR0aDowLjc7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTUwe29wYWNpdHk6MC42O2ZpbGw6bm9uZTtzdHJva2U6Izc4ODM4RTtzdHJva2Utd2lkdGg6MC4zNTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxNTF7b3BhY2l0eTowLjI7ZmlsbDpub25lO3N0cm9rZTojODM5MkEzO3N0cm9rZS13aWR0aDowLjM1O3N0cm9rZS1taXRlcmxpbWl0OjEwO3N0cm9rZS1kYXNoYXJyYXk6MSwxO30KCS5zdDE1MntmaWxsOm5vbmU7c3Ryb2tlOiNEREUwRTQ7c3Ryb2tlLXdpZHRoOjAuNzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTUze2ZpbGw6bm9uZTtzdHJva2U6IzgzOTJBMztzdHJva2Utd2lkdGg6MC41O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDE1NHtvcGFjaXR5OjAuMjtmaWxsOm5vbmU7c3Ryb2tlOiM2NzczODA7c3Ryb2tlLXdpZHRoOjAuMzU2NDtzdHJva2UtbWl0ZXJsaW1pdDoxMDtzdHJva2UtZGFzaGFycmF5OjEuMDE4MiwxLjAxODI7fQoJLnN0MTU1e2ZpbGw6bm9uZTtzdHJva2U6I0RERTBFNDtzdHJva2Utd2lkdGg6MC43NjU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTU2e2ZpbGw6dXJsKCNTVkdJRF8xMzBfKTt9Cgkuc3QxNTd7ZmlsbDp1cmwoI1NWR0lEXzEzMV8pO30KCS5zdDE1OHtmaWxsOiNCMUJBQzQ7fQoJLnN0MTU5e2ZpbGw6I0NCRDFEODt9Cgkuc3QxNjB7ZmlsbDojMEIxQjJCO30KCS5zdDE2MXtmaWxsOiM5MUQxMTk7fQoJLnN0MTYye29wYWNpdHk6MC43O30KCS5zdDE2M3tmaWxsOiNGRkZGRkY7c3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjAuNDQxODtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxNjR7ZmlsbDpub25lO3N0cm9rZTojOTM5Q0FBO3N0cm9rZS13aWR0aDowLjIyMDk7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTY1e2ZpbGw6bm9uZTtzdHJva2U6I0ZGRkZGRjtzdHJva2Utd2lkdGg6My4wOTI0O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDE2NntmaWxsOnVybCgjU1ZHSURfMTMyXyk7fQoJLnN0MTY3e2ZpbGw6bm9uZTtzdHJva2U6dXJsKCNTVkdJRF8xMzNfKTtzdHJva2Utd2lkdGg6MS43MTQ7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTY4e2ZpbGw6dXJsKCNTVkdJRF8xMzRfKTt9Cgkuc3QxNjl7ZmlsbDp1cmwoI1NWR0lEXzEzNV8pO30KCS5zdDE3MHtmaWxsOnVybCgjU1ZHSURfMTM2Xyk7fQoJLnN0MTcxe2ZpbGw6dXJsKCNTVkdJRF8xMzdfKTt9Cgkuc3QxNzJ7ZmlsbDp1cmwoI1NWR0lEXzEzOF8pO30KCS5zdDE3M3tmaWxsOnVybCgjU1ZHSURfMTM5Xyk7fQoJLnN0MTc0e2ZpbGw6dXJsKCNTVkdJRF8xNDBfKTt9Cgkuc3QxNzV7ZmlsbDp1cmwoI1NWR0lEXzE0MV8pO30KCS5zdDE3NntmaWxsOnVybCgjU1ZHSURfMTQyXyk7fQoJLnN0MTc3e2ZpbGw6dXJsKCNTVkdJRF8xNDNfKTt9Cgkuc3QxNzh7ZmlsbDp1cmwoI1NWR0lEXzE0NF8pO30KCS5zdDE3OXtmaWxsOm5vbmU7c3Ryb2tlOiMxRjYzRUM7c3Ryb2tlLXdpZHRoOjQ7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTgwe2ZpbGw6bm9uZTtzdHJva2U6IzBCMUIyQjtzdHJva2Utd2lkdGg6NDtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxODF7ZmlsbDpub25lO3N0cm9rZTojNjc3MzgwO3N0cm9rZS13aWR0aDowLjM5ODk7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTgye2ZpbGw6bm9uZTtzdHJva2U6IzY3NzM4MDtzdHJva2Utd2lkdGg6MC4zOTg5O3N0cm9rZS1taXRlcmxpbWl0OjEwO3N0cm9rZS1kYXNoYXJyYXk6MS4xNCwxLjE0O30KCS5zdDE4M3tmaWxsOiMyNTdBRjE7fQoJLnN0MTg0e29wYWNpdHk6MC4zO2ZpbGw6I0ZGRkZGRjt9Cgkuc3QxODV7ZmlsbDpub25lO3N0cm9rZTojOThBNUIyO3N0cm9rZS13aWR0aDo0O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDE4NntmaWxsOm5vbmU7c3Ryb2tlOiM2NTcyN0Y7c3Ryb2tlLXdpZHRoOjAuMzk4OTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxODd7ZmlsbDpub25lO3N0cm9rZTojNjU3MjdGO3N0cm9rZS13aWR0aDowLjM5ODk7c3Ryb2tlLW1pdGVybGltaXQ6MTA7c3Ryb2tlLWRhc2hhcnJheToxLjE0LDEuMTQ7fQoJLnN0MTg4e2ZpbGw6bm9uZTtzdHJva2U6I0REREZFNDtzdHJva2Utd2lkdGg6MC43NTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxODl7ZmlsbDojOUE5RUEyO30KCS5zdDE5MHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiMzMjY3QUM7fQoJLnN0MTkxe2ZpbGw6I0ZGRkZGRjtzdHJva2U6I0FGQjhDMztzdHJva2Utd2lkdGg6MC4yNzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTkye2ZpbGw6I0M1Njk0RTt9Cgkuc3QxOTN7ZmlsbDojODE5MkEyO30KCS5zdDE5NHtmaWxsOiMyRDJEMkQ7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLXdpZHRoOjAuNjMxNztzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cjwvc3R5bGU+CjxnIGlkPSLlm77lsYJfMiI+CjwvZz4KPGcgaWQ9IuWbvuWxgl8xIj4KCTxwYXRoIGNsYXNzPSJzdDE5NCIgZD0iTTI0LjUxLDI4LjUxSDUuNDljLTIuMjEsMC00LTEuNzktNC00VjUuNDljMC0yLjIxLDEuNzktNCw0LTRoMTkuMDNjMi4yMSwwLDQsMS43OSw0LDR2MTkuMDMKCQlDMjguNTEsMjYuNzIsMjYuNzIsMjguNTEsMjQuNTEsMjguNTF6Ii8+Cgk8Zz4KCQk8Zz4KCQkJPGc+CgkJCQk8Zz4KCQkJCQk8cGF0aCBjbGFzcz0ic3QyMyIgZD0iTTE1LjQ3LDcuMWwtMS4zLDEuODVjLTAuMiwwLjI5LTAuNTQsMC40Ny0wLjksMC40N2gtNy4xVjcuMDlDNi4xNiw3LjEsMTUuNDcsNy4xLDE1LjQ3LDcuMXoiLz4KCQkJCQk8cG9seWdvbiBjbGFzcz0ic3QyMyIgcG9pbnRzPSIyNC4zLDcuMSAxMy4xNCwyMi45MSA1LjcsMjIuOTEgMTYuODYsNy4xIAkJCQkJIi8+CgkJCQkJPHBhdGggY2xhc3M9InN0MjMiIGQ9Ik0xNC41MywyMi45MWwxLjMxLTEuODZjMC4yLTAuMjksMC41NC0wLjQ3LDAuOS0wLjQ3aDcuMDl2Mi4zM0gxNC41M3oiLz4KCQkJCTwvZz4KCQkJPC9nPgoJCTwvZz4KCTwvZz4KPC9nPgo8L3N2Zz4K",
+          "alt": "profile"
+        },
+        {
+          "type": "image",
+          "content": "data:,",
+          "alt": "source"
+        },
+        {
+          "type": "image",
+          "content": "data:,",
+          "alt": "source"
+        },
+        {
+          "type": "image",
+          "content": "data:,",
+          "alt": "source"
+        }
+      ],
+      "timestamp": "2025-12-27T23:19:00.000Z",
+      "contentHash": "06eb5c8e1c80d779acfc587d30693e1616c244f483f7750712e5b0ada2e13a53"
+    },
+    {
+      "id": "03cc52b7-b46a-4cf2-a64c-ad155995f982",
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "content": "PROJECT_SOURCE_CODE_20251227_002035.txt TXT 189.9 KB     what if you had access to this --- skippy embedded into the dev E2E"
+        },
+        {
+          "type": "image",
+          "content": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgaWQ9InR4dCI+CjxyZWN0IGlkPSJSZWN0YW5nbGUgMzQ5OCIgeD0iMTkuNTk5NiIgeT0iMTAiIHdpZHRoPSI4LjQiIGhlaWdodD0iMTgiIHJ4PSIzIiBmaWxsPSJ1cmwoI3BhaW50MF9saW5lYXJfNDYzXzIzNzUpIi8+CjxwYXRoIGlkPSJVbmlvbiIgZD0iTTIwIDRDMjEuNjU2OSA0IDIzIDUuMzQzMTUgMjMgN1YyNEgyNS41VjI4SDdDNS4zNDMxNSAyOCA0IDI2LjY1NjkgNCAyNVY3QzQgNS4zNDMxNSA1LjM0MzE1IDQgNyA0SDIwWiIgZmlsbD0idXJsKCNwYWludDFfbGluZWFyXzQ2M18yMzc1KSIvPgo8cGF0aCBpZD0iUmVjdGFuZ2xlIDM0OTkiIGQ9Ik0yMyAyNEMyMyAyMi42MTkzIDI0LjExOTMgMjEuNSAyNS41IDIxLjVDMjYuODgwNyAyMS41IDI4IDIyLjYxOTMgMjggMjRWMjUuNUMyOCAyNi44ODA3IDI2Ljg4MDcgMjggMjUuNSAyOEMyNC4xMTkzIDI4IDIzIDI2Ljg4MDcgMjMgMjUuNVYyNFoiIGZpbGw9IiMzMjg4ODUiLz4KPGcgaWQ9IlRYVCI+CjxwYXRoIGlkPSJWZWN0b3IiIGQ9Ik0xOC4yMDU1IDE5LjA2M0gxNy4yODE1VjE0LjQ1SDE1LjY4NTVWMTMuNTgySDE5Ljc5NDVWMTQuNDVIMTguMjA1NVYxOS4wNjNaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBpZD0iVmVjdG9yXzIiIGQ9Ik0xMy43NjM5IDE2LjJMMTUuNjMyOSAxOS4wNjNIMTQuNDk4OUwxMy4yMTA5IDE2Ljk3TDExLjk3MTkgMTkuMDYzSDEwLjgzNzlMMTIuNjkyOSAxNi4xNjVMMTAuOTQ5OSAxMy41ODJIMTIuMDY5OUwxMy4yNTk5IDE1LjQyM0wxNC40MDA5IDEzLjU4MkgxNS41MTM5TDEzLjc2MzkgMTYuMloiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGlkPSJWZWN0b3JfMyIgZD0iTTkuMTk1NzggMTkuMDYzSDguMjcxNzhWMTQuNDVINi42NzU3OFYxMy41ODJIMTAuNzg0OFYxNC40NUg5LjE5NTc4VjE5LjA2M1oiIGZpbGw9IndoaXRlIi8+CjwvZz4KPC9nPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzQ2M18yMzc1IiB4MT0iMjcuNDk5NSIgeTE9IjExIiB4Mj0iMjUuNDk5NSIgeTI9IjIyLjUiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KPHN0b3Agc3RvcC1jb2xvcj0iIzNDQkVBNiIvPgo8c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzMTgzODEiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDFfbGluZWFyXzQ2M18yMzc1IiB4MT0iNiIgeTE9IjUuNSIgeDI9IjIxLjk3MDEiIHkyPSIyOS42ODk3IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIHN0b3AtY29sb3I9IiMzQ0I1QkUiLz4KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNUJEQUNCIi8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+Cg==",
+          "alt": "Text"
+        }
+      ],
+      "timestamp": "2026-01-25T19:15:39.089Z",
+      "contentHash": "195b8c20d3f88ca73b469cea6e94efd4a029382268621afaca1fd9702f4357dc"
+    },
+    {
+      "id": "6555c637-16a3-4e93-bba0-9518864d7d07",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "content": "Thought Process    Analyze the User's Scenario:  Core Concept: The user is imagining a hypothetical scenario where the \"Skippy\" AI assistant (the persona or the AI agent within the PWS project) is \"embedded into dev E2E\" (End-to-End). \"Skippy\": Based on the document context, Skippy is the AI assistant built in PowerShell. It has context management (, ), memory (), intent detection (), and UI components. \"Dev E2E\": This implies the entire software development lifecycle: ideation, coding, testing, debugging, documentation, and deployment. \"Embedded\": Skippy isn't just a tool I call occasionally; it's part of the environment, listening, observing, and assisting continuously. Goal: The user wants to know what this would look like and what the potential impact would be. \"What if you had access to this...\"  Deconstruct the \"Dev E2E\" Lifecycle with an Embedded AI:\nI need to walk through the typical dev workflow and layer Skippy's capabilities onto it.  Phase 1: Ideation & Setup.  Current: User thinks, starts a repo. With Skippy: Skippy knows the project context (from ). It suggests structure, scaffolds modules (using ), and sets up the environment based on past preferences (from ).  Phase 2: Coding.  Current: User writes code, maybe hits a wall, searches StackOverflow. With Skippy: Integrated into the IDE (VSCode). As the user types, Skippy analyzes the project context (files, history) not just the current file. It suggests functions that match the project's style guide (using  rules). It handles repetitive typing (snippets).  Phase 3: Debugging/Troubleshooting.  Current: Error happens. User reads stack trace. With Skippy: Skippy captures the error output. It correlates it with the codebase context. It suggests fixes. It might even run a test in the background to verify the fix.  Phase 4: Testing.  Current: User writes tests manually. With Skippy: Skippy generates Pester tests based on the function logic. It watches code changes and suggests which tests need updating.  Phase 5: Documentation.  Current: Writing docs is a pain. With Skippy: Skippy uses  or generates Markdown. It keeps docs in sync with code.  Phase 6: CI/CD & Deployment.  Current: Pipeline fails. User debugs. With Skippy: Skippy monitors the pipeline. If it fails, it analyzes the log, suggests the code fix, and might even open a PR for the patch (if trusted).   Identify Key PWS Features that Enable This:  Context Management (): Crucial. Skippy needs to know what I'm building, why, and how it fits together. Memory (): Learning my habits, preferred variable names, coding style. Intent Detection (): Knowing when I'm asking a question vs. giving a command. Computer Use (): Actually interacting with the OS/UI (e.g., opening a browser to check a package version).  Synthesize the \"What If\" Vision:\nI need to paint a picture. Use a narrative flow or a concrete scenario.  Scenario: Building a new PowerShell module to manage Docker containers. Skippy's Role: \"I see you created . Based on your , you like  tests. Should I scaffold a test file?\" \"I notice you're using  but the logic implies you want container info. Here's the  CLI command you likely need.\" \"The test failed. I analyzed the log. The port is already in use. I've checked  and 8080 is busy. Want me to kill the conflicting process?\"   Evaluate \"Missing\" vs. \"Present\":\nThe prompt asks \"what if you had access to this\". I need to assume the current PWS capabilities are fully functional and integrated (which is the goal). I need to highlight the synergy between PWS and the Dev workflow.  Structure the Response:  Introduction: Define the concept of \"Embedded Skippy E2E\". The Experience (Day-in-the-Life): A narrative walkthrough of a dev task. The \"Superpowers\": Break down specific benefits (Context-Awareness, Proactive Memory, Execution). Architecture Visualization: How the pieces fit together. The \"Missing\" Link (What PWS needs): How to make this reality (integration with VSCode, etc.).  Refine the \"Computer Use\" angle:\nPWS has . This is unique. Most AI assistants are text-based. Skippy could act on the machine.  Example: \"I need to test this API.\" -> Skippy spins up a container, runs the script, captures the response, and reports back.  Self-Correction/Critique during drafting:  Initial thought: Make Skippy sound like a generic \"Copilot\". Correction: No, emphasize PWS specific features like  and . Skippy isn't just an LLM wrapper; it has a stateful, persistent memory of the project, not just the current session. Emphasis: The key differentiator is \"Context Injection\".  Final Polish:  Use Mermaid to show the E2E flow. Use bolding for impact. Keep the tone visionary but grounded in the tech provided in the file dump.  (Self-Correction during drafting the Mermaid diagram): Make sure to show the feedback loop. The developer writes -> Skippy observes/injects -> System executes -> Skippy captures result -> Context updates. Generate Output. (This aligns with the provided good response).   This is a fascinating concept. If Skippy (the AI persona/agent in your PWS project) was fully embedded into the Dev End-to-End (E2E) lifecycle, it shifts the paradigm from an \"AI Assistant\" you talk to, to a \"Co-Pilot Agent\" that lives in the context of your work. It wouldn't just answer questions; it would understand the state of your project, your intent, and your environment continuously. Here is a vision of what that experience looks like, how it utilizes your existing PWS architecture, and the specific productivity \"superpowers\" it unlocks. 🧠 The Concept: \"Context-Embedded Development\" Currently, most AI tools are \"stateless\" between sessions. They forget what you did yesterday. With Skippy embedded E2E, the  and  modules become active, persistent layers of your development environment. The Core Loop: Observation: Skippy watches your files, git history, and terminal output. Ingestion: It updates the  in real-time (e.g., \"You just added a function \"). Proactive Injection: Before you even ask, Skippy prepares context (imports, variables) relevant to your current task. Execution: Skippy uses  to actually manipulate the IDE or terminal (e.g., \"I've updated the manifest version number for you\"). 🎬 A Day in the Life: \"The Dev Session\" Let's visualize a standard task: \"Fix a bug in the authentication module.\" Phase 1: The \"Warm Start\" (Context Injection)  You: Open VSCode and type . Skippy (Embedded via VSCode Extension): Detects the command. Instead of just showing help, Skippy's  runs in the background. Action: Scans your  for related files. Result: A VSCode notification appears: \"I see you're working on Authentication. I've loaded the  file and the last 3 commits to  into context. The  module recalls you prefer handling errors with  rather than .\"  Phase 2: The \"Blind Spot\" (Proactive Detection)  You: You write a fix using . Skippy (Monitoring via  integration): Detection: Analyzes the code. Alert: \"⚠️ You're using  without a key. Based on your  config, you should use  instead to keep this secure.\" Action: Skippy offers a refactor patch using the  module.  Phase 3: The \"Heavy Lifting\" (Computer Use)  You: \"Okay, run the test.\" Skippy (via ): Action: Instead of you switching to the terminal, Skippy executes . It fails. Analysis: Skippy parses the Pester output. It sees the failure is due to a missing mock. Autonomy: Skippy writes the mock code into the test file, re-runs the test, and reports back: \"Test passed. I've updated the mock in line 45.\"  📊 The Architecture: How PWS Powers This This visualization shows how your existing modules integrate into the IDE to create the Embedded experience.  99123456789101112131415161718192021222324252627282930313233343536"
+        },
+        {
+          "type": "code",
+          "content": "ContextPool",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ContextInjector",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Memory.ps1",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "IntentDetection.ps1",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ContextPool",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Plaster",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Memory.ps1",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "PSScriptAnalyzer",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "platyPS",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ContextPool",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Memory.ps1",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "IntentDetection.ps1",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ComputerUseBridge",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "DockerManager.ps1",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Memory",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Pester",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Get-Process",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Docker",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Get-NetTCPConnection",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ComputerUseBridge",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ContextPool",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "SelfModification",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ContextPool",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Memory",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ContextPool",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Get-UserConfig",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ComputerUseBridge",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Get-Help Invoke-Auth",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ContextInjector",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ContextPool",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Auth.Tests.ps1",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "dev-auth",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Memory",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Try/Catch",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "$ErrorActionPreference",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ConvertTo-SecureString",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "PSScriptAnalyzer",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ConvertTo-SecureString",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "SecretManagement",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Get-Secret",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "SelfModification",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ComputerUseBridge",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Invoke-Pester",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ContextPool",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ComputerUseBridge",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "IntentDetection",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Install-Module",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Memory",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Write-Host",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Write-Log",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Write-Host",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "CHANGELOG.md",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": ".psd1",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "platyPS",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ComputerUseBridge",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ContextPool",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "IntentDetection",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Memory",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "winbridge",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ComputerUseBridge",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "git",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "TrustedCommands.json",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "{\"allowed_commands\": [\"git add\", \"git commit\", \"Invoke-Pester\"]}",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "Update-PsDataStore.ps1",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "dev",
+          "language": "text"
+        },
+        {
+          "type": "code",
+          "content": "ContextPool",
+          "language": "text"
+        },
+        {
+          "type": "image",
+          "content": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDI1LjMuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiCgkgdmlld0JveD0iMCAwIDMwIDMwIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAzMCAzMDsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtvcGFjaXR5OjAuMztmaWxsOiNFMkU0RTc7fQoJLnN0MXtvcGFjaXR5OjAuODtmaWxsOiNFMkU0RTc7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLXdpZHRoOjU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MntmaWxsOnVybCgjU1ZHSURfMV8pO30KCS5zdDN7ZmlsbDpub25lO3N0cm9rZTojRTBFNEU5O3N0cm9rZS13aWR0aDowLjI1O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDR7ZmlsbDpub25lO30KCS5zdDV7ZmlsbDojOURBMUE1O30KCS5zdDZ7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDpub25lO30KCS5zdDd7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDojREZFMkU3O30KCS5zdDh7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDojQ0RENERBO30KCS5zdDl7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDojQjNCQ0M3O30KCS5zdDEwe2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6IzlEQUFCNzt9Cgkuc3QxMXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiM4Njk4QTg7fQoJLnN0MTJ7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDp1cmwoI1NWR0lEXzJfKTt9Cgkuc3QxM3tmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfM18pO30KCS5zdDE0e2ZpbGw6IzFGNjNFQzt9Cgkuc3QxNXtmaWxsOiMyRDJEMkQ7fQoJLnN0MTZ7ZmlsbDpub25lO3N0cm9rZTojRTBFNEU5O3N0cm9rZS13aWR0aDowLjU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTd7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDp1cmwoI1NWR0lEXzRfKTt9Cgkuc3QxOHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNV8pO30KCS5zdDE5e2ZpbGw6bm9uZTtzdHJva2U6IzY3NzM4MDtzdHJva2Utd2lkdGg6MC41O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDIwe2ZpbGw6bm9uZTtzdHJva2U6dXJsKCNTVkdJRF82Xyk7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MjF7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDp1cmwoI1NWR0lEXzdfKTt9Cgkuc3QyMntmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfOF8pO30KCS5zdDIze2ZpbGw6I0ZGRkZGRjt9Cgkuc3QyNHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiMyRDJEMkQ7fQoJLnN0MjV7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMTBfKTt9Cgkuc3QyNntjbGlwLXBhdGg6dXJsKCNTVkdJRF8xMl8pO30KCS5zdDI3e2ZpbGw6dXJsKCNTVkdJRF8xM18pO30KCS5zdDI4e2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6dXJsKCNTVkdJRF8xNF8pO30KCS5zdDI5e2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6dXJsKCNTVkdJRF8xNV8pO30KCS5zdDMwe2NsaXAtcGF0aDp1cmwoI1NWR0lEXzE3Xyk7fQoJLnN0MzF7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMTlfKTt9Cgkuc3QzMntmaWxsOnVybCgjU1ZHSURfMjBfKTt9Cgkuc3QzM3tmaWxsOm5vbmU7c3Ryb2tlOnVybCgjU1ZHSURfMjFfKTtzdHJva2Utd2lkdGg6MjtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QzNHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfMjJfKTt9Cgkuc3QzNXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfMjNfKTt9Cgkuc3QzNntjbGlwLXBhdGg6dXJsKCNTVkdJRF8yNV8pO30KCS5zdDM3e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzI3Xyk7fQoJLnN0Mzh7ZmlsbDp1cmwoI1NWR0lEXzI4Xyk7fQoJLnN0Mzl7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMzBfKTt9Cgkuc3Q0MHtjbGlwLXBhdGg6dXJsKCNTVkdJRF8zMl8pO30KCS5zdDQxe2ZpbGw6dXJsKCNTVkdJRF8zM18pO30KCS5zdDQye2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6IzEyNkVGNjt9Cgkuc3Q0M3tmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiNGRkZGRkY7fQoJLnN0NDR7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMzVfKTt9Cgkuc3Q0NXtjbGlwLXBhdGg6dXJsKCNTVkdJRF8zN18pO30KCS5zdDQ2e2ZpbGw6dXJsKCNTVkdJRF8zOF8pO30KCS5zdDQ3e2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6IzlEQTFBNTt9Cgkuc3Q0OHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfMzlfKTt9Cgkuc3Q0OXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDBfKTt9Cgkuc3Q1MHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDFfKTt9Cgkuc3Q1MXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDJfKTt9Cgkuc3Q1MntmaWxsOm5vbmU7c3Ryb2tlOnVybCgjU1ZHSURfNDNfKTtzdHJva2Utd2lkdGg6MjtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3Q1M3tmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOm5vbmU7c3Ryb2tlOiNFMEU0RTk7c3Ryb2tlLXdpZHRoOjAuNTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3Q1NHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDRfKTt9Cgkuc3Q1NXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDVfKTt9Cgkuc3Q1NntmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDZfKTt9Cgkuc3Q1N3tmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDdfKTt9Cgkuc3Q1OHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDhfKTt9Cgkuc3Q1OXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNDlfKTt9Cgkuc3Q2MHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNTBfKTt9Cgkuc3Q2MXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNTFfKTt9Cgkuc3Q2MntmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNTJfKTt9Cgkuc3Q2M3tmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfNTNfKTt9Cgkuc3Q2NHtjbGlwLXBhdGg6dXJsKCNTVkdJRF81NV8pO30KCS5zdDY1e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzU3Xyk7fQoJLnN0NjZ7ZmlsbDp1cmwoI1NWR0lEXzU4Xyk7fQoJLnN0Njd7Y2xpcC1wYXRoOnVybCgjU1ZHSURfNjBfKTt9Cgkuc3Q2OHtjbGlwLXBhdGg6dXJsKCNTVkdJRF82Ml8pO30KCS5zdDY5e2ZpbGw6dXJsKCNTVkdJRF82M18pO30KCS5zdDcwe2ZpbGw6bm9uZTtzdHJva2U6dXJsKCNTVkdJRF82NF8pO3N0cm9rZS13aWR0aDoyO3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDcxe2NsaXAtcGF0aDp1cmwoI1NWR0lEXzY2Xyk7fQoJLnN0NzJ7Y2xpcC1wYXRoOnVybCgjU1ZHSURfNjhfKTt9Cgkuc3Q3M3tmaWxsOnVybCgjU1ZHSURfNjlfKTt9Cgkuc3Q3NHtjbGlwLXBhdGg6dXJsKCNTVkdJRF83MV8pO30KCS5zdDc1e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzczXyk7fQoJLnN0NzZ7ZmlsbDp1cmwoI1NWR0lEXzc0Xyk7fQoJLnN0Nzd7Y2xpcC1wYXRoOnVybCgjU1ZHSURfNzZfKTt9Cgkuc3Q3OHtjbGlwLXBhdGg6dXJsKCNTVkdJRF83OF8pO30KCS5zdDc5e2ZpbGw6dXJsKCNTVkdJRF83OV8pO30KCS5zdDgwe2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6dXJsKCNTVkdJRF84MF8pO30KCS5zdDgxe2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6dXJsKCNTVkdJRF84MV8pO30KCS5zdDgye2NsaXAtcGF0aDp1cmwoI1NWR0lEXzgzXyk7fQoJLnN0ODN7Y2xpcC1wYXRoOnVybCgjU1ZHSURfODVfKTt9Cgkuc3Q4NHtmaWxsOnVybCgjU1ZHSURfODZfKTt9Cgkuc3Q4NXtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfODdfKTt9Cgkuc3Q4NntmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOnVybCgjU1ZHSURfODhfKTt9Cgkuc3Q4N3tjbGlwLXBhdGg6dXJsKCNTVkdJRF85MF8pO30KCS5zdDg4e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzkyXyk7fQoJLnN0ODl7ZmlsbDp1cmwoI1NWR0lEXzkzXyk7fQoJLnN0OTB7ZmlsbDpub25lO3N0cm9rZTp1cmwoI1NWR0lEXzk0Xyk7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0OTF7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDp1cmwoI1NWR0lEXzk1Xyk7fQoJLnN0OTJ7ZmlsbC1ydWxlOmV2ZW5vZGQ7Y2xpcC1ydWxlOmV2ZW5vZGQ7ZmlsbDp1cmwoI1NWR0lEXzk2Xyk7fQoJLnN0OTN7Y2xpcC1wYXRoOnVybCgjU1ZHSURfOThfKTt9Cgkuc3Q5NHtjbGlwLXBhdGg6dXJsKCNTVkdJRF8xMDBfKTt9Cgkuc3Q5NXtmaWxsOnVybCgjU1ZHSURfMTAxXyk7fQoJLnN0OTZ7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMTAzXyk7fQoJLnN0OTd7Y2xpcC1wYXRoOnVybCgjU1ZHSURfMTA1Xyk7fQoJLnN0OTh7ZmlsbDp1cmwoI1NWR0lEXzEwNl8pO30KCS5zdDk5e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzEwOF8pO30KCS5zdDEwMHtjbGlwLXBhdGg6dXJsKCNTVkdJRF8xMTBfKTt9Cgkuc3QxMDF7ZmlsbDp1cmwoI1NWR0lEXzExMV8pO30KCS5zdDEwMntmaWxsOiNGRkZGRkY7c3Ryb2tlOiNCM0JDQzc7c3Ryb2tlLXdpZHRoOjAuMjc1O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDEwM3tjbGlwLXBhdGg6dXJsKCNTVkdJRF8xMTNfKTt9Cgkuc3QxMDR7ZmlsbDojRkREMTM4O30KCS5zdDEwNXtmaWxsOiNGQ0E2MkY7fQoJLnN0MTA2e2ZpbGw6I0ZCNzkyNzt9Cgkuc3QxMDd7ZmlsbDojRjQ0QjIyO30KCS5zdDEwOHtmaWxsOiNEODE5MTU7fQoJLnN0MTA5e2ZpbGw6IzJEMkQyRDtzdHJva2U6I0ZGRkZGRjtzdHJva2Utd2lkdGg6MC4zMzU0O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDExMHtmaWxsOm5vbmU7c3Ryb2tlOiM2NTcyN0Y7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTExe2ZpbGw6bm9uZTtzdHJva2U6IzY1NzI3RjtzdHJva2Utd2lkdGg6MC43NTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMTJ7ZmlsbDp1cmwoI1NWR0lEXzExNF8pO30KCS5zdDExM3tmaWxsOiNEMDZDNTA7fQoJLnN0MTE0e2ZpbGw6IzJEMkQyRDtzdHJva2U6I0IzQkNDNztzdHJva2Utd2lkdGg6MC4yNzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTE1e29wYWNpdHk6MC4yO30KCS5zdDExNntmaWxsOm5vbmU7c3Ryb2tlOiM2NzczODA7c3Ryb2tlLXdpZHRoOjAuMzU2NDtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMTd7ZmlsbDpub25lO3N0cm9rZTojNjc3MzgwO3N0cm9rZS13aWR0aDowLjM1NjQ7c3Ryb2tlLW1pdGVybGltaXQ6MTA7c3Ryb2tlLWRhc2hhcnJheToxLjAyMTIsMS4wMjEyO30KCS5zdDExOHtmaWxsOm5vbmU7c3Ryb2tlOiM2NzczODA7c3Ryb2tlLXdpZHRoOjAuMzU2NDtzdHJva2UtbWl0ZXJsaW1pdDoxMDtzdHJva2UtZGFzaGFycmF5OjEuMDIwNSwxLjAyMDU7fQoJLnN0MTE5e29wYWNpdHk6MC4yO2ZpbGw6bm9uZTt9Cgkuc3QxMjB7ZmlsbDpub25lO3N0cm9rZTojNjc3MzgwO3N0cm9rZS13aWR0aDowLjM2ODk7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTIxe2ZpbGw6bm9uZTtzdHJva2U6IzY3NzM4MDtzdHJva2Utd2lkdGg6MC4zNjg5O3N0cm9rZS1taXRlcmxpbWl0OjEwO3N0cm9rZS1kYXNoYXJyYXk6MS4wNTA5LDEuMDUwOTt9Cgkuc3QxMjJ7b3BhY2l0eTowLjM7ZmlsbDojMUY2M0VDO30KCS5zdDEyM3tmaWxsOiMyRDJEMkQ7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLXdpZHRoOjAuMzE2MjtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMjR7ZmlsbDojRkZGRkZGO3N0cm9rZTojQjNCQ0M3O3N0cm9rZS13aWR0aDowLjMxNjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTI1e2NsaXAtcGF0aDp1cmwoI1NWR0lEXzExOF8pO30KCS5zdDEyNntmaWxsOnVybCgjU1ZHSURfMTE5Xyk7fQoJLnN0MTI3e2ZpbGw6bm9uZTtzdHJva2U6I0RGRTJFNztzdHJva2Utd2lkdGg6MC43NTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMjh7ZmlsbDojOURBMUE1O3N0cm9rZTojRkZGRkZGO3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDEyOXtmaWxsOnVybCgjU1ZHSURfMTIwXyk7fQoJLnN0MTMwe2ZpbGw6bm9uZTtzdHJva2U6IzY3NzM4MDtzdHJva2Utd2lkdGg6MC43NTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMzF7b3BhY2l0eTowLjQ7fQoJLnN0MTMye2NsaXAtcGF0aDp1cmwoI1NWR0lEXzEyMl8pO30KCS5zdDEzM3tjbGlwLXBhdGg6dXJsKCNTVkdJRF8xMjRfKTt9Cgkuc3QxMzR7ZmlsbDp1cmwoI1NWR0lEXzEyNV8pO30KCS5zdDEzNXtmaWxsOm5vbmU7c3Ryb2tlOiM4MzkyQTM7c3Ryb2tlLXdpZHRoOjAuMzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTM2e2ZpbGw6bm9uZTtzdHJva2U6IzgzOTJBMztzdHJva2Utd2lkdGg6MC4zNTtzdHJva2UtbWl0ZXJsaW1pdDoxMDtzdHJva2UtZGFzaGFycmF5OjAuOTk1MSwwLjk5NTE7fQoJLnN0MTM3e2ZpbGw6bm9uZTtzdHJva2U6IzgzOTJBMztzdHJva2Utd2lkdGg6MC4zNTtzdHJva2UtbWl0ZXJsaW1pdDoxMDtzdHJva2UtZGFzaGFycmF5OjEuMDA0LDEuMDA0O30KCS5zdDEzOHtmaWxsOm5vbmU7c3Ryb2tlOnVybCgjU1ZHSURfMTI2Xyk7c3Ryb2tlLXdpZHRoOjEuNTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxMzl7ZmlsbDp1cmwoI1NWR0lEXzEyN18pO30KCS5zdDE0MHtmaWxsOm5vbmU7c3Ryb2tlOiNEREUwRTQ7c3Ryb2tlLXdpZHRoOjAuMzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTQxe2ZpbGw6IzJEMkQyRDtzdHJva2U6I0E5QjNCRTtzdHJva2Utd2lkdGg6MC4yNzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTQye2ZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO2ZpbGw6IzEyNkVGNDt9Cgkuc3QxNDN7ZmlsbDojRkZGRkZGO3N0cm9rZTojQjFCQUM0O3N0cm9rZS13aWR0aDowLjI3NTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxNDR7ZmlsbDojQ0U2QzUwO30KCS5zdDE0NXtmaWxsOiM1QjVCNUI7fQoJLnN0MTQ2e2ZpbGw6IzgzOTJBMzt9Cgkuc3QxNDd7ZmlsbDpub25lO3N0cm9rZTp1cmwoI1NWR0lEXzEyOF8pO3N0cm9rZS13aWR0aDoxLjU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTQ4e2ZpbGw6dXJsKCNTVkdJRF8xMjlfKTt9Cgkuc3QxNDl7ZmlsbDpub25lO3N0cm9rZTojQjVCREM0O3N0cm9rZS13aWR0aDowLjc7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTUwe29wYWNpdHk6MC42O2ZpbGw6bm9uZTtzdHJva2U6Izc4ODM4RTtzdHJva2Utd2lkdGg6MC4zNTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxNTF7b3BhY2l0eTowLjI7ZmlsbDpub25lO3N0cm9rZTojODM5MkEzO3N0cm9rZS13aWR0aDowLjM1O3N0cm9rZS1taXRlcmxpbWl0OjEwO3N0cm9rZS1kYXNoYXJyYXk6MSwxO30KCS5zdDE1MntmaWxsOm5vbmU7c3Ryb2tlOiNEREUwRTQ7c3Ryb2tlLXdpZHRoOjAuNzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTUze2ZpbGw6bm9uZTtzdHJva2U6IzgzOTJBMztzdHJva2Utd2lkdGg6MC41O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDE1NHtvcGFjaXR5OjAuMjtmaWxsOm5vbmU7c3Ryb2tlOiM2NzczODA7c3Ryb2tlLXdpZHRoOjAuMzU2NDtzdHJva2UtbWl0ZXJsaW1pdDoxMDtzdHJva2UtZGFzaGFycmF5OjEuMDE4MiwxLjAxODI7fQoJLnN0MTU1e2ZpbGw6bm9uZTtzdHJva2U6I0RERTBFNDtzdHJva2Utd2lkdGg6MC43NjU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTU2e2ZpbGw6dXJsKCNTVkdJRF8xMzBfKTt9Cgkuc3QxNTd7ZmlsbDp1cmwoI1NWR0lEXzEzMV8pO30KCS5zdDE1OHtmaWxsOiNCMUJBQzQ7fQoJLnN0MTU5e2ZpbGw6I0NCRDFEODt9Cgkuc3QxNjB7ZmlsbDojMEIxQjJCO30KCS5zdDE2MXtmaWxsOiM5MUQxMTk7fQoJLnN0MTYye29wYWNpdHk6MC43O30KCS5zdDE2M3tmaWxsOiNGRkZGRkY7c3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjAuNDQxODtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxNjR7ZmlsbDpub25lO3N0cm9rZTojOTM5Q0FBO3N0cm9rZS13aWR0aDowLjIyMDk7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTY1e2ZpbGw6bm9uZTtzdHJva2U6I0ZGRkZGRjtzdHJva2Utd2lkdGg6My4wOTI0O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDE2NntmaWxsOnVybCgjU1ZHSURfMTMyXyk7fQoJLnN0MTY3e2ZpbGw6bm9uZTtzdHJva2U6dXJsKCNTVkdJRF8xMzNfKTtzdHJva2Utd2lkdGg6MS43MTQ7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTY4e2ZpbGw6dXJsKCNTVkdJRF8xMzRfKTt9Cgkuc3QxNjl7ZmlsbDp1cmwoI1NWR0lEXzEzNV8pO30KCS5zdDE3MHtmaWxsOnVybCgjU1ZHSURfMTM2Xyk7fQoJLnN0MTcxe2ZpbGw6dXJsKCNTVkdJRF8xMzdfKTt9Cgkuc3QxNzJ7ZmlsbDp1cmwoI1NWR0lEXzEzOF8pO30KCS5zdDE3M3tmaWxsOnVybCgjU1ZHSURfMTM5Xyk7fQoJLnN0MTc0e2ZpbGw6dXJsKCNTVkdJRF8xNDBfKTt9Cgkuc3QxNzV7ZmlsbDp1cmwoI1NWR0lEXzE0MV8pO30KCS5zdDE3NntmaWxsOnVybCgjU1ZHSURfMTQyXyk7fQoJLnN0MTc3e2ZpbGw6dXJsKCNTVkdJRF8xNDNfKTt9Cgkuc3QxNzh7ZmlsbDp1cmwoI1NWR0lEXzE0NF8pO30KCS5zdDE3OXtmaWxsOm5vbmU7c3Ryb2tlOiMxRjYzRUM7c3Ryb2tlLXdpZHRoOjQ7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTgwe2ZpbGw6bm9uZTtzdHJva2U6IzBCMUIyQjtzdHJva2Utd2lkdGg6NDtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxODF7ZmlsbDpub25lO3N0cm9rZTojNjc3MzgwO3N0cm9rZS13aWR0aDowLjM5ODk7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTgye2ZpbGw6bm9uZTtzdHJva2U6IzY3NzM4MDtzdHJva2Utd2lkdGg6MC4zOTg5O3N0cm9rZS1taXRlcmxpbWl0OjEwO3N0cm9rZS1kYXNoYXJyYXk6MS4xNCwxLjE0O30KCS5zdDE4M3tmaWxsOiMyNTdBRjE7fQoJLnN0MTg0e29wYWNpdHk6MC4zO2ZpbGw6I0ZGRkZGRjt9Cgkuc3QxODV7ZmlsbDpub25lO3N0cm9rZTojOThBNUIyO3N0cm9rZS13aWR0aDo0O3N0cm9rZS1taXRlcmxpbWl0OjEwO30KCS5zdDE4NntmaWxsOm5vbmU7c3Ryb2tlOiM2NTcyN0Y7c3Ryb2tlLXdpZHRoOjAuMzk4OTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxODd7ZmlsbDpub25lO3N0cm9rZTojNjU3MjdGO3N0cm9rZS13aWR0aDowLjM5ODk7c3Ryb2tlLW1pdGVybGltaXQ6MTA7c3Ryb2tlLWRhc2hhcnJheToxLjE0LDEuMTQ7fQoJLnN0MTg4e2ZpbGw6bm9uZTtzdHJva2U6I0REREZFNDtzdHJva2Utd2lkdGg6MC43NTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cgkuc3QxODl7ZmlsbDojOUE5RUEyO30KCS5zdDE5MHtmaWxsLXJ1bGU6ZXZlbm9kZDtjbGlwLXJ1bGU6ZXZlbm9kZDtmaWxsOiMzMjY3QUM7fQoJLnN0MTkxe2ZpbGw6I0ZGRkZGRjtzdHJva2U6I0FGQjhDMztzdHJva2Utd2lkdGg6MC4yNzU7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fQoJLnN0MTkye2ZpbGw6I0M1Njk0RTt9Cgkuc3QxOTN7ZmlsbDojODE5MkEyO30KCS5zdDE5NHtmaWxsOiMyRDJEMkQ7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLXdpZHRoOjAuNjMxNztzdHJva2UtbWl0ZXJsaW1pdDoxMDt9Cjwvc3R5bGU+CjxnIGlkPSLlm77lsYJfMiI+CjwvZz4KPGcgaWQ9IuWbvuWxgl8xIj4KCTxwYXRoIGNsYXNzPSJzdDE5NCIgZD0iTTI0LjUxLDI4LjUxSDUuNDljLTIuMjEsMC00LTEuNzktNC00VjUuNDljMC0yLjIxLDEuNzktNCw0LTRoMTkuMDNjMi4yMSwwLDQsMS43OSw0LDR2MTkuMDMKCQlDMjguNTEsMjYuNzIsMjYuNzIsMjguNTEsMjQuNTEsMjguNTF6Ii8+Cgk8Zz4KCQk8Zz4KCQkJPGc+CgkJCQk8Zz4KCQkJCQk8cGF0aCBjbGFzcz0ic3QyMyIgZD0iTTE1LjQ3LDcuMWwtMS4zLDEuODVjLTAuMiwwLjI5LTAuNTQsMC40Ny0wLjksMC40N2gtNy4xVjcuMDlDNi4xNiw3LjEsMTUuNDcsNy4xLDE1LjQ3LDcuMXoiLz4KCQkJCQk8cG9seWdvbiBjbGFzcz0ic3QyMyIgcG9pbnRzPSIyNC4zLDcuMSAxMy4xNCwyMi45MSA1LjcsMjIuOTEgMTYuODYsNy4xIAkJCQkJIi8+CgkJCQkJPHBhdGggY2xhc3M9InN0MjMiIGQ9Ik0xNC41MywyMi45MWwxLjMxLTEuODZjMC4yLTAuMjksMC41NC0wLjQ3LDAuOS0wLjQ3aDcuMDl2Mi4zM0gxNC41M3oiLz4KCQkJCTwvZz4KCQkJPC9nPgoJCTwvZz4KCTwvZz4KPC9nPgo8L3N2Zz4K",
+          "alt": "profile"
+        },
+        {
+          "type": "mermaid",
+          "content": "graph LR    subgraph \"Developer Workspace (VSCode)\"        Dev[Developer]        Editor[Code Editor]        Terminal[Terminal]    end    subgraph \"PWS Embedded Layer\"        direction TB        UI[Skippy UI Plugin]        Context[ContextInjector<br/>& ContextPool]        Intent[IntentDetection]        Brain[AI Agent <br/>OpenAI/Claude]        Mem[Memory Module<br/>(Long-term habits)]        Comp[ComputerUseBridge<br/>(OS Automation)]    end    subgraph \"System & Cloud\"        Git[Git History]        Tests[Pester Tests]        Secrets[SecretVault]    end    %% Interactions    Dev -- \"Types/Writes\" --> Editor    Editor -- \"File Change Events\" --> Context    Terminal -- \"StdOut/StdErr\" --> Context        Context -- \"Relevant Context\" --> Brain    Mem -- \"User Preferences\" --> Brain    Intent -- \"Interprets: Command vs Question\" --> Brain        Brain -- \"Code Suggestions\" --> Editor    Brain -- \"Execute Command\" --> Comp    Brain -- \"Generate Test\" --> Tests     ⚡ The 5 Superpowers of an Embedded Skippy 1. Contextual Continuity Unlike standard Copilots that only look at the current file, Skippy uses  to understand the relationship between files.  Scenario: You are editing a Config file. Skippy automatically injects the code that consumes that config into the LLM prompt, ensuring your edit won't break the consumer. 2. Self-Healing Workflow Using  and , Skippy can fix errors without you writing the fix.  Scenario: You get a \"Module not found\" error. Skippy: Detects error -> Identifies missing module -> Runs  automatically -> Restarts the session -> Re-runs your script. 3. Habitual Memory (The \"Ghost in the Machine\") The  module learns your specific coding style and project quirks.  Scenario: You hate the default  output in your logging module. Skippy remembers this. Any time it generates code for you, it automatically uses your custom  function instead of . 4. Automated Documentation Embedded Skippy watches you merge a PR.  Trigger: Merge to Main branch detected. Action: Skippy analyzes the diff, updates the , updates the module version in the  manifest, and even regenerates the  documentation, opening a PR for the \"Docs Update\". 5. E2E Verification Before you push code, Skippy runs a \"Simulation\".  Action: It spins up a temporary environment (maybe a Docker container or disposable VM via ), runs your new script, and verifies it doesn't crash existing functionality. It brings back the logs if it fails. 🛠️ What is Needed to Make This Reality? To turn \"What if\" into \"This is my setup,\" you need to bridge PWS (PowerShell) with your IDE (VSCode). 1. The \"Skippy\" VSCode Extension You need a small VSCode extension written in JavaScript/TypeScript that acts as a bridge.  File Watcher: Listens for file saves (triggers  updates). Terminal Bridge: Captures terminal output (triggers  for errors). Sidebar UI: A \"Skippy\" sidebar that displays  context or allows \"chat with repo\" functionality. 2. The \"Local Server\" Model Skippy in PowerShell runs a web server (you already have server code in your  python tools or PowerShell equivalents).  VSCode Extension -> POSTs code/event to Local Skippy Server. Local Skippy Server -> Processes logic (Context, AI, Memory). Local Skippy Server -> Returns suggestion/action to VSCode Extension. 3. Trusted Execution For  to run  commands or install modules without asking every time, you need a \"Trust Boundary.\"  Configuration: A  file in your project root. Content:  💡 The \"Killer Feature\": Context Diffing Here is the ultimate E2E feature that sets this apart: \"What changed since I left?\"\nWhen you return to your project after 2 days, you open the Skippy Panel.  Skippy: \"Welcome back. Here is the Context Delta since Tuesday:\"  was modified.  branch is 5 commits ahead. Pester coverage dropped by 2%. Action: \"I've already loaded the  with these changes. Do you want me to run the tests now?\"  Conclusion If Skippy is embedded E2E, it stops being a tool you use and becomes the environment you work in. The PWS project has all the building blocks (Context, Memory, Computer Use, Automation). The missing piece is the glue that binds it tightly into the IDE workflow, turning those modules into a proactive, intelligent operating system for your code."
+        }
+      ],
+      "timestamp": "2025-12-27T23:56:00.000Z",
+      "contentHash": "8e81fb11d76b5f6799fdfefd51206172b43c0715d08b86593dc93ce1ed862b3e"
+    }
+  ],
+  "metadata": {
+    "provider": "zai",
+    "model": "GLM-4.7"
+  },
+  "id": "918dcff0-e006-4c6f-a228-a69f841644e8",
+  "sourceUrl": "https://chat.z.ai/s/e6b0a2c9-8439-4869-94aa-e46bed7e8040",
+  "provider": "zai",
+  "exportedAt": "2026-01-25T19:15:39.053Z",
+  "stats": {
+    "totalMessages": 6,
+    "totalWords": 3725,
+    "totalCharacters": 50016,
+    "totalCodeBlocks": 84,
+    "totalMermaidDiagrams": 5,
+    "totalImages": 8,
+    "firstMessageAt": "2026-01-25T19:15:38.901Z",
+    "lastMessageAt": "2025-12-27T23:56:00.000Z"
+  },
+  "_storedAt": "2026-01-25T19:15:43.289Z",
+  "_storageType": "filesystem-fallback"
+}

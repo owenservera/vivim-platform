@@ -1,0 +1,510 @@
+{
+  "id": "895bb477-4963-43a3-abbb-3a5ebe0feafd",
+  "provider": "gemini",
+  "sourceUrl": "https://gemini.google.com/share/ec217ee4b645",
+  "title": "Stress Test for Content Parser",
+  "model": "gemini",
+  "createdAt": "2026-01-25T18:25:30.389Z",
+  "updatedAt": "2026-01-25T18:25:30.389Z",
+  "capturedAt": "2026-01-25T18:25:30.389Z",
+  "messages": [
+    {
+      "id": "4a47758f-6043-479e-a8b6-6e70046883b4",
+      "role": "assistant",
+      "author": "Gemini",
+      "messageIndex": 0,
+      "parts": [
+        {
+          "type": "code",
+          "content": "def fibonacci(n):\n    \"\"\"Generate a Fibonacci sequence up to n terms.\"\"\"\n    sequence = [0, 1]\n    while len(sequence) < n:\n        sequence.append(sequence[-1] + sequence[-2])\n    return sequence[:n]\n\nprint(fibonacci(10))\n",
+          "metadata": {
+            "language": "python",
+            "originalLanguage": "Python"
+          }
+        },
+        {
+          "type": "code",
+          "content": "const greet = (name) => {\n  console.log(`Hello, ${name}! The parser is working.`);\n};\n\ngreet('Developer');\n",
+          "metadata": {
+            "language": "javascript",
+            "originalLanguage": "JavaScript"
+          }
+        },
+        {
+          "type": "mermaid",
+          "content": "graph TD\n    A[Start Parser Test] --> B{Is it valid?}\n    B -- Yes --> C[Display Success]\n    B -- No --> D[Return Error]\n    C --> E[End]\n    D --> E\n",
+          "metadata": {
+            "diagramType": "graph"
+          }
+        },
+        {
+          "type": "table",
+          "content": {
+            "headers": [],
+            "rows": [
+              [
+                "Feature",
+                "Python",
+                "JavaScript"
+              ],
+              [
+                "Typing",
+                "Strong, Dynamic",
+                "Weak, Dynamic"
+              ],
+              [
+                "Primary Use",
+                "Data Science / AI",
+                "Web Development"
+              ],
+              [
+                "Syntax Style",
+                "Indentation-based",
+                "Curly braces {}"
+              ]
+            ]
+          },
+          "metadata": {
+            "format": "html"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "ax^2 + bx + c = 0",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "ax2+bx+c=0",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "x=2a−b±b2−4ac​​",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "\\begin{aligned}\n\\nabla \\cdot \\mathbf{E} &= \\frac{\\rho}{\\varepsilon\\_0} \\\\\n\\nabla \\cdot \\mathbf{B} &= 0 \\\\\n\\nabla \\times \\mathbf{E} &= -\\frac{\\partial \\mathbf{B}}{\\partial t} \\\\\n\\nabla \\times \\mathbf{B} &= \\mu\\_0 \\left( \\mathbf{J} + \\varepsilon\\_0 \\frac{\\partial \\mathbf{E}}{\\partial t} \\right)\n\\end{aligned}",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "∇⋅E∇⋅B∇×E∇×B​=ε_0ρ​=0=−∂t∂B​=μ_0(J+ε_0∂t∂E​)​",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "text",
+          "content": "Section 1: Rich TextThis section serves as a test for standard Markdown parsing. It includes bold text for emphasis, italicized text for style, and inline code elements for technical mentions.Note on Parsing: Blockquotes like this one should be identified as distinct containers, often used for warnings or citations.Nested List Test:Item 1: Primary level.Sub-item A: Secondary level.Sub-item B: Secondary level.Item 2: Returning to primary.Section 2: Code BlocksPython: Fibonacci SequenceJavaScript: LoggingSection 3: Mathematical EquationsThe Quadratic FormulaThe solutions for  are:\nMaxwell's EquationsThese four equations describe how electric and magnetic fields propagate:\nSection 4: Table ComparisonExport to SheetsSection 5: Mermaid DiagramSection 6: Image GenerationI have generated an image of a futuristic computer terminal to test your parser's ability to handle media containers.{\n\"action\": \"image_generation\",\n\"action_input\": \"{'prompt': 'A sleek, futuristic computer terminal in a dark room with holographic displays, neon blue and cyan accents, high-tech aesthetic, 4k resolution.'}\"\n}Section 7: Tool Usage & Real-time DataTo verify external tool integration and citation handling, I have retrieved the current time in Tokyo.As of my latest search, the current time in Tokyo, Japan is 3:14 PM on Sunday, January 25, 2026.Would you like me to add any other specific data formats, such as YAML or JSON blocks, to further refine your stress test?",
+          "metadata": {
+            "format": "markdown"
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T18:25:30.341Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T18:25:30.397Z",
+      "contentHash": "2899c901c6f3343e3b55ef7533568fe0488c6efc7702446a33e8e079ae9176ac"
+    },
+    {
+      "id": "79c0f47f-8ed3-4551-a778-cd2ecab4c957",
+      "role": "user",
+      "author": "User",
+      "messageIndex": 1,
+      "parts": [
+        {
+          "type": "image",
+          "content": "https://lh3.googleusercontent.com/gg/AMW1TPrPa-kgcP8Tv_w34bZA8QZhN12d0VL8reJbIEg72oBOpqcGMJwb3LNH-UoPjKX2Ad_2tsPFIlM3_hrjn6_ld6ThlQnndAJwIZ-FTz0XGYYyObI0apOrzDZl5Upd9HcEVTHszUltCWrU3ZhmcJIqiTPY5eGI3VNdxS3MjpNIrwX3ipszsKbl=s1024-rj-mp2",
+          "metadata": {
+            "alt": "Image of "
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T18:25:30.343Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T18:25:30.398Z",
+      "contentHash": "9ffefbf8769d2e644d2ad36631c75a0e47eb63a357ff20b85c1d036ae1bffaf9"
+    },
+    {
+      "id": "e47d0f99-a7b6-436a-aa9a-1c42c9d66a4c",
+      "role": "assistant",
+      "author": "Gemini",
+      "messageIndex": 2,
+      "parts": [
+        {
+          "type": "code",
+          "content": "@decorator_check\nasync def complex_fibonacci(n: int) -> list:\n    \"\"\"\n    🚀 Generates Fibonacci with type hinting and async support.\n    \"\"\"\n    if n <= 0: return []\n    result = [0, 1]\n    # Handle the sequence logic\n    for i in range(2, n):\n        result.append(result[-1] + result[-2])\n    return result[:n] # 🏁 Returns the final slice\n",
+          "metadata": {
+            "language": "python",
+            "originalLanguage": "Python"
+          }
+        },
+        {
+          "type": "code",
+          "content": "// 🔥 Testing template literals and arrow functions\nconst updateUI = (data) => {\n  const status = data.isValid ? \"✅ Success\" : \"❌ Failure\";\n  console.log(`[Parser Log]: ${status} - Processed at ${new Date().toISOString()}`);\n};\n\ndocument.addEventListener('DOMContentLoaded', () => updateUI({isValid: true}));\n",
+          "metadata": {
+            "language": "javascript",
+            "originalLanguage": "JavaScript"
+          }
+        },
+        {
+          "type": "mermaid",
+          "content": "graph LR\n    Start((🚀 Start)) --> Input{Get Input}\n    Input -- \"Valid\" --> Process[Parser Engine]\n    Input -- \"Invalid\" --> Error([Throw 404])\n    Process --> Render{Format Type}\n    Render -- \"Math\" --> LaTeX[\\sum LaTeX\\]\n    Render -- \"Code\" --> Syntax[Highlighting]\n    LaTeX --> End((🏁 Done))\n    Syntax --> End\n    Error --> End\n    style Start fill:#f9f,stroke:#333,stroke-width:4px\n    style End fill:#00ff00,stroke:#333\n",
+          "metadata": {
+            "diagramType": "graph"
+          }
+        },
+        {
+          "type": "table",
+          "content": {
+            "headers": [],
+            "rows": [
+              [
+                "💎 Feature",
+                "🐍 Python 3.12",
+                "☕ JavaScript (ES2024)",
+                "🚀 Parser Impact"
+              ],
+              [
+                "Concurrency",
+                "asyncio / Threading",
+                "Event Loop / Workers",
+                "High"
+              ],
+              [
+                "Package Mgr",
+                "pip / poetry 📦",
+                "npm / yarn 🧶",
+                "Medium"
+              ],
+              [
+                "Performance",
+                "JIT (PyPy) / Interpreted",
+                "V8 Engine (Optimized)",
+                "Critical"
+              ]
+            ]
+          },
+          "metadata": {
+            "format": "html"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "i\\hbar \\frac{\\partial}{\\partial t} \\Psi(\\mathbf{r}, t) = \\left[ \\frac{-\\hbar^2}{2m} \\nabla^2 + V(\\mathbf{r}, t) \\right] \\Psi(\\mathbf{r}, t)",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "iℏ∂t∂​Ψ(r,t)=[2m−ℏ2​∇2+V(r,t)]Ψ(r,t)",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "\\color{red}{R_{\\mu\\nu}} - \\frac{1}{2}\\color{blue}{R}g_{\\mu\\nu} + \\color{green}{\\Lambda} g_{\\mu\\nu} = \\frac{8\\pi G}{c^4} \\color{orange}{T_{\\mu\\nu}}",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "Rμν​−21​Rgμν​+Λgμν​=c48πG​Tμν​",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "text",
+          "content": "🧪 Ultimate Parser Stress Test: Phase 2 (High Complexity) 🌈This response is designed to push your content parser to its limits with nested structures, colorful emojis, and advanced LaTeX formatting.1. 📝 Rich Text & Deep Nesting 🏗️This section tests how the parser handles multi-layered formatting and 🚀 emojis within structured elements.[!IMPORTANT]\nNested Callouts: Some parsers struggle with blockquotes inside lists.🟢 Level 1: Top-tier insight.🔵 Level 2: Deeper nuance.🌈 Level 3 Blockquote: \"Complexity is the playground of a robust parser.\"💻 inline.code_test(with_emojis 🚀)2. 💻 Complex Code Blocks 🐍 ☕Providing code with internal comments, decorators, and asynchronous patterns.Python: The Recursive Generator 🧬JavaScript: The DOM Manipulator 🌐3. 📐 Advanced Mathematical Equations ⚛️Using multi-line alignment and colorful annotations in LaTeX.The Schrödinger Equation (Time-Dependent) 🌌\nColor-Coded General Relativity 🪐\n4. 📊 High-Density Table 🗂️Export to Sheets5. 🗺️ Mermaid.js: Advanced Logic Flow 🧬6. 🖼️ Image Generation: Cybernetic Hardware 🦾I am generating a highly detailed, colorful image of a cybernetic server rack with glowing data cables to represent the \"guts\" of your parser.{\n\"action\": \"image_generation\",\n\"action_input\": \"{'prompt': 'A high-tech cybernetic server rack with glowing neon cables in rainbow colors, liquid cooling tubes with bubbling green fluid, intricate hardware details, macro photography, 8k resolution, cinematic lighting.'}\"\n}7. 🌍 Tool Usage: Live Data Retrieval 🕒To provide the most complex verification, I will check the current weather and time in Reykjavik, Iceland, as it often involves unique characters and time zones.As of my current search, the time in Reykjavik is 6:16 AM on Sunday, January 25, 2026. The weather is currently -2°C with Light Snow ❄️.Would you like me to generate a specific JSON or YAML configuration file to test how your parser handles raw data structures next?",
+          "metadata": {
+            "format": "markdown"
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T18:25:30.358Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T18:25:30.399Z",
+      "contentHash": "74d014b94489cfe379ac9f09f2a51c39b8eb645e219bbfc9139003dc0228f6a5"
+    },
+    {
+      "id": "5f81d9a8-859f-45c2-b425-ce8ed3149306",
+      "role": "assistant",
+      "author": "Gemini",
+      "messageIndex": 3,
+      "parts": [
+        {
+          "type": "code",
+          "content": "import requests # Source: https://pypi.org/project/requests/\n\ndef fetch_parser_manifest(url):\n    \"\"\"Fetches manifest from a remote source.\"\"\"\n    response = requests.get(url)\n    if response.status_code == 200:\n        return response.json() # 📦 Parsing JSON payload\n    return None\n\n# Example usage with a placeholder source\nmanifest = fetch_parser_manifest(\"https://raw.githubusercontent.com/example/repo/main/config.json\")\n",
+          "metadata": {
+            "language": "python",
+            "originalLanguage": "Python"
+          }
+        },
+        {
+          "type": "mermaid",
+          "content": "sequenceDiagram\n    participant P as Parser\n    participant S as Source API\n    participant D as Database\n    P->>S: Request Data (GET /v1/sources)\n    S-->>P: 200 OK (JSON Payload)\n    P->>P: Validate Hyperlinks\n    P->>D: Store Verified Records\n    Note right of D: Logs timestamp 2026-01-25\n",
+          "metadata": {
+            "diagramType": "sequencediagram"
+          }
+        },
+        {
+          "type": "table",
+          "content": {
+            "headers": [],
+            "rows": [
+              [
+                "📑 Resource",
+                "🔗 Source Link",
+                "📅 Last Verified",
+                "🛠️ Priority"
+              ],
+              [
+                "Python Core",
+                "python.org",
+                "2026-01-25",
+                "High"
+              ],
+              [
+                "Node.js",
+                "nodejs.org",
+                "2026-01-24",
+                "Medium"
+              ],
+              [
+                "Mermaid Docs",
+                "mermaid.js.org",
+                "2026-01-25",
+                "Low"
+              ]
+            ]
+          },
+          "metadata": {
+            "format": "html"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "P(A|B) = \\frac{P(B|A) P(A)}{P(B)}",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "P(A∣B)=P(B)P(B∣A)P(A)​",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "∫−∞∞​e−x2dx=π​",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "text",
+          "content": "🧬 Parser Stress Test: Phase 3 (Data Integrity & Hyperlinks) 🔗This final phase introduces external data validation, hyperlink structures, and citation metadata to ensure your parser correctly identifies actionable URLs and source references.1. 📚 Rich Text with Citations & Links 🌐Testing the ability to parse standard [Label](URL) format and raw links alongside emojis.Documentation Hub: Visit the Official Markdown Guide for syntax verification. 📖API Reference: Check the status at https://api.example-parser.io/v1/health.Resource Footnotes: Robust parsers should handle trailing citations [^1] and external anchors.Source Verification: Data was cross-referenced with the Unicode Standard 15.1 to ensure emoji compatibility across UTF-8 environments. 🚀2. 💻 Code Blocks: API Integration 🔌A Python snippet demonstrating how a parser might fetch data from a source.3. 📐 Advanced LaTeX: Probability & Statistics 📊Testing complex subscripts, superscripts, and fractional sources.Bayes' Theorem (Source of modern inference):\nThe Gaussian Integral (Used in data normalization):\n4. 📂 Table: Source Metadata Tracking 🗄️5. 🗺️ Mermaid.js: Resource Fetching Logic 📡6. 🖼️ Image Generation: The \"Knowledge Web\" 🕸️I am generating an image representing a complex web of interconnected data nodes and glowing links to test your parser's media handling for abstract concepts.{\n\"action\": \"image_generation\",\n\"action_input\": \"{'prompt': 'A 3D visualization of a global neural network, glowing interconnected nodes with light-speed data streams flowing between them, translucent digital links, dark background with deep purple and gold lighting, high-tech information architecture, 8k.'}\"\n}7. 🔍 Live Source Verification (Google Search) 🛠️To verify your parser's ability to handle Tool Call Citations and Source Links, I will look up the current top technical documentation for \"CommonMark Spec\".As of my search, the current version of the CommonMark Specification is 0.30, which can be found at the official source: spec.commonmark.org. This document is the primary authority for consistent Markdown parsing across platforms.Would you like me to compile all these tests into a single downloadable Markdown (.md) file or a JSON-wrapped string for your automated test suite?",
+          "metadata": {
+            "format": "markdown"
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T18:25:30.372Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T18:25:30.400Z",
+      "contentHash": "708db19a8a318510cd9779f190d37f367a73f09ad963a97bd6a0c830cffcf12f"
+    },
+    {
+      "id": "491147cb-9cbc-455f-acfb-f224bc9de199",
+      "role": "assistant",
+      "author": "Gemini",
+      "messageIndex": 4,
+      "parts": [
+        {
+          "type": "code",
+          "content": "- const parserVersion = \"1.0.0\"; // Deprecated\n+ const parserVersion = \"2.0.0-beta\"; // Enhanced Support\n  \n  function init() {\n-   console.log(\"Starting...\");\n+   console.log(\"Initializing Neural Parser...\");\n    return true;\n  }\n",
+          "metadata": {
+            "language": "diff",
+            "originalLanguage": "Diff"
+          }
+        },
+        {
+          "type": "code",
+          "content": "parser_settings:\n  strict_mode: true\n  allowed_tags:\n    - div\n    - span\n    - iframe\n  timeout: 5000ms # ⏱️ Watchdog timer\n",
+          "metadata": {
+            "language": "yaml",
+            "originalLanguage": "YAML"
+          }
+        },
+        {
+          "type": "code",
+          "content": "{\n  \"user_id\": 4291,\n  \"preferences\": {\n    \"theme\": \"dark\",\n    \"notifications\": [\"email\", \"sms\"]\n  },\n  \"is_admin\": false\n}\n",
+          "metadata": {
+            "language": "json",
+            "originalLanguage": "JSON"
+          }
+        },
+        {
+          "type": "mermaid",
+          "content": "gantt\n    title Parser Development Cycle\n    dateFormat  YYYY-MM-DD\n    section Backend\n    Core Logic       :a1, 2026-01-01, 10d\n    API Integration  :after a1, 5d\n    section Frontend\n    UI Components    :2026-01-05, 12d\n    Stress Testing   :crit, 2026-01-15, 7d\n",
+          "metadata": {
+            "diagramType": "gantt"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "\\rho \\left( \\frac{\\partial \\mathbf{u}}{\\partial t} + \\mathbf{u} \\cdot \\nabla \\mathbf{u} \\right) = -\\nabla p + \\mu \\nabla^2 \\mathbf{u} + \\mathbf{f}",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "ρ(∂t∂u​+u⋅∇u)=−∇p+μ∇2u+f",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "\\mathbf{u}",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "u",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "p",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "p",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "\\nabla^2",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "∇2",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "text",
+          "content": "🧪 Ultimate Parser Stress Test: Phase 4 (Edge Cases & Mixed Media) 🌪️This phase introduces hybrid content (HTML mixed with Markdown), interactive elements, diff-highlighting, and footnote references. These are common failure points for rigid parsers.1. 🧬 Hybrid HTML & Interactive Details 🛡️Testing the parser's ability to render raw HTML tags alongside standard Markdown and emojis.<details>\n<summary>🔻 <b>Click here to expand the hidden payload</b> (Testing <code>&lt;details&gt;</code> tags)</summary>✅ Hidden List Item 1: If you can see this, the parser respects HTML open states or user interaction.⚠️ Warning: Mixed <em>HTML tags</em> and Markdown often break styling inheritance.</details>Note: The above section uses <details> and <summary> blocks. If your parser strips HTML, the content might be visible immediately or completely missing.2. 📝 Task Lists & Git Diff Syntax ±Testing \"Task List\" rendering (checkboxes) and diff code highlighting (red/green line logic).Project Roadmap:[x] Phase 1: Core Parsing Logic 🧠[x] Phase 2: Syntax Highlighting 🎨[ ] Phase 3: Edge Case Handling 🚧[ ] Handle nested <div> tags[ ] Fix emoji ZWJ sequencesCommit Patch (Diff Test):3. 🌊 Advanced Physics (Navier-Stokes) 🌀Testing vector calculus notation, partial derivatives, and inline math mixing.The motion of viscous fluid substances is described by the Navier-Stokes equations. Momentum conservation is expressed as:Where: is the flow velocity vector field. is the pressure. is the Laplacian operator [^1].4. 🗃️ Data Serialization Blocks (JSON & YAML) 💾Parsers often confuse these with standard code. They should be distinct.YAML Configuration:JSON Payload:5. 📅 Mermaid.js: Project Gantt Chart 📊Testing a time-based diagram structure, which differs significantly from flowcharts.6. 🖼️ Image Generation: Fractal Geometry 💠I am generating an image of a complex mathematical fractal to test high-frequency detail rendering in media containers.{\n\"action\": \"image_generation\",\n\"action_input\": \"{'prompt': 'A 3D Mandelbulb fractal, infinite complexity, gold and obsidian textures, ethereal lighting, mathematical visualization, hyper-realistic, 8k render.'}\"\n}7. 🦶 Footnotes & References 🔗Testing the footnote syntax [^id] which links to a reference at the bottom.This statement requires a citation to verify the claims made earlier [^2]. Some parsers render these as popovers, others as jump-links.References:8. 🌍 Tool Usage: Extreme Timezone Check ❄️To test negative GMT offsets and unique location strings.I have checked the time in Honolulu, Hawaii (HST).\nCurrent Time: 8:16 PM, Saturday, January 24, 2026 (Due to the -10 UTC offset).Would you like me to move to Phase 5: \"Destructive Testing\" (Unclosed tags, massive text blocks, and malformed syntax)?[^1]:\nLaplacian Operator: A differential operator given by the divergence of the gradient of a function on Euclidean space.[^2]:\nSource Authority: Verified against the International Standard for Parsing (ISO-8601).",
+          "metadata": {
+            "format": "markdown"
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T18:25:30.383Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T18:25:30.400Z",
+      "contentHash": "ea7ca3d3edd9327a7f94f09e3768593ff4516579da3fd859006a2cb5b14b426e"
+    },
+    {
+      "id": "f97cffe3-d47e-4b13-89cc-395f52ffea8d",
+      "role": "assistant",
+      "author": "Gemini",
+      "messageIndex": 5,
+      "parts": [
+        {
+          "type": "mermaid",
+          "content": "erDiagram\n    Conversation ||--|{ Message : \"contains\"\n    Conversation ||--o{ CaptureAttempt : \"linked_to\"\n    \n    Conversation {\n        string id PK\n        string provider\n        string sourceUrl UK\n        json metadata\n        int messageCount\n        datetime capturedAt\n    }\n\n    Message {\n        string id PK\n        string conversationId FK\n        string role\n        int messageIndex\n        json parts \"Structured Content\"\n        json metadata\n    }\n\n    CaptureAttempt {\n        string id PK\n        string sourceUrl\n        string status\n        string conversationId FK \"optional\"\n        int duration\n    }\n\n    ProviderStats {\n        string id PK\n        string provider UK\n        int successfulCaptures\n        float avgDuration\n    }\n",
+          "metadata": {
+            "diagramType": "erdiagram"
+          }
+        },
+        {
+          "type": "code",
+          "content": "import { z } from 'zod';\n\n// Base part schema\nconst BasePart = z.object({\n  metadata: z.record(z.any()).optional(),\n});\n\n// Specific schemas based on your comments\nconst TextPart = BasePart.extend({\n  type: z.literal('text'),\n  content: z.string(),\n});\n\nconst CodePart = BasePart.extend({\n  type: z.literal('code'),\n  content: z.string(),\n  metadata: z.object({\n    language: z.string().optional(),\n    filename: z.string().optional(),\n  }),\n});\n\nconst ToolCallPart = BasePart.extend({\n  type: z.literal('tool_call'),\n  content: z.object({\n    id: z.string(),\n    name: z.string(),\n    arguments: z.record(z.any()),\n  }),\n});\n\n// The Union Schema\nexport const MessagePartSchema = z.discriminatedUnion('type', [\n  TextPart,\n  CodePart,\n  ToolCallPart,\n  // ... add Image, Latex, Table, Mermaid here\n]);\n\nexport type MessagePart = z.infer<typeof MessagePartSchema>;\n",
+          "metadata": {
+            "language": "typescript",
+            "originalLanguage": "TypeScript"
+          }
+        },
+        {
+          "type": "text",
+          "content": "This is a robust and well-structured Prisma schema. It effectively balances the rigidity of relational databases (for conversation metadata and analytics) with the flexibility of NoSQL (using JSONB for the polymorphic content parts of a message).Here is a visual representation of your data model and an analysis of the design.🧱 Entity Relationship Diagram (ERD)This diagram visualizes how your tracking of CaptureAttempts flows into successful Conversations and how Messages are structured.🔍 Schema AnalysisYour design makes several smart architectural choices for an LLM capture tool:1. The JSONB \"Parts\" Strategy\nInstead of creating separate tables for TextParts, ImageParts, CodeParts, etc., you are using a single JSONB column.Pro: This is critical for LLM data because the structure is recursive and unpredictable. It allows you to store the exact sequence of a message (e.g., Text -> Code -> Text -> Image) without complex join tables.Con: You lose some SQL type safety.Mitigation: Since you are using Bun, you should pair this with Zod schema validation at the application level to ensure the JSON written to the DB matches your Content Parts specification.2. Analytics Pre-computation\nFields like totalCodeBlocks, totalTokens, and aiMessageCount on the Conversation model are excellent.Why: aggregations on JSONB arrays are expensive in PostgreSQL. Storing these counts at capture time means your analytics dashboard queries will be instant (O(1)) rather than requiring a scan of every message content (O(n)).3. Capture Observability\nThe CaptureAttempt table is a professional touch. In scraping/parsing pipelines, knowing why a capture failed (timeout vs. 404 vs. parsing error) is just as important as the successful data.💡 Implementation RecommendationSince you are using driverAdapters with Bun, ensure you enable the pg driver for optimal performance.Also, for the parts JSONB column, you will want to create a TypeScript discriminator union to handle the data safely in your frontend/API.Example Zod implementation for your parts:Next StepWould you like me to generate the complete Zod validation schema for all the content parts (Image, Latex, Table, Mermaid) to match your comments, or should I write a seed script to populate this DB with dummy data for testing?",
+          "metadata": {
+            "format": "markdown"
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T18:25:30.387Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T18:25:30.401Z",
+      "contentHash": "7dc27bdd6a87a1cf43ff4acd85839b58230afef31f8dec460f34e7b6db0287c5"
+    }
+  ],
+  "metadata": {
+    "url": "https://gemini.google.com/share/ec217ee4b645"
+  },
+  "messageCount": 6,
+  "userMessageCount": 1,
+  "aiMessageCount": 5,
+  "totalWords": 1541,
+  "totalCharacters": 13702,
+  "totalCodeBlocks": 9,
+  "totalMermaidDiagrams": 5,
+  "totalImages": 1,
+  "totalTables": 3,
+  "totalLatexBlocks": 22,
+  "totalToolCalls": 0,
+  "_storedAt": "2026-01-25T18:25:34.623Z",
+  "_storageType": "filesystem-fallback"
+}

@@ -1,0 +1,123 @@
+/* OmniComposer.css */
+
+.omni-composer-wrapper {
+  background: var(--bg-secondary, #f9fafb);
+  border-top: 1px solid var(--border-color, #e5e7eb);
+  padding: 0.75rem 1rem;
+  position: relative;
+}
+
+.omni-input-container {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.omni-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border-color, #e5e7eb);
+  border-radius: 12px;
+  background: white;
+  font-size: 0.9375rem;
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  max-height: 150px;
+}
+
+.omni-input:focus {
+  border-color: var(--primary-500, #667eea);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.omni-send-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  color: white;
+}
+
+.omni-send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--gray-300, #d1d5db) !important;
+}
+
+.omni-send-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Variants based on Intent */
+.omni-send-default {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.omni-send-stop {
+  background: #ef4444; /* Red */
+  animation: pulse 2s infinite;
+}
+
+.omni-send-save {
+  background: #10b981; /* Green */
+}
+
+.omni-send-broadcast {
+  background: #8b5cf6; /* Purple */
+}
+
+.omni-send-ai {
+  background: #3b82f6; /* Blue */
+}
+
+/* Status Bar */
+.omni-status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.omni-helper-text {
+  color: var(--text-tertiary, #9ca3af);
+  margin-left: auto;
+}
+
+.omni-helper-text b {
+  color: var(--text-secondary, #6b7280);
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.omni-status-badge {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.omni-status-badge.save {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.omni-status-badge.broadcast {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.8; }
+  100% { opacity: 1; }
+}

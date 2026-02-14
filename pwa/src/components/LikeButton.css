@@ -1,0 +1,91 @@
+/**
+ * Like Button Styles
+ */
+
+.like-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid #475569;
+  border-radius: 20px;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.like-button:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.like-button.liked {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.like-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.heart-icon {
+  transition: transform 0.2s ease;
+}
+
+.like-button:hover:not(:disabled) .heart-icon {
+  transform: scale(1.1);
+}
+
+.heart-icon.filled {
+  fill: currentColor;
+}
+
+.heart-icon.outline {
+  fill: none;
+}
+
+.like-count {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Sizes */
+.like-button.size-sm {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.like-button.size-sm .heart-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.like-button.size-lg {
+  padding: 12px 16px;
+  font-size: 16px;
+}
+
+.like-button.size-lg .heart-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Compact variant */
+.like-button.variant-compact {
+  padding: 6px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+}
+
+.like-button.variant-compact:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.like-button.variant-compact .like-count {
+  display: none;
+}

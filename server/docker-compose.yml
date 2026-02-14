@@ -1,0 +1,79 @@
+# Docker Compose for local development
+# Includes: API server, PostgreSQL database, Adminer (DB UI)
+
+version: '3.9'
+
+services:
+  # ============================================================================
+  # OpenScroll API Server (Bun runtime)
+  # ============================================================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgresql://openscroll:openscroll@db:5432/openscroll
+      LOG_FORMAT: pretty
+      LOG_LEVEL: debug
+      ENABLE_SWAGGER: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./prisma:/app/prisma
+    command: ["bun", "run", "dev"]
+    restart: unless-stopped
+    networks:
+      - openscroll-network
+
+  # ============================================================================
+  # PostgreSQL Database
+  # ============================================================================
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: openscroll
+      POSTGRES_PASSWORD: openscroll
+      POSTGRES_DB: openscroll
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openscroll"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - openscroll-network
+
+  # ============================================================================
+  # Adminer (Database UI)
+  # ============================================================================
+  adminer:
+    image: adminer:latest
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DESIGN: nette
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - openscroll-network
+
+volumes:
+  postgres-data:
+
+networks:
+  openscroll-network:
+    driver: bridge

@@ -1,0 +1,409 @@
+{
+  "id": "b476c291-d9dc-4767-a297-66d2fb0b1356",
+  "provider": "claude",
+  "sourceUrl": "https://claude.ai/share/ab175426-00c9-4877-a935-72c9b7a63bc3",
+  "title": "Parser torture test for LLM output | Claude",
+  "model": "claude",
+  "createdAt": "2026-01-25T19:14:27.133Z",
+  "updatedAt": "2026-01-25T19:14:27.133Z",
+  "capturedAt": "2026-01-25T19:14:27.133Z",
+  "messages": [
+    {
+      "id": "c8300bf8-a26a-49b4-94f1-ef7fab1030a3",
+      "role": "user",
+      "author": "User",
+      "messageIndex": 0,
+      "parts": [
+        {
+          "type": "text",
+          "content": "Here is a comprehensive prompt designed to force ChatGPT (or any advanced LLM) to generate a response with maximum structural variety, ensuring it hits every edge case we covered in this chat. ### 📋 The \"Parser Torture Test\" Prompt **Copy and paste the text below:** --- > **Act as a QA Automation Engineer specializing in Content Parsing and Rendering engines.** > I am building a universal content parser that needs to handle every possible format an LLM might output. I need you to generate a single, massive response that acts as a **\"Ultimate Stress Test\"** for my system. > Your response must include **ALL** of the following elements, organized into clearly labeled sections with headings: > **1. Typography & Nesting:** > * Include **bold**, *italics*, strikethrough, inline code, and ***bold italics***. > * Create a deep nested list (at least 4 levels) mixing bullets and numbers. > * Use blockquotes with nested blockquotes and lists inside them. > * Include a wide variety of Unicode emojis (🚀, 🌈, 👨‍💻) and special characters (©, ™, ½). > > > **2. Complex Code Blocks (Polyglot):** > * **Python:** A function using decorators (@dataclass), type hinting, and docstrings. > * **JavaScript/TypeScript:** An async function with a try/catch block and a JSON object. > * **HTML/XML:** A block showing raw HTML tags like <div> and <span style=\"color:red\">. > * **Diff/Patch:** A code block using diff syntax (lines starting with + and -). > * **Data:** A raw JSON block and a YAML configuration block. > > > **3. Advanced Mathematics (LaTeX):** > * Write **Maxwell's Equations** or the **Schrödinger Equation** using block-level LaTeX ( > > ). > * Include complex syntax: integrals (), summations (), fractions, square roots, and matrices. > * Try to use color in LaTeX if possible (e.g., \\color{red}). > * Include inline math equations mixed into a sentence. > > > **4. Structured Tables:** > * Create a table with 4 columns: Text, Numbers, Code (inline), and Links. > * Use different text alignments (Left, Center, Right). > * Include a row that uses empty cells or dashes. > > > **5. Visual Diagrams (Mermaid.js):** > * Provide **three distinct** Mermaid code blocks: > 1. A standard **Flowchart** (graph TD) with decision nodes and subgraphs. > 2. A **Sequence Diagram** (sequenceDiagram) with loops and notes. > 3. A **Gantt Chart** or **Class Diagram** to test different renderers. > > > > > **6. Edge Cases & Hybrid Content:** > * Use HTML <details> and <summary> tags to create a collapsible section. > * Include a **Task List** (Checkboxes [ ] and [x]). > * Add **Footnotes** (e.g., [^1]) and their corresponding references at the bottom. > * Include distinct \"Tool Call\" or \"Citation\" simulations (text that looks like a source reference). > > > **7. Media Simulation:** > * Include an image placeholder using standard Markdown syntax ![Alt Text](URL). > * Write a prompt for an AI image generator in a blockquote. > > > **Goal:** The output should be dense, technical, and visually varied. Do not simplify; use complex examples. --- ### 💡 Why this prompt works: 1. **Role Definition:** Setting the persona to \"QA Automation Engineer\" stops the AI from trying to be \"helpful\" by simplifying things. It understands the goal is *complexity*. 2. **Explicit Syntax Requests:** It specifically asks for things that often break parsers, like **Diff syntax** (colors often fail), **Footnotes** (links often break), and **HTML mixing** (security sanitizers often strip this). 3. **\"Polyglot\" Requirement:** By forcing Python, JS, JSON, and YAML, you test your syntax highlighter's ability to switch languages dynamically. 4. **Visual Variety:** Asking for 3 specific Mermaid types ensures you test your diagram rendering logic (e.g., Gantt charts render very differently from Flowcharts).",
+          "metadata": {
+            "format": "markdown"
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T19:14:27.040Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T19:14:27.153Z",
+      "contentHash": "53e9db4759b764585535ac8ae64a685dbab19766405178adba222e9dcc2df62d"
+    },
+    {
+      "id": "8a4689e0-21cf-43c5-a12d-0bb71d7068e4",
+      "role": "assistant",
+      "author": "Claude",
+      "messageIndex": 1,
+      "parts": [
+        {
+          "type": "code",
+          "content": "from dataclasses import dataclass, field\nfrom typing import List, Optional, Dict, Any\nfrom functools import wraps\nimport asyncio\n\ndef validate_input(func):\n    \"\"\"Decorator to validate function inputs.\"\"\"\n    @wraps(func)\n    async def wrapper(*args, **kwargs):\n        print(f\"Validating inputs for {func.__name__}\")\n        return await func(*args, **kwargs)\n    return wrapper\n\n@dataclass\nclass DataProcessor:\n    \"\"\"\n    Advanced data processing class with type hints.\n    \n    Attributes:\n        name: The processor name\n        config: Configuration dictionary\n        buffer: Internal buffer for data storage\n    \"\"\"\n    name: str\n    config: Dict[str, Any] = field(default_factory=dict)\n    buffer: List[Optional[int]] = field(default_factory=list)\n    \n    @validate_input\n    async def process(self, data: List[int]) -> Dict[str, Any]:\n        \"\"\"\n        Asynchronously process data with validation.\n        \n        Args:\n            data: List of integers to process\n            \n        Returns:\n            Dictionary containing processed results\n        \"\"\"\n        await asyncio.sleep(0.1)\n        result = {\n            'sum': sum(data),\n            'count': len(data),\n            'average': sum(data) / len(data) if data else 0\n        }\n        return result",
+          "metadata": {
+            "language": "python"
+          }
+        },
+        {
+          "type": "code",
+          "content": "interface APIResponse<T> {\n    data: T;\n    status: number;\n    error?: string;\n}\n\nasync function fetchUserData(userId: string): Promise<APIResponse<User>> {\n    try {\n        const response = await fetch(`https://api.example.com/users/${userId}`, {\n            method: 'GET',\n            headers: {\n                'Content-Type': 'application/json',\n                'Authorization': `Bearer ${process.env.API_TOKEN}`\n            }\n        });\n        \n        if (!response.ok) {\n            throw new Error(`HTTP error! status: ${response.status}`);\n        }\n        \n        const data = await response.json();\n        \n        return {\n            data: data,\n            status: response.status\n        };\n    } catch (error) {\n        console.error('Fetch failed:', error);\n        return {\n            data: null,\n            status: 500,\n            error: error.message\n        };\n    }\n}\n\n// Example JSON object\nconst config = {\n    \"apiVersion\": \"v2\",\n    \"endpoints\": {\n        \"users\": \"/api/users\",\n        \"posts\": \"/api/posts\"\n    },\n    \"timeout\": 5000,\n    \"retries\": 3\n};",
+          "metadata": {
+            "language": "typescript"
+          }
+        },
+        {
+          "type": "code",
+          "content": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <style>\n        .highlight { color: red; font-weight: bold; }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <span style=\"color:red\">This is red text</span>\n        <p>Regular paragraph with <strong>bold</strong> and <em>italic</em></p>\n        <!-- This is a comment -->\n        <script>\n            console.log(\"Embedded JavaScript\");\n        </script>\n    </div>\n</body>\n</html>",
+          "metadata": {
+            "language": "html"
+          }
+        },
+        {
+          "type": "code",
+          "content": "--- a/src/parser.js\n+++ b/src/parser.js\n@@ -10,7 +10,7 @@\n function parseContent(input) {\n-    const regex = /old-pattern/g;\n+    const regex = /new-pattern/gi;\n     \n-    // TODO: Fix this deprecated method\n+    // FIXED: Updated to modern approach\n     return input\n-        .replace(regex, 'old')\n+        .replace(regex, 'new')\n         .trim();\n }",
+          "metadata": {
+            "language": "diff"
+          }
+        },
+        {
+          "type": "code",
+          "content": "{\n  \"schema\": \"test-data-v1\",\n  \"metadata\": {\n    \"created\": \"2026-01-25T10:30:00Z\",\n    \"author\": \"QA System\",\n    \"version\": \"1.0.0\"\n  },\n  \"testCases\": [\n    {\n      \"id\": 1,\n      \"name\": \"Edge Case Testing\",\n      \"enabled\": true,\n      \"parameters\": {\n        \"timeout\": 5000,\n        \"retries\": 3,\n        \"assertions\": null\n      }\n    }\n  ],\n  \"unicode\": \"Testing 🚀 emoji in JSON\",\n  \"special\": \"Characters: © ™ ½\"\n}",
+          "metadata": {
+            "language": "json"
+          }
+        },
+        {
+          "type": "code",
+          "content": "version: '3.8'\n\nservices:\n  web:\n    image: nginx:latest\n    ports:\n      - \"8080:80\"\n    environment:\n      - NODE_ENV=production\n      - API_KEY=${SECRET_KEY}\n    volumes:\n      - ./config:/etc/nginx/conf.d\n    networks:\n      - frontend\n      \n  database:\n    image: postgres:14\n    environment:\n      POSTGRES_PASSWORD: ${DB_PASSWORD}\n      POSTGRES_USER: admin\n    volumes:\n      - db_data:/var/lib/postgresql/data\n    \nnetworks:\n  frontend:\n    driver: bridge\n\nvolumes:\n  db_data:",
+          "metadata": {
+            "language": "yaml"
+          }
+        },
+        {
+          "type": "mermaid",
+          "content": "graph TD\n    Start([Start Process]) --> Input[/User Input/]\n    Input --> Validate{Valid Data?}\n    Validate -->|Yes| Process[Process Data]\n    Validate -->|No| Error[Show Error]\n    Error --> Input\n    \n    Process --> SubGraph1\n    \n    subgraph SubGraph1[Data Processing Pipeline]\n        Transform[Transform Data]\n        Normalize[Normalize Values]\n        Transform --> Normalize\n    end\n    \n    SubGraph1 --> Check{Quality Check}\n    Check -->|Pass| Store[(Store in DB)]\n    Check -->|Fail| Retry[Retry Logic]\n    Retry --> Process\n    \n    Store --> Notify[Send Notification]\n    Notify --> End([End Process])\n    \n    style Start fill:#90EE90\n    style End fill:#FFB6C1\n    style Error fill:#FF6B6B",
+          "metadata": {
+            "diagramType": "flowchart"
+          }
+        },
+        {
+          "type": "mermaid",
+          "content": "sequenceDiagram\n    participant User\n    participant Frontend\n    participant API\n    participant Database\n    participant Cache\n    \n    User->>Frontend: Click Submit Button\n    activate Frontend\n    \n    Note over Frontend: Validate form data\n    \n    Frontend->>API: POST /api/users\n    activate API\n    \n    API->>Cache: Check cache\n    activate Cache\n    Cache-->>API: Cache miss\n    deactivate Cache\n    \n    loop Retry Logic\n        API->>Database: INSERT user data\n        activate Database\n        Database-->>API: Success/Failure\n        deactivate Database\n    end\n    \n    Note over API,Database: Transaction committed\n    \n    API->>Cache: Update cache\n    activate Cache\n    Cache-->>API: Cached\n    deactivate Cache\n    \n    API-->>Frontend: 201 Created\n    deactivate API\n    \n    Frontend-->>User: Show success message\n    deactivate Frontend",
+          "metadata": {
+            "diagramType": "flowchart"
+          }
+        },
+        {
+          "type": "mermaid",
+          "content": "gantt\n    title Project Development Timeline\n    dateFormat YYYY-MM-DD\n    section Planning\n    Requirements Gathering    :done, req, 2026-01-01, 2026-01-10\n    Architecture Design       :done, arch, 2026-01-08, 2026-01-20\n    \n    section Development\n    Backend API              :active, backend, 2026-01-15, 30d\n    Frontend UI              :frontend, 2026-01-22, 25d\n    Database Schema          :crit, db, 2026-01-15, 15d\n    \n    section Testing\n    Unit Tests               :test1, after backend, 10d\n    Integration Tests        :test2, after frontend, 12d\n    Performance Testing      :crit, perf, after test2, 7d\n    \n    section Deployment\n    Staging Deploy           :staging, after perf, 3d\n    Production Deploy        :milestone, prod, after staging, 1d",
+          "metadata": {
+            "diagramType": "flowchart"
+          }
+        },
+        {
+          "type": "code",
+          "content": "config = {\n    'debug': True,\n    'verbose': False\n}\n```\n\n> Even blockquotes work inside `<details>` tags!\n\n</details>\n\n### Task List with Checkboxes\n\n**Project Checklist:**\n\n- [x] Set up development environment\n- [x] Create initial project structure\n- [x] Implement core parser logic\n- [ ] Add comprehensive error handling\n- [ ] Write unit tests\n  - [x] Test basic functionality\n  - [ ] Test edge cases\n  - [ ] Test performance\n- [ ] Documentation\n  - [x] API documentation\n  - [ ] User guide\n  - [ ] Examples\n- [ ] Deploy to production\n\n### Footnotes Section\n\nHere's a claim that needs a citation[^1]. Another scholarly reference appears here[^2], and we can even have multiple references in one sentence[^3][^4].\n\nThe footnote system allows for **complex formatting**[^5] within the reference text itself.\n\n### Simulated Citations and Tool Calls\n\nAccording to recent researchthe parsing accuracy improved by 23% when using recursive descent algorithms, though some studiessuggest that predictive parsing may offer better performance in specific scenarios.\n\n**Simulated Tool Call:**\n```\n[web_search: \"advanced parsing techniques 2026\"]\nResult: Found 127,000 results\nTop result: \"Modern Parsing Strategies\" - parsers.dev",
+          "metadata": {
+            "language": "python"
+          }
+        },
+        {
+          "type": "code",
+          "content": "parse()render()execute()async process()validate()",
+          "metadata": {
+            "language": "text"
+          }
+        },
+        {
+          "type": "code",
+          "content": "code",
+          "metadata": {
+            "language": "text"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "i\\\\hbar\\\\frac{\\\\partial}{\\\\partial t}\\\\Psi(\\\\mathbf{r},t) = \\\\left[-\\\\frac{\\\\hbar^2}{2m}\\\\nabla^2 + V(\\\\mathbf{r},t)\\\\right]\\\\Psi(\\\\mathbf{r},t)",
+          "metadata": {
+            "display": "block"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "\\\\int_{-\\\\infty}^{\\\\infty} e^{-x^2} dx = \\\\sqrt{\\\\pi}",
+          "metadata": {
+            "display": "block"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "\\\\sum_{n=1}^{\\\\infty} \\\\frac{1}{n^2} = \\\\frac{\\\\pi^2}{6}",
+          "metadata": {
+            "display": "block"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "\\\\frac{d}{dx}\\\\left(\\\\frac{x^2 + 1}{\\\\sqrt{x^3 - 2x}}\\\\right) = \\\\frac{2x\\\\sqrt{x^3-2x} - (x^2+1)\\\\frac{3x^2-2}{2\\\\sqrt{x^3-2x}}}{x^3-2x}",
+          "metadata": {
+            "display": "block"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "|\\\\Psi(x,t)|^2",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "latex",
+          "content": "\\\\langle x \\\\rangle = \\\\int_{-\\\\infty}^{\\\\infty} x|\\\\Psi(x,t)|^2 dx",
+          "metadata": {
+            "display": "inline"
+          }
+        },
+        {
+          "type": "text",
+          "content": "Ultimate Stress Test: Comprehensive Content Parsing Validation Document\n1. Typography & Nesting\nWelcome to the typography nightmare where italics meet bold italics and deprecated content lives alongside inline code snippets. Let's test Unicode: 🚀 rockets, 🌈 rainbows, 👨‍💻 developers, and special characters like © copyright, ™ trademark, ½ fractions, § sections, and ¶ pilcrows.\nDeep Nested List Structure\n\nLevel 1: Primary organizational layer\n\nLevel 2: First bullet subdivision\n\nLevel 3: Secondary nested item\n\nLevel 4: Deep numbered item\nLevel 4b: Another deep item with bold and italic\nLevel 4c: Item with inline code\n\nLevel 3b: Back to bullets\n\nLevel 2b: More bullets\n\nLevel 3: Testing bold italics here\n\nLevel 4: Deepest bullet with emoji 🎯\n\nLevel 1: Second primary item\n\nMixed list with bullets under numbers\n\nNumbers under bullets\n\nAnd bullets under those numbers\n\nFinally, bullets at level 4 🌟\n\nNested Blockquotes\n\nThis is a top-level blockquote with formatting.\n\nThis is a nested blockquote inside the first one.\nIt contains a list:\n\nFirst item with code\nSecond item with bold\n\nNested under second item\nAnother nested item\n\nAnd we can go even deeper with triple-nested quotes!\n\nNumbered lists work here too\nSecond numbered item 🔥\n\nBack to the first-level quote with strikethrough text.\n\n2. Complex Code Blocks (Polyglot)\nPython with Advanced Features\n\nJavaScript/TypeScript with Modern Syntax\n\nHTML/XML Raw Tags\n\nDiff/Patch Syntax\n\nJSON Data Block\n\nYAML Configuration\n\n3. Advanced Mathematics (LaTeX)\nMaxwell's Equations in Differential Form\n$$\\begin{align}\n\\nabla \\cdot \\mathbf{E} &= \\frac{\\rho}{\\epsilon_0} \\\\\n\\nabla \\cdot \\mathbf{B} &= 0 \\\\\n\\nabla \\times \\mathbf{E} &= -\\frac{\\partial \\mathbf{B}}{\\partial t} \\\\\n\\nabla \\times \\mathbf{B} &= \\mu_0\\mathbf{J} + \\mu_0\\epsilon_0\\frac{\\partial \\mathbf{E}}{\\partial t}\n\\end{align}$$\nSchrödinger Equation with Complex Syntax\n\nAdvanced LaTeX Features\n\n$$\\mathbf{A} = \\begin{bmatrix}\na_{11} & a_{12} & a_{13} \\\\\na_{21} & a_{22} & a_{23} \\\\\na_{31} & a_{32} & a_{33}\n\\end{bmatrix}$$\n\nThe probability density is given by , and the expectation value of position is , which demonstrates inline math within flowing text.\n\n4. Structured Tables\nComplex Data Table\n\nAlignment Test Table\n\n5. Visual Diagrams (Mermaid.js)\nFlowchart with Decision Nodes and Subgraphs\n\nSequence Diagram with Loops and Notes\n\nGantt Chart\n\n6. Edge Cases & Hybrid Content\nCollapsible HTML Details\n<details>\n<summary><strong>Click to expand: Advanced Configuration Options</strong></summary>\nThis section contains hidden content that only appears when expanded.\n\nConfiguration item 1: enabled=true\nConfiguration item 2: timeout=5000\nNested code block inside collapsible:\n\n7. Media Simulation\nImage Placeholder\nShow Image\nShow Image\nAI Image Generation Prompt\n\nImage Generation Prompt:\nCreate a photorealistic visualization of a futuristic data center with holographic displays showing streaming code and mathematical equations. The scene should have dramatic blue and purple lighting, with floating 3D graphs and charts. In the foreground, show transparent screens displaying syntax-highlighted code in multiple programming languages. The overall mood should be high-tech and cyberpunk-inspired, rendered in 8K quality with ray-traced lighting.\n\nFootnotes Reference Section\n\nFinal Notes\nThis document represents the ultimate stress test for content parsing systems. It combines every major Markdown feature, code syntax, mathematical notation, diagram type, and edge case into a single comprehensive document. Any parser that can correctly handle this document can be considered production-ready for handling diverse LLM outputs.\nSpecial characters final test: ™ © ® § ¶ † ‡ • ◦ ‣ ⁃ ∙ ∘ ⋅ ≈ ≠ ≤ ≥ ± × ÷ √ ∞ ∫ ∑ ∏ ∂ ∇ ∆ Ω α β γ δ ε θ λ μ π σ φ ψ ω 🚀 🌈 👨‍💻 💻 🔥 ⚡ ✨ 🎯 🌟",
+          "metadata": {
+            "format": "markdown"
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T19:14:27.102Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T19:14:27.154Z",
+      "contentHash": "cecd5a09fa66d423e709d658f8f4c2e74bb5a179e7b49dd1360bcd1728bc3369"
+    },
+    {
+      "id": "4238103f-2273-49f9-98b3-fc2bd5ef221a",
+      "role": "user",
+      "author": "User",
+      "messageIndex": 2,
+      "parts": [
+        {
+          "type": "text",
+          "content": "now test the 30 most popular languages in their native script",
+          "metadata": {
+            "format": "markdown"
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T19:14:27.103Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T19:14:27.155Z",
+      "contentHash": "b5c047c3b987c9cf831352cadd6b07fb0b27ecade567a41e0f6b30121f6d9d78"
+    },
+    {
+      "id": "916eda0c-50af-4fdb-b816-d2b3a9868be0",
+      "role": "assistant",
+      "author": "Claude",
+      "messageIndex": 3,
+      "parts": [
+        {
+          "type": "code",
+          "content": "def fibonacci(n: int) -> list[int]:\n    \"\"\"Generate Fibonacci sequence up to n terms.\"\"\"\n    fib = [0, 1]\n    for i in range(2, n):\n        fib.append(fib[i-1] + fib[i-2])\n    return fib\n\nprint(fibonacci(10))  # Output: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]",
+          "metadata": {
+            "language": "python"
+          }
+        },
+        {
+          "type": "code",
+          "content": "// Asynchronous data fetching with error handling\nasync function getUserData(userId) {\n    try {\n        const response = await fetch(`/api/users/${userId}`);\n        const data = await response.json();\n        return data;\n    } catch (error) {\n        console.error('Error fetching user:', error);\n        throw error;\n    }\n}",
+          "metadata": {
+            "language": "javascript"
+          }
+        },
+        {
+          "type": "code",
+          "content": "public class BinarySearchTree {\n    private Node root;\n    \n    private class Node {\n        int value;\n        Node left, right;\n        \n        Node(int value) {\n            this.value = value;\n            left = right = null;\n        }\n    }\n    \n    public void insert(int value) {\n        root = insertRecursive(root, value);\n    }\n    \n    private Node insertRecursive(Node current, int value) {\n        if (current == null) {\n            return new Node(value);\n        }\n        if (value < current.value) {\n            current.left = insertRecursive(current.left, value);\n        } else if (value > current.value) {\n            current.right = insertRecursive(current.right, value);\n        }\n        return current;\n    }\n}",
+          "metadata": {
+            "language": "java"
+          }
+        },
+        {
+          "type": "code",
+          "content": "#include <iostream>\n#include <vector>\n#include <algorithm>\n\ntemplate<typename T>\nclass SmartPointer {\nprivate:\n    T* ptr;\n    \npublic:\n    explicit SmartPointer(T* p = nullptr) : ptr(p) {}\n    \n    ~SmartPointer() {\n        delete ptr;\n    }\n    \n    T& operator*() const {\n        return *ptr;\n    }\n    \n    T* operator",
+          "metadata": {
+            "language": "cpp"
+          }
+        },
+        {
+          "type": "text",
+          "content": "Polyglot Code Stress Test: 30 Popular Languages in Native Scripts\n1. Python (English)\n\n2. JavaScript (English)\n\n3. Java (English)\n\n4. C++ (English)",
+          "metadata": {
+            "format": "markdown"
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T19:14:27.114Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T19:14:27.155Z",
+      "contentHash": "3a6267c6e67a47412ed521840625356ad3b60521bb0e6ad96827c5654ffb71db"
+    },
+    {
+      "id": "2b4d7d4b-9950-46a3-ae07-11ba8f5a8cf6",
+      "role": "user",
+      "author": "User",
+      "messageIndex": 4,
+      "parts": [
+        {
+          "type": "text",
+          "content": "now test the 30 most popular human languages in their native script",
+          "metadata": {
+            "format": "markdown"
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T19:14:27.115Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T19:14:27.155Z",
+      "contentHash": "ac3723123038ace3e96eb3ba9946cad956d556cf50347631d9738e2f9ad2c210"
+    },
+    {
+      "id": "3b2483d1-d282-49c8-981d-9d806d3197e2",
+      "role": "assistant",
+      "author": "Claude",
+      "messageIndex": 5,
+      "parts": [
+        {
+          "type": "code",
+          "content": "# देवनागरी में कोड टिप्पणी\ndef नमस्कार():\n    print(\"नमस्ते दुनिया!\")",
+          "metadata": {
+            "language": "python"
+          }
+        },
+        {
+          "type": "text",
+          "content": "Multilingual Content Stress Test: 30 Popular Languages in Native Scripts\n1. English (Latin Script)\nHello, World!\nThis is a comprehensive test of parsing capabilities across different writing systems. The quick brown fox jumps over the lazy dog. Testing numbers: 1234567890.\n\n2. 中文 (Chinese - Simplified)\n你好，世界！\n这是一个全面的多语言解析测试。我们正在测试简体中文字符的渲染和解析能力。春眠不觉晓，处处闻啼鸟。数字测试：一二三四五六七八九十。\n现代汉语包含了粗体、斜体和代码格式。\n\n3. 中文 (Chinese - Traditional)\n你好，世界！\n這是繁體中文的測試內容。臺灣、香港和澳門使用繁體字。測試特殊符號：「引號」、『書名號』、【方括號】。\n\n引用文字：學而時習之，不亦說乎？\n\n4. Español (Spanish)\n¡Hola, Mundo!\nEsta es una prueba exhaustiva de análisis sintáctico en español. El español utiliza caracteres especiales como ñ, acentos (á, é, í, ó, ú) y signos de interrogación invertidos (¿?) y exclamación (¡!).\n\nPrimera viñeta con negrita\nSegunda viñeta con cursiva\nTercera viñeta con tachado\n\n5. हिन्दी (Hindi - Devanagari)\nनमस्ते, दुनिया!\nयह देवनागरी लिपि में हिंदी भाषा का परीक्षण है। हिंदी भारत की आधिकारिक भाषाओं में से एक है। संख्याएँ: १२३४५६७८९०\nविशेष वर्ण: ं, ः, ँ, ़, ा, ि, ी, ु, ू, ृ, े, ै, ो, ौ\n\n6. العربية (Arabic)\nمرحبا بالعالم!\nهذا اختبار شامل للغة العربية التي تُكتب من اليمين إلى اليسار. اللغة العربية هي واحدة من أكثر اللغات انتشاراً في العالم.\n\nالنقطة الأولى مع نص غامق\nالنقطة الثانية مع نص مائل\nالنقطة الثالثة مع كود مضمن\n\nالأرقام: ١٢٣٤٥٦٧٨٩٠ (عربية) و 1234567890 (هندية)\n\nاقتباس: العلم نور والجهل ظلام\n\n7. Português (Portuguese)\nOlá, Mundo!\nEste é um teste abrangente em português. O português é falado no Brasil, Portugal, Angola, Moçambique e outros países. Caracteres especiais: ã, õ, ç, á, é, í, ó, ú, â, ê, ô.\n\nPrimeiro item da lista\nSegundo item com itálico\nTerceiro item com tachado\n\n8. বাংলা (Bengali)\nহ্যালো, বিশ্ব!\nএটি বাংলা ভাষার একটি সম্পূর্ণ পরীক্ষা। বাংলা বাংলাদেশ এবং ভারতের পশ্চিমবঙ্গে কথি",
+          "metadata": {
+            "format": "markdown"
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T19:14:27.125Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T19:14:27.155Z",
+      "contentHash": "523669b3a24353299918e4f58f959726c060db788dfe72a4ec9c77fc28cb25cd"
+    },
+    {
+      "id": "55a6080f-97b7-4cf8-b3fe-a81b71a8da09",
+      "role": "user",
+      "author": "User",
+      "messageIndex": 6,
+      "parts": [
+        {
+          "type": "text",
+          "content": "now generate a .md, .txt .pdf .html etc artifacts",
+          "metadata": {
+            "format": "markdown"
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T19:14:27.126Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T19:14:27.155Z",
+      "contentHash": "d6561815036aa20b46c4fc655c8c26829bd3a69f76ed3771b9d19b90d7098c2c"
+    },
+    {
+      "id": "04858927-e690-45f5-b507-a58ccb61578f",
+      "role": "assistant",
+      "author": "Claude",
+      "messageIndex": 7,
+      "parts": [
+        {
+          "type": "text",
+          "content": "I'll create artifacts in different formats showcasing the multilingual content and parser stress tests.",
+          "metadata": {
+            "format": "markdown"
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T19:14:27.127Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T19:14:27.155Z",
+      "contentHash": "ee28f889491de20b3c83ee8d496b81f93bb5543f2a8270afbfc49ac69d831baa"
+    },
+    {
+      "id": "ce29ef01-454f-4dfb-87bc-a9b87baab327",
+      "role": "user",
+      "author": "User",
+      "messageIndex": 9,
+      "parts": [
+        {
+          "type": "text",
+          "content": "one paragraph per artifact",
+          "metadata": {
+            "format": "markdown"
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T19:14:27.127Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T19:14:27.155Z",
+      "contentHash": "58a8f01c11d4710e3a7308a21d3758d97f14b881f08f4e7e7b3bea808d9cd36d"
+    },
+    {
+      "id": "8ed66329-5bbb-42de-bae8-f69e0324f6ee",
+      "role": "assistant",
+      "author": "Claude",
+      "messageIndex": 10,
+      "parts": [
+        {
+          "type": "text",
+          "content": "I'll create multiple artifacts, each with one focused paragraph in different formats.",
+          "metadata": {
+            "format": "markdown"
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T19:14:27.128Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T19:14:27.155Z",
+      "contentHash": "aaa7a17f0888912dbc5a3a49067bb5d17d574b4e9c050c2ceac951632015a269"
+    },
+    {
+      "id": "3406a6ac-482b-42d3-a183-2845e33a0056",
+      "role": "assistant",
+      "author": "Claude",
+      "messageIndex": 11,
+      "parts": [
+        {
+          "type": "text",
+          "content": "Perfect! I've created 10 different artifacts, each with focused content in different formats:\nSummary of Artifacts Created:\n\n.md (Markdown) - Simple markdown with formatting and bullets\n.txt (Plain Text) - Unformatted ASCII text\n.html (HTML) - Styled HTML with glassmorphic design\n.json (JSON) - Structured data with nested objects\n.yaml (YAML) - Configuration format with multi-line strings\n.xml (XML) - Markup with CDATA and entities\n.csv (CSV) - Tabular data with quoted fields\n.py (Python) - Code with decorators and type hints\n.js (JavaScript) - Modern ES6+ with async/await\n.svg (SVG) - Vector graphics with embedded content\nReact Component - Interactive UI with state management\n\nEach artifact contains:\n\nOne focused paragraph explaining the format\nUnicode support (Chinese, Arabic, Hindi, Japanese, etc.)\nSpecial characters (©, ™, ®, §, ¶, emoji)\nFormat-specific features to stress-test parsers\n\nThese artifacts test different aspects of content parsing: text formatting, code syntax highlighting, data structures, graphics rendering, and interactive components!",
+          "metadata": {
+            "format": "markdown"
+          }
+        }
+      ],
+      "createdAt": "2026-01-25T19:14:27.129Z",
+      "status": "completed",
+      "metadata": {},
+      "timestamp": "2026-01-25T19:14:27.155Z",
+      "contentHash": "d01ed4de7109b5eed14aa3bb498b49d17683b58ce16969e5710a082a1331201c"
+    }
+  ],
+  "metadata": {
+    "url": "https://claude.ai/share/ab175426-00c9-4877-a935-72c9b7a63bc3"
+  },
+  "messageCount": 11,
+  "userMessageCount": 5,
+  "aiMessageCount": 6,
+  "totalWords": 1694,
+  "totalCharacters": 18046,
+  "totalCodeBlocks": 14,
+  "totalMermaidDiagrams": 3,
+  "totalImages": 0,
+  "totalTables": 0,
+  "totalLatexBlocks": 6,
+  "totalToolCalls": 0,
+  "_storedAt": "2026-01-25T19:14:31.387Z",
+  "_storageType": "filesystem-fallback"
+}

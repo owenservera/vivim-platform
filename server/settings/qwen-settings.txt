@@ -1,0 +1,20 @@
+# Qwen Link - SingleFile CLI Settings
+# URL: https://chat.qwen.ai/s/3b05d2cf-5483-4c5a-ba5a-ffdadd53312a?fev=0.1.34
+
+node single-file-node.js "URL" "OUTPUT" \
+  --browser-wait-until=networkIdle \
+  --browser-wait-delay=3000 \
+  --browser-wait-until-delay=1000 \
+  --browser-load-max-time=30000 \
+  --browser-capture-max-time=30000 \
+  --browser-width=1920 \
+  --browser-height=1080 \
+  --block-scripts=false \
+  --load-deferred-images=true \
+  --load-deferred-images-max-idle-time=2000 \
+  --remove-hidden-elements=false \
+  --compress-HTML=false
+
+# RESULT:
+# Output: html-dls-cli/qwen-cli.html
+# STATUS: SUCCESS - No browser extension version to compare

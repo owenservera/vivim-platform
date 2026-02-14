@@ -1,0 +1,252 @@
+// ============================================================================
+// PHASE 1: IDENTITY SYSTEM MODELS
+// ============================================================================
+
+model VerificationRecord {
+  id            String   @id @default(uuid())
+  userId        String
+  
+  // Verification type
+  type          String   // 'email', 'phone', 'social', 'government'
+  status        String   // 'pending', 'verified', 'failed', 'expired'
+  
+  // Verification data
+  value         String   // email address, phone number, etc.
+  codeHash      String?  // Hash of verification code
+  attempts      Int      @default(0)
+  
+  // Timestamps
+  requestedAt   DateTime @default(now()) @db.Timestamptz(6)
+  verifiedAt    DateTime? @db.Timestamptz(6)
+  expiresAt     DateTime? @db.Timestamptz(6)
+  
+  // Evidence
+  evidence      Json?    // Proof of verification
+  verifiedBy    String?  // DID of verifier (for social/government)
+  
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([type, status])
+  @@index([value])
+  @@map("verification_records")
+}
+
+model RecoveryGuardian {
+  id              String   @id @default(uuid())
+  userId          String
+  
+  // Guardian info
+  guardianDid     String   // DID of guardian
+  guardianUserId  String?  // If guardian is also on platform
+  
+  // Trust relationship
+  relationship    String   // 'friend', 'family', 'colleague'
+  addedAt         DateTime @default(now()) @db.Timestamptz(6)
+  
+  // Recovery status
+  isActive        Boolean  @default(true)
+  hasConfirmed    Boolean  @default(false)
+  confirmedAt     DateTime? @db.Timestamptz(6)
+  
+  // Recovery usage
+  timesUsed       Int      @default(0)
+  lastUsedAt      DateTime? @db.Timestamptz(6)
+  
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, guardianDid])
+  @@index([userId])
+  @@index([guardianDid])
+  @@map("recovery_guardians")
+}
+
+model RecoveryAttempt {
+  id              String   @id @default(uuid())
+  userId          String
+  
+  // Recovery method
+  method          String   // 'social', 'device', 'knowledge', 'timelock'
+  status          String   // 'pending', 'in_progress', 'completed', 'failed', 'cancelled'
+  
+  // For social recovery
+  guardiansApproving String[] // DIDs of guardians who approved
+  approvalThreshold  Int
+  
+  // For timelock recovery
+  requestedAt     DateTime @default(now()) @db.Timestamptz(6)
+  unlocksAt       DateTime? @db.Timestamptz(6)
+  
+  // Completion
+  completedAt     DateTime? @db.Timestamptz(6)
+  newPublicKey    String?   // New key after recovery
+  
+  // Audit
+  ipAddress       String?
+  userAgent       String?
+  
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([status])
+  @@index([requestedAt])
+  @@map("recovery_attempts")
+}
+
+model AccessAuditLog {
+  id              String   @id @default(uuid())
+  
+  // Who accessed
+  accessorDid     String   // DID of accessor
+  accessorUserId  String?  // If known
+  
+  // What was accessed
+  targetUserId    String?  // User whose data was accessed
+  targetContentId String?  // Content ID if applicable
+  targetType      String   // 'profile', 'content', 'conversation', 'circle'
+  
+  // Access details
+  action          String   // 'view', 'share', 'download', 'search', 'recommend'
+  granted         Boolean  @default(true)
+  denialReason    String?
+  
+  // Context
+  timestamp       DateTime @default(now()) @db.Timestamptz(6)
+  ipAddress       String?
+  userAgent       String?
+  deviceId        String?
+  
+  // Authorization context
+  viaCircleId     String?  // If accessed via circle membership
+  viaRelationship String?  // 'friend', 'follower', 'public', etc.
+  
+  @@index([accessorDid])
+  @@index([targetUserId])
+  @@index([timestamp])
+  @@index([action])
+  @@map("access_audit_logs")
+}
+
+model ConsentRecord {
+  id              String   @id @default(uuid())
+  userId          String
+  
+  // Consent scope
+  purpose         String   // 'profile_view', 'content_sharing', 'ai_training', etc.
+  dataTypes       String[] // What data types are covered
+  
+  // Permissions
+  allowed         Boolean  @default(true)
+  conditions      Json?    // Specific conditions
+  
+  // Scope limitations
+  scope           Json?    // Time range, content IDs, circle IDs, etc.
+  
+  // Lifecycle
+  grantedAt       DateTime @default(now()) @db.Timestamptz(6)
+  expiresAt       DateTime? @db.Timestamptz(6)
+  revokedAt       DateTime? @db.Timestamptz(6)
+  status          String   @default("active") // 'active', 'expired', 'revoked'
+  
+  // Proof
+  proof           Json?    // Signature or other proof of consent
+  
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([purpose])
+  @@index([status])
+  @@map("consent_records")
+}
+
+model IdentityDelegation {
+  id                String   @id @default(uuid())
+  
+  // Delegation relationship
+  masterDid         String   // Master identity
+  deviceDid         String   // Device identity
+  
+  // Delegation scope
+  capabilities      Json     // What the device can do
+  restrictions      Json?    // Limitations on delegation
+  
+  // Proof
+  delegationProof   String   // Signature from master
+  
+  // Status
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now()) @db.Timestamptz(6)
+  expiresAt         DateTime? @db.Timestamptz(6)
+  revokedAt         DateTime? @db.Timestamptz(6)
+  revokedReason     String?
+  
+  @@unique([masterDid, deviceDid])
+  @@index([masterDid])
+  @@index([deviceDid])
+  @@index([isActive])
+  @@map("identity_delegations")
+}
+
+// Update User model with new relations
+model User {
+  id                  String               @id @default(uuid())
+  did                 String               @unique
+  handle              String?              @unique
+  displayName         String?
+  email               String?              @unique
+  emailVerified       Boolean              @default(false)
+  phoneNumber         String?
+  phoneVerified       Boolean              @default(false)
+  avatarUrl           String?
+  
+  // Identity verification
+  verificationLevel   Int                  @default(0)
+  verificationBadges  Json                 @default("[]")
+  trustScore          Float                @default(50)
+  
+  // Cryptographic keys
+  publicKey           String
+  keyType             String               @default("Ed25519")
+  
+  // Federated hosting (Bluesky-style)
+  pdsUrl              String?
+  
+  // Timestamps
+  createdAt           DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime             @updatedAt @db.Timestamptz(6)
+  lastSeenAt          DateTime             @default(now()) @db.Timestamptz(6)
+  
+  // Settings
+  settings            Json                 @default("{}")
+  privacyPreferences  Json                 @default("{}")
+  
+  // Relations
+  aiPersonas          AiPersona[]
+  acus                AtomicChatUnit[]
+  circleMemberships   CircleMember[]
+  circlesOwned        Circle[]             @relation("CircleOwner")
+  clientPresences     ClientPresence[]
+  contextBundles      ContextBundle[]
+  conversations       Conversation[]
+  customInstructions  CustomInstruction[]
+  devices             Device[]
+  entityProfiles      EntityProfile[]
+  memories            Memory[]
+  notebooks           Notebook[]
+  syncCursors         SyncCursor[]
+  topicProfiles       TopicProfile[]
+  contextSettings     UserContextSettings?
+  facts               UserFact[]
+  
+  // Phase 1 relations
+  verificationRecords VerificationRecord[]
+  recoveryGuardians   RecoveryGuardian[]
+  recoveryAttempts    RecoveryAttempt[]
+  consentRecords      ConsentRecord[]
+  
+  @@index([did])
+  @@index([handle])
+  @@index([email])
+  @@index([verificationLevel])
+  @@map("users")
+}

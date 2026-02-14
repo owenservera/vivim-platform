@@ -1,0 +1,722 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../node_modules/.prisma/client"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Account lifecycle enums
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+  BANNED
+  DELETING
+  DELETED
+}
+
+model Conversation {
+  id                      String                   @id @default(uuid())
+  provider                String
+  sourceUrl               String                   @unique
+  contentHash             String?
+  title                   String
+  model                   String?
+  state                   String                   @default("ACTIVE")
+  createdAt               DateTime                 @db.Timestamptz(6)
+  updatedAt               DateTime                 @db.Timestamptz(6)
+  capturedAt              DateTime                 @default(now()) @db.Timestamptz(6)
+  messageCount            Int                      @default(0)
+  userMessageCount        Int                      @default(0)
+  aiMessageCount          Int                      @default(0)
+  totalWords              Int                      @default(0)
+  totalCharacters         Int                      @default(0)
+  totalTokens             Int?
+  totalCodeBlocks         Int                      @default(0)
+  totalImages             Int                      @default(0)
+  totalTables             Int                      @default(0)
+  totalLatexBlocks        Int                      @default(0)
+  totalMermaidDiagrams    Int                      @default(0)
+  totalToolCalls          Int                      @default(0)
+  metadata                Json                     @default("{}")
+  tags                    String[]
+  ownerId                 String?
+  acus                    AtomicChatUnit[]
+  contextBundles          ContextBundle[]
+  conversationCompactions ConversationCompaction[]
+  owner                   User?                    @relation(fields: [ownerId], references: [id])
+  messages                Message[]
+  topicConversations      TopicConversation[]
+
+  @@index([provider])
+  @@index([capturedAt(sort: Desc)])
+  @@index([provider, capturedAt(sort: Desc)])
+  @@index([sourceUrl])
+  @@index([createdAt(sort: Desc)])
+  @@index([ownerId])
+  @@index([tags])
+  @@map("conversations")
+}
+
+model Message {
+  id             String           @id @default(uuid())
+  conversationId String
+  role           String
+  author         String?
+  parts          Json
+  contentHash    String?
+  createdAt      DateTime         @db.Timestamptz(6)
+  messageIndex   Int
+  status         String           @default("completed")
+  finishReason   String?
+  tokenCount     Int?
+  metadata       Json             @default("{}")
+  acus           AtomicChatUnit[]
+  conversation   Conversation     @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, messageIndex])
+  @@index([conversationId, createdAt])
+  @@index([role])
+  @@map("messages")
+}
+
+model CaptureAttempt {
+  id             String    @id @default(uuid())
+  sourceUrl      String
+  provider       String?
+  status         String
+  errorCode      String?
+  errorMessage   String?
+  errorStack     String?
+  startedAt      DateTime  @db.Timestamptz(6)
+  completedAt    DateTime? @db.Timestamptz(6)
+  duration       Int?
+  ipAddress      String?
+  userAgent      String?
+  conversationId String?
+  retryCount     Int       @default(0)
+  retryOf        String?
+  createdAt      DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([sourceUrl])
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
+  @@index([ipAddress, createdAt(sort: Desc)])
+  @@index([conversationId])
+  @@map("capture_attempts")
+}
+
+model ProviderStats {
+  id                 String    @id @default(uuid())
+  provider           String    @unique
+  totalCaptures      Int       @default(0)
+  successfulCaptures Int       @default(0)
+  failedCaptures     Int       @default(0)
+  avgDuration        Float?
+  avgMessageCount    Float?
+  avgTokenCount      Float?
+  totalMessages      Int       @default(0)
+  totalCodeBlocks    Int       @default(0)
+  totalImages        Int       @default(0)
+  totalToolCalls     Int       @default(0)
+  lastCaptureAt      DateTime? @db.Timestamptz(6)
+  updatedAt          DateTime  @updatedAt @db.Timestamptz(6)
+
+  @@map("provider_stats")
+}
+
+model User {
+  id                  String               @id @default(uuid())
+  did                 String               @unique
+  handle              String?              @unique
+  displayName         String?
+  email               String?              @unique
+  emailVerified       Boolean              @default(false)
+  phoneNumber         String?
+  phoneVerified       Boolean              @default(false)
+  avatarUrl           String?
+  
+  // Identity verification
+  verificationLevel   Int                  @default(0)
+  verificationBadges  Json                 @default("[]")
+  trustScore          Float                @default(50)
+  
+  // Cryptographic keys
+  publicKey           String
+  keyType             String               @default("Ed25519")
+  
+  // Account status & lifecycle
+  status              AccountStatus        @default(ACTIVE)
+  deletedAt           DateTime?            @db.Timestamptz(6)
+  deletionRequestedAt DateTime?            @db.Timestamptz(6)
+  suspendedAt         DateTime?            @db.Timestamptz(6)
+  suspensionReason    String?
+  bannedAt            DateTime?            @db.Timestamptz(6)
+  banReason           String?
+  
+  // Federated hosting (Bluesky-style)
+  pdsUrl              String?
+  
+  // Timestamps
+  createdAt           DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime             @updatedAt @db.Timestamptz(6)
+  lastSeenAt          DateTime             @default(now()) @db.Timestamptz(6)
+  
+  // Settings
+  settings            Json                 @default("{}")
+  privacyPreferences  Json                 @default("{}")
+  aiPersonas          AiPersona[]
+  acus                AtomicChatUnit[]
+  circleMemberships   CircleMember[]
+  circlesOwned        Circle[]             @relation("CircleOwner")
+  clientPresences     ClientPresence[]
+  contextBundles      ContextBundle[]
+  conversations       Conversation[]
+  customInstructions  CustomInstruction[]
+  devices             Device[]
+  entityProfiles      EntityProfile[]
+  memories            Memory[]
+  notebooks           Notebook[]
+  syncCursors         SyncCursor[]
+  topicProfiles       TopicProfile[]
+  contextSettings     UserContextSettings?
+  facts               UserFact[]
+
+  @@index([did])
+  @@index([email])
+  @@map("users")
+}
+
+model Device {
+  id          String   @id @default(uuid())
+  userId      String
+  deviceId    String   @unique
+  deviceName  String
+  deviceType  String
+  platform    String
+  fingerprint String?
+  publicKey   String
+  isActive    Boolean  @default(true)
+  isTrusted   Boolean  @default(false)
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  lastSeenAt  DateTime @default(now()) @db.Timestamptz(6)
+  metadata    Json     @default("{}")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([deviceId])
+  @@index([userId, isActive])
+  @@map("devices")
+}
+
+model AtomicChatUnit {
+  id                  String           @id
+  authorDid           String
+  signature           Bytes
+  content             String
+  language            String?
+  type                String
+  category            String
+  origin              String           @default("extraction")
+  embedding           Float[]
+  embeddingModel      String?
+  conversationId      String?
+  messageId           String?
+  messageIndex        Int?
+  provider            String?
+  model               String?
+  sourceTimestamp     DateTime?        @db.Timestamptz(6)
+  parentId            String?
+  extractorVersion    String?
+  parserVersion       String?
+  state               String           @default("ACTIVE")
+  securityLevel       Int              @default(0)
+  isPersonal          Boolean          @default(false)
+  level               Int              @default(4)
+  contentType         String           @default("text")
+  qualityOverall      Float?
+  contentRichness     Float?
+  structuralIntegrity Float?
+  uniqueness          Float?
+  viewCount           Int              @default(0)
+  shareCount          Int              @default(0)
+  quoteCount          Int              @default(0)
+  rediscoveryScore    Float?
+  sharingPolicy       String           @default("self")
+  sharingCircles      String[]
+  canView             Boolean          @default(true)
+  canAnnotate         Boolean          @default(false)
+  canRemix            Boolean          @default(false)
+  canReshare          Boolean          @default(false)
+  expiresAt           DateTime?        @db.Timestamptz(6)
+  createdAt           DateTime         @default(now()) @db.Timestamptz(6)
+  indexedAt           DateTime         @default(now()) @db.Timestamptz(6)
+  metadata            Json             @default("{}")
+  tags                String[]
+  linksFrom           AcuLink[]        @relation("SourceAcu")
+  linksTo             AcuLink[]        @relation("TargetAcu")
+  author              User             @relation(fields: [authorDid], references: [did])
+  conversation        Conversation?    @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  message             Message?         @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  parent              AtomicChatUnit?  @relation("AcuDerivations", fields: [parentId], references: [id])
+  derivations         AtomicChatUnit[] @relation("AcuDerivations")
+  notebooks           NotebookEntry[]
+
+  @@index([origin])
+  @@index([parentId])
+  @@index([conversationId])
+  @@index([messageId])
+  @@index([authorDid])
+  @@index([type])
+  @@index([category])
+  @@index([qualityOverall(sort: Desc)])
+  @@index([rediscoveryScore(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@index([sharingPolicy])
+  @@index([tags])
+  @@map("atomic_chat_units")
+}
+
+model AcuLink {
+  id           String         @id @default(uuid())
+  sourceId     String
+  targetId     String
+  relation     String
+  weight       Float          @default(1.0)
+  createdByDid String?
+  createdAt    DateTime       @default(now()) @db.Timestamptz(6)
+  metadata     Json           @default("{}")
+  source       AtomicChatUnit @relation("SourceAcu", fields: [sourceId], references: [id], onDelete: Cascade)
+  target       AtomicChatUnit @relation("TargetAcu", fields: [targetId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceId, targetId, relation])
+  @@index([sourceId])
+  @@index([targetId])
+  @@index([relation])
+  @@map("acu_links")
+}
+
+model Notebook {
+  id          String          @id @default(uuid())
+  ownerId     String
+  name        String
+  description String?
+  icon        String?
+  color       String?
+  isDefault   Boolean         @default(false)
+  createdAt   DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime        @updatedAt @db.Timestamptz(6)
+  entries     NotebookEntry[]
+  owner       User            @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
+  @@map("notebooks")
+}
+
+model NotebookEntry {
+  id         String         @id @default(uuid())
+  notebookId String
+  acuId      String
+  sortOrder  Int            @default(0)
+  addedAt    DateTime       @default(now()) @db.Timestamptz(6)
+  acu        AtomicChatUnit @relation(fields: [acuId], references: [id], onDelete: Cascade)
+  notebook   Notebook       @relation(fields: [notebookId], references: [id], onDelete: Cascade)
+
+  @@unique([notebookId, acuId])
+  @@index([notebookId, sortOrder])
+  @@map("notebook_entries")
+}
+
+model Circle {
+  id          String         @id @default(uuid())
+  ownerId     String
+  name        String
+  description String?
+  isPublic    Boolean        @default(false)
+  createdAt   DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime       @updatedAt @db.Timestamptz(6)
+  metadata    Json           @default("{}")
+  members     CircleMember[]
+  owner       User           @relation("CircleOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
+  @@index([isPublic])
+  @@map("circles")
+}
+
+model CircleMember {
+  id        String   @id @default(uuid())
+  circleId  String
+  userId    String
+  role      String   @default("member")
+  canInvite Boolean  @default(false)
+  canShare  Boolean  @default(true)
+  joinedAt  DateTime @default(now()) @db.Timestamptz(6)
+  circle    Circle   @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([circleId, userId])
+  @@index([circleId])
+  @@index([userId])
+  @@map("circle_members")
+}
+
+model SyncCursor {
+  id          String   @id @default(uuid())
+  userId      String
+  deviceDid   String
+  tableName   String
+  lastSyncId  String?
+  lastSyncAt  DateTime @default(now()) @db.Timestamptz(6)
+  vectorClock Json     @default("{}")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, deviceDid, tableName])
+  @@index([userId, deviceDid])
+  @@map("sync_cursors")
+}
+
+model SyncOperation {
+  id           String    @id @default(uuid())
+  authorDid    String
+  deviceDid    String
+  tableName    String
+  recordId     String
+  entityType   String?
+  entityId     String?
+  operation    String
+  payload      Json
+  hlcTimestamp String
+  vectorClock  Json      @default("{}")
+  isProcessed  Boolean   @default(false)
+  createdAt    DateTime  @default(now()) @db.Timestamptz(6)
+  appliedAt    DateTime? @db.Timestamptz(6)
+
+  @@index([authorDid])
+  @@index([deviceDid])
+  @@index([tableName, recordId])
+  @@index([entityType, entityId])
+  @@index([hlcTimestamp])
+  @@index([createdAt(sort: Desc)])
+  @@map("sync_operations")
+}
+
+model PeerConnection {
+  id           String   @id @default(uuid())
+  initiatorDid String
+  targetDid    String
+  status       String   @default("pending")
+  trustLevel   String   @default("acquaintance")
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+  metadata     Json     @default("{}")
+
+  @@unique([initiatorDid, targetDid])
+  @@index([initiatorDid])
+  @@index([targetDid])
+  @@map("peer_connections")
+}
+
+model AiPersona {
+  id                  String          @id @default(uuid())
+  ownerId             String?
+  name                String
+  description         String?
+  trigger             String
+  type                String
+  systemPrompt        String
+  provider            String?
+  model               String?
+  temperature         Float?
+  includeOwnerContext Boolean         @default(false)
+  createdAt           DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime        @updatedAt @db.Timestamptz(6)
+  owner               User?           @relation(fields: [ownerId], references: [id])
+  contextBundles      ContextBundle[]
+
+  @@unique([ownerId, trigger])
+  @@index([type])
+  @@map("ai_personas")
+}
+
+model UserFact {
+  id        String   @id @default(uuid())
+  userId    String
+  content   String
+  category  String
+  source    String?
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("user_facts")
+}
+
+model SystemCommand {
+  id          String  @id @default(uuid())
+  trigger     String  @unique
+  label       String
+  subLabel    String?
+  description String?
+  actionCode  String
+  icon        String?
+  scope       String  @default("global")
+
+  @@map("system_commands")
+}
+
+model SystemAction {
+  id          String  @id @default(uuid())
+  trigger     String  @unique
+  label       String
+  subLabel    String?
+  description String?
+  actionCode  String
+  icon        String?
+
+  @@map("system_actions")
+}
+
+model TopicProfile {
+  id                 String              @id @default(uuid())
+  userId             String
+  slug               String
+  label              String
+  aliases            String[]
+  parentSlug         String?
+  domain             String
+  totalConversations Int                 @default(0)
+  totalAcus          Int                 @default(0)
+  totalMessages      Int                 @default(0)
+  totalTokensSpent   Int                 @default(0)
+  avgSessionDepth    Float               @default(0)
+  firstEngagedAt     DateTime            @db.Timestamptz(6)
+  lastEngagedAt      DateTime            @db.Timestamptz(6)
+  engagementStreak   Int                 @default(0)
+  peakHour           Int?
+  proficiencyLevel   String              @default("unknown")
+  proficiencySignals Json                @default("[]")
+  importanceScore    Float               @default(0.5)
+  compiledContext    String?
+  compiledAt         DateTime?           @db.Timestamptz(6)
+  compiledTokenCount Int?
+  contextVersion     Int                 @default(0)
+  isDirty            Boolean             @default(true)
+  embedding          Float[]
+  embeddingModel     String?
+  createdAt          DateTime            @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime            @updatedAt @db.Timestamptz(6)
+  relatedMemoryIds   String[]
+  relatedAcuIds      String[]
+  contextBundles     ContextBundle[]     @relation("TopicBundles")
+  conversations      TopicConversation[]
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, slug])
+  @@index([userId, importanceScore(sort: Desc)])
+  @@index([userId, lastEngagedAt(sort: Desc)])
+  @@index([userId, isDirty])
+  @@index([domain])
+  @@map("topic_profiles")
+}
+
+model TopicConversation {
+  id             String       @id @default(uuid())
+  topicId        String
+  conversationId String
+  relevanceScore Float        @default(0.5)
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  topic          TopicProfile @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@unique([topicId, conversationId])
+  @@index([topicId])
+  @@index([conversationId])
+  @@map("topic_conversations")
+}
+
+model EntityProfile {
+  id                 String          @id @default(uuid())
+  userId             String
+  name               String
+  type               String
+  aliases            String[]
+  relationship       String?
+  sentiment          Float           @default(0.0)
+  facts              Json            @default("[]")
+  mentionCount       Int             @default(0)
+  conversationCount  Int             @default(0)
+  lastMentionedAt    DateTime?       @db.Timestamptz(6)
+  firstMentionedAt   DateTime?       @db.Timestamptz(6)
+  compiledContext    String?
+  compiledAt         DateTime?       @db.Timestamptz(6)
+  compiledTokenCount Int?
+  contextVersion     Int             @default(0)
+  isDirty            Boolean         @default(true)
+  embedding          Float[]
+  embeddingModel     String?
+  importanceScore    Float           @default(0.5)
+  createdAt          DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime        @updatedAt @db.Timestamptz(6)
+  contextBundles     ContextBundle[] @relation("EntityBundles")
+  user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, name, type])
+  @@index([userId, importanceScore(sort: Desc)])
+  @@index([userId, type])
+  @@index([userId, lastMentionedAt(sort: Desc)])
+  @@map("entity_profiles")
+}
+
+model ContextBundle {
+  id              String         @id @default(uuid())
+  userId          String
+  bundleType      String
+  topicProfileId  String?
+  entityProfileId String?
+  conversationId  String?
+  personaId       String?
+  compiledPrompt  String
+  tokenCount      Int
+  composition     Json           @default("{}")
+  version         Int            @default(1)
+  isDirty         Boolean        @default(false)
+  priority        Float          @default(0.5)
+  compiledAt      DateTime       @default(now()) @db.Timestamptz(6)
+  expiresAt       DateTime?      @db.Timestamptz(6)
+  lastUsedAt      DateTime       @default(now()) @db.Timestamptz(6)
+  useCount        Int            @default(0)
+  hitCount        Int            @default(0)
+  missCount       Int            @default(0)
+  conversation    Conversation?  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  entityProfile   EntityProfile? @relation("EntityBundles", fields: [entityProfileId], references: [id], onDelete: Cascade)
+  persona         AiPersona?     @relation(fields: [personaId], references: [id], onDelete: Cascade)
+  topicProfile    TopicProfile?  @relation("TopicBundles", fields: [topicProfileId], references: [id], onDelete: Cascade)
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, bundleType, topicProfileId, entityProfileId, conversationId, personaId])
+  @@index([userId, bundleType])
+  @@index([userId, priority(sort: Desc)])
+  @@index([userId, isDirty])
+  @@index([expiresAt])
+  @@map("context_bundles")
+}
+
+model ConversationCompaction {
+  id                  String       @id @default(uuid())
+  conversationId      String
+  fromMessageIndex    Int
+  toMessageIndex      Int
+  originalTokenCount  Int
+  compactedTokenCount Int
+  summary             String
+  keyDecisions        Json         @default("[]")
+  openQuestions       Json         @default("[]")
+  codeArtifacts       Json         @default("[]")
+  compressionRatio    Float
+  compactionLevel     Int          @default(1)
+  createdAt           DateTime     @default(now()) @db.Timestamptz(6)
+  conversation        Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, fromMessageIndex, toMessageIndex])
+  @@index([conversationId, fromMessageIndex])
+  @@map("conversation_compactions")
+}
+
+model ClientPresence {
+  id                     String    @id @default(uuid())
+  userId                 String
+  deviceId               String
+  activeConversationId   String?
+  visibleConversationIds String[]
+  activeNotebookId       String?
+  activePersonaId        String?
+  lastNavigationPath     String?
+  navigationHistory      Json      @default("[]")
+  localTime              DateTime? @db.Timestamptz(6)
+  sessionStartedAt       DateTime  @default(now()) @db.Timestamptz(6)
+  idleSince              DateTime? @db.Timestamptz(6)
+  predictedTopics        String[]
+  predictedEntities      String[]
+  lastHeartbeatAt        DateTime  @default(now()) @db.Timestamptz(6)
+  isOnline               Boolean   @default(true)
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, deviceId])
+  @@index([userId, isOnline])
+  @@index([lastHeartbeatAt])
+  @@map("client_presence")
+}
+
+model CustomInstruction {
+  id        String   @id @default(uuid())
+  userId    String
+  content   String
+  scope     String
+  topicTags String[]
+  priority  Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, scope, isActive])
+  @@map("custom_instructions")
+}
+
+model Memory {
+  id             String   @id @default(uuid())
+  userId         String
+  content        String
+  category       String
+  importance     Float    @default(0.5)
+  embedding      Float[]
+  embeddingModel String?
+  isActive       Boolean  @default(true)
+  metadata       Json     @default("{}")
+  createdAt      DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime @updatedAt @db.Timestamptz(6)
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, category])
+  @@index([userId, importance(sort: Desc)])
+  @@map("memories")
+}
+
+model UserContextSettings {
+  id                        String   @id @default(uuid())
+  userId                    String   @unique
+  maxContextTokens          Int      @default(12000)
+  responseStyle             String   @default("balanced")
+  memoryThreshold           String   @default("moderate")
+  focusMode                 String   @default("balanced")
+  layerBudgetOverrides      Json     @default("{}")
+  compressionStrategy       String   @default("auto")
+  predictionAggressiveness  String   @default("balanced")
+  ttlMultipliers            Json     @default("{}")
+  enabledSignals            Json     @default("{}")
+  topicSimilarityThreshold  Float    @default(0.35)
+  entitySimilarityThreshold Float    @default(0.40)
+  acuSimilarityThreshold    Float    @default(0.35)
+  memorySimilarityThreshold Float    @default(0.40)
+  elasticityOverrides       Json     @default("{}")
+  customBudgetFormulas      Json     @default("{}")
+  excludedTopicSlugs        String[] @default([])
+  excludedEntityIds         String[] @default([])
+  excludedMemoryIds         String[] @default([])
+  excludedConversationIds   String[] @default([])
+  enablePredictions         Boolean  @default(true)
+  enableJitRetrieval        Boolean  @default(true)
+  enableCompression         Boolean  @default(true)
+  enableEntityContext       Boolean  @default(true)
+  enableTopicContext        Boolean  @default(true)
+  prioritizeLatency         Boolean  @default(false)
+  cacheAggressively         Boolean  @default(true)
+  createdAt                 DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt                 DateTime @updatedAt @db.Timestamptz(6)
+  user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("user_context_settings")
+}

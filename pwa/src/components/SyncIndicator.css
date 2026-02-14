@@ -1,0 +1,132 @@
+/**
+ * Sync Indicator Styles
+ */
+
+.sync-indicator {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.sync-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.875rem;
+}
+
+.sync-button:hover:not(:disabled) {
+  border-color: var(--primary-color, #3b82f6);
+  background: var(--surface-color, #f9fafb);
+}
+
+.sync-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sync-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.sync-text {
+  font-weight: 500;
+  color: var(--text-primary, #111827);
+}
+
+/* Status-specific styles */
+.sync-indicator.syncing .sync-icon {
+  animation: spin 1s linear infinite;
+}
+
+.sync-indicator.offline .sync-button {
+  border-color: #9ca3af;
+  background: #f3f4f6;
+}
+
+.sync-indicator.offline .sync-text {
+  color: #6b7280;
+}
+
+.sync-indicator.error .sync-button {
+  border-color: #ef4444;
+  background: #fee2e2;
+}
+
+.sync-indicator.error .sync-text {
+  color: #991b1b;
+}
+
+.sync-indicator.pending .sync-button {
+  border-color: #f59e0b;
+  background: #fef3c7;
+}
+
+.sync-indicator.pending .sync-text {
+  color: #92400e;
+}
+
+.sync-indicator.synced .sync-button {
+  border-color: #10b981;
+}
+
+.sync-indicator.synced .sync-text {
+  color: #059669;
+}
+
+/* Error tooltip */
+.sync-error-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #fee2e2;
+  border: 1px solid #ef4444;
+  border-radius: 6px;
+  color: #991b1b;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 10;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .sync-button {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .sync-button:hover:not(:disabled) {
+    background: #111827;
+  }
+
+  .sync-text {
+    color: #f9fafb;
+  }
+
+  .sync-indicator.offline .sync-button {
+    background: #111827;
+  }
+
+  .sync-indicator.error .sync-button {
+    background: #7f1d1d;
+  }
+
+  .sync-indicator.pending .sync-button {
+    background: #78350f;
+  }
+}

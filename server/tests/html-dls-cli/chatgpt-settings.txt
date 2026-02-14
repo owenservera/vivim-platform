@@ -1,0 +1,35 @@
+# ChatGPT Link - SingleFile CLI Settings
+# URL: https://chatgpt.com/share/6972e35f-2944-8006-a2ea-b005ff22c02c
+
+node single-file-node.js "URL" "OUTPUT" \
+  --browser-wait-until=networkIdle \
+  --browser-wait-delay=3000 \
+  --browser-wait-until-delay=1000 \
+  --browser-load-max-time=30000 \
+  --browser-capture-max-time=30000 \
+  --browser-width=1920 \
+  --browser-height=1080 \
+  --block-scripts=false \
+  --load-deferred-images=true \
+  --load-deferred-images-max-idle-time=2000 \
+  --remove-hidden-elements=false \
+  --compress-HTML=false
+
+# SETTINGS EXPLANATION:
+# --browser-wait-until=networkIdle      : Wait until network is idle
+# --browser-wait-delay=3000             : Wait 3 seconds before capturing
+# --browser-wait-until-delay=1000       : Wait 1 second after network idle
+# --browser-load-max-time=30000         : Max 30 seconds for page load
+# --browser-capture-max-time=30000      : Max 30 seconds for page capture
+# --browser-width=1920 --browser-height=1080 : Full HD viewport
+# --block-scripts=false                 : DON'T block scripts
+# --load-deferred-images=true           : Load lazy-loaded images
+# --load-deferred-images-max-idle-time=2000 : Wait 2s for deferred images
+# --remove-hidden-elements=false        : Keep hidden elements
+# --compress-HTML=false                 : Don't compress HTML
+
+# RESULT:
+# Output: html-dls-cli/chatgpt-cli.html
+# Size: ~1.26 MB
+# Lines: 2910
+# STATUS: SUCCESS - Comparable to browser extension (2897 lines)

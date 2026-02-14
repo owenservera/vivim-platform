@@ -1,0 +1,216 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://openscroll.org/schemas/conversation-v3.json",
+  "title": "OpenScroll Conversation Data Schema v3",
+  "description": "Unified schema for AI chat conversation data - reflects prisma/schema.prisma and openscroll-core",
+  "type": "object",
+  "required": [
+    "id",
+    "provider",
+    "sourceUrl",
+    "title",
+    "capturedAt",
+    "messageCount",
+    "messages"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "UUID for the conversation"
+    },
+    "provider": {
+      "type": "string",
+      "enum": ["claude", "chatgpt", "gemini", "grok", "deepseek", "kimi", "qwen", "zai", "mistral", "other"],
+      "description": "Source AI provider"
+    },
+    "sourceUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "Original share URL"
+    },
+    "contentHash": {
+      "type": "string",
+      "description": "SHA-256 of raw content"
+    },
+    "title": {
+      "type": "string",
+      "description": "Conversation title"
+    },
+    "model": {
+      "type": "string",
+      "description": "AI model identifier",
+      "nullable": true
+    },
+    "state": {
+      "type": "string",
+      "enum": ["ACTIVE", "ARCHIVED", "DORMANT"],
+      "default": "ACTIVE"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When conversation was originally created"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last update time"
+    },
+    "capturedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When we captured this data"
+    },
+    "messages": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/message" },
+      "description": "Ordered list of messages"
+    },
+    "stats": {
+      "$ref": "#/definitions/stats"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "default": {}
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "ownerId": {
+      "type": "string",
+      "nullable": true,
+      "description": "User ID who owns this conversation"
+    },
+    "captureStatus": {
+      "type": "string",
+      "enum": ["pending", "capturing", "processing", "completed", "error"],
+      "default": "completed"
+    },
+    "extractorVersion": {
+      "type": "string",
+      "description": "Version of extractor used"
+    },
+    "decomposed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether ACUs have been generated"
+    },
+    "pinned": {
+      "type": "boolean",
+      "default": false
+    },
+    "archived": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "definitions": {
+    "stats": {
+      "type": "object",
+      "properties": {
+        "messageCount": { "type": "integer" },
+        "userMessageCount": { "type": "integer" },
+        "assistantMessageCount": { "type": "integer" },
+        "wordCount": { "type": "integer" },
+        "totalCharacters": { "type": "integer" },
+        "totalTokens": { "type": "integer", "nullable": true },
+        "codeBlockCount": { "type": "integer", "default": 0 },
+        "imageCount": { "type": "integer", "default": 0 },
+        "tableCount": { "type": "integer", "default": 0 },
+        "latexBlockCount": { "type": "integer", "default": 0 },
+        "mermaidDiagramCount": { "type": "integer", "default": 0 },
+        "toolCallCount": { "type": "integer", "default": 0 },
+        "linkCount": { "type": "integer", "default": 0 }
+      },
+      "required": ["messageCount", "userMessageCount", "assistantMessageCount"]
+    },
+    "message": {
+      "type": "object",
+      "required": ["id", "role", "parts", "messageIndex"],
+      "properties": {
+        "id": { "type": "string" },
+        "conversationId": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "assistant", "system"] },
+        "author": { "type": "string", "nullable": true },
+        "content": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "$ref": "#/definitions/contentPart" } }
+          ]
+        },
+        "parts": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/contentPart" }
+        },
+        "attachments": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/attachment" }
+        },
+        "messageIndex": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "contentHash": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "streaming", "completed", "error"],
+          "default": "completed"
+        },
+        "finishReason": { "type": "string", "nullable": true },
+        "tokenCount": { "type": "integer", "nullable": true },
+        "metadata": { "type": "object", "default": {} },
+        "acuIds": { "type": "array", "items": { "type": "string" } },
+        "decomposed": { "type": "boolean", "default": false }
+      }
+    },
+    "contentPart": {
+      "type": "object",
+      "required": ["type", "content"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["text", "code", "image", "latex", "table", "mermaid", "tool_call", "tool_result", "thinking", "refusal"]
+        },
+        "content": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "object" }
+          ]
+        },
+        "language": { "type": "string" },
+        "alt": { "type": "string" },
+        "filename": { "type": "string" },
+        "metadata": { "type": "object" }
+      }
+    },
+    "attachment": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["image", "file", "audio", "video"] },
+        "url": { "type": "string", "format": "uri" },
+        "base64": { "type": "string" },
+        "filename": { "type": "string" },
+        "mimeType": { "type": "string" },
+        "size": { "type": "integer" }
+      }
+    },
+    "atomicChatUnit": {
+      "type": "object",
+      "description": "ACU for knowledge graph (see prisma schema for full definition)",
+      "properties": {
+        "id": { "type": "string", "description": "Content hash (SHA3-256)" },
+        "content": { "type": "string" },
+        "type": { "type": "string" },
+        "category": { "type": "string" },
+        "qualityOverall": { "type": "number" },
+        "conversationId": { "type": "string" },
+        "messageId": { "type": "string" },
+        "messageIndex": { "type": "integer" },
+        "provider": { "type": "string" }
+      },
+      "required": ["id", "content", "type", "category", "conversationId", "messageId"]
+    }
+  }
+}

@@ -1,0 +1,262 @@
+/**
+ * Analytics Page Styles - Light Theme (VIVIM Design System)
+ */
+
+.analytics-page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 16px;
+}
+
+/* Overview Section */
+.analytics-overview {
+  margin-bottom: 24px;
+}
+
+.analytics-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.analytics-header h3 {
+  font-size: 0.875rem;
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+}
+
+.icon-btn {
+  padding: 8px;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.icon-btn:hover {
+  background: var(--gray-100);
+  color: var(--primary-500);
+}
+
+.icon-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+}
+
+.stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-50);
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* Top Sources */
+.analytics-top-sources {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--gray-200);
+}
+
+.analytics-top-sources h4 {
+  font-size: 0.75rem;
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.source-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.source-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--primary-50);
+  border: 1px solid var(--primary-200);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  color: var(--primary-700);
+}
+
+.source-tag svg {
+  width: 12px;
+  height: 12px;
+  color: var(--primary-500);
+}
+
+/* Activity Section */
+.analytics-activity {
+  margin-bottom: 24px;
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+}
+
+.activity-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gray-100);
+}
+
+.activity-icon svg {
+  color: var(--primary-500);
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-label {
+  font-size: 0.875rem;
+  font-weight: var(--font-medium);
+  color: var(--text-primary);
+}
+
+.activity-time {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+.text-btn {
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: var(--font-medium);
+  color: var(--primary-500);
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.text-btn:hover {
+  background: var(--primary-50);
+}
+
+/* Empty State */
+.empty-state-small {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  text-align: center;
+  opacity: 0.6;
+}
+
+.empty-state-small svg {
+  width: 40px;
+  height: 40px;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+
+.empty-state-small p {
+  font-size: 0.75rem;
+  font-weight: var(--font-medium);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Privacy Note */
+.analytics-privacy {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--primary-50);
+  border: 1px solid var(--primary-200);
+  border-radius: 12px;
+}
+
+.analytics-privacy svg {
+  width: 20px;
+  height: 20px;
+  color: var(--primary-500);
+  flex-shrink: 0;
+}
+
+.analytics-privacy p {
+  font-size: 0.8125rem;
+  color: var(--primary-700);
+  line-height: 1.4;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .stat-card {
+    padding: 12px;
+  }
+  
+  .stat-value {
+    font-size: 1.125rem;
+  }
+}

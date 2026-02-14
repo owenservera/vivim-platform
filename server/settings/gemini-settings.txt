@@ -1,0 +1,21 @@
+# Gemini Link - SingleFile CLI Settings
+# URL: https://gemini.google.com/share/2f2e3626ab00
+# Optimized for fast extraction (<15s) with anti-bot detection
+
+node single-file-node.js "URL" "OUTPUT" \
+  --browser-wait-until=networkIdle \
+  --browser-wait-delay=3000 \
+  --browser-wait-until-delay=1000 \
+  --browser-load-max-time=30000 \
+  --browser-capture-max-time=30000 \
+  --browser-width=1920 \
+  --browser-height=1080 \
+  --block-scripts=false \
+  --load-deferred-images=true \
+  --load-deferred-images-max-idle-time=2000 \
+  --remove-hidden-elements=false \
+  --compress-HTML=false \
+  --browser-script="settings/gemini-stealth.js" \
+  --browser-args='["--disable-blink-features=AutomationControlled"]' \
+  --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" \
+  --errors-file="gemini-errors.log"

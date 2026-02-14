@@ -1,0 +1,291 @@
+// ============================================================================
+// PHASE 3: GRANULAR CONTENT SHARING & COLLABORATIVE PRIVACY
+// Advanced content-level privacy controls
+// ============================================================================
+
+// Content Sharing Policy - Granular control over who can access what
+model SharingPolicy {
+  id          String   @id @default(uuid())
+  contentId   String   @unique
+  contentType String   @default("conversation") // conversation, acu, note, etc.
+  ownerId     String
+  
+  // Primary audience
+  audience    Json     // AudienceDefinition JSON
+  
+  // Granular permissions
+  permissions Json     // ContentPermissions JSON
+  
+  // Time-based controls
+  temporal    Json?    // TemporalControls JSON
+  
+  // Geographic controls
+  geographic  Json?    // GeographicControls JSON
+  
+  // Device/context controls
+  contextual  Json?    // ContextualControls JSON
+  
+  // Collaborative privacy (multi-user content)
+  collaborative Json?  // CollaborativePrivacy JSON
+  
+  // Status
+  status      String   @default("active") // active, expired, revoked
+  
+  // Metadata
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  createdBy   String
+  
+  // Relations
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  stakeholders ContentStakeholder[]
+  accessGrants ContentAccessGrant[]
+  accessLogs   ContentAccessLog[]
+
+  @@index([ownerId])
+  @@index([contentId])
+  @@index([status])
+  @@map("sharing_policies")
+}
+
+// Stakeholders for collaborative privacy (when content involves multiple users)
+model ContentStakeholder {
+  id          String   @id @default(uuid())
+  policyId    String
+  userId      String
+  
+  // Role in content
+  role        String   // creator, primary_mentioned, mentioned, participant, observer
+  contribution String  // full_content, partial_content, mentioned, context
+  
+  // Privacy preferences
+  privacySettings Json // PrivacyPreference JSON
+  
+  // Influence/power in collaborative decisions
+  influenceScore  Int  @default(50) // 0-100
+  
+  // Resolution status
+  resolutionDecision Json? // ResolutionDecision JSON
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  
+  // Relations
+  policy      SharingPolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([policyId, userId])
+  @@index([policyId])
+  @@index([userId])
+  @@map("content_stakeholders")
+}
+
+// Temporary access grants for ephemeral sharing
+model ContentAccessGrant {
+  id          String   @id @default(uuid())
+  policyId    String
+  
+  // Who gets access
+  grantedTo   String   // userId or did
+  grantedToType String @default("user") // user, circle, public
+  grantedBy   String   // userId who granted
+  
+  // Access level
+  accessLevel String   @default("view") // view, interact, full
+  
+  // Specific permissions for this grant
+  permissions Json?    // Override policy permissions
+  
+  // Time bounds
+  grantedAt   DateTime @default(now()) @db.Timestamptz(6)
+  expiresAt   DateTime? @db.Timestamptz(6)
+  
+  // Usage tracking
+  viewsUsed   Int      @default(0)
+  maxViews    Int?
+  lastAccessedAt DateTime? @db.Timestamptz(6)
+  
+  // Status
+  status      String   @default("active") // active, revoked, expired, exhausted
+  
+  // Relations
+  policy      SharingPolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
+
+  @@index([policyId])
+  @@index([grantedTo])
+  @@index([status])
+  @@index([expiresAt])
+  @@map("content_access_grants")
+}
+
+// Content access audit log
+model ContentAccessLog {
+  id          String   @id @default(uuid())
+  policyId    String
+  
+  // Who accessed
+  accessorId  String   // userId or did
+  accessorType String @default("user") // user, guest, system
+  
+  // Access details
+  action      String   // view, share, download, quote, remix, annotate
+  granted     Boolean  @default(true)
+  denialReason String?
+  
+  // Authorization path
+  viaCircleId String?  // If accessed via circle
+  viaGrantId  String?  // If accessed via temporary grant
+  
+  // Context
+  timestamp   DateTime @default(now()) @db.Timestamptz(6)
+  ipAddress   String?
+  userAgent   String?
+  deviceId    String?
+  
+  // Location context (if available)
+  location    Json?    // { country, region, city }
+  
+  // Relations
+  policy      SharingPolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
+
+  @@index([policyId])
+  @@index([accessorId])
+  @@index([timestamp])
+  @@index([action])
+  @@map("content_access_logs")
+}
+
+// Privacy conflict resolutions (for collaborative privacy disputes)
+model PrivacyConflict {
+  id          String   @id @default(uuid())
+  contentId   String
+  
+  // Conflict details
+  conflictType String  // sharing_dispute, removal_request, visibility_change
+  description String?
+  
+  // Involved parties
+  requesterId String   // Who initiated
+  stakeholders String[] // All involved userIds
+  
+  // Proposed changes
+  proposedChanges Json // PrivacyChange JSON
+  
+  // Voting/resolution
+  votes       Json?    // { userId: vote } - vote: approve, reject, abstain
+  resolution  String?  // approved, rejected, compromised
+  finalDecision Json?  // Final privacy settings
+  
+  // Status
+  status      String   @default("pending") // pending, voting, resolved, escalated
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  resolvedAt  DateTime? @db.Timestamptz(6)
+
+  @@index([contentId])
+  @@index([status])
+  @@index([requesterId])
+  @@map("privacy_conflicts")
+}
+
+// Content visibility phases (for time-based visibility changes)
+model VisibilityPhase {
+  id          String   @id @default(uuid())
+  policyId    String
+  
+  // Phase timing
+  startTime   DateTime @db.Timestamptz(6)
+  endTime     DateTime? @db.Timestamptz(6)
+  
+  // Phase settings
+  audience    Json     // AudienceDefinition for this phase
+  permissions Json     // ContentPermissions for this phase
+  
+  // Status
+  isActive    Boolean  @default(false)
+  wasApplied  Boolean  @default(false)
+  
+  // Relations would go here if using a relation database
+  // policy      SharingPolicy @relation(fields: [policyId], references: [id])
+
+  @@index([policyId])
+  @@index([startTime])
+  @@index([isActive])
+  @@map("visibility_phases")
+}
+
+// ============================================================================
+// Types Reference
+// ============================================================================
+
+/*
+AudienceDefinition {
+  circles: string[]           // Circle IDs
+  specificUsers: string[]     // User IDs or DIDs
+  exceptions: string[]        // Users to exclude
+  networkDepth: number        // 0=direct, 1=friends-of-friends, etc.
+  discoverable: boolean       // Appear in feeds/search?
+  searchable: boolean         // Can be found via search?
+}
+
+ContentPermissions {
+  canView: boolean
+  canViewMetadata: boolean
+  canReact: boolean
+  canComment: boolean
+  canShare: boolean
+  canQuote: boolean
+  canBookmark: boolean
+  canFork: boolean
+  canRemix: boolean
+  canAnnotate: boolean
+  reactionsVisibleTo: 'author' | 'audience' | 'public'
+  commentsVisibleTo: 'author' | 'audience' | 'public'
+}
+
+TemporalControls {
+  availableFrom?: ISO8601
+  expiresAt?: ISO8601
+  maxViews?: number
+  maxViewsPerUser?: number
+  phases: VisibilityPhase[]
+  remindBeforeExpiry?: boolean
+  allowExtension?: boolean
+}
+
+GeographicControls {
+  allowedCountries?: string[]
+  blockedCountries?: string[]
+  requireVPN?: boolean
+}
+
+ContextualControls {
+  timeOfDay?: {
+    availableHours: { start: string; end: string }[]
+    timezone: 'viewer' | 'author'
+  }
+  deviceContext?: {
+    requireBiometric?: boolean
+    requireTrustedDevice?: boolean
+    blockScreenshots?: boolean
+  }
+  socialContext?: {
+    requireMutualFollow?: boolean
+    minAccountAge?: number
+    minTrustScore?: number
+  }
+}
+
+CollaborativePrivacy {
+  decisionMode: 'unanimous' | 'majority' | 'creator_override' | 'hierarchical'
+  conflictResolution: ConflictResolutionStrategy
+}
+
+StakeholderRights {
+  creator: { canDelete, canEdit, canChangeAudience, canShare, vetoPower }
+  mentioned: { canRequestRemoval, canRequestAnonymization, canBlockReshare, canSetAudienceLimit }
+  participants: { canRequestRemoval, canOptOutOfDisplay, canSetPersonalVisibility }
+}
+*/

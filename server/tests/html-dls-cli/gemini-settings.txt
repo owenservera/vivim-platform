@@ -1,0 +1,16 @@
+# Gemini Link - SingleFile CLI Settings
+# URL: https://gemini.google.com/share/2f2e3626ab00
+
+node single-file-node.js "URL" "OUTPUT" \
+  --browser-wait-until=networkIdle \
+  --browser-wait-delay=5000 \
+  --browser-wait-until-delay=2000 \
+  --browser-load-max-time=30000 \
+  --browser-capture-max-time=30000 \
+  --browser-width=1920 \
+  --browser-height=1080 \
+  --block-scripts=false \
+  --load-deferred-images=true \
+  --load-deferred-images-max-idle-time=3000 \
+  --remove-hidden-elements=false \
+  --compress-HTML=false

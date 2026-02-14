@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+bun.lockb
+
+# Build outputs
+dist/
+build/
+.tamagui/
+web-build/
+*.apk
+*.ipa
+dev-dist/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.production
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+server.log
+vite.log
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.history/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Mobile (Android/iOS)
+android/app/build/
+android/.gradle/
+android/local.properties
+ios/Pods/
+ios/build/
+*.xcworkspace
+.xcode.env.local
+
+# Temporary / Debug files
+tmp/
+temp/
+*.tmp
+.sisyphus/
+.debug/
+openscroll_dump_*.json
+
+# Project specific
+nul
+session-ses_*.md
+.tmp.driveupload/

@@ -1,0 +1,182 @@
+/**
+ * Text Renderer Styles
+ */
+
+.content-text-renderer {
+  position: relative;
+  padding: var(--space-3, 0.75rem) 0;
+  background-color: var(--content-bg-primary);
+  border-radius: var(--content-radius);
+}
+
+.content-text-renderer[data-display='inline'] {
+  display: inline;
+}
+
+/* Markdown content */
+.content-text-markdown {
+  color: var(--content-text-primary);
+  line-height: 1.7;
+}
+
+.content-text-link {
+  color: var(--content-accent);
+  text-decoration: underline;
+  text-decoration-color: var(--content-accent);
+  text-underline-offset: 2px;
+  transition: all var(--content-transition);
+}
+
+.content-text-link:hover {
+  color: var(--content-accent-hover);
+  text-decoration-color: var(--content-accent-hover);
+}
+
+.content-text-paragraph {
+  margin: 0 0 var(--space-4, 1rem) 0;
+}
+
+.content-text-heading {
+  margin: var(--space-6, 1.5rem) 0 var(--space-3, 0.75rem) 0;
+  font-weight: var(--font-bold, 700);
+  line-height: 1.3;
+}
+
+.content-text-h1 {
+  font-size: var(--text-2xl, 1.5rem);
+}
+
+.content-text-h2 {
+  font-size: var(--text-xl, 1.25rem);
+}
+
+.content-text-h3 {
+  font-size: var(--text-lg, 1.125rem);
+}
+
+.content-text-inline-code {
+  padding: 2px 6px;
+  background-color: var(--gray-100, #f3f4f6);
+  border-radius: var(--radius-sm, 6px);
+  font-family: var(--font-mono, monospace);
+  font-size: 0.9em;
+  color: var(--content-error);
+}
+
+[data-theme='dark'] .content-text-inline-code {
+  background-color: var(--dark-gray-700, #374151);
+  color: var(--dark-error, #f87171);
+}
+
+.content-text-code-block {
+  display: block;
+  padding: var(--space-4, 1rem);
+  background-color: var(--gray-900, #0f172a);
+  border-radius: var(--radius-md, 8px);
+  overflow-x: auto;
+  font-family: var(--font-mono, monospace);
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--gray-300, #d1d5db);
+  margin: var(--space-4, 1rem) 0;
+}
+
+[data-theme='dark'] .content-text-code-block {
+  background-color: var(--dark-gray-800, #1e293b);
+  color: var(--dark-gray-300, #475569);
+}
+
+.content-text-pre {
+  margin: 0;
+}
+
+.content-text-blockquote {
+  border-left: 4px solid var(--content-accent);
+  padding-left: var(--space-4, 1rem);
+  margin: var(--space-4, 1rem) 0;
+  color: var(--content-text-secondary);
+  font-style: italic;
+}
+
+/* Plain text */
+.content-text-plain {
+  color: var(--content-text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Copy button */
+.content-text-copy-button {
+  position: absolute;
+  top: var(--space-2, 0.5rem);
+  right: var(--space-2, 0.5rem);
+  padding: var(--space-2, 0.5rem);
+  background-color: var(--content-bg-secondary);
+  border: 1px solid var(--content-border);
+  border-radius: var(--radius-md, 8px);
+  color: var(--content-text-tertiary);
+  cursor: pointer;
+  transition: all var(--content-transition);
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+.content-text-renderer:hover .content-text-copy-button {
+  opacity: 1;
+}
+
+.content-text-copy-button:hover {
+  background-color: var(--content-accent);
+  color: white;
+  border-color: var(--content-accent);
+}
+
+.content-text-copy-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.content-text-copy-success {
+  color: var(--content-success);
+}
+
+/* Expand button */
+.content-text-expand-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1, 0.25rem);
+  margin-top: var(--space-2, 0.5rem);
+  padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+  background-color: var(--content-bg-secondary);
+  border: 1px solid var(--content-border);
+  border-radius: var(--radius-full, 9999px);
+  color: var(--content-accent);
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: var(--font-medium, 500);
+  cursor: pointer;
+  transition: all var(--content-transition);
+}
+
+.content-text-expand-button:hover {
+  background-color: var(--content-accent);
+  color: white;
+  border-color: var(--content-accent);
+}
+
+.content-text-expand-text {
+  line-height: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .content-text-h1 {
+    font-size: var(--text-xl, 1.25rem);
+  }
+  
+  .content-text-h2 {
+    font-size: var(--text-lg, 1.125rem);
+  }
+  
+  .content-text-h3 {
+    font-size: var(--text-base, 1rem);
+  }
+}

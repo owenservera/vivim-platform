@@ -1,0 +1,24 @@
+# Claude Link - SingleFile CLI Settings
+# URL: https://claude.ai/share/ca5ad573-749e-40a2-93f1-dc0473215fa5
+
+node single-file-node.js "URL" "OUTPUT" \
+  --browser-wait-until=networkIdle \
+  --browser-wait-delay=3000 \
+  --browser-wait-until-delay=1000 \
+  --browser-load-max-time=30000 \
+  --browser-capture-max-time=30000 \
+  --browser-width=1920 \
+  --browser-height=1080 \
+  --block-scripts=false \
+  --load-deferred-images=true \
+  --load-deferred-images-max-idle-time=2000 \
+  --remove-hidden-elements=false \
+  --compress-HTML=false
+
+# RESULT:
+# Output: html-dls-cli/claude-cli.html
+# Size: ~289 KB
+# Lines: 4
+# STATUS: FAILED - Cloudflare verification required
+# ERROR: "Verify you are human by completing the action below. claude.ai needs to review the security of your connection before proceeding."
+# NOTE: Browser extension version (1146 lines) successfully bypassed this

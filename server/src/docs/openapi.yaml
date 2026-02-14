@@ -1,0 +1,732 @@
+openapi: 3.1.0
+info:
+  title: OpenScroll Capture API
+  description: |
+    API for capturing AI conversations from various providers.
+
+    ## Features
+
+    * Capture conversations from Claude, ChatGPT, Gemini, Grok, DeepSeek, Kimi, Qwen, and Zai
+    * Automatic provider detection
+    * Rich content formatting with code blocks and diagrams
+    * Conversation storage and retrieval
+    * Analytics and statistics
+
+    ## Authentication
+
+    Currently in development. Authentication will be added in a future version.
+
+  version: 2.0.0
+  contact:
+    name: OpenScroll API Support
+    url: https://github.com/openscroll/openscroll-server
+  license:
+    name: ISC
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+  - url: https://api.openscroll.com/v1
+    description: Production server
+
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: Capture
+    description: Capture conversations from AI providers
+  - name: Conversations
+    description: Manage stored conversations
+  - name: Providers
+    description: Provider information
+
+paths:
+  /:
+    get:
+      tags: [Health]
+      summary: Basic health check
+      description: Returns API status and version information
+      operationId: healthCheck
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /health/detailed:
+    get:
+      tags: [Health]
+      summary: Detailed health check
+      description: Returns detailed system and database health information
+      operationId: healthCheckDetailed
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailedHealthResponse'
+        '503':
+          description: API is unhealthy (database disconnected)
+
+  /api/v1/providers:
+    get:
+      tags: [Providers]
+      summary: List supported providers
+      description: Returns a list of all supported AI conversation providers
+      operationId: listProviders
+      responses:
+        '200':
+          description: List of providers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvidersResponse'
+
+  /api/v1/detect-provider:
+    get:
+      tags: [Providers]
+      summary: Detect provider from URL
+      description: Detects which AI provider a URL belongs to
+      operationId: detectProvider
+      parameters:
+        - name: url
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uri
+          description: The URL to analyze
+          example: https://claude.ai/share/abc123
+      responses:
+        '200':
+          description: Provider detected successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetectProviderResponse'
+        '400':
+          description: Invalid URL parameter
+
+  /api/v1/capture:
+    post:
+      tags: [Capture]
+      summary: Capture a conversation
+      description: |
+        Captures a conversation from an AI provider URL and stores it in the database.
+
+        The API will automatically detect the provider from the URL, or you can specify it explicitly.
+
+        Caching is enabled by default - recent captures (within 60 minutes) will be returned from cache.
+      operationId: captureConversation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaptureRequest'
+            examples:
+              claude:
+                summary: Claude conversation
+                value:
+                  url: https://claude.ai/share/abc123def456
+              chatgpt:
+                summary: ChatGPT conversation
+                value:
+                  url: https://chat.openai.com/share/xyz789
+              with_options:
+                summary: With custom options
+                value:
+                  url: https://claude.ai/share/abc123
+                  options:
+                    timeout: 180000
+                    richFormatting: true
+                    metadataOnly: false
+                    cache: true
+                    cacheMinutes: 30
+      responses:
+        '200':
+          description: Conversation captured successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaptureResponse'
+              examples:
+                success:
+                  summary: New capture
+                  value:
+                    status: success
+                    cached: false
+                    data:
+                      id: 550e8400-e29b-41d4-a716-446655440000
+                      provider: claude
+                      sourceUrl: https://claude.ai/share/abc123
+                      title: "Conversation about TypeScript"
+                      createdAt: "2025-01-24T10:30:00Z"
+                      exportedAt: "2025-01-24T10:35:00Z"
+                      messageCount: 42
+                      messages: [...]
+                cached:
+                  summary: Cached response
+                  value:
+                    status: success
+                    cached: true
+                    data:
+                      id: 550e8400-e29b-41d4-a716-446655440000
+                      provider: claude
+                      sourceUrl: https://claude.ai/share/abc123
+                      title: "Conversation about TypeScript"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/conversations:
+    get:
+      tags: [Conversations]
+      summary: List conversations
+      description: |
+        Lists conversations with pagination and filtering options.
+
+        Results are ordered by creation time (newest first) by default.
+      operationId: listConversations
+      parameters:
+        - name: provider
+          in: query
+          schema:
+            type: string
+            enum: [claude, chatgpt, gemini, grok, deepseek, kimi, qwen, zai]
+          description: Filter by provider
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Number of results per page
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          description: Page offset
+        - name: orderBy
+          in: query
+          schema:
+            type: string
+            enum: [createdAt, title, provider]
+            default: createdAt
+          description: Sort field
+        - name: orderDirection
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+          description: Sort direction
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Filter by start date
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Filter by end date
+      responses:
+        '200':
+          description: List of conversations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationsListResponse'
+
+  /api/v1/conversations/{id}:
+    get:
+      tags: [Conversations]
+      summary: Get conversation by ID
+      description: Retrieves a single conversation by its UUID
+      operationId: getConversation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Conversation UUID
+      responses:
+        '200':
+          description: Conversation found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationResponse'
+        '404':
+          description: Conversation not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags: [Conversations]
+      summary: Delete conversation
+      description: Permanently deletes a conversation
+      operationId: deleteConversation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Conversation UUID
+      responses:
+        '200':
+          description: Conversation deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Conversation deleted
+                  id:
+                    type: string
+                    format: uuid
+        '404':
+          description: Conversation not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/conversations/search/{query}:
+    get:
+      tags: [Conversations]
+      summary: Search conversations
+      description: Searches conversations by title (case-insensitive)
+      operationId: searchConversations
+      parameters:
+        - name: query
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Search query
+          example: TypeScript
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Maximum number of results
+        - name: provider
+          in: query
+          schema:
+            type: string
+            enum: [claude, chatgpt, gemini, grok, deepseek, kimi, qwen, zai]
+          description: Filter by provider
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+
+  /api/v1/conversations/stats/summary:
+    get:
+      tags: [Conversations]
+      summary: Get conversation statistics
+      description: Returns aggregated statistics grouped by provider
+      operationId: getConversationStats
+      responses:
+        '200':
+          description: Statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatsResponse'
+
+  /api/v1/conversations/recent:
+    get:
+      tags: [Conversations]
+      summary: Get recent conversations
+      description: Returns the most recently captured conversations
+      operationId: getRecentConversations
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+          description: Number of conversations to return
+      responses:
+        '200':
+          description: Recent conversations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conversations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Conversation'
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      required: [status, service, version, timestamp]
+      properties:
+        status:
+          type: string
+          enum: [ok]
+        service:
+          type: string
+          example: OpenScroll Capture API
+        version:
+          type: string
+          example: 2.0.0
+        timestamp:
+          type: string
+          format: date-time
+        uptime:
+          type: number
+          description: Server uptime in seconds
+        environment:
+          type: string
+          enum: [development, production, test]
+
+    DetailedHealthResponse:
+      allOf:
+        - $ref: '#/components/schemas/HealthResponse'
+        - type: object
+          properties:
+            system:
+              type: object
+              properties:
+                node:
+                  type: string
+                  example: v24.11.1
+                platform:
+                  type: string
+                  example: linux
+                arch:
+                  type: string
+                  example: x64
+                memory:
+                  type: object
+                  properties:
+                    used:
+                      type: integer
+                      description: Heap used in bytes
+                    total:
+                      type: integer
+                      description: Heap total in bytes
+                    rss:
+                      type: integer
+                      description: Resident set size in bytes
+            database:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [connected, disconnected]
+                stats:
+                  type: object
+                  properties:
+                    conversations:
+                      type: integer
+                    captureAttempts:
+                      type: integer
+
+    CaptureRequest:
+      type: object
+      required: [url]
+      properties:
+        url:
+          type: string
+          format: uri
+          description: The URL of the conversation to capture
+          example: https://claude.ai/share/abc123
+        options:
+          type: object
+          properties:
+            timeout:
+              type: integer
+              minimum: 1000
+              maximum: 300000
+              default: 120000
+              description: Capture timeout in milliseconds
+            richFormatting:
+              type: boolean
+              default: true
+              description: Enable rich content formatting (code blocks, diagrams)
+            metadataOnly:
+              type: boolean
+              default: false
+              description: Only return metadata, not full messages
+            headless:
+              type: boolean
+              default: true
+              description: Run browser in headless mode
+            provider:
+              type: string
+              enum: [claude, chatgpt, gemini, grok, deepseek, kimi, qwen, zai]
+              description: Force specific provider (auto-detected if not specified)
+            cache:
+              type: boolean
+              default: true
+              description: Use cache for recent captures
+            cacheMinutes:
+              type: integer
+              minimum: 1
+              default: 60
+              description: Cache duration in minutes
+
+    CaptureResponse:
+      type: object
+      required: [status, data]
+      properties:
+        status:
+          type: string
+          enum: [success]
+        cached:
+          type: boolean
+          description: True if returned from cache
+          example: false
+        data:
+          $ref: '#/components/schemas/Conversation'
+
+    Conversation:
+      type: object
+      required: [id, provider, sourceUrl, title, createdAt, exportedAt, messageCount]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique conversation identifier
+        provider:
+          type: string
+          enum: [claude, chatgpt, gemini, grok, deepseek, kimi, qwen, zai]
+          description: AI provider
+        sourceUrl:
+          type: string
+          format: uri
+          description: Original URL of the conversation
+        title:
+          type: string
+          description: Conversation title
+        createdAt:
+          type: string
+          format: date-time
+          description: When the conversation was created
+        exportedAt:
+          type: string
+          format: date-time
+          description: When the conversation was exported
+        messageCount:
+          type: integer
+          description: Number of messages in the conversation
+        metadata:
+          type: object
+          properties:
+            provider:
+              type: string
+            model:
+              type: string
+              description: AI model used (if available)
+        messages:
+          type: array
+          description: Array of message objects
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              role:
+                type: string
+                enum: [user, assistant, system]
+              content:
+                oneOf:
+                  - type: string
+                    description: Plain text content
+                  - type: array
+                    description: Rich content blocks
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          enum: [text, code, mermaid, image]
+                        content:
+                          type: string
+                        language:
+                          type: string
+                          description: Programming language (for code blocks)
+              timestamp:
+                type: string
+                format: date-time
+                nullable: true
+
+    ConversationResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Conversation'
+
+    ConversationsListResponse:
+      type: object
+      required: [conversations, pagination]
+      properties:
+        conversations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Conversation'
+        pagination:
+          type: object
+          required: [total, limit, offset, hasMore]
+          properties:
+            total:
+              type: integer
+              description: Total number of conversations matching filters
+            limit:
+              type: integer
+              description: Results per page
+            offset:
+              type: integer
+              description: Current page offset
+            hasMore:
+              type: boolean
+              description: Whether more results are available
+
+    DetectProviderResponse:
+      type: object
+      required: [provider, supported]
+      properties:
+        provider:
+          type: string
+          nullable: true
+          description: Detected provider (null if unknown)
+          enum: [claude, chatgpt, gemini, grok, deepseek, kimi, qwen, zai, other, null]
+        supported:
+          type: boolean
+          description: Whether the provider is supported
+
+    ProvidersResponse:
+      type: object
+      required: [providers, count]
+      properties:
+        providers:
+          type: array
+          items:
+            type: string
+            enum: [claude, chatgpt, gemini, grok, deepseek, kimi, qwen, zai]
+        count:
+          type: integer
+          description: Number of supported providers
+
+    SearchResponse:
+      type: object
+      required: [query, results, count]
+      properties:
+        query:
+          type: string
+          description: Search query used
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Conversation'
+        count:
+          type: integer
+          description: Number of results found
+
+    StatsResponse:
+      type: object
+      required: [stats]
+      properties:
+        stats:
+          type: array
+          items:
+            type: object
+            properties:
+              provider:
+                type: string
+              count:
+                type: integer
+                description: Number of conversations
+              avgMessageCount:
+                type: number
+                description: Average message count
+              avgWords:
+                type: number
+                description: Average word count
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              description: Error code
+              example: VALIDATION_ERROR
+            message:
+              type: string
+              description: Human-readable error message
+              example: Invalid request body
+            errors:
+              type: array
+              description: Detailed validation errors (for VALIDATION_ERROR)
+              items:
+                type: object
+                properties:
+                  path:
+                    type: string
+                    example: url
+                  message:
+                    type: string
+                    example: URL is required
+            stack:
+              type: string
+              description: Stack trace (only in development)
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key authentication (not yet implemented)

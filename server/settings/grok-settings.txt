@@ -1,0 +1,23 @@
+# Grok Link - SingleFile CLI Settings
+# URL: https://grok.com/share/bGVnYWN5LWNvcHk_32845a54-452d-4563-b9ca-8d9871b40595
+
+node single-file-node.js "URL" "OUTPUT" \
+  --browser-wait-until=networkIdle \
+  --browser-wait-delay=3000 \
+  --browser-wait-until-delay=1000 \
+  --browser-load-max-time=30000 \
+  --browser-capture-max-time=30000 \
+  --browser-width=1920 \
+  --browser-height=1080 \
+  --block-scripts=false \
+  --load-deferred-images=true \
+  --load-deferred-images-max-idle-time=2000 \
+  --remove-hidden-elements=false \
+  --compress-HTML=false
+
+# RESULT:
+# Output: html-dls-cli/grok-cli.html
+# Size: ~266 KB
+# Lines: 5
+# STATUS: PARTIAL - Much smaller than browser extension (97 lines)
+# NOTE: Content may not be fully captured - needs investigation

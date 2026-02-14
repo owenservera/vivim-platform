@@ -1,0 +1,688 @@
+/**
+ * iOS/Instagram Design System
+ * Clean, minimal, iOS-style design tokens and base styles
+ */
+
+/* ===== iOS Color Tokens ===== */
+:root {
+  /* iOS Primary Colors */
+  --ios-blue: #007aff;
+  --ios-blue-dark: #005ecb;
+  --ios-blue-light: #4da3ff;
+
+  /* Instagram Accent Colors */
+  --insta-purple: #833ab4;
+  --insta-pink: #e1306c;
+  --insta-orange: #f77737;
+  --insta-gradient: linear-gradient(45deg, #833ab4, #e1306c, #f77737);
+
+  /* iOS Gray Scale */
+  --ios-gray-50: #fafbfc;
+  --ios-gray-100: #f5f5f7;
+  --ios-gray-200: #e5e5ea;
+  --ios-gray-300: #d1d1d6;
+  --ios-gray-400: #aeaeb2;
+  --ios-gray-500: #8e8e93;
+  --ios-gray-600: #636366;
+  --ios-gray-700: #48484a;
+  --ios-gray-800: #3a3a3c;
+  --ios-gray-900: #1c1c1e;
+
+  /* iOS Semantic Colors */
+  --ios-success: #34c759;
+  --ios-warning: #ffcc00;
+  --ios-error: #ff3b30;
+  --ios-info: #5ac8fa;
+
+  /* iOS Text Colors */
+  --ios-text-primary: #000000;
+  --ios-text-secondary: #3c3c4399;
+  --ios-text-tertiary: #3c3c4366;
+  --ios-text-quaternary: #3c3c4333;
+
+  /* iOS Background Colors */
+  --ios-bg-primary: #ffffff;
+  --ios-bg-secondary: #f2f2f7;
+  --ios-bg-tertiary: #ffffff;
+  --ios-bg-grouped: #f2f2f7;
+
+  /* iOS Separator Colors */
+  --ios-separator: #c6c6c8;
+  --ios-separator-opaque: rgba(60, 60, 67, 0.36);
+
+  /* iOS Fill Colors */
+  --ios-fill-primary: #767680;
+  --ios-fill-secondary: #3a3a3c;
+  --ios-fill-tertiary: #767680;
+  --ios-fill-quaternary: #48484a;
+
+  /* ===== iOS Typography Tokens ===== */
+  --ios-font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --ios-font-family-mono: 'SF Mono', ui-monospace, 'SF Mono Text', Menlo, Monaco, Consolas, monospace;
+
+  /* iOS Font Sizes */
+  --ios-font-size-large-title: 34px;
+  --ios-font-size-title1: 28px;
+  --ios-font-size-title2: 22px;
+  --ios-font-size-title3: 20px;
+  --ios-font-size-headline: 17px;
+  --ios-font-size-body: 17px;
+  --ios-font-size-callout: 16px;
+  --ios-font-size-subheadline: 15px;
+  --ios-font-size-footnote: 13px;
+  --ios-font-size-caption1: 12px;
+  --ios-font-size-caption2: 11px;
+
+  /* iOS Font Weights */
+  --ios-font-weight-regular: 400;
+  --ios-font-weight-medium: 500;
+  --ios-font-weight-semibold: 600;
+  --ios-font-weight-bold: 700;
+
+  /* iOS Line Heights */
+  --ios-line-height-large-title: 41px;
+  --ios-line-height-title1: 34px;
+  --ios-line-height-title2: 28px;
+  --ios-line-height-title3: 25px;
+  --ios-line-height-headline: 22px;
+  --ios-line-height-body: 22px;
+  --ios-line-height-callout: 21px;
+  --ios-line-height-subheadline: 20px;
+  --ios-line-height-footnote: 18px;
+  --ios-line-height-caption1: 16px;
+  --ios-line-height-caption2: 13px;
+
+  /* iOS Letter Spacing */
+  --ios-letter-spacing-large-title: 0.37px;
+  --ios-letter-spacing-title1: 0.36px;
+  --ios-letter-spacing-title2: 0.35px;
+  --ios-letter-spacing-title3: 0.38px;
+  --ios-letter-spacing-headline: -0.43px;
+  --ios-letter-spacing-body: -0.43px;
+  --ios-letter-spacing-callout: -0.32px;
+  --ios-letter-spacing-subheadline: -0.24px;
+  --ios-letter-spacing-footnote: -0.08px;
+  --ios-letter-spacing-caption1: 0;
+  --ios-letter-spacing-caption2: 0.06px;
+
+  /* ===== iOS Spacing Tokens ===== */
+  --ios-spacing-xs: 4px;
+  --ios-spacing-sm: 8px;
+  --ios-spacing-md: 12px;
+  --ios-spacing-lg: 16px;
+  --ios-spacing-xl: 20px;
+  --ios-spacing-2xl: 24px;
+  --ios-spacing-3xl: 32px;
+  --ios-spacing-4xl: 40px;
+  --ios-spacing-5xl: 48px;
+  --ios-spacing-6xl: 64px;
+  --ios-spacing-7xl: 96px;
+
+  /* ===== iOS Border Radius Tokens ===== */
+  --ios-radius-xs: 4px;
+  --ios-radius-sm: 6px;
+  --ios-radius-md: 8px;
+  --ios-radius-lg: 10px;
+  --ios-radius-xl: 12px;
+  --ios-radius-2xl: 14px;
+  --ios-radius-3xl: 18px;
+  --ios-radius-4xl: 20px;
+  --ios-radius-5xl: 24px;
+  --ios-radius-full: 9999px;
+
+  /* ===== iOS Shadow Tokens ===== */
+  --ios-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --ios-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --ios-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+  --ios-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.08), 0 4px 6px rgba(0, 0, 0, 0.04);
+  --ios-shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
+  --ios-shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.16);
+  --ios-shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.04);
+
+  /* ===== iOS Blur Effects ===== */
+  --ios-blur-sm: blur(10px);
+  --ios-blur-md: blur(20px);
+  --ios-blur-lg: blur(40px);
+
+  /* ===== iOS Animation Tokens ===== */
+  --ios-duration-fast: 150ms;
+  --ios-duration-normal: 250ms;
+  --ios-duration-slow: 350ms;
+  --ios-duration-slower: 500ms;
+
+  --ios-ease-spring: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ios-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ios-ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ios-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ===== iOS Z-Index Scale ===== */
+  --ios-z-dropdown: 1000;
+  --ios-z-sticky: 1020;
+  --ios-z-fixed: 1030;
+  --ios-z-modal-backdrop: 1040;
+  --ios-z-modal: 1050;
+  --ios-z-popover: 1060;
+  --ios-z-tooltip: 1070;
+}
+
+/* ===== Dark Mode Tokens ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ios-text-primary: #ffffff;
+    --ios-text-secondary: #ebebf599;
+    --ios-text-tertiary: #ebebf566;
+    --ios-text-quaternary: #ebebf533;
+
+    --ios-bg-primary: #000000;
+    --ios-bg-secondary: #1c1c1e;
+    --ios-bg-tertiary: #2c2c2e;
+    --ios-bg-grouped: #000000;
+
+    --ios-separator: #38383a;
+    --ios-separator-opaque: rgba(84, 84, 88, 0.65);
+
+    --ios-fill-primary: #767680;
+    --ios-fill-secondary: #636366;
+    --ios-fill-tertiary: #48484a;
+    --ios-fill-quaternary: #3a3a3c;
+
+    --ios-gray-50: #1c1c1e;
+    --ios-gray-100: #2c2c2e;
+    --ios-gray-200: #3a3a3c;
+    --ios-gray-300: #48484a;
+    --ios-gray-400: #636366;
+    --ios-gray-500: #8e8e93;
+    --ios-gray-600: #aeaeb2;
+    --ios-gray-700: #c7c7cc;
+    --ios-gray-800: #d1d1d6;
+    --ios-gray-900: #f2f2f7;
+  }
+}
+
+/* ===== iOS Base Styles ===== */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--ios-font-family);
+  font-size: var(--ios-font-size-body);
+  font-weight: var(--ios-font-weight-regular);
+  line-height: var(--ios-line-height-body);
+  letter-spacing: var(--ios-letter-spacing-body);
+  color: var(--ios-text-primary);
+  background-color: var(--ios-bg-primary);
+}
+
+/* ===== iOS Typography Classes ===== */
+.ios-large-title {
+  font-size: var(--ios-font-size-large-title);
+  font-weight: var(--ios-font-weight-bold);
+  line-height: var(--ios-line-height-large-title);
+  letter-spacing: var(--ios-letter-spacing-large-title);
+}
+
+.ios-title1 {
+  font-size: var(--ios-font-size-title1);
+  font-weight: var(--ios-font-weight-bold);
+  line-height: var(--ios-line-height-title1);
+  letter-spacing: var(--ios-letter-spacing-title1);
+}
+
+.ios-title2 {
+  font-size: var(--ios-font-size-title2);
+  font-weight: var(--ios-font-weight-bold);
+  line-height: var(--ios-line-height-title2);
+  letter-spacing: var(--ios-letter-spacing-title2);
+}
+
+.ios-title3 {
+  font-size: var(--ios-font-size-title3);
+  font-weight: var(--ios-font-weight-semibold);
+  line-height: var(--ios-line-height-title3);
+  letter-spacing: var(--ios-letter-spacing-title3);
+}
+
+.ios-headline {
+  font-size: var(--ios-font-size-headline);
+  font-weight: var(--ios-font-weight-semibold);
+  line-height: var(--ios-line-height-headline);
+  letter-spacing: var(--ios-letter-spacing-headline);
+}
+
+.ios-body {
+  font-size: var(--ios-font-size-body);
+  font-weight: var(--ios-font-weight-regular);
+  line-height: var(--ios-line-height-body);
+  letter-spacing: var(--ios-letter-spacing-body);
+}
+
+.ios-body-emphasized {
+  font-size: var(--ios-font-size-body);
+  font-weight: var(--ios-font-weight-semibold);
+  line-height: var(--ios-line-height-body);
+  letter-spacing: var(--ios-letter-spacing-body);
+}
+
+.ios-callout {
+  font-size: var(--ios-font-size-callout);
+  font-weight: var(--ios-font-weight-regular);
+  line-height: var(--ios-line-height-callout);
+  letter-spacing: var(--ios-letter-spacing-callout);
+}
+
+.ios-subheadline {
+  font-size: var(--ios-font-size-subheadline);
+  font-weight: var(--ios-font-weight-regular);
+  line-height: var(--ios-line-height-subheadline);
+  letter-spacing: var(--ios-letter-spacing-subheadline);
+}
+
+.ios-footnote {
+  font-size: var(--ios-font-size-footnote);
+  font-weight: var(--ios-font-weight-regular);
+  line-height: var(--ios-line-height-footnote);
+  letter-spacing: var(--ios-letter-spacing-footnote);
+}
+
+.ios-caption1 {
+  font-size: var(--ios-font-size-caption1);
+  font-weight: var(--ios-font-weight-regular);
+  line-height: var(--ios-line-height-caption1);
+  letter-spacing: var(--ios-letter-spacing-caption1);
+}
+
+.ios-caption2 {
+  font-size: var(--ios-font-size-caption2);
+  font-weight: var(--ios-font-weight-regular);
+  line-height: var(--ios-line-height-caption2);
+  letter-spacing: var(--ios-letter-spacing-caption2);
+}
+
+/* ===== iOS Text Colors ===== */
+.ios-text-primary {
+  color: var(--ios-text-primary);
+}
+
+.ios-text-secondary {
+  color: var(--ios-text-secondary);
+}
+
+.ios-text-tertiary {
+  color: var(--ios-text-tertiary);
+}
+
+.ios-text-quaternary {
+  color: var(--ios-text-quaternary);
+}
+
+/* ===== iOS Animations ===== */
+@keyframes ios-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ios-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes ios-slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ios-slide-down {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ios-slide-left {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ios-slide-right {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes ios-scale-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes ios-scale-out {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+}
+
+@keyframes ios-bounce-in {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes ios-like-bounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes ios-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes ios-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== iOS Animation Classes ===== */
+.ios-animate-fade-in {
+  animation: ios-fade-in var(--ios-duration-normal) var(--ios-ease-smooth);
+}
+
+.ios-animate-fade-out {
+  animation: ios-fade-out var(--ios-duration-normal) var(--ios-ease-smooth);
+}
+
+.ios-animate-slide-up {
+  animation: ios-slide-up var(--ios-duration-normal) var(--ios-ease-spring);
+}
+
+.ios-animate-slide-down {
+  animation: ios-slide-down var(--ios-duration-normal) var(--ios-ease-spring);
+}
+
+.ios-animate-slide-left {
+  animation: ios-slide-left var(--ios-duration-normal) var(--ios-ease-spring);
+}
+
+.ios-animate-slide-right {
+  animation: ios-slide-right var(--ios-duration-normal) var(--ios-ease-spring);
+}
+
+.ios-animate-scale-in {
+  animation: ios-scale-in var(--ios-duration-normal) var(--ios-ease-spring);
+}
+
+.ios-animate-scale-out {
+  animation: ios-scale-out var(--ios-duration-normal) var(--ios-ease-spring);
+}
+
+.ios-animate-bounce-in {
+  animation: ios-bounce-in var(--ios-duration-slow) var(--ios-ease-bounce);
+}
+
+.ios-animate-like-bounce {
+  animation: ios-like-bounce var(--ios-duration-slow) var(--ios-ease-bounce);
+}
+
+.ios-animate-pulse {
+  animation: ios-pulse var(--ios-duration-slower) ease-in-out infinite;
+}
+
+.ios-animate-spin {
+  animation: ios-spin var(--ios-duration-slower) linear infinite;
+}
+
+/* ===== iOS Glass Effect ===== */
+.ios-glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: var(--ios-blur-md);
+  -webkit-backdrop-filter: var(--ios-blur-md);
+}
+
+@media (prefers-color-scheme: dark) {
+  .ios-glass {
+    background: rgba(0, 0, 0, 0.8);
+  }
+}
+
+.ios-glass-light {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: var(--ios-blur-sm);
+  -webkit-backdrop-filter: var(--ios-blur-sm);
+}
+
+@media (prefers-color-scheme: dark) {
+  .ios-glass-light {
+    background: rgba(0, 0, 0, 0.6);
+  }
+}
+
+/* ===== iOS Safe Area ===== */
+.ios-safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.ios-safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.ios-safe-left {
+  padding-left: env(safe-area-inset-left);
+}
+
+.ios-safe-right {
+  padding-right: env(safe-area-inset-right);
+}
+
+.ios-safe-all {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* ===== iOS Scrollbar ===== */
+.ios-scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.ios-scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.ios-scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.ios-scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.ios-scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ios-scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--ios-gray-300);
+  border-radius: var(--ios-radius-full);
+}
+
+/* ===== iOS Touch Feedback ===== */
+.ios-touch-feedback {
+  transition: transform var(--ios-duration-fast) var(--ios-ease-spring),
+              opacity var(--ios-duration-fast) var(--ios-ease-spring);
+}
+
+.ios-touch-feedback:active {
+  transform: scale(0.97);
+  opacity: 0.8;
+}
+
+/* ===== iOS Focus States ===== */
+.ios-focus-ring:focus-visible {
+  outline: 2px solid var(--ios-blue);
+  outline-offset: 2px;
+}
+
+/* ===== iOS Selection ===== */
+::selection {
+  background-color: var(--ios-blue);
+  color: white;
+}
+
+/* ===== iOS Utility Classes ===== */
+.ios-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ios-flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ios-flex-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.ios-flex-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.ios-flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.ios-flex-col-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ios-absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ios-overflow-hidden {
+  overflow: hidden;
+}
+
+.ios-overflow-auto {
+  overflow: auto;
+}
+
+.ios-overflow-scroll {
+  overflow: scroll;
+}
+
+.ios-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ios-line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ios-line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ===== Instagram Gradient Text ===== */
+.insta-gradient-text {
+  background: var(--insta-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===== Instagram Gradient Background ===== */
+.insta-gradient-bg {
+  background: var(--insta-gradient);
+}

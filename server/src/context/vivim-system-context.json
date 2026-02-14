@@ -1,0 +1,256 @@
+{
+  "version": "1.0.0",
+  "updatedAt": "2026-02-13T15:41:54.100Z",
+  "generatedFrom": {
+    "network": "network/prisma/schema.prisma",
+    "server": "server/src/context/types.ts",
+    "pwa": "pwa/src/lib/*"
+  },
+  "systemArchitecture": {
+    "apps": [
+      "network",
+      "server",
+      "pwa"
+    ],
+    "network": {
+      "purpose": "P2P and Federation Layer",
+      "technologies": [
+        "libp2p",
+        "Yjs CRDT",
+        "Kademlia DHT",
+        "WebRTC"
+      ],
+      "nodeTypes": [
+        "bootstrap",
+        "relay",
+        "indexer",
+        "storage",
+        "edge",
+        "client",
+        "self-hosted"
+      ],
+      "transports": [
+        "webrtc",
+        "websocket",
+        "tcp",
+        "quic"
+      ],
+      "database": {
+        "models": [
+          "NetworkNode",
+          "NodeConnection",
+          "ContentRecord",
+          "ContentProvider",
+          "RoutingEntry",
+          "StoredContent",
+          "PubSubTopic",
+          "TopicSubscription",
+          "CRDTDocument",
+          "CRDTPeer",
+          "FederationInstance",
+          "FederationBridge",
+          "NetworkMessage",
+          "NetworkMetric",
+          "NetworkUserReference",
+          "NetworkCircleReference"
+        ],
+        "enums": [
+          "NodeType",
+          "NodeRole",
+          "NodeStatus",
+          "ConnectionDirection",
+          "ConnectionStatus",
+          "TopicType",
+          "SubscriptionStatus",
+          "SyncStatus",
+          "FederationStatus",
+          "BridgeDirection",
+          "BridgeStatus",
+          "MessageType",
+          "MessageStatus",
+          "MetricType"
+        ]
+      }
+    },
+    "server": {
+      "purpose": "Backend API and Context Engine",
+      "technologies": [
+        "Node.js",
+        "Prisma",
+        "PostgreSQL",
+        "Z.ai embeddings"
+      ],
+      "contextLayers": [
+        {
+          "id": "L0",
+          "name": "VIVIM Identity",
+          "description": "Who VIVIM is"
+        },
+        {
+          "id": "L1",
+          "name": "User Identity",
+          "description": "Facts about the user"
+        },
+        {
+          "id": "L2",
+          "name": "Preferences",
+          "description": "How to respond"
+        },
+        {
+          "id": "L3",
+          "name": "Topic Context",
+          "description": "Current topic"
+        },
+        {
+          "id": "L4",
+          "name": "Entity Context",
+          "description": "People/projects"
+        },
+        {
+          "id": "L5",
+          "name": "Conversation",
+          "description": "History"
+        },
+        {
+          "id": "L6",
+          "name": "JIT Knowledge",
+          "description": "Retrieved ACUs"
+        }
+      ],
+      "keyServices": [
+        "DynamicContextAssembler",
+        "BundleCompiler",
+        "LibrarianWorker",
+        "HybridRetrieval"
+      ]
+    },
+    "pwa": {
+      "purpose": "Frontend Client",
+      "technologies": [
+        "React",
+        "IndexedDB",
+        "Web Crypto API"
+      ],
+      "keyModules": [
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\components\\content\\index",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\components\\index",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\components\\ios\\index",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\components\\OmniComposerTypes",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\config\\api-config",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\hooks\\useAI",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\hooks\\useAIConversations",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\hooks\\useToast",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\lib\\acu-api",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\lib\\ai-api",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\lib\\ai-store",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\lib\\ai-stream-manager",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\lib\\api",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\lib\\byok\\api-key-manager",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\lib\\byok\\index",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\lib\\byok\\provider-config",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\lib\\byok\\streaming-client",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\lib\\byok\\types",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\lib\\capture-queue",
+        "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\lib\\content-renderer\\ContentRenderer.config"
+      ]
+    }
+  },
+  "contextPipeline": {
+    "layers": [
+      {
+        "id": "L0",
+        "name": "VIVIM Identity",
+        "description": "Who VIVIM is"
+      },
+      {
+        "id": "L1",
+        "name": "User Identity",
+        "description": "Facts about the user"
+      },
+      {
+        "id": "L2",
+        "name": "Preferences",
+        "description": "How to respond"
+      },
+      {
+        "id": "L3",
+        "name": "Topic Context",
+        "description": "Current topic"
+      },
+      {
+        "id": "L4",
+        "name": "Entity Context",
+        "description": "People/projects"
+      },
+      {
+        "id": "L5",
+        "name": "Conversation",
+        "description": "History"
+      },
+      {
+        "id": "L6",
+        "name": "JIT Knowledge",
+        "description": "Retrieved ACUs"
+      }
+    ],
+    "futureLayers": [
+      {
+        "id": "L7",
+        "name": "Friends Context",
+        "description": "Recent friend interactions, shared ACUs"
+      },
+      {
+        "id": "L8",
+        "name": "Network Context",
+        "description": "Trending topics, popular ACUs"
+      }
+    ]
+  },
+  "capabilities": {
+    "capture": {
+      "supported": true,
+      "providers": [
+        "openai",
+        "anthropic",
+        "google",
+        "grok",
+        "deepseek",
+        "kimi",
+        "qwen",
+        "z",
+        "mistral"
+      ]
+    },
+    "byok": {
+      "supported": true,
+      "providers": [
+        "openai",
+        "anthropic",
+        "google",
+        "mistral"
+      ]
+    },
+    "p2p": {
+      "supported": true,
+      "technologies": [
+        "libp2p",
+        "WebRTC",
+        "Yjs CRDT"
+      ]
+    },
+    "federation": {
+      "supported": true,
+      "protocols": [
+        "ActivityPub",
+        "ATProtocol",
+        "VIVIM native"
+      ]
+    }
+  },
+  "privacy": {
+    "e2eEncryption": true,
+    "zeroKnowledgeSync": true,
+    "localFirst": true,
+    "noAITraining": true
+  }
+}

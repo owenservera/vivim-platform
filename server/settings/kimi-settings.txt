@@ -1,0 +1,15 @@
+# Kimi Link - SingleFile CLI Settings
+# URL: https://www.kimi.com/share/19be85a5-0c42-8bc7-8000-0000f26198c2
+
+node single-file-node.js "URL" "OUTPUT" \
+  --browser-wait-until=load \
+  --browser-wait-delay=2000 \
+  --browser-load-max-time=10000 \
+  --browser-capture-max-time=10000 \
+  --browser-width=1920 \
+  --browser-height=1080 \
+  --block-scripts=false \
+  --load-deferred-images=true \
+  --load-deferred-images-max-idle-time=2000 \
+  --remove-hidden-elements=false \
+  --compress-HTML=false

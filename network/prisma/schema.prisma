@@ -1,0 +1,666 @@
+// VIVIM Network Database Schema
+// Fully compatible with existing VIVIM user management system
+// Extends the existing schema with network layer tables
+
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../node_modules/.prisma/client"
+  previewFeatures = ["driverAdapters", "fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// NETWORK NODES
+// ============================================================================
+
+model NetworkNode {
+  id          String   @id @default(uuid())
+  
+  // Identity
+  nodeId      String   @unique // libp2p peer ID
+  did         String?  @unique // Associated DID (if any)
+  
+  // Node type and capabilities
+  type        NodeType
+  roles       NodeRole[]
+  
+  // Network addresses
+  multiaddrs  String[] // libp2p multiaddresses
+  publicIp    String?
+  region      String?  // Geographic region
+  
+  // Status
+  status      NodeStatus @default(ACTIVE)
+  lastSeenAt  DateTime   @default(now()) @db.Timestamptz(6)
+  lastHealthCheck DateTime? @db.Timestamptz(6)
+  
+  // Capabilities
+  supportsWebRTC  Boolean @default(false)
+  supportsRelay   Boolean @default(false)
+  supportsStorage Boolean @default(false)
+  supportsIndexing Boolean @default(false)
+  
+  // Metrics
+  reputation    Float    @default(50) // 0-100
+  latency       Int?     // ms
+  bandwidth     Int?     // Mbps
+  
+  // Relations
+  connections    NodeConnection[]
+  storedContent  StoredContent[]
+  routingTable   RoutingEntry[] @relation("RoutingTarget")
+  routingEntries RoutingEntry[] @relation("RoutingSource")
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  
+  // Index for queries
+  @@index([status])
+  @@index([type])
+  @@index([region])
+  @@index([lastSeenAt])
+  @@index([reputation(sort: Desc)])
+  @@map("network_nodes")
+}
+
+enum NodeType {
+  BOOTSTRAP
+  RELAY
+  INDEXER
+  STORAGE
+  EDGE
+  CLIENT
+  SELF_HOSTED
+}
+
+enum NodeRole {
+  ROUTING
+  RELAYING
+  INDEXING
+  STORING
+  SIGNALLING
+  BOOTSTRAPPING
+}
+
+enum NodeStatus {
+  ACTIVE
+  DEGRADED
+  OFFLINE
+  BANNED
+}
+
+// ============================================================================
+// NODE CONNECTIONS
+// ============================================================================
+
+model NodeConnection {
+  id          String   @id @default(uuid())
+  
+  // Connection endpoints
+  sourceNodeId String
+  targetNodeId String
+  
+  // Connection details
+  transport   String   // webrtc, websocket, tcp, quic
+  direction   ConnectionDirection
+  status      ConnectionStatus @default(PENDING)
+  
+  // Metrics
+  latency     Int?     // ms
+  bandwidth   Int?     // Mbps
+  packetsSent Int      @default(0)
+  packetsRecv Int      @default(0)
+  bytesSent   BigInt   @default(0)
+  bytesRecv   BigInt   @default(0)
+  
+  // Security
+  encrypted   Boolean  @default(true)
+  cipherSuite String?  // TLS, Noise, etc.
+  
+  // Timestamps
+  establishedAt DateTime? @db.Timestamptz(6)
+  closedAt      DateTime? @db.Timestamptz(6)
+  lastActivityAt DateTime @default(now()) @db.Timestamptz(6)
+  createdAt     DateTime @default(now()) @db.Timestamptz(6)
+  
+  // Relations
+  sourceNode NetworkNode @relation(fields: [sourceNodeId], references: [id], name: "SourceConnections")
+  targetNode NetworkNode @relation(fields: [targetNodeId], references: [id], name: "TargetConnections")
+  
+  @@unique([sourceNodeId, targetNodeId, transport])
+  @@index([sourceNodeId])
+  @@index([targetNodeId])
+  @@index([status])
+  @@map("node_connections")
+}
+
+enum ConnectionDirection {
+  OUTBOUND
+  INBOUND
+  BIDIRECTIONAL
+}
+
+enum ConnectionStatus {
+  PENDING
+  CONNECTING
+  CONNECTED
+  DISCONNECTED
+  FAILED
+}
+
+// ============================================================================
+// CONTENT ROUTING (DHT)
+// ============================================================================
+
+model ContentRecord {
+  id          String   @id @default(uuid())
+  
+  // Content addressing
+  contentId   String   @unique // SHA-256 hash or content identifier
+  contentType String   // conversation, acu, profile, etc.
+  contentCid  String?  // IPFS CID (if stored on IPFS)
+  
+  // Content metadata
+  size        Int?     // bytes
+  mimeType    String?
+  encoding    String?  // compression, encryption
+  
+  // Routing info
+  providers   ContentProvider[]
+  
+  // DHT metadata
+  dhtKey      String   @unique
+  dhtValue    Json     // Location info, timestamps, etc.
+  
+  // Expiration
+  expiresAt   DateTime? @db.Timestamptz(6)
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  
+  @@index([contentType])
+  @@index([expiresAt])
+  @@map("content_records")
+}
+
+model ContentProvider {
+  id          String   @id @default(uuid())
+  
+  contentId   String
+  nodeId      String
+  
+  // Provider info
+  distance    Int      // XOR distance from content ID (for Kademlia)
+  priority    Int      @default(0) // Selection priority
+  
+  // Status
+  isOnline    Boolean  @default(true)
+  lastVerifiedAt DateTime? @db.Timestamptz(6)
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  
+  // Relations
+  content     ContentRecord @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  node        NetworkNode   @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+  
+  @@unique([contentId, nodeId])
+  @@index([nodeId])
+  @@map("content_providers")
+}
+
+model RoutingEntry {
+  id          String   @id @default(uuid())
+  
+  // Routing table entry (Kademlia k-buckets)
+  sourceNodeId String
+  targetNodeId String
+  
+  // Distance metric
+  prefixLength Int     // Number of shared prefix bits
+  bucketIndex  Int     // Which k-bucket
+  
+  // Last contact
+  lastSeenAt  DateTime @default(now()) @db.Timestamptz(6)
+  rtt         Int?     // Round-trip time in ms
+  
+  // Relations
+  sourceNode  NetworkNode @relation(fields: [sourceNodeId], references: [id], name: "RoutingEntries", onDelete: Cascade)
+  targetNode  NetworkNode @relation(fields: [targetNodeId], references: [id], name: "RoutingTable", onDelete: Cascade)
+  
+  @@unique([sourceNodeId, targetNodeId])
+  @@index([sourceNodeId, bucketIndex])
+  @@map("routing_entries")
+}
+
+// ============================================================================
+// STORED CONTENT
+// ============================================================================
+
+model StoredContent {
+  id          String   @id @default(uuid())
+  
+  nodeId      String
+  contentId   String
+  
+  // Storage details
+  localPath   String?  // Path on local filesystem
+  blobUrl     String?  // URL to blob storage
+  
+  // Metadata
+  size        BigInt
+  checksum    String   // SHA-256 checksum
+  
+  // Availability
+  isPinned    Boolean  @default(false)
+  isCached    Boolean  @default(true)
+  
+  // Expiration
+  expiresAt   DateTime? @db.Timestamptz(6)
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  accessedAt  DateTime? @db.Timestamptz(6)
+  
+  // Relations
+  node        NetworkNode @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+  
+  @@unique([nodeId, contentId])
+  @@index([contentId])
+  @@index([expiresAt])
+  @@map("stored_content")
+}
+
+// ============================================================================
+// PUB/SUB TOPICS
+// ============================================================================
+
+model PubSubTopic {
+  id          String   @id @default(uuid())
+  
+  topic       String   @unique
+  description String?
+  
+  // Topic type
+  type        TopicType @default(GENERAL)
+  circleId    String?   // If circle-specific
+  userId      String?   // If user-specific
+  
+  // Subscribers
+  subscribers TopicSubscription[]
+  
+  // Stats
+  messageCount BigInt @default(0)
+  subscriberCount Int @default(0)
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  
+  @@index([type])
+  @@index([circleId])
+  @@map("pubsub_topics")
+}
+
+enum TopicType {
+  GENERAL
+  CIRCLE
+  USER
+  SYSTEM
+  DISCOVERY
+}
+
+model TopicSubscription {
+  id          String   @id @default(uuid())
+  
+  topicId     String
+  nodeId      String
+  
+  // Subscription options
+  filter      Json?    // Message filter criteria
+  
+  // Status
+  status      SubscriptionStatus @default(ACTIVE)
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  
+  // Relations
+  topic       PubSubTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  
+  @@unique([topicId, nodeId])
+  @@index([nodeId])
+  @@map("topic_subscriptions")
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAUSED
+  UNSUBSCRIBED
+}
+
+// ============================================================================
+// CRDT DOCUMENTS
+// ============================================================================
+
+model CRDTDocument {
+  id          String   @id @default(uuid())
+  
+  // Document identification
+  docId       String   @unique
+  docType     String   // conversation, circle, profile, etc.
+  
+  // Reference to VIVIM entity
+  entityType  String   // conversation, circle, user
+  entityId    String
+  
+  // CRDT state
+  yjsState    Bytes?   // Yjs document state
+  stateVector Bytes?   // Yjs state vector for incremental sync
+  
+  // Sync status
+  version     Int      @default(0)
+  syncStatus  SyncStatus @default(SYNCED)
+  
+  // Active peers
+  activePeers CRDTPeer[]
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  lastSyncedAt DateTime? @db.Timestamptz(6)
+  
+  @@unique([entityType, entityId])
+  @@index([docType])
+  @@index([syncStatus])
+  @@map("crdt_documents")
+}
+
+enum SyncStatus {
+  SYNCED
+  SYNCING
+  CONFLICT
+  OFFLINE
+  ERROR
+}
+
+model CRDTPeer {
+  id          String   @id @default(uuid())
+  
+  docId       String
+  nodeId      String
+  
+  // Peer state
+  stateVector Bytes?   // Peer's known state
+  lastSeq     Int      @default(0)
+  
+  // Connection
+  isConnected Boolean  @default(true)
+  latency     Int?     // ms
+  
+  // Timestamps
+  lastSyncAt  DateTime @default(now()) @db.Timestamptz(6)
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  
+  // Relations
+  document    CRDTDocument @relation(fields: [docId], references: [id], onDelete: Cascade)
+  
+  @@unique([docId, nodeId])
+  @@index([nodeId])
+  @@map("crdt_peers")
+}
+
+// ============================================================================
+// FEDERATION
+// ============================================================================
+
+model FederationInstance {
+  id          String   @id @default(uuid())
+  
+  // Instance identity
+  domain      String   @unique
+  did         String?  @unique
+  
+  // Instance info
+  name        String
+  description String?
+  software    String   @default("vivim")
+  version     String
+  
+  // Services
+  pdsUrl      String
+  relayUrl    String?
+  indexerUrl  String?
+  
+  // Federation status
+  status      FederationStatus @default(PENDING)
+  
+  // Trust
+  trustLevel  Int      @default(50) // 0-100
+  isVerified  Boolean  @default(false)
+  
+  // Stats
+  userCount   Int      @default(0)
+  contentCount BigInt  @default(0)
+  lastActivityAt DateTime? @db.Timestamptz(6)
+  
+  // Relations
+  bridges     FederationBridge[]
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  
+  @@index([status])
+  @@index([trustLevel(sort: Desc)])
+  @@map("federation_instances")
+}
+
+enum FederationStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  BLOCKED
+  OFFLINE
+}
+
+model FederationBridge {
+  id          String   @id @default(uuid())
+  
+  localInstanceId  String
+  remoteInstanceId String
+  
+  // Bridge configuration
+  protocol    String   @default("vivim") // vivim, activitypub, atproto
+  direction   BridgeDirection @default(BIDIRECTIONAL)
+  
+  // Sync settings
+  syncUsers   Boolean  @default(false)
+  syncContent Boolean  @default(true)
+  syncCircles Boolean  @default(false)
+  
+  // Status
+  status      BridgeStatus @default(ACTIVE)
+  lastSyncAt  DateTime? @db.Timestamptz(6)
+  
+  // Stats
+  messagesSent   BigInt @default(0)
+  messagesRecv   BigInt @default(0)
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  
+  // Relations
+  localInstance  FederationInstance @relation(fields: [localInstanceId], references: [id], name: "LocalBridges", onDelete: Cascade)
+  
+  @@unique([localInstanceId, remoteInstanceId])
+  @@index([status])
+  @@map("federation_bridges")
+}
+
+enum BridgeDirection {
+  SEND_ONLY
+  RECEIVE_ONLY
+  BIDIRECTIONAL
+}
+
+enum BridgeStatus {
+  ACTIVE
+  PAUSED
+  ERROR
+  DISCONNECTED
+}
+
+// ============================================================================
+// NETWORK MESSAGES
+// ============================================================================
+
+model NetworkMessage {
+  id          String   @id @default(uuid())
+  
+  // Message identification
+  messageId   String   @unique
+  
+  // Routing
+  sourceNodeId String
+  targetNodeId String?  // null for broadcast
+  topic       String?
+  
+  // Content
+  type        MessageType
+  payload     Json
+  
+  // Transport
+  transport   String   // webrtc, websocket, tcp, etc.
+  
+  // Status
+  status      MessageStatus @default(PENDING)
+  
+  // Metrics
+  size        Int      // bytes
+  latency     Int?     // ms (time to deliver)
+  
+  // Timestamps
+  sentAt      DateTime @default(now()) @db.Timestamptz(6)
+  deliveredAt DateTime? @db.Timestamptz(6)
+  
+  @@index([sourceNodeId])
+  @@index([targetNodeId])
+  @@index([topic])
+  @@index([status])
+  @@index([sentAt(sort: Desc)])
+  @@map("network_messages")
+}
+
+enum MessageType {
+  DISCOVERY
+  ROUTING
+  CONTENT_REQUEST
+  CONTENT_RESPONSE
+  SYNC_REQUEST
+  SYNC_RESPONSE
+  PUBSUB_PUBLISH
+  PUBSUB_SUBSCRIBE
+  FEDERATION
+  PING
+  PONG
+  CONTROL
+}
+
+enum MessageStatus {
+  PENDING
+  SENT
+  DELIVERED
+  FAILED
+  RETRYING
+}
+
+// ============================================================================
+// NETWORK METRICS
+// ============================================================================
+
+model NetworkMetric {
+  id          String   @id @default(uuid())
+  
+  // Metric identification
+  nodeId      String?
+  metricType  MetricType
+  
+  // Values
+  value       Float
+  unit        String
+  
+  // Dimensions
+  region      String?
+  transport   String?
+  
+  // Timestamp (for time-series)
+  timestamp   DateTime @default(now()) @db.Timestamptz(6)
+  
+  @@index([nodeId])
+  @@index([metricType])
+  @@index([timestamp(sort: Desc)])
+  @@map("network_metrics")
+}
+
+enum MetricType {
+  PEER_COUNT
+  CONNECTION_COUNT
+  BANDWIDTH_IN
+  BANDWIDTH_OUT
+  LATENCY_AVG
+  LATENCY_P95
+  DHT_LOOKUP_TIME
+  MESSAGE_QUEUE_SIZE
+  SYNC_TIME
+  CACHE_HIT_RATE
+  ERROR_RATE
+}
+
+// ============================================================================
+// RELATION TO EXISTING VIVIM TABLES
+// These are references to show compatibility
+// ============================================================================
+
+// Reference to existing User model
+model NetworkUserReference {
+  userId      String   @id
+  did         String   @unique
+  nodeId      String?  // User's preferred/home node
+  
+  // Network preferences
+  allowP2P    Boolean  @default(true)
+  allowRelay  Boolean  @default(true)
+  
+  // Timestamps
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  
+  @@index([nodeId])
+  @@map("network_user_references")
+}
+
+// Reference to existing Circle model  
+model NetworkCircleReference {
+  circleId    String   @id
+  
+  // Network settings
+  isFederated Boolean  @default(false)
+  isPrivate   Boolean  @default(true)
+  
+  // P2P settings
+  p2pEnabled  Boolean  @default(true)
+  encryption  String   @default("aes-256-gcm")
+  
+  // Sync
+  syncMode    String   @default("realtime") // realtime, periodic, manual
+  
+  @@map("network_circle_references")
+}

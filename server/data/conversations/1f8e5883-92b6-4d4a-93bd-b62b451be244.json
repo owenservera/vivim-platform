@@ -1,0 +1,25 @@
+{
+  "title": "Just a moment...",
+  "createdAt": "2026-01-25T19:18:47.907Z",
+  "messages": [],
+  "metadata": {
+    "provider": "grok",
+    "model": "Grok-2"
+  },
+  "id": "1f8e5883-92b6-4d4a-93bd-b62b451be244",
+  "sourceUrl": "https://grok.com/share/bGVnYWN5LWNvcHk_32845a54-452d-4563-b9ca-8d9871b40595",
+  "provider": "grok",
+  "exportedAt": "2026-01-25T19:18:47.907Z",
+  "stats": {
+    "totalMessages": 0,
+    "totalWords": 0,
+    "totalCharacters": 0,
+    "totalCodeBlocks": 0,
+    "totalMermaidDiagrams": 0,
+    "totalImages": 0,
+    "firstMessageAt": "2026-01-25T19:18:47.907Z",
+    "lastMessageAt": "2026-01-25T19:18:47.908Z"
+  },
+  "_storedAt": "2026-01-25T19:18:52.058Z",
+  "_storageType": "filesystem-fallback"
+}
