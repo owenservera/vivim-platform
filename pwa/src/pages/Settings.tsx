@@ -7,17 +7,18 @@ import {
   toast as toastHelper,
 } from '../components/ios';
 import { getStorage } from '../lib/storage-v2';
-import { loginWithGoogle, logout, getCurrentUser, getAccountInfo, requestAccountDeletion, type User as AuthUser, type AccountInfo } from '../lib/auth-api';
+import { loginWithGoogle, getAccountInfo, requestAccountDeletion, type User as AuthUser, type AccountInfo } from '../lib/auth-api';
+import { useAuth } from '../lib/auth-context';
 import { User, Bell, Shield, Database, Palette, Info, LogOut, Trash2 } from 'lucide-react';
 
 export const Settings: React.FC = () => {
   const [did, setDid] = useState<string>('');
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
-  const [googleUser, setGoogleUser] = useState<AuthUser | null>(null);
   const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useIOSToast();
+  const { user: googleUser, logout } = useAuth();
 
   useEffect(() => {
     const loadData = async () => {
@@ -29,10 +30,7 @@ export const Settings: React.FC = () => {
         const isDark = localStorage.getItem('darkMode') === 'true';
         setDarkMode(isDark);
 
-        const user = await getCurrentUser();
-        setGoogleUser(user);
-
-        if (user) {
+        if (googleUser) {
           const info = await getAccountInfo();
           setAccountInfo(info);
         }
@@ -43,7 +41,7 @@ export const Settings: React.FC = () => {
       }
     };
     loadData();
-  }, []);
+  }, [googleUser]);
 
   const handleToggleNotifications = () => {
     setNotifications((prev) => !prev);
@@ -72,6 +70,7 @@ export const Settings: React.FC = () => {
       await logout();
     } else {
       toast(toastHelper.info('Logged out'));
+      window.location.reload();
     }
   };
 

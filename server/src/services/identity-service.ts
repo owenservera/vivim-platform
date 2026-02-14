@@ -10,6 +10,8 @@
  */
 
 import { getPrismaClient } from '../lib/database.js';
+import { getUserClient, createUserDatabase, getUserDbPath, initializeUserDatabaseDir } from '../lib/user-database-manager.js';
+import { createUserContextSystem } from '../context/user-context-system.js';
 import { logger } from '../lib/logger.js';
 import crypto from 'crypto';
 import * as nacl from 'tweetnacl';
@@ -210,7 +212,29 @@ export async function registerUser(
 
     log.info({ did, handle, userId: user.id }, 'New user registered');
 
-    // Log registration
+    initializeUserDatabaseDir();
+    await createUserDatabase(did);
+
+    const userClient = await getUserClient(did);
+    await userClient.userContextSettings.create({
+      data: {
+        id: crypto.randomUUID(),
+        userId: user.id,
+        autoContextEnabled: true,
+        contextWindowSize: 10,
+        maxTokensPerContext: 4000,
+        topicExtractionEnabled: true,
+        entityExtractionEnabled: true,
+        memoryEnabled: false,
+        notebookAutoArchiving: false,
+      }
+    });
+
+    log.info({ did, handle, userId: user.id }, 'User database initialized');
+
+    await createUserContextSystem(did);
+    log.info({ did, handle, userId: user.id }, 'User context system initialized (vector store, embeddings)');
+
     await logAccess(did, null, 'profile', 'register', true);
 
     return { success: true, user };
@@ -234,7 +258,6 @@ export async function getOrCreateUser(
   });
 
   if (!user) {
-    // Auto-create user for valid DIDs
     const result = await registerUser(did, publicKey);
     if (result.success) {
       user = result.user;
@@ -242,6 +265,31 @@ export async function getOrCreateUser(
   }
 
   return user;
+}
+
+/**
+ * Get user context for routing (returns database path)
+ */
+export async function getUserContext(did: string): Promise<{
+  did: string;
+  userId: string;
+  databasePath: string;
+} | null> {
+  const prisma = getPrismaClient();
+
+  const user = await prisma.user.findUnique({
+    where: { did }
+  });
+
+  if (!user) {
+    return null;
+  }
+
+  return {
+    did: user.did,
+    userId: user.id,
+    databasePath: getUserDbPath(user.did),
+  };
 }
 
 // ============================================================================
@@ -770,6 +818,7 @@ export const identityService = {
   publicKeyToDID,
   registerUser,
   getOrCreateUser,
+  getUserContext,
   registerDevice,
   getUserDevices,
   revokeDevice,

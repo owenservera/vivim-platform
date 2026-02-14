@@ -47,6 +47,7 @@ import feedV2Router from './routes/feed-v2.js';
 import portabilityRouter from './routes/portability.js';
 import authRouter from './routes/auth.js';
 import accountRouter from './routes/account.js';
+import contextV2Router from './routes/context-v2.js';
 
 // Validate configuration on startup
 try {
@@ -334,6 +335,7 @@ app.use('/api/v1/ai/chat', aiChatRouter);
 app.use('/api/v1/ai/settings', aiSettingsRouter);
 app.use('/api/v1/settings', createSettingsRoutes(getPrismaClient()));
 app.use('/api/v1/omni', omniRouter);
+app.use('/api/v2/context', contextV2Router);
 
 // API Documentation (Swagger)
 if (config.enableSwagger) {

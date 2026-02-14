@@ -4,7 +4,7 @@
  * Data access layer for conversation operations
  */
 
-import { getPrismaClient, withTransaction } from '../lib/database.js';
+import { getPrismaClient } from '../lib/database.js';
 import { logger } from '../lib/logger.js';
 import { fileStorage } from '../lib/file-storage.js';
 import { recordOperation } from '../services/sync-service.js';
@@ -17,125 +17,114 @@ import { v4 as uuidv4 } from 'uuid';
 /**
  * Create or update a conversation
  * @param {Object} data - Conversation data
+ * @param {Object} userClient - Optional user-specific Prisma client
  * @returns {Promise<Object>} Created or updated conversation
  */
-export async function createConversation(data) {
-  return withTransaction(async (tx) => {
-    try {
-      logger.debug({ sourceUrl: data.sourceUrl }, 'createConversation: Checking for existing record');
-      // Check if conversation with this sourceUrl already exists
-      const existing = await tx.conversation.findUnique({
-        where: { sourceUrl: data.sourceUrl },
+export async function createConversation(data, userClient = null) {
+  const db = userClient || getPrismaClient();
+
+  try {
+    logger.debug({ sourceUrl: data.sourceUrl }, 'createConversation: Checking for existing record');
+    const existing = await db.conversation.findUnique({
+      where: { sourceUrl: data.sourceUrl },
+    });
+
+    if (existing) {
+      logger.info({ id: existing.id, sourceUrl: data.sourceUrl }, 'createConversation: Found existing record');
+    } else {
+      logger.debug({ sourceUrl: data.sourceUrl }, 'createConversation: No existing record found');
+    }
+
+    const conversationData = {
+      provider: data.provider,
+      title: data.title,
+      model: data.model,
+      createdAt: new Date(data.createdAt),
+      updatedAt: new Date(data.updatedAt || new Date()),
+      capturedAt: new Date(data.capturedAt || new Date()),
+      
+      messageCount: data.messageCount || data.stats?.totalMessages || data.messages?.length || 0,
+      userMessageCount: data.userMessageCount || data.stats?.userMessageCount || 0,
+      aiMessageCount: data.aiMessageCount || data.stats?.aiMessageCount || 0,
+      totalWords: data.totalWords || data.stats?.totalWords || 0,
+      totalCharacters: data.totalCharacters || data.stats?.totalCharacters || 0,
+      totalTokens: data.totalTokens || data.stats?.totalTokens || null,
+      totalCodeBlocks: data.totalCodeBlocks || data.stats?.totalCodeBlocks || 0,
+      totalMermaidDiagrams: data.totalMermaidDiagrams || data.stats?.totalMermaidDiagrams || 0,
+      totalImages: data.totalImages || data.stats?.totalImages || 0,
+      totalTables: data.totalTables || data.stats?.totalTables || 0,
+      totalLatexBlocks: data.totalLatexBlocks || data.stats?.totalLatexBlocks || 0,
+      totalToolCalls: data.totalToolCalls || data.stats?.totalToolCalls || 0,
+      
+      metadata: data.metadata || {},
+    };
+
+    let conversation;
+    let operationType;
+
+    if (existing) {
+      logger.info({ id: existing.id, sourceUrl: data.sourceUrl }, 'Updating existing conversation in database');
+      
+      await db.message.deleteMany({
+        where: { conversationId: existing.id },
       });
 
-      if (existing) {
-        logger.info({ id: existing.id, sourceUrl: data.sourceUrl }, 'createConversation: Found existing record');
-      } else {
-        logger.debug({ sourceUrl: data.sourceUrl }, 'createConversation: No existing record found');
-      }
-
-      const conversationData = {
-        provider: data.provider,
-        title: data.title,
-        model: data.model,
-        createdAt: new Date(data.createdAt),
-        updatedAt: new Date(data.updatedAt || new Date()),
-        capturedAt: new Date(data.capturedAt || new Date()),
-        
-        messageCount: data.messageCount || data.stats?.totalMessages || data.messages?.length || 0,
-        userMessageCount: data.userMessageCount || data.stats?.userMessageCount || 0,
-        aiMessageCount: data.aiMessageCount || data.stats?.aiMessageCount || 0,
-        totalWords: data.totalWords || data.stats?.totalWords || 0,
-        totalCharacters: data.totalCharacters || data.stats?.totalCharacters || 0,
-        totalTokens: data.totalTokens || data.stats?.totalTokens || null,
-        totalCodeBlocks: data.totalCodeBlocks || data.stats?.totalCodeBlocks || 0,
-        totalMermaidDiagrams: data.totalMermaidDiagrams || data.stats?.totalMermaidDiagrams || 0,
-        totalImages: data.totalImages || data.stats?.totalImages || 0,
-        totalTables: data.totalTables || data.stats?.totalTables || 0,
-        totalLatexBlocks: data.totalLatexBlocks || data.stats?.totalLatexBlocks || 0,
-        totalToolCalls: data.totalToolCalls || data.stats?.totalToolCalls || 0,
-        
-        metadata: data.metadata || {},
-      };
-
-      let conversation;
-      let operationType;
-
-      if (existing) {
-        logger.info({ id: existing.id, sourceUrl: data.sourceUrl }, 'Updating existing conversation in database');
-        
-        // Delete existing messages first to replace them with fresh extraction
-        await tx.message.deleteMany({
-          where: { conversationId: existing.id },
-        });
-
-        conversation = await tx.conversation.update({
-          where: { id: existing.id },
-          data: {
-            ...conversationData,
-            messages: {
-              create: (data.messages || []).map((msg, index) => ({
-                id: msg.id,
-                role: msg.role,
-                author: msg.author,
-                messageIndex: msg.messageIndex ?? index,
-                parts: msg.parts || [],
-                createdAt: new Date(msg.createdAt || msg.timestamp || new Date()),
-                status: msg.status || 'completed',
-                tokenCount: msg.tokenCount,
-                metadata: msg.metadata || {},
-              })),
-            },
+      conversation = await db.conversation.update({
+        where: { id: existing.id },
+        data: {
+          ...conversationData,
+          messages: {
+            create: (data.messages || []).map((msg, index) => ({
+              id: msg.id,
+              role: msg.role,
+              author: msg.author,
+              messageIndex: msg.messageIndex ?? index,
+              parts: msg.parts || [],
+              createdAt: new Date(msg.createdAt || msg.timestamp || new Date()),
+              status: msg.status || 'completed',
+              tokenCount: msg.tokenCount,
+              metadata: msg.metadata || {},
+            })),
           },
-        });
-        operationType = 'UPDATE';
-      } else {
-        conversation = await tx.conversation.create({
-          data: {
-            id: data.id,
-            sourceUrl: data.sourceUrl,
-            ...conversationData,
-            messages: {
-              create: (data.messages || []).map((msg, index) => ({
-                id: msg.id,
-                role: msg.role,
-                author: msg.author,
-                messageIndex: msg.messageIndex ?? index,
-                parts: msg.parts || [],
-                createdAt: new Date(msg.createdAt || msg.timestamp || new Date()),
-                status: msg.status || 'completed',
-                tokenCount: msg.tokenCount,
-                metadata: msg.metadata || {},
-              })),
-            },
+        },
+      });
+      operationType = 'UPDATE';
+    } else {
+      conversation = await db.conversation.create({
+        data: {
+          id: data.id,
+          sourceUrl: data.sourceUrl,
+          ...conversationData,
+          messages: {
+            create: (data.messages || []).map((msg, index) => ({
+              id: msg.id,
+              role: msg.role,
+              author: msg.author,
+              messageIndex: msg.messageIndex ?? index,
+              parts: msg.parts || [],
+              createdAt: new Date(msg.createdAt || msg.timestamp || new Date()),
+              status: msg.status || 'completed',
+              tokenCount: msg.tokenCount,
+              metadata: msg.metadata || {},
+            })),
           },
-        });
-        logger.info({ id: conversation.id }, 'Conversation saved to database');
-        operationType = 'INSERT';
-      }
-      
-      // Record sync operation
-      await recordOperation({
-        entityType: 'conversation',
-        entityId: conversation.id,
-        operation: operationType,
-        payload: conversationData,
-        tableName: 'conversations',
-        recordId: conversation.id,
-      }, tx);
-
-      return conversation;
-    } catch (error) {
-      if (error.message.includes('Can\'t reach database server')) {
-         logger.warn('💾 [DATABASE OFFLINE] Saving conversation to local filesystem instead...');
-         await fileStorage.saveConversation(data);
-         logger.info('✅ [FS_STORAGE] Conversation saved to local file');
-         return data;
-      }
-      logger.error({ error: error.message }, 'Failed to save conversation to DB');
-      throw error;
+        },
+      });
+      logger.info({ id: conversation.id }, 'Conversation saved to database');
+      operationType = 'INSERT';
     }
-  });
+    
+    return conversation;
+  } catch (error) {
+    if (error.message.includes('Can\'t reach database server')) {
+       logger.warn('💾 [DATABASE OFFLINE] Saving conversation to local filesystem instead...');
+       await fileStorage.saveConversation(data);
+       logger.info('✅ [FS_STORAGE] Conversation saved to local file');
+       return data;
+    }
+    logger.error({ error: error.message }, 'Failed to save conversation to DB');
+    throw error;
+  }
 }
 
 /**
@@ -160,11 +149,14 @@ export async function findConversationById(id) {
 /**
  * Find conversation by source URL
  * @param {string} sourceUrl - Source URL
+ * @param {Object} userClient - Optional user-specific Prisma client
  * @returns {Promise<Object|null>} Conversation or null
  */
-export async function findBySourceUrl(sourceUrl) {
+export async function findBySourceUrl(sourceUrl, userClient = null) {
+  const db = userClient || getPrismaClient();
+  
   try {
-    const conversation = await getPrismaClient().conversation.findUnique({
+    const conversation = await db.conversation.findUnique({
       where: { sourceUrl },
     });
 

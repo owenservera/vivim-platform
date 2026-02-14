@@ -15,18 +15,19 @@ import crypto from 'crypto';
 /**
  * Generate ACUs from a conversation's messages
  * @param {Object} conversation - The conversation object
+ * @param {Object} userClient - Optional user-specific Prisma client
  * @returns {Promise<Array>} Generated ACUs
  */
-export async function generateACUsFromConversation(conversation) {
+export async function generateACUsFromConversation(conversation, userClient = null) {
   const log = logger.child({ conversationId: conversation.id });
   const acus = [];
 
+  const db = userClient || getPrismaClient();
+
   try {
-    // Get conversation ID
     const conversationId = conversation.id;
     
-    // Get messages from conversation (they should already be saved)
-    const savedConversation = await getPrismaClient().conversation.findUnique({
+    const savedConversation = await db.conversation.findUnique({
       where: { id: conversationId },
       include: { messages: true },
     });
@@ -36,30 +37,21 @@ export async function generateACUsFromConversation(conversation) {
       return [];
     }
 
-    // Generate ACU for each non-system message
     for (const message of savedConversation.messages) {
-      // Skip system messages
       if (message.role === 'system') {
-continue;
-}
+        continue;
+      }
 
-      // Extract content from parts
       const content = extractContent(message.parts);
       if (!content || content.trim().length === 0) {
-continue;
-}
+        continue;
+      }
 
-      // Calculate quality score
       const qualityOverall = calculateQualityScore(content);
-
-      // Classify ACU type
       const type = classifyACUType(content);
-
-      // Create ACU ID based on content hash
       const acuId = generateACUId(conversationId, message.id, content);
 
-      // Check if ACU already exists
-      const existingACU = await getPrismaClient().atomicChatUnit.findUnique({
+      const existingACU = await db.atomicChatUnit.findUnique({
         where: { id: acuId },
       });
 
@@ -68,14 +60,13 @@ continue;
         continue;
       }
 
-      // Create ACU record
       const authorDid = conversation.ownerId ? `user:${conversation.ownerId}` : 'did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
       
       const acu = {
         id: acuId,
         authorDid: authorDid,
-        signature: Buffer.from('prisma-generated'), // Placeholder signature
-        content: content.substring(0, 10000), // Limit content length
+        signature: Buffer.from('prisma-generated'),
+        content: content.substring(0, 10000),
         language: detectLanguage(content),
         type: type,
         category: categorizeACU(content, type),
@@ -91,7 +82,7 @@ continue;
         qualityOverall: qualityOverall,
         contentRichness: calculateContentRichness(content),
         structuralIntegrity: calculateStructuralIntegrity(content),
-        uniqueness: 50, // Default uniqueness score
+        uniqueness: 50,
         viewCount: 0,
         shareCount: 0,
         quoteCount: 0,
@@ -123,23 +114,24 @@ continue;
 /**
  * Save ACUs to database
  * @param {Array} acus - Array of ACU objects
+ * @param {Object} userClient - Optional user-specific Prisma client
  * @returns {Promise<number>} Number of ACUs saved
  */
-export async function saveACUs(acus) {
+export async function saveACUs(acus, userClient = null) {
   if (!acus || acus.length === 0) {
-return 0;
-}
+    return 0;
+  }
 
+  const db = userClient || getPrismaClient();
   let savedCount = 0;
   
   for (const acu of acus) {
     try {
-      await getPrismaClient().atomicChatUnit.create({
+      await db.atomicChatUnit.create({
         data: acu,
       });
       savedCount++;
     } catch (error) {
-      // Ignore unique constraint violations (ACU already exists)
       if (error.code === 'P2002') {
         logger.debug({ acuId: acu.id }, 'ACU already exists, skipping');
       } else {
@@ -155,30 +147,28 @@ return 0;
 /**
  * Generate and save ACUs for a conversation
  * @param {Object} conversation - The conversation object
+ * @param {Object} userClient - Optional user-specific Prisma client
  * @returns {Promise<Object>} Result with count of ACUs created
  */
-export async function generateAndSaveACUs(conversation) {
+export async function generateAndSaveACUs(conversation, userClient = null) {
   const log = logger.child({ conversationId: conversation.id });
   
+  const db = userClient || getPrismaClient();
+  
   try {
-    const prisma = getPrismaClient();
-
-    // Delete existing ACUs for this conversation to prevent duplicates/stale data on update
-    await prisma.atomicChatUnit.deleteMany({
+    await db.atomicChatUnit.deleteMany({
       where: { conversationId: conversation.id },
     });
     log.info('Deleted existing ACUs for conversation update');
 
-    // Generate ACUs
-    const acus = await generateACUsFromConversation(conversation);
+    const acus = await generateACUsFromConversation(conversation, db);
     
     if (acus.length === 0) {
       log.info('No ACUs generated for conversation');
       return { success: true, count: 0 };
     }
 
-    // Save ACUs
-    const savedCount = await saveACUs(acus);
+    const savedCount = await saveACUs(acus, db);
     
     log.info({ generated: acus.length, saved: savedCount }, 'ACU generation complete');
     

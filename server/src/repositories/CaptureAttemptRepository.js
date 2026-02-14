@@ -10,11 +10,14 @@ import { recordOperation } from '../services/sync-service.js';
 /**
  * Create a capture attempt record
  * @param {Object} data - Attempt data
+ * @param {Object} userClient - Optional user-specific Prisma client
  * @returns {Promise<Object>} Created attempt
  */
-export async function createCaptureAttempt(data) {
+export async function createCaptureAttempt(data, userClient = null) {
+  const db = userClient || getPrismaClient();
+  
   try {
-    const attempt = await getPrismaClient().captureAttempt.create({
+    const attempt = await db.captureAttempt.create({
       data: {
         sourceUrl: data.sourceUrl,
         provider: data.provider,
@@ -27,16 +30,6 @@ export async function createCaptureAttempt(data) {
         ipAddress: data.ipAddress,
         conversationId: data.conversationId,
       },
-    });
-
-    // Record sync operation
-    await recordOperation({
-      entityType: 'capture_attempt',
-      entityId: attempt.id,
-      operation: 'INSERT',
-      payload: attempt,
-      tableName: 'capture_attempts',
-      recordId: attempt.id,
     });
 
     logger.debug(
@@ -61,20 +54,19 @@ export async function createCaptureAttempt(data) {
  * Update capture attempt with completion status
  * @param {string} id - Attempt ID
  * @param {Object} data - Update data
+ * @param {Object} userClient - Optional user-specific Prisma client
  * @returns {Promise<Object>} Updated attempt
  */
-export async function completeCaptureAttempt(id, data) {
+export async function completeCaptureAttempt(id, data, userClient = null) {
+  const db = userClient || getPrismaClient();
+  
   try {
     if (String(id).startsWith('offline-')) {
-       // We can't really update the offline file easily without reading it back, 
-       // but let's just save a new "completed" record or ignore it for now.
-       // Ideally we'd read -> update -> write.
-       // For simplicity, we'll just log it.
        logger.debug({ attemptId: id, status: data.status }, 'Capture attempt completed (offline mode)');
        return { id, ...data };
     }
 
-    const attempt = await getPrismaClient().captureAttempt.update({
+    const attempt = await db.captureAttempt.update({
       where: { id },
       data: {
         status: data.status,
@@ -84,16 +76,6 @@ export async function completeCaptureAttempt(id, data) {
         errorMessage: data.errorMessage,
         conversationId: data.conversationId,
       },
-    });
-
-    // Record sync operation
-    await recordOperation({
-      entityType: 'capture_attempt',
-      entityId: attempt.id,
-      operation: 'UPDATE',
-      payload: attempt,
-      tableName: 'capture_attempts',
-      recordId: attempt.id,
     });
 
     logger.debug({ attemptId: id, status: data.status }, 'Capture attempt completed');
@@ -193,23 +175,22 @@ where.ipAddress = ipAddress;
  * Check if URL was recently captured (cache check)
  * @param {string} sourceUrl - Source URL
  * @param {number} minutes - Minutes to look back
+ * @param {Object} userClient - Optional user-specific Prisma client
  * @returns {Promise<Object|null>} Recent successful attempt or null
  */
-export async function findRecentSuccessfulAttempt(sourceUrl, minutes = 60) {
+export async function findRecentSuccessfulAttempt(sourceUrl, minutes = 60, userClient = null) {
+  const db = userClient || getPrismaClient();
+  
   try {
     const since = new Date(Date.now() - minutes * 60 * 1000);
 
-    const attempt = await getPrismaClient().captureAttempt.findFirst({
+    const attempt = await db.captureAttempt.findFirst({
       where: {
         sourceUrl,
         status: 'success',
         completedAt: { gte: since },
       },
       orderBy: { completedAt: 'desc' },
-      include: {
-        // Note: This would require a relation in the schema
-        // For now, we just return the attempt
-      },
     });
 
     return attempt;

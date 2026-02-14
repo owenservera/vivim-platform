@@ -1,5 +1,6 @@
 import { getStorage } from './storage-v2';
 import { logger } from './logger';
+import { identityService } from './identity';
 import type { ACUMetadata, ACUTag, ShareConfig, ShareLink, Circle, AIResult, AIAction, RelatedACU, ACULineage } from '../types/features';
 
 interface FeatureCapabilities {
@@ -49,6 +50,15 @@ class FeatureService {
     window.addEventListener('offline', () => {
       this.isOnline = false;
     });
+  }
+
+  private getAuthHeaders(): Record<string, string> {
+    const headers: Record<string, string> = {};
+    const did = identityService.getDID();
+    if (did) {
+      headers['X-DID'] = did;
+    }
+    return headers;
   }
 
   private async detectCapabilities() {
@@ -404,14 +414,25 @@ class FeatureService {
       return [];
     }
 
+    // Ensure identity is initialized and user has an identity
+    if (!identityService.state.initialized) {
+      await identityService.initialize();
+    }
+    if (!identityService.hasIdentity()) {
+      logger.debug('No identity, skipping circles fetch');
+      return [];
+    }
+
     try {
-      const response = await fetch('/api/v2/circles');
+      const response = await fetch('/api/v2/circles', {
+        headers: this.getAuthHeaders()
+      });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       
       const circles: Circle[] = await response.json();
       return circles;
     } catch (error) {
-      logger.error('Failed to get circles', { error });
+      logger.error('Failed to get circles', error instanceof Error ? error : new Error(String(error)));
       return [];
     }
   }
@@ -422,7 +443,10 @@ class FeatureService {
     try {
       const response = await fetch('/api/v2/circles', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...this.getAuthHeaders()
+        },
         body: JSON.stringify({ name, description, visibility }),
       });
 
@@ -432,7 +456,7 @@ class FeatureService {
       logger.info('Circle created', { circleId: circle.id });
       return circle;
     } catch (error) {
-      logger.error('Failed to create circle', { error });
+      logger.error('Failed to create circle', error instanceof Error ? error : new Error(String(error)));
       return null;
     }
   }
@@ -443,7 +467,10 @@ class FeatureService {
     try {
       const response = await fetch(`/api/v2/circles/${circleId}/share`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...this.getAuthHeaders()
+        },
         body: JSON.stringify({ conversationId }),
       });
 
@@ -452,7 +479,7 @@ class FeatureService {
       logger.info('Shared to circle', { conversationId, circleId });
       return true;
     } catch (error) {
-      logger.error('Failed to share to circle', { conversationId, circleId, error });
+      logger.error('Failed to share to circle', error instanceof Error ? error : new Error(String(error)), { conversationId, circleId });
       return false;
     }
   }

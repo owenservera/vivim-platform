@@ -134,6 +134,7 @@ export function hasPermission(req, requiredPermissions = []) {
 import { verify } from 'tweetnacl';
 import { decodeBase64 } from 'tweetnacl-util';
 import { identityService } from '../services/identity-service.js';
+import { getUserDbPath, getUserClient } from '../lib/user-database-manager.js';
 
 /**
  * Authenticate using DID
@@ -188,16 +189,30 @@ export async function authenticateDID(req, res, next) {
       Buffer.from(publicKey).toString('base64')
     );
 
+    const databasePath = getUserDbPath(did);
+
+    let userClient = null;
+    try {
+      userClient = await getUserClient(did);
+    } catch (clientError) {
+      logger.warn({ did, error: clientError.message }, 'User client not available yet (user DB may not exist)');
+    }
+
     req.user = {
       did,
       userId: user.id,
       deviceId,
-      publicKey: Buffer.from(publicKey).toString('base64')
+      publicKey: Buffer.from(publicKey).toString('base64'),
+      databasePath,
+      userClient,
     };
 
     next();
   } catch (error) {
-    logger.error({ error: error.message }, 'Authentication failed');
+    logger.error({ error: error.message, stack: error.stack }, 'Authentication failed');
+    if (!res || !res.status) {
+      return next(error);
+    }
     res.status(500).json({
       success: false,
       error: 'Authentication failed'

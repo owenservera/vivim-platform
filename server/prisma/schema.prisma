@@ -664,23 +664,203 @@ model CustomInstruction {
   @@map("custom_instructions")
 }
 
+// ============================================================================
+// ENHANCED MEMORY SYSTEM
+// ============================================================================
+
+// Memory type enum - categorizes memories by nature
+enum MemoryType {
+  EPISODIC      // Specific events, conversations, experiences
+  SEMANTIC      // Facts, knowledge, general understanding
+  PROCEDURAL    // How-to knowledge, skills, workflows
+  FACTUAL       // User's facts about themselves or world
+  PREFERENCE    // User preferences, likes, dislikes
+  IDENTITY      // Who the user is - bio, role, background
+  RELATIONSHIP  // Info about people and their relationships
+  GOAL          // Goals, plans, intentions
+  PROJECT       // Project-specific knowledge
+  CUSTOM        // User-defined categories
+}
+
+// Memory importance levels
+enum MemoryImportance {
+  CRITICAL  // 0.9-1.0 - Core identity, critical facts
+  HIGH      // 0.7-0.9 - Important preferences, key facts
+  MEDIUM    // 0.4-0.7 - Useful information
+  LOW       // 0.1-0.4 - Minor details, context
+  MINIMAL   // 0.0-0.1 - Almost irrelevant
+}
+
+// Memory consolidation status
+enum MemoryConsolidationStatus {
+  RAW         // Newly extracted, not yet consolidated
+  CONSOLIDATING // In process of consolidation
+  CONSOLIDATED  // Fully processed
+  MERGED      // Merged with other memories
+  ARCHIVED    // Moved to long-term storage
+}
+
+// Main Memory model - enhanced with sophisticated structure
 model Memory {
+  // Core identification
   id             String   @id @default(uuid())
   userId         String
-  content        String
-  category       String
-  importance     Float    @default(0.5)
-  embedding      Float[]
-  embeddingModel String?
+
+  // Content
+  content        String   // The actual memory content
+  summary        String?  // AI-generated summary for quick retrieval
+  
+  // Categorization
+  memoryType     MemoryType @default(EPISODIC)
+  category       String      // Legacy category field (backward compatible)
+  subcategory    String?     // Fine-grained categorization
+  tags           String[]    @default([])
+
+  // Importance and relevance
+  importance     Float    @default(0.5)  // 0.0-1.0
+  relevance      Float    @default(0.5)  // Dynamic relevance based on recency/context
+  accessCount    Int      @default(0)    // Times accessed for context
+  lastAccessedAt DateTime?              // Last time used in context
+
+  // Memory relationships
+  parentMemoryId String?                 // For memory hierarchies/merges
+  childMemoryIds String[] @default([])  // Child memories
+  relatedMemoryIds String[] @default([]) // Semantically related memories
+  mergedFromIds  String[] @default([])   // Memories merged into this one
+
+  // Source tracking
+  sourceConversationIds String[] @default([])
+  sourceAcuIds          String[] @default([])  // Atomic Chat Units
+  sourceMessageIds      String[] @default([])
+
+  // Embeddings for semantic search
+  embedding       Float[]
+  embeddingModel  String?
+  embeddingDimension Int?               // Dimension of embedding (1536, 1024, etc.)
+
+  // Consolidation tracking
+  consolidationStatus MemoryConsolidationStatus @default(RAW)
+  consolidationScore  Float?           // How well-consolidated this memory is
+  lastConsolidatedAt   DateTime?
+  
+  // Temporal information
+  occurredAt      DateTime?            // When the event/fact occurred
+  validFrom       DateTime?            // When this memory became relevant
+  validUntil      DateTime?            // When this memory expires (for temporal facts)
+  
+  // Status
   isActive       Boolean  @default(true)
+  isPinned        Boolean  @default(false)  // Pinned memories always included
+  isArchived      Boolean  @default(false)
+  
+  // Metadata
   metadata       Json     @default("{}")
+  
+  // Timestamps
   createdAt      DateTime @default(now()) @db.Timestamptz(6)
   updatedAt      DateTime @updatedAt @db.Timestamptz(6)
+  
+  // Relations
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent         Memory?  @relation("MemoryHierarchy", fields: [parentMemoryId], references: [id])
+  children       Memory[] @relation("MemoryHierarchy")
 
+  // Indexes for efficient querying
+  @@index([userId, memoryType])
   @@index([userId, category])
   @@index([userId, importance(sort: Desc)])
+  @@index([userId, relevance(sort: Desc)])
+  @@index([userId, isPinned])
+  @@index([userId, consolidationStatus])
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, lastAccessedAt])
+  @@index([userId, tags])
+  @@index([userId, occurredAt])
+  // Vector similarity index (if using pgvector)
+  // @@index([userId embedding vector_cosine_ops]) 
   @@map("memories")
+}
+
+// Memory relationship for graph-like connections
+model MemoryRelationship {
+  id              String   @id @default(uuid())
+  userId          String
+  sourceMemoryId  String
+  targetMemoryId  String
+  relationshipType String   // "similar", "contradicts", "supports", "related_to", "derived_from"
+  strength        Float    @default(0.5)  // 0-1 strength of relationship
+  metadata        Json     @default("{}")
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([sourceMemoryId, targetMemoryId, relationshipType])
+  @@index([userId])
+  @@index([sourceMemoryId])
+  @@index([targetMemoryId])
+  @@map("memory_relationships")
+}
+
+// Memory extraction queue for async processing
+model MemoryExtractionJob {
+  id              String   @id @default(uuid())
+  userId          String
+  conversationId  String
+  status          String   @default("PENDING")  // PENDING, PROCESSING, COMPLETED, FAILED
+  priority        Int      @default(0)  // Higher = more urgent
+  messageRange    Json?    // { from: number, to: number }
+  
+  // Results
+  extractedMemories Json?   // Array of extracted memory objects
+  extractionPrompt  String?  // Prompt used for extraction
+  errorMessage     String?
+  
+  // Timing
+  attempts        Int      @default(0)
+  maxAttempts     Int      @default(3)
+  startedAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([userId, status])
+  @@index([conversationId])
+  @@map("memory_extraction_jobs")
+}
+
+// Memory analytics for insights
+model MemoryAnalytics {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  
+  // Statistics
+  totalMemories   Int      @default(0)
+  memoriesByType  Json     @default("{}")  // { EPISODIC: 100, SEMANTIC: 50, ... }
+  memoriesByCategory Json   @default("{}")
+  
+  // Activity
+  memoriesCreatedToday    Int      @default(0)
+  memoriesCreatedThisWeek Int      @default(0)
+  memoriesCreatedThisMonth Int    @default(0)
+  
+  // Importance distribution
+  criticalCount   Int      @default(0)
+  highCount       Int      @default(0)
+  mediumCount     Int      @default(0)
+  lowCount        Int      @default(0)
+  
+  // Usage
+  totalAccesses   Int      @default(0)
+  avgRelevance    Float    @default(0)
+  
+  // Consolidation
+  consolidatedCount Int   @default(0)
+  mergedCount       Int   @default(0)
+  
+  // Last activity
+  lastExtractionAt DateTime?
+  lastConsolidationAt DateTime?
+  lastCleanupAt     DateTime?
+  lastUpdated      DateTime @updatedAt @db.Timestamptz(6)
+
+  @@map("memory_analytics")
 }
 
 model UserContextSettings {
@@ -718,4 +898,309 @@ model UserContextSettings {
 
   @@index([userId])
   @@map("user_context_settings")
+}
+
+model SharingPolicy {
+  id          String   @id @default(uuid())
+  contentId   String   @unique
+  contentType String   @default("conversation")
+  ownerId     String
+  
+  audience    Json     
+  permissions Json     
+  temporal    Json?    
+  geographic  Json?    
+  contextual  Json?    
+  collaborative Json?  
+  
+  status      String   @default("active")
+  
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  createdBy   String
+  
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
+  @@index([contentId])
+  @@index([status])
+  @@map("sharing_policies")
+}
+
+model ContentStakeholder {
+  id          String   @id @default(uuid())
+  policyId    String
+  userId      String
+  
+  role        String   
+  contribution String  
+  
+  privacySettings Json 
+  
+  influenceScore  Int  @default(50)
+  
+  resolutionDecision Json? 
+  
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  
+  policy      SharingPolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([policyId, userId])
+  @@index([policyId])
+  @@index([userId])
+  @@map("content_stakeholders")
+}
+
+enum IntentType {
+  SHARE
+  PUBLISH
+  EMBED
+  FORK
+}
+
+enum ContentType {
+  CONVERSATION
+  ACU
+  COLLECTION
+  NOTEBOOK
+  MEMORY
+}
+
+enum ContentScope {
+  FULL
+  PARTIAL
+  SUMMARY
+  PREVIEW
+}
+
+enum AudienceType {
+  PUBLIC
+  CIRCLE
+  USERS
+  LINK
+}
+
+enum IntentStatus {
+  DRAFT
+  PENDING
+  VALIDATED
+  ACTIVE
+  EXPIRED
+  REVOKED
+  CANCELLED
+  ARCHIVED
+}
+
+model SharingIntent {
+  id              String         @id @default(uuid())
+  version         Int            @default(1)
+  intentType      IntentType     @default(SHARE)
+  actorDid        String         @map("actor_did")
+  contentType     ContentType
+  contentIds      String[]       
+  contentScope    ContentScope   @default(FULL)
+  includeACUs     String[]?      
+  excludeACUs     String[]?      
+  audienceType    AudienceType
+  circleIds       String[]?      
+  userDids        String[]?      
+  linkId          String?        @unique
+  permissions     Json           
+  schedule        Json?          
+  transformations Json?          
+  metadata        Json?          
+  policy          Json?          
+  status          IntentStatus   @default(DRAFT)
+  createdAt       DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime       @updatedAt @db.Timestamptz(6)
+  publishedAt     DateTime?      @db.Timestamptz(6)
+  expiresAt       DateTime?      @db.Timestamptz(6)
+  revokedAt       DateTime?      @db.Timestamptz(6)
+  revokedReason   String?
+  ownerDid        String         @map("owner_did")
+  coOwners        Json?          
+  contentRecords  ContentRecord[]
+  accessGrants   ContentAccessGrant[]
+  accessLogs     ContentAccessLog[]
+
+  @@index([actorDid])
+  @@index([ownerDid])
+  @@index([contentType, status])
+  @@index([audienceType])
+  @@index([publishedAt])
+  @@index([expiresAt])
+  @@map("sharing_intents")
+}
+
+model ShareLink {
+  id              String         @id @default(uuid())
+  linkCode        String         @unique @default(uuid())
+  intentId        String         @unique
+  maxUses         Int?           
+  usesCount       Int            @default(0)
+  expiresAt       DateTime?      @db.Timestamptz(6)
+  passwordHash    String?        
+  createdByDid    String         @map("created_by_did")
+  isActive        Boolean        @default(true)
+  createdAt       DateTime       @default(now()) @db.Timestamptz(6)
+  lastUsedAt      DateTime?      @db.Timestamptz(6)
+  intent          SharingIntent  @relation(fields: [intentId], references: [id], onDelete: Cascade)
+
+  @@index([createdByDid])
+  @@index([isActive, expiresAt])
+  @@map("share_links")
+}
+
+enum ContentRecordStatus {
+  ACTIVE
+  EXPIRED
+  REVOKED
+  ARCHIVED
+  CORRUPTED
+}
+
+model ContentRecord {
+  id              String              @id @default(uuid())
+  contentId       String              @unique
+  contentHash     String
+  contentType     ContentType
+  size            Int
+  mimeType        String?
+  ownerDid        String              @map("owner_did")
+  creatorDid      String              @map("creator_did")
+  intentId        String?
+  discoveryMetadata Json              
+  status          ContentRecordStatus @default(ACTIVE)
+  createdAt       DateTime            @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime            @updatedAt @db.Timestamptz(6)
+  publishedAt     DateTime?           @db.Timestamptz(6)
+  expiresAt       DateTime?           @db.Timestamptz(6)
+  revokedAt       DateTime?           @db.Timestamptz(6)
+  intent          SharingIntent?      @relation(fields: [intentId], references: [id])
+  providers       ContentProvider[]
+  accessLog       ContentAccessLog[]
+
+  @@index([contentType])
+  @@index([ownerDid])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([expiresAt])
+  @@map("content_records")
+}
+
+model ContentProvider {
+  id              String         @id @default(uuid())
+  contentRecordId String         @map("content_record_id")
+  nodeId          String         @map("node_id")
+  isOwner         Boolean        @default(false)
+  isPrimary       Boolean        @default(false)
+  replicaNumber   Int            @default(1)
+  isOnline        Boolean        @default(true)
+  lastVerifiedAt  DateTime?      @db.Timestamptz(6)
+  localPath       String?
+  size            BigInt?
+  checksum        String?
+  createdAt       DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime       @updatedAt @db.Timestamptz(6)
+  contentRecord   ContentRecord  @relation(fields: [contentRecordId], references: [id], onDelete: Cascade)
+
+  @@unique([contentRecordId, nodeId])
+  @@index([contentRecordId])
+  @@index([nodeId])
+  @@map("content_providers")
+}
+
+enum AnalyticsEventType {
+  SHARE_CREATED
+  SHARE_VIEWED
+  SHARE_ACCEPTED
+  SHARE_DECLINED
+  SHARE_REVOKED
+  SHARE_EXPIRED
+  LINK_CLICKED
+  LINK_CREATED
+  CONTENT_SAVED
+  CONTENT_FORWARDED
+  CONTENT_ANNOTATED
+  SHARE_BLOCKED
+  SHARE_REPORTED
+}
+
+model AnalyticsEvent {
+  id              String              @id @default(uuid())
+  eventType       AnalyticsEventType
+  actorDid        String?             @map("actor_did")
+  intentId        String?             @map("intent_id")
+  contentRecordId String?             @map("content_record_id")
+  eventData       Json
+  isAnonymized    Boolean             @default(false)
+  timestamp       DateTime            @default(now()) @db.Timestamptz(6)
+  isProcessed     Boolean             @default(false)
+
+  @@index([eventType])
+  @@index([actorDid])
+  @@index([intentId])
+  @@index([timestamp])
+  @@index([isProcessed, timestamp])
+  @@map("analytics_events")
+}
+
+enum MetricType {
+  SHARING_METRICS
+  ENGAGEMENT_METRICS
+  REACH_METRICS
+  PERFORMANCE_METRICS
+}
+
+enum AggregationType {
+  HOURLY
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+model AggregatedMetrics {
+  id              String         @id @default(uuid())
+  metricType      MetricType
+  entityType      String         
+  entityId        String
+  aggregationType AggregationType
+  aggregationKey  String         
+  metrics         Json           
+  computedAt      DateTime       @default(now()) @db.Timestamptz(6)
+
+  @@unique([metricType, entityType, entityId, aggregationType, aggregationKey])
+  @@index([entityType, entityId])
+  @@index([aggregationType, aggregationKey])
+  @@map("aggregated_metrics")
+}
+
+enum InsightType {
+  PATTERN_DETECTED
+  ANOMALY_DETECTED
+  RECOMMENDATION
+  TREND_DETECTED
+  ALERT
+}
+
+model Insight {
+  id              String         @id @default(uuid())
+  insightType     InsightType
+  userDid         String         @map("user_did")
+  title           String
+  description     String
+  confidence      Float          
+  relevanceScore  Float          
+  data            Json?
+  isRead          Boolean        @default(false)
+  isDismissed     Boolean        @default(false)
+  generatedAt     DateTime       @default(now()) @db.Timestamptz(6)
+  readAt          DateTime?      @db.Timestamptz(6)
+
+  @@index([userDid, isRead])
+  @@index([userDid, generatedAt])
+  @@map("insights")
 }

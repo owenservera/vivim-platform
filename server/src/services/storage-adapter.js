@@ -8,6 +8,7 @@
 import { createConversation as prismaCreate, findRecentSuccessfulAttempt } from '../repositories/index.js';
 import { logger } from '../lib/logger.js';
 import { generateAndSaveACUs } from './acu-generator.js';
+import { getPrismaClient } from '../lib/database.js';
 
 // ============================================================================
 // PUBLIC API
@@ -16,20 +17,22 @@ import { generateAndSaveACUs } from './acu-generator.js';
 /**
  * Save a conversation using Prisma/Postgres
  * @param {Object} conversation - The conversation object
+ * @param {Object} userClient - Optional user-specific Prisma client
  * @returns {Promise<Object>} Result with engine used info
  */
-export async function saveConversationUnified(conversation) {
+export async function saveConversationUnified(conversation, userClient = null) {
     const startTime = Date.now();
     const log = logger.child({ conversationId: conversation.id });
 
+    const db = userClient || getPrismaClient();
+
     try {
         log.debug('Saving via Prisma...');
-        const savedConversation = await prismaCreate(conversation);
+        const savedConversation = await prismaCreate(conversation, db);
 
-        // Generate ACUs from the saved conversation
         (async () => {
             try {
-                const acuResult = await generateAndSaveACUs(savedConversation);
+                const acuResult = await generateAndSaveACUs(savedConversation, db);
                 if (acuResult.success && acuResult.count > 0) {
                     log.info({ acuCount: acuResult.count }, 'ACUs generated');
                 }
@@ -54,8 +57,8 @@ export async function saveConversationUnified(conversation) {
  * Find recent successful capture for cache check
  * Uses Prisma
  */
-export async function findRecentSuccessfulUnified(url, minutes = 60) {
-    return findRecentSuccessfulAttempt(url, minutes);
+export async function findRecentSuccessfulUnified(url, minutes = 60, userClient = null) {
+    return findRecentSuccessfulAttempt(url, minutes, userClient);
 }
 
 export default {

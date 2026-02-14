@@ -1,33 +1,27 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginWithGoogle, getCurrentUser, logout } from '../lib/auth-api';
+import { useAuth } from '../lib/auth-context';
 import { IOSButton } from '../components/ios';
 
 export function Login() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const { isAuthenticated, isLoading, login } = useAuth();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const user = await getCurrentUser();
-      if (user) {
-        navigate('/');
-      } else {
-        setLoading(false);
-      }
-    };
-    checkAuth();
-  }, [navigate]);
+    if (!isLoading && isAuthenticated) {
+      navigate('/', { replace: true });
+    }
+  }, [isLoading, isAuthenticated, navigate]);
 
   const handleGoogleLogin = () => {
-    loginWithGoogle();
+    login();
   };
 
   const handleSkip = () => {
     navigate('/');
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />

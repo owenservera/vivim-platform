@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
@@ -27,6 +27,21 @@ import { IOSToastProvider } from './components/ios';
 import queryClient, { hydrateQueryCache, persistQueryCache } from './lib/query-client';
 import { useIdentityStore, useSettingsStore } from './lib/stores';
 import { syncManager } from './lib/sync-manager';
+import { AuthProvider, useAuth } from './lib/auth-context';
+
+function AuthInitializer() {
+  const { isAuthenticated, isLoading } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated && location.pathname !== '/login') {
+      navigate('/login', { replace: true });
+    }
+  }, [isLoading, isAuthenticated, navigate, location.pathname]);
+
+  return null;
+}
 
 function AppInitializer() {
   const { did } = useIdentityStore();
@@ -108,14 +123,17 @@ function Layout() {
 function App() {
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <IOSToastProvider>
-          <BrowserRouter>
-            <AppInitializer />
-            <Layout />
-          </BrowserRouter>
-        </IOSToastProvider>
-      </QueryClientProvider>
+      <AuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <IOSToastProvider>
+            <BrowserRouter>
+              <AuthInitializer />
+              <AppInitializer />
+              <Layout />
+            </BrowserRouter>
+          </IOSToastProvider>
+        </QueryClientProvider>
+      </AuthProvider>
     </ErrorBoundary>
   );
 }

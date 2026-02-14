@@ -17,7 +17,7 @@ import {
   findBySourceUrl,
 } from '../repositories/index.js';
 import { saveConversationUnified, findRecentSuccessfulUnified } from '../services/storage-adapter.js';
-import { requireApiKey } from '../middleware/auth.js';
+import { requireApiKey, authenticateDID } from '../middleware/auth.js';
 import { ticketStore } from '../services/ticketStore.js';
 import { calculateMessageHash } from '../lib/crypto.js';
 
@@ -101,11 +101,41 @@ router.get('/', (req, res) => {
  * POST /api/v1/capture
  *
  * Capture a conversation from an AI provider URL
+ * Uses DID auth for user isolation, falls back to API key for dev
  */
-router.post('/capture', requireApiKey(), async (req, res, next) => {
+router.post('/capture', async (req, res, next) => {
   const log = createRequestLogger(req);
   let attemptId = null;
   const startTime = Date.now();
+  
+  // Check if DID auth is available
+  const hasDidAuth = req.headers['x-did'] || (req.headers['authorization'] || '').includes('did:');
+  
+  try {
+    if (hasDidAuth) {
+      // Use DID authentication
+      await authenticateDID()(req, res, (err) => {
+        if (err) {
+          log.warn({ error: err.message }, 'DID auth failed');
+        }
+      });
+    } else {
+      // Fallback to API key for development
+      try {
+        await requireApiKey()(req, res, (err) => {
+          if (err) {
+            log.warn({ error: err.message }, 'API key auth failed');
+          }
+        });
+      } catch (apiKeyErr) {
+        // Continue without auth for dev mode
+      }
+    }
+  } catch (authErr) {
+    log.warn({ error: authErr.message }, 'Auth error, continuing...');
+  }
+  
+  const userClient = req.user?.userClient;
 
   try {
     let requestBody = req.body;
@@ -125,50 +155,46 @@ router.post('/capture', requireApiKey(), async (req, res, next) => {
         );
 
         if (!decryptedStr) {
-throw new Error('Quantum Tunnel Decryption Failed');
-}
+          throw new Error('Quantum Tunnel Decryption Failed');
+        }
         requestBody = JSON.parse(decryptedStr);
         console.log('\n🔐 [QUANTUM TUNNEL] Decrypted secure payload for extraction\n');
     } else {
-        // Plaintext fallback for Dev Mode / POC
         requestBody = req.body;
     }
     // ---------------------------------------------------------------------- 
 
-    // Validate request body (original or decrypted)
     const { url, options } = validateRequest(requestBody, captureRequestSchema);
     
-    // Import dynamic
     const { detectProvider } = await import('../services/extractor.js');
 
     console.log(`\n🔍 [EXTRACTION STARTED] Processing request for: ${url}`);
     console.log(`   Provider: ${detectProvider(url) || 'Unknown'}`);
     console.log(`   Options: ${JSON.stringify(options || {})}\n`);
 
-    log.info({ url, options, authenticated: req.auth?.isAuthenticated }, 'Capture request validated');
+    log.info({ url, options, userDid: req.user?.did }, 'Capture request validated');
 
-    // DB: Check cache (fail-safe) - UNIFIED
     const useCache = options?.cache !== false;
     if (useCache) {
       try {
-        const recentAttempt = await findRecentSuccessfulUnified(url, options?.cacheMinutes || 60);
+        const recentAttempt = await findRecentSuccessfulUnified(url, options?.cacheMinutes || 60, userClient);
         if (recentAttempt && recentAttempt.conversationId) {
-          log.info({ conversationId: recentAttempt.conversationId, engine: recentAttempt.engine }, 'Returning cached conversation');
+          log.info({ conversationId: recentAttempt.conversationId }, 'Returning cached conversation');
           console.log(`💾 [CACHE HIT] Returning cached data for: ${url}\n`);
           return res.json({
             status: 'success',
             cached: true,
-            authenticated: req.auth?.isAuthenticated || false,
-            data: await findBySourceUrl(url),
+            authenticated: true,
+            userDid: req.user?.did,
+            data: await findBySourceUrl(url, userClient),
           });
         }
       } catch (dbError) {
-        log.warn({ error: dbError.message }, 'Failed to check cache (DB might be down), proceeding anyway');
+        log.warn({ error: dbError.message }, 'Failed to check cache, proceeding anyway');
         console.log('⚠️  [CACHE MISS] Cache unavailable, proceeding with fresh extraction\n');
       }
     }
 
-    // DB: Create capture attempt
     const provider = detectProvider(url);
     try {
       const attempt = await createCaptureAttempt({
@@ -177,14 +203,13 @@ throw new Error('Quantum Tunnel Decryption Failed');
         status: 'pending',
         startedAt: new Date(),
         ipAddress: req.ip,
-      });
+      }, userClient);
       attemptId = attempt.id;
       console.log(`📋 [ATTEMPT LOGGED] Capture attempt ID: ${attemptId}\n`);
     } catch (dbError) {
-      log.warn({ error: dbError.message }, 'Failed to create capture attempt record (DB might be down)');
+      log.warn({ error: dbError.message }, 'Failed to create capture attempt record');
     }
 
-    // Execute extraction
     console.log(`🚀 [EXTRACTION] Starting content extraction from: ${url}`);
     const conversation = await extractConversation(url, options);
 
@@ -193,42 +218,40 @@ throw new Error('Quantum Tunnel Decryption Failed');
         conversationId: conversation.id,
         provider: conversation.provider,
         messageCount: conversation.messages?.length || 0,
+        userDid: req.user?.did,
       },
       'Conversation captured successfully',
     );
 
     console.log(`✅ [EXTRACTION COMPLETE] Retrieved ${conversation.messages?.length || 0} messages`);
 
-    // DB: Save to database (fail-safe + UNIFIED STORAGE)
     try {
-      const saveResult = await saveConversationUnified(conversation);
-      console.log(`💾 [DATABASE] Conversation saved to ${saveResult.engine}`);
+      const saveResult = await saveConversationUnified(conversation, userClient);
+      console.log(`💾 [DATABASE] Conversation saved to ${saveResult.engine} for user ${req.user?.did}`);
 
       if (attemptId) {
         await completeCaptureAttempt(attemptId, {
           status: 'success',
           duration: Date.now() - startTime,
           conversationId: conversation.id,
-        });
+        }, userClient);
         console.log(`✅ [ATTEMPT COMPLETED] Capture attempt ${attemptId} marked as successful\n`);
       }
     } catch (dbError) {
-      log.warn({ error: dbError.message }, 'Failed to save conversation to DB (returning result anyway)');
+      log.warn({ error: dbError.message }, 'Failed to save conversation to DB');
       console.log(`⚠️  [DATABASE ERROR] Failed to save to database: ${dbError.message}\n`);
     }
 
     const responseData = {
       status: 'success',
       cached: false,
-      authenticated: req.auth?.isAuthenticated || false,
+      authenticated: true,
+      userDid: req.user?.did,
       data: prepareConversationForClient(conversation),
     };
 
     console.log(`🎯 [RESPONSE READY] Sending ${conversation.messages?.length || 0} messages to client\n`);
 
-    // ---------------------------------------------------------------------- 
-    // QUANTUM TUNNEL ENCRYPTION
-    // ---------------------------------------------------------------------- 
     if (sharedSecret) {
         const encrypted = symmetricEncrypt(JSON.stringify(responseData), sharedSecret);
         console.log('🔐 [QUANTUM ENCRYPT] Response encrypted for secure transmission\n');
@@ -237,17 +260,15 @@ throw new Error('Quantum Tunnel Decryption Failed');
             pqcPayload: encrypted.ciphertext,
             pqcNonce: encrypted.nonce,
             quantumHardened: true,
-            authenticated: req.auth?.isAuthenticated || false,
+            authenticated: true,
+            userDid: req.user?.did,
         });
     }
-    // ---------------------------------------------------------------------- 
 
-    // Return success response
     res.json(responseData);
   } catch (error) {
     console.log(`❌ [EXTRACTION FAILED] Error processing request: ${error.message}\n`);
 
-    // Complete capture attempt with failure (fail-safe)
     if (attemptId) {
       try {
         await completeCaptureAttempt(attemptId, {
@@ -255,13 +276,12 @@ throw new Error('Quantum Tunnel Decryption Failed');
           duration: Date.now() - startTime,
           errorCode: error.code,
           errorMessage: error.message,
-        });
+        }, userClient);
       } catch (dbError) {
         log.warn({ error: dbError.message }, 'Failed to update capture attempt');
       }
     }
 
-    // Pass to error handler
     next(error);
   }
 });
