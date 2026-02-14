@@ -7,22 +7,71 @@ import {
   ITokenEstimator,
   ILLMService
 } from './types';
+import { MemoryRetrievalService } from './memory/memory-retrieval-service';
+import { createEmbeddingService } from './utils/zai-service.js';
 
 export interface BundleCompilerConfig {
   prisma: PrismaClient;
   tokenEstimator: ITokenEstimator;
   llmService: ILLMService;
+  /** Enable intelligent memory retrieval (hybrid semantic + keyword search) */
+  enableIntelligentMemoryRetrieval?: boolean;
 }
 
 export class BundleCompiler {
   private prisma: PrismaClient;
   private tokenEstimator: ITokenEstimator;
   private llmService: ILLMService;
+  private memoryRetrievalService?: MemoryRetrievalService;
 
   constructor(config: BundleCompilerConfig) {
     this.prisma = config.prisma;
     this.tokenEstimator = config.tokenEstimator;
     this.llmService = config.llmService;
+    
+    if (config.enableIntelligentMemoryRetrieval) {
+      const embeddingService = createEmbeddingService();
+      this.memoryRetrievalService = new MemoryRetrievalService({
+        prisma: this.prisma,
+        embeddingService,
+        semanticWeight: 0.6,
+        keywordWeight: 0.4,
+        defaultSimilarityThreshold: 0.35,
+      });
+    }
+  }
+
+  /**
+   * Retrieve memories using intelligent hybrid search
+   */
+  async retrieveMemoriesIntelligently(
+    userId: string,
+    contextMessage: string,
+    options: {
+      maxTokens?: number;
+      minImportance?: number;
+      preferredTypes?: string[];
+      includePinned?: boolean;
+    } = {}
+  ): Promise<Array<{ id: string; content: string; memoryType: string; importance: number; relevance: number }>> {
+    if (!this.memoryRetrievalService) {
+      return [];
+    }
+
+    const result = await this.memoryRetrievalService.retrieve(userId, contextMessage, {
+      maxTokens: options.maxTokens || 1000,
+      minImportance: options.minImportance || 0.4,
+      preferredTypes: options.preferredTypes,
+      includePinned: options.includePinned ?? true,
+    });
+
+    return result.memories.map(m => ({
+      id: m.id,
+      content: m.content,
+      memoryType: m.memoryType,
+      importance: m.importance,
+      relevance: m.relevance,
+    }));
   }
 
   async compileIdentityCore(userId: string, targetTokens?: number): Promise<CompiledBundle> {

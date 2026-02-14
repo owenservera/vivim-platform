@@ -123,7 +123,7 @@ export class MemoryService {
         validFrom: input.validFrom,
         validUntil: input.validUntil,
         isPinned: input.isPinned || false,
-        metadata: input.metadata || {},
+        metadata: (input.metadata || {}) as unknown as Prisma.InputJsonValue,
       },
     });
 
@@ -245,11 +245,11 @@ export class MemoryService {
     }
 
     // Importance filter
-    if (minImportance !== undefined) {
-      where.importance = { ...where.importance, gte: minImportance };
-    }
-    if (maxImportance !== undefined) {
-      where.importance = { ...where.importance, lte: maxImportance };
+    if (minImportance !== undefined || maxImportance !== undefined) {
+      const imp: Prisma.FloatFilter<"Memory"> = {};
+      if (minImportance !== undefined) imp.gte = minImportance;
+      if (maxImportance !== undefined) imp.lte = maxImportance;
+      where.importance = imp;
     }
 
     // Status filters
@@ -483,7 +483,7 @@ export class MemoryService {
         ...(input.isActive !== undefined && { isActive: input.isActive }),
         ...(input.isArchived !== undefined && { isArchived: input.isArchived }),
         ...(input.validUntil && { validUntil: input.validUntil }),
-        ...(input.metadata && { metadata: input.metadata }),
+        ...(input.metadata && { metadata: input.metadata as unknown as Prisma.InputJsonValue }),
         ...(embedding.length > 0 && { embedding }),
       },
     });
@@ -494,7 +494,7 @@ export class MemoryService {
       memoryId: memory.id,
       userId,
       timestamp: new Date(),
-      payload: input,
+      payload: input as unknown as Record<string, unknown>,
     });
 
     return this.getMemoryById(userId, memoryId)!;

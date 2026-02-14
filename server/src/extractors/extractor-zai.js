@@ -200,7 +200,23 @@ function extractRichContent($el, $, richFormatting = true) {
     $elem.remove();
   });
 
-  // 4. Handle remaining text (split by potential mermaid diagrams that are NOT in pre/code)
+  // 4. Identify links (anchor tags)
+  $clone.find('a[href]').each((index, elem) => {
+    const $elem = $(elem);
+    const href = $elem.attr('href');
+    const text = $elem.text().trim();
+    // Only extract valid http/https links, skip javascript and anchor links
+    if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
+      contentBlocks.push({
+        type: 'link',
+        url: href,
+        text: text || href
+      });
+    }
+    $elem.remove();
+  });
+
+  // 5. Handle remaining text (split by potential mermaid diagrams that are NOT in pre/code)
   let remainingText = $clone.text().trim();
   
   // Remove GLM header and timestamps from remaining text

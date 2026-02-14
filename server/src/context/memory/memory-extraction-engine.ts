@@ -117,7 +117,8 @@ export class MemoryExtractionEngine {
       });
 
       // Format conversation for extraction
-      const conversationText = this.formatConversationForExtraction(conversation.messages);
+      const messages = conversation.messages as Array<{ role: string; content?: string; author?: string; messageIndex: number }>;
+      const conversationText = this.formatConversationForExtraction(messages);
       
       // Extract memories using LLM
       const extracted = await this.performExtraction(conversationText);
@@ -288,7 +289,8 @@ export class MemoryExtractionEngine {
 
   private formatConversationForExtraction(messages: Array<{ 
     role: string; 
-    content: string;
+    content?: string;
+    parts?: unknown[];
     author?: string;
     messageIndex: number;
   }>): string {

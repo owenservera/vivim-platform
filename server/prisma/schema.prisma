@@ -182,6 +182,18 @@ model User {
   topicProfiles       TopicProfile[]
   contextSettings     UserContextSettings?
   facts               UserFact[]
+  sharingPolicies    SharingPolicy[]
+  contentStakeholders ContentStakeholder[]
+  
+  // Social network relations
+  friendsRequested   Friend[]        @relation("FriendRequester")
+  friendsReceived    Friend[]        @relation("FriendAddressee")
+  followers          Follow[]        @relation("Follower")
+  following         Follow[]        @relation("Following")
+  groupsOwned       Group[]         @relation("GroupOwner")
+  groupMemberships  GroupMember[]
+  teamsOwned        Team[]          @relation("TeamOwner")
+  teamMemberships   TeamMember[]
 
   @@index([did])
   @@index([email])
@@ -416,6 +428,412 @@ model PeerConnection {
   @@index([initiatorDid])
   @@index([targetDid])
   @@map("peer_connections")
+}
+
+// ============================================================================
+// SOCIAL NETWORK: FRIENDS, GROUPS, FOLLOWS, TEAMS
+// ============================================================================
+
+// Friend - bidirectional social connection between users (like Facebook)
+enum FriendStatus {
+  PENDING    // Friend request sent, awaiting acceptance
+  ACCEPTED   // Friend request accepted, connection active
+  REJECTED   // Friend request rejected
+  BLOCKED    // User blocked the other user
+  CANCELLED  // Friend request cancelled by sender
+}
+
+model Friend {
+  id          String       @id @default(uuid())
+  
+  // The user who initiated the friend request
+  requesterId String
+  requester  User         @relation("FriendRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  
+  // The user who received the friend request  
+  addresseeId String
+  addressee  User         @relation("FriendAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
+  
+  status      FriendStatus @default(PENDING)
+  
+  // Optional message with friend request
+  message     String?
+  
+  // Timestamps
+  requestedAt DateTime     @default(now()) @db.Timestamptz(6)
+  respondedAt DateTime?    @db.Timestamptz(6)
+  
+  // Metadata
+  metadata   Json         @default("{}")
+
+  @@unique([requesterId, addresseeId])
+  @@index([requesterId])
+  @@index([addresseeId])
+  @@index([status])
+  @@map("friends")
+}
+
+// Follow - one-way social connection (like Twitter/X)
+enum FollowStatus {
+  PENDING   // Follow request sent (for private accounts)
+  ACTIVE    // Active follow relationship
+  BLOCKED   // User blocked the follower
+}
+
+model Follow {
+  id          String       @id @default(uuid())
+  
+  // The user who is following
+  followerId  String
+  follower    User         @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  
+  // The user being followed
+  followingId String
+  following   User         @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+  
+  status      FollowStatus @default(ACTIVE)
+  
+  // Notify follower of new posts
+  notifyOnPost Boolean    @default(false)
+  
+  // Show follower's posts in following's feed
+  showInFeed  Boolean     @default(true)
+  
+  // Timestamps
+  createdAt   DateTime    @default(now()) @db.Timestamptz(6)
+  
+  // Metadata
+  metadata    Json        @default("{}")
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+  @@map("follows")
+}
+
+// Group - flexible collection of users for organization (different from Circles)
+enum GroupType {
+  GENERAL    // General interest group
+  STUDY      // Study group for learning
+  PROJECT    // Project-based group
+  COMMUNITY  // Community/interest group
+}
+
+enum GroupVisibility {
+  PUBLIC     // Anyone can join
+  APPROVAL   // Anyone can request to join, needs approval
+  PRIVATE    // Invite only
+}
+
+model Group {
+  id          String            @id @default(uuid())
+  
+  // Owner/creator of the group
+  ownerId     String
+  owner       User              @relation("GroupOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  
+  name        String
+  description String?
+  avatarUrl   String?
+  
+  // Group type and visibility
+  type        GroupType         @default(GENERAL)
+  visibility   GroupVisibility   @default(APPROVAL)
+  
+  // Settings
+  allowMemberInvite Boolean      @default(true)
+  allowMemberPost   Boolean      @default(true)
+  maxMembers       Int?         // Optional member limit
+  
+  // Stats
+  memberCount     Int           @default(0)
+  postCount       Int           @default(0)
+  
+  // Timestamps
+  createdAt       DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime      @updatedAt @db.Timestamptz(6)
+  
+  // Metadata
+  metadata        Json          @default("{}")
+  
+  // Relations
+  members         GroupMember[]
+  posts           GroupPost[]
+
+  @@index([ownerId])
+  @@index([type])
+  @@index([visibility])
+  @@map("groups")
+}
+
+enum GroupMemberRole {
+  OWNER      // Group owner, full control
+  ADMIN      // Admin, can manage members and content
+  MODERATOR  // Moderator, can manage content
+  MEMBER     // Regular member
+}
+
+model GroupMember {
+  id          String           @id @default(uuid())
+  
+  groupId     String
+  group       Group           @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  
+  userId      String
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  role        GroupMemberRole  @default(MEMBER)
+  
+  // Member-specific settings
+  notifyOnPost Boolean         @default(false)
+  showInFeed  Boolean          @default(true)
+  
+  // Stats
+  postCount   Int              @default(0)
+  
+  // Timestamps
+  joinedAt    DateTime         @default(now()) @db.Timestamptz(6)
+  
+  // Metadata
+  metadata    Json             @default("{}")
+
+  @@unique([groupId, userId])
+  @@index([groupId])
+  @@index([userId])
+  @@index([role])
+  @@map("group_members")
+}
+
+// Group post - content shared in a group
+model GroupPost {
+  id          String   @id @default(uuid())
+  
+  groupId     String
+  group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  
+  authorId    String
+  
+  content     String
+  contentType String   @default("text") // text, image, link, acu
+  
+  // Reference to ACU if sharing AI content
+  acuId       String?
+  
+  // Attachments
+  attachments Json     @default("[]")
+  
+  // Stats
+  likeCount   Int     @default(0)
+  commentCount Int    @default(0)
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+  
+  // Metadata
+  metadata    Json     @default("{}")
+
+  @@index([groupId])
+  @@index([authorId])
+  @@index([createdAt(sort: Desc)])
+  @@map("group_posts")
+}
+
+// Team - collaborative work group (like Slack teams)
+enum TeamType {
+  WORK        // Work/company team
+  PROJECT     // Project team
+  PERSONAL    // Personal team
+}
+
+enum TeamVisibility {
+  OPEN        // Open to join
+  INVITE      // Invite only
+}
+
+model Team {
+  id          String          @id @default(uuid())
+  
+  // Owner/creator of the team
+  ownerId     String
+  owner       User            @relation("TeamOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  
+  name        String
+  description String?
+  avatarUrl   String?
+  
+  // Team type and settings
+  type        TeamType        @default(PROJECT)
+  visibility  TeamVisibility  @default(INVITE)
+  
+  // Settings
+  allowGuestAccess Boolean    @default(false)
+  requireApproval  Boolean    @default(true)
+  maxMembers      Int?        // Optional member limit
+  
+  // Stats
+  memberCount     Int         @default(0)
+  channelCount    Int         @default(0)
+  
+  // Is this a personal team for the owner
+  isPersonal     Boolean     @default(false)
+  
+  // Timestamps
+  createdAt       DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime    @updatedAt @db.Timestamptz(6)
+  
+  // Metadata
+  metadata        Json        @default("{}")
+  
+  // Relations
+  members        TeamMember[]
+  channels       TeamChannel[]
+
+  @@index([ownerId])
+  @@index([type])
+  @@map("teams")
+}
+
+enum TeamMemberRole {
+  OWNER      // Team owner, full control
+  ADMIN      // Admin, can manage members and settings
+  MEMBER     // Regular member
+  GUEST      // Guest, limited access
+}
+
+model TeamMember {
+  id          String         @id @default(uuid())
+  
+  teamId      String
+  team        Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  role        TeamMemberRole @default(MEMBER)
+  
+  // Notification settings
+  notifyAll   Boolean        @default(true)
+  notifyMentions Boolean    @default(true)
+  
+  // Custom title in team
+  title       String?
+  
+  // Stats
+  messageCount Int          @default(0)
+  
+  // Last active
+  lastActiveAt DateTime?    @db.Timestamptz(6)
+  
+  // Timestamps
+  joinedAt     DateTime     @default(now()) @db.Timestamptz(6)
+  
+  // Metadata
+  metadata     Json         @default("{}")
+
+  @@unique([teamId, userId])
+  @@index([teamId])
+  @@index([userId])
+  @@index([role])
+  @@map("team_members")
+}
+
+// Team Channel - sub-group within a team (like Slack channels)
+enum ChannelType {
+  PUBLIC   // Public channel, anyone in team can see
+  PRIVATE // Private channel, only invited members
+  DIRECT  // Direct message between members
+}
+
+model TeamChannel {
+  id          String       @id @default(uuid())
+  
+  teamId      String
+  team        Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  
+  name        String
+  description String?
+  
+  type        ChannelType  @default(PUBLIC)
+  
+  // Ordering
+  sortOrder   Int          @default(0)
+  
+  // Stats
+  memberCount Int          @default(0)
+  messageCount Int         @default(0)
+  
+  // Timestamps
+  createdAt   DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime     @updatedAt @db.Timestamptz(6)
+  
+  // Metadata
+  metadata    Json         @default("{}")
+  
+  // Relations
+  members     ChannelMember[]
+  messages    ChannelMessage[]
+
+  @@index([teamId])
+  @@index([type])
+  @@map("team_channels")
+}
+
+model ChannelMember {
+  id          String   @id @default(uuid())
+  
+  channelId   String
+  channel     TeamChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  
+  userId      String
+  
+  // Notification settings per channel
+  notify      Boolean  @default(true)
+  mute        Boolean  @default(false)
+  
+  // Last read message
+  lastReadAt  DateTime? @db.Timestamptz(6)
+  
+  // Timestamps
+  joinedAt    DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([channelId, userId])
+  @@index([channelId])
+  @@index([userId])
+  @@map("channel_members")
+}
+
+model ChannelMessage {
+  id          String   @id @default(uuid())
+  
+  channelId   String
+  channel     TeamChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  
+  authorId   String
+  
+  content     String
+  contentType String  @default("text")
+  
+  // Reply support
+  parentId    String?
+  
+  // Edit tracking
+  editedAt    DateTime? @db.Timestamptz(6)
+  
+  // Reactions
+  reactions   Json     @default("[]")
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  
+  // Metadata
+  metadata    Json     @default("{}")
+
+  @@index([channelId])
+  @@index([authorId])
+  @@index([parentId])
+  @@index([createdAt(sort: Desc)])
+  @@map("channel_messages")
 }
 
 model AiPersona {
@@ -710,6 +1128,39 @@ model Memory {
   content        String   // The actual memory content
   summary        String?  // AI-generated summary for quick retrieval
   
+  // Provenance - Root provenance tracking for data lineage
+  provenanceId  String?  // Unique ID linking to original capture source
+  provider       String?  // AI provider: openai, anthropic, google, grok, deepseek, kimi, qwen, zai, mistral
+  sourceUrl     String?  // Original conversation URL
+  sourceType    String   @default("conversation")  // conversation, manual, import, extraction, legacy
+  sourcePlatform String?  // Platform domain (chat.openai.com, claude.ai, etc.)
+  
+  // Extraction metadata
+  extractionMethod String?  // how extracted: auto_llm, manual, batch, import
+  extractionModel String?   // LLM used for extraction
+  extractionConfidence Float? // Confidence score from extraction (0-1)
+  extractionPromptVersion String? // Version of extraction prompt used
+  
+  // Capture session tracking
+  captureSessionId String?  // Links to capture_attempt.id for audit trail
+  captureMethod    String?  // capture, import, sync, manual_entry
+  capturedAt      DateTime? // When the original conversation was captured
+  
+  // Lineage - for tracking memory evolution
+  lineageDepth    Int      @default(0)  // 0 = original, 1+ = derived
+  lineageParentId String?  // Parent memory ID if this is derived
+  derivedFromIds String[] @default([])  // Other memories this was derived from
+  version        Int      @default(1)  // Memory version for tracking changes
+  
+  // Content fingerprinting
+  contentHash    String?  // SHA-256 hash of content for deduplication
+  contentVersion  Int      @default(1)  // Incremented when content is updated
+  
+  // Verification
+  isVerified     Boolean  @default(false)  // User has verified this memory
+  verifiedAt     DateTime?
+  verificationSource String? // How verified: user_confirmed, cross_reference, explicit
+
   // Categorization
   memoryType     MemoryType @default(EPISODIC)
   category       String      // Legacy category field (backward compatible)
@@ -728,9 +1179,9 @@ model Memory {
   relatedMemoryIds String[] @default([]) // Semantically related memories
   mergedFromIds  String[] @default([])   // Memories merged into this one
 
-  // Source tracking
+  // Source tracking (legacy, keeping for backward compatibility)
   sourceConversationIds String[] @default([])
-  sourceAcuIds          String[] @default([])  // Atomic Chat Units
+  sourceAcuIds          String[] @default([])
   sourceMessageIds      String[] @default([])
 
   // Embeddings for semantic search
@@ -745,8 +1196,8 @@ model Memory {
   
   // Temporal information
   occurredAt      DateTime?            // When the event/fact occurred
-  validFrom       DateTime?            // When this memory became relevant
-  validUntil      DateTime?            // When this memory expires (for temporal facts)
+  validFrom       DateTime?           // When this memory became relevant
+  validUntil      DateTime?           // When this memory expires (for temporal facts)
   
   // Status
   isActive       Boolean  @default(true)
@@ -776,8 +1227,13 @@ model Memory {
   @@index([userId, lastAccessedAt])
   @@index([userId, tags])
   @@index([userId, occurredAt])
-  // Vector similarity index (if using pgvector)
-  // @@index([userId embedding vector_cosine_ops]) 
+  // Provenance indexes
+  @@index([userId, provider])
+  @@index([userId, sourceType])
+  @@index([userId, sourcePlatform])
+  @@index([captureSessionId])
+  @@index([contentHash])
+  @@index([provenanceId])
   @@map("memories")
 }
 
@@ -920,6 +1376,7 @@ model SharingPolicy {
   createdBy   String
   
   owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  stakeholders ContentStakeholder[]
 
   @@index([ownerId])
   @@index([contentId])
@@ -951,6 +1408,70 @@ model ContentStakeholder {
   @@index([policyId])
   @@index([userId])
   @@map("content_stakeholders")
+}
+
+model ContentAccessGrant {
+  id          String   @id @default(uuid())
+  policyId    String
+  
+  grantedTo   String   
+  grantedToType String @default("user")
+  grantedBy   String   
+  
+  accessLevel String   @default("view")
+  
+  permissions Json?    
+  
+  grantedAt   DateTime @default(now()) @db.Timestamptz(6)
+  expiresAt   DateTime? @db.Timestamptz(6)
+  
+  viewsUsed   Int      @default(0)
+  maxViews    Int?
+  lastAccessedAt DateTime? @db.Timestamptz(6)
+  
+  status      String   @default("active")
+  
+  sharingIntent SharingIntent? @relation(fields: [policyId], references: [id], onDelete: Cascade)
+
+  @@index([policyId])
+  @@index([grantedTo])
+  @@index([status])
+  @@index([expiresAt])
+  @@map("content_access_grants")
+}
+
+model ContentAccessLog {
+  id          String   @id @default(uuid())
+  policyId    String?
+  intentId    String?
+  contentRecordId String?
+  
+  accessorId  String   
+  accessorType String @default("user")
+  
+  action      String   
+  granted     Boolean  @default(true)
+  denialReason String?
+  
+  viaCircleId String?  
+  viaGrantId  String?  
+  
+  timestamp   DateTime @default(now()) @db.Timestamptz(6)
+  ipAddress   String?
+  userAgent   String?
+  deviceId    String?
+  
+  location    Json?    
+  
+  sharingIntent SharingIntent? @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  contentRecord ContentRecord? @relation(fields: [contentRecordId], references: [id], onDelete: Cascade)
+
+  @@index([policyId])
+  @@index([intentId])
+  @@index([accessorId])
+  @@index([timestamp])
+  @@index([action])
+  @@map("content_access_logs")
 }
 
 enum IntentType {
@@ -1024,6 +1545,7 @@ model SharingIntent {
   contentRecords  ContentRecord[]
   accessGrants   ContentAccessGrant[]
   accessLogs     ContentAccessLog[]
+  shareLinks    ShareLink[]
 
   @@index([actorDid])
   @@index([ownerDid])

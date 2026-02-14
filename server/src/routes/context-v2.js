@@ -8,6 +8,8 @@ import { Router } from 'express';
 import * as contextService from '../context/unified-context-service.js';
 import { createRequestLogger } from '../lib/logger.js';
 
+const router = Router();
+
 function authenticateDIDMiddleware(req, res, next) {
   const did = req.headers['x-did'] || (req.headers['authorization'] || '').replace('Bearer did:', 'did:');
   

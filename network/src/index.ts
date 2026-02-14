@@ -13,6 +13,10 @@ export { CRDTSyncService, type CRDTSyncConfig } from './crdt/CRDTSyncService.js'
 export { VectorClock } from './crdt/VectorClock.js';
 export { ConversationCRDT } from './crdt/ConversationCRDT.js';
 export { CircleCRDT } from './crdt/CircleCRDT.js';
+export { FriendCRDT, type FriendData, type FriendSettings } from './crdt/FriendCRDT.js';
+export { FollowCRDT, type FollowData } from './crdt/FollowCRDT.js';
+export { GroupCRDT, type GroupMemberData, type GroupPostData, type GroupSettings } from './crdt/GroupCRDT.js';
+export { TeamCRDT, type TeamMemberData, type ChannelData, type ChannelMessageData, type TeamSettings } from './crdt/TeamCRDT.js';
 
 // Content Discovery (DHT)
 export { DHTService } from './dht/DHTService.js';

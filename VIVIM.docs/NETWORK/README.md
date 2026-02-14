@@ -2,23 +2,38 @@
 
 ## Overview
 
-This directory contains comprehensive documentation for VIVIM's state-of-the-art network sharing system. The system is designed to intelligently track, store, and publish shared content based on user sharing intent.
+This directory contains comprehensive documentation for VIVIM's network sharing system. The system is designed to intelligently track, store, and publish shared content based on user sharing intent.
 
-## Dual-Database Architecture
+## Implemented Architecture
 
-The sharing system now uses a dual-database architecture for complete user data isolation:
+The sharing system uses a **single PostgreSQL database** with row-level isolation via `ownerId` and `authorDid` filtering.
 
 | Database | Type | Purpose |
 |----------|------|---------|
-| **Master Database** | PostgreSQL | Identity, auth, cross-user data, sharing metadata |
-| **User Databases** | SQLite (per-user) | User content, profiles, context bundles |
+| **Master Database** | PostgreSQL | All data (identity, auth, content, sharing) |
 
 ### Key Benefits
 
-- **Complete Isolation**: Each user has their own SQLite database file
-- **Cross-User Coordination**: Master DB handles circles, sharing, and access control
-- **Enhanced Privacy**: No cross-user database queries possible
-- **Scalability**: User data grows independently per user
+- **Simplicity**: Single database to manage, query, backup
+- **Performance**: PostgreSQL handles millions of rows, complex queries
+- **ACID**: Full transaction support across operations
+- **Existing Integration**: Works seamlessly with context engine
+
+### Note on Original Design
+
+The original design specified dual-database (PostgreSQL + SQLite per-user) but was simplified for development efficiency. The single-database approach uses proper `where` clauses for data isolation:
+
+```javascript
+// Conversations - filter by ownerId
+const conversations = await prisma.conversation.findMany({
+  where: { ownerId: userId }
+});
+
+// ACUs - filter by authorDid
+const acus = await prisma.atomicChatUnit.findMany({
+  where: { authorDid: userDid }
+});
+```
 
 ## Document List
 
@@ -32,6 +47,9 @@ The sharing system now uses a dual-database architecture for complete user data 
 | [06-DATABASE-SCHEMA.md](./06-DATABASE-SCHEMA.md) | Database schema extensions |
 | [07-API-ENDPOINTS.md](./07-API-ENDPOINTS.md) | API endpoint specifications |
 | [08-SECURITY-PRIVACY.md](./08-SECURITY-PRIVACY.md) | Security and privacy architecture |
+| [09-IMPLEMENTATION.md](./09-IMPLEMENTATION.md) | Implementation guide and service details |
+| [10-DATABASE-REFERENCE.md](./10-DATABASE-REFERENCE.md) | Complete schema reference |
+| [11-API-REFERENCE.md](./11-API-REFERENCE.md) | Detailed API reference |
 
 ## Quick Start
 
@@ -47,11 +65,13 @@ The sharing system consists of four interconnected layers:
 ### Database Flow
 
 ```
-User A (SQLite) ──────▶ Master DB (PostgreSQL) ──────▶ User B (SQLite)
-     │                        │                            │
-     │ Sharing Intent        │ Circle Validation          │ Access
-     │ Content Reference     │ Sharing Metadata           │ Content
-     └──────────────────────┴────────────────────────────┘
+User → Server → PostgreSQL
+              │
+              ├── SharingIntent (sharing metadata)
+              ├── ContentRecord (content references)
+              ├── SharingPolicy (access control)
+              ├── AnalyticsEvent (event tracking)
+              └── User data (ownerId filtered)
 ```
 
 ### Key Features
@@ -60,11 +80,9 @@ User A (SQLite) ──────▶ Master DB (PostgreSQL) ──────�
 - **Audience Types**: Public, circle, users, link-based
 - **Temporal Controls**: Scheduled sharing, expiration
 - **Content Transformations**: Filtering, watermarking, anonymization
-- **End-to-End Encryption**: AES-256-GCM + Kyber (post-quantum)
-- **Circle-Based Access Control**: Advanced privacy management
-- **Federation Support**: Cross-instance sharing
-- **Privacy-Preserving Analytics**: Insights without compromising privacy
-- **User Database Isolation**: Each user has their own SQLite database
+- **End-to-End Encryption**: AES-256-GCM
+- **Circle-Based Access Control**: Privacy management
+- **Analytics**: User metrics, activity logs, AI insights
 
 ### Integration Points
 
@@ -78,56 +96,33 @@ PWA Frontend
             ▼
     Server
     │
-    ├── UserDatabaseManager (routes to SQLite)
-    ├── Master DB Client (PostgreSQL)
-    │
-    ├── Sharing Intent Service
-    ├── Content Publishing Pipeline
-    ├── Policy Engine
-    └── Analytics
-            │
-            ▼
-    Network
-    │
-    ├── DHT Service (content discovery)
-    ├── PubSub Service (notifications)
-    ├── CRDT Sync (collaboration)
-    ├── Storage Manager
-    └── Peer Services
+    ├── SharingIntentService
+    ├── SharingEncryptionService
+    ├── SharingAnalyticsService
+    └── PostgreSQL
 ```
+
+## Services
+
+| Service | File | Description |
+|---------|------|-------------|
+| SharingIntent | `server/src/services/sharing-intent-service.js` | Intent CRUD, publishing, links |
+| Encryption | `server/src/services/sharing-encryption-service.js` | AES-256-GCM, password hashing |
+| Analytics | `server/src/services/sharing-analytics-service.js` | Metrics, activity, insights |
 
 ## Design Principles
 
 1. **User Intent First**: Every share action reflects explicit user decisions
 2. **Privacy by Default**: Encryption and minimal data collection
-3. **Decentralized Architecture**: No central server controls the network
-4. **Intelligent Orchestration**: Network actively manages content distribution
-5. **Database Isolation**: Each user has their own SQLite database
-
-## Related Documentation
-
-### User Isolation Documentation
-- `VIVIM.docs/USERS/01-architecture-overview.md` - High-level isolation architecture
-- `VIVIM.docs/USERS/05-model-classification.md` - Model ownership classification
-
-### Server Documentation
-- `server/src/lib/user-database-manager.js` - User database management
-- `server/prisma/schema.prisma` - Database schema
-- `server/src/services/` - Service implementations
-
-### Network Documentation
-- `network/prisma/schema.prisma` - Network database schema
-- `network/src/` - Network service implementations
-
-### PWA Documentation
-- `pwa/src/lib/` - Frontend libraries
-- `pwa/src/components/` - UI components
+3. **Simplicity**: Single database with ownerId filtering
+4. **Security**: AES-256-GCM encryption, secure password handling
 
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.1.0 | 2026-02-14 | Updated for dual-database architecture with SQLite user isolation |
+| 1.2.0 | 2026-02-14 | Simplified to single PostgreSQL, added implementation docs |
+| 1.1.0 | 2026-02-14 | Updated for dual-database architecture |
 | 1.0.0 | 2026-02-14 | Initial documentation set |
 
 ## Contributing
@@ -135,13 +130,15 @@ PWA Frontend
 When extending the sharing system:
 
 1. Follow the intent model structure in `02-SHARING-INTENT-SYSTEM.md`
-2. Add new database models to `06-DATABASE-SCHEMA.md` (considering Master vs User DB split)
-3. Document new API endpoints in `07-API-ENDPOINTS.md`
-4. Update security considerations in `08-SECURITY-PRIVACY.md`
+2. Add new database models to `06-DATABASE-SCHEMA.md` and `10-DATABASE-REFERENCE.md`
+3. Document new API endpoints in `07-API-ENDPOINTS.md` and `11-API-REFERENCE.md`
+4. Update implementation details in `09-IMPLEMENTATION.md`
+5. Update security considerations in `08-SECURITY-PRIVACY.md`
 
 ## Support
 
 For questions or issues with the sharing system:
-- Architecture questions: See `01-DESIGN-OVERVIEW.md`
-- Implementation details: See relevant component documentation
+- Implementation guide: See `09-IMPLEMENTATION.md`
+- API reference: See `11-API-REFERENCE.md`
+- Database schema: See `10-DATABASE-REFERENCE.md`
 - Security concerns: See `08-SECURITY-PRIVACY.md`

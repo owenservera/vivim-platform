@@ -410,4 +410,221 @@ router.get('/policies/:contentId/access-log', authenticateDID, async (req, res) 
   }
 });
 
+// ============================================================================
+// SHARING INTENT API
+// ============================================================================
+
+import { sharingIntentService } from '../services/sharing-intent-service.js';
+
+router.post('/intents', authenticateDID, async (req, res) => {
+  try {
+    const { did } = req.user;
+    const intent = await sharingIntentService.createSharingIntent({
+      actorDid: did,
+      ownerDid: did,
+      ...req.body
+    });
+
+    res.json({ success: true, data: intent });
+  } catch (error) {
+    log.error({ error: error.message }, 'Create intent failed');
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/intents', authenticateDID, async (req, res) => {
+  try {
+    const { did } = req.user;
+    const { status, contentType, audienceType, limit, offset } = req.query;
+    
+    const intents = await sharingIntentService.getIntentsByOwner(did, {
+      status,
+      contentType,
+      audienceType,
+      limit: parseInt(limit) || 50,
+      offset: parseInt(offset) || 0
+    });
+
+    res.json({ success: true, data: intents });
+  } catch (error) {
+    log.error({ error: error.message }, 'Get intents failed');
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/intents/:intentId', authenticateDID, async (req, res) => {
+  try {
+    const intent = await sharingIntentService.getSharingIntent(req.params.intentId);
+    if (!intent) {
+      return res.status(404).json({ success: false, error: 'Intent not found' });
+    }
+    res.json({ success: true, data: intent });
+  } catch (error) {
+    log.error({ error: error.message }, 'Get intent failed');
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.patch('/intents/:intentId', authenticateDID, async (req, res) => {
+  try {
+    const intent = await sharingIntentService.updateSharingIntent(
+      req.params.intentId,
+      req.body
+    );
+    res.json({ success: true, data: intent });
+  } catch (error) {
+    log.error({ error: error.message }, 'Update intent failed');
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.post('/intents/:intentId/publish', authenticateDID, async (req, res) => {
+  try {
+    const intent = await sharingIntentService.publishSharingIntent(req.params.intentId);
+    res.json({ success: true, data: intent });
+  } catch (error) {
+    log.error({ error: error.message }, 'Publish intent failed');
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.post('/intents/:intentId/revoke', authenticateDID, async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const intent = await sharingIntentService.revokeSharingIntent(req.params.intentId, reason);
+    res.json({ success: true, data: intent });
+  } catch (error) {
+    log.error({ error: error.message }, 'Revoke intent failed');
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ============================================================================
+// SHARE LINKS API
+// ============================================================================
+
+router.post('/links', authenticateDID, async (req, res) => {
+  try {
+    const { did } = req.user;
+    const { intentId, maxUses, expiresAt, password } = req.body;
+    
+    const shareLink = await sharingIntentService.createShareLink(intentId, {
+      maxUses,
+      expiresAt,
+      password,
+      createdByDid: did
+    });
+
+    const url = `/share/${shareLink.linkCode}`;
+    res.json({ success: true, data: { link: shareLink, url } });
+  } catch (error) {
+    log.error({ error: error.message }, 'Create share link failed');
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/links/:linkCode', async (req, res) => {
+  try {
+    const shareLink = await sharingIntentService.getShareLink(req.params.linkCode);
+    if (!shareLink) {
+      return res.status(404).json({ success: false, error: 'Link not found' });
+    }
+    res.json({ success: true, data: shareLink });
+  } catch (error) {
+    log.error({ error: error.message }, 'Get share link failed');
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.post('/links/:linkCode/access', async (req, res) => {
+  try {
+    const { password } = req.body;
+    const accessorDid = req.body.did || null;
+    
+    const intent = await sharingIntentService.accessShareLink(req.params.linkCode, {
+      password,
+      accessorDid
+    });
+    
+    res.json({ success: true, data: intent });
+  } catch (error) {
+    log.error({ error: error.message }, 'Access share link failed');
+    res.status(403).json({ success: false, error: error.message });
+  }
+});
+
+import { sharingAnalyticsService } from '../services/sharing-analytics-service.js';
+
+router.get('/analytics/metrics', authenticateDID, async (req, res) => {
+  try {
+    const { did } = req.user;
+    const { startDate, endDate } = req.query;
+    
+    const metrics = await sharingAnalyticsService.getUserSharingMetrics(did, {
+      startDate,
+      endDate
+    });
+    
+    res.json({ success: true, data: metrics });
+  } catch (error) {
+    log.error({ error: error.message }, 'Get metrics failed');
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/analytics/activity', authenticateDID, async (req, res) => {
+  try {
+    const { did } = req.user;
+    const { limit, eventTypes, startDate, endDate } = req.query;
+    
+    const activity = await sharingAnalyticsService.getUserActivity(did, {
+      limit: parseInt(limit) || 50,
+      eventTypes: eventTypes?.split(','),
+      startDate,
+      endDate
+    });
+    
+    res.json({ success: true, data: activity });
+  } catch (error) {
+    log.error({ error: error.message }, 'Get activity failed');
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/analytics/insights', authenticateDID, async (req, res) => {
+  try {
+    const { did } = req.user;
+    const { unreadOnly } = req.query;
+    
+    const insights = await sharingAnalyticsService.getInsights(did, {
+      unreadOnly: unreadOnly === 'true'
+    });
+    
+    res.json({ success: true, data: insights });
+  } catch (error) {
+    log.error({ error: error.message }, 'Get insights failed');
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.post('/analytics/insights/:insightId/read', authenticateDID, async (req, res) => {
+  try {
+    const insight = await sharingAnalyticsService.markInsightRead(req.params.insightId);
+    res.json({ success: true, data: insight });
+  } catch (error) {
+    log.error({ error: error.message }, 'Mark insight read failed');
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.post('/analytics/insights/:insightId/dismiss', authenticateDID, async (req, res) => {
+  try {
+    const insight = await sharingAnalyticsService.dismissInsight(req.params.insightId);
+    res.json({ success: true, data: insight });
+  } catch (error) {
+    log.error({ error: error.message }, 'Dismiss insight failed');
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 export default router;

@@ -67,6 +67,9 @@ export {
 } from './context-graph';
 export type { GraphNode, GraphEdge, SubGraph, GraphMetrics } from './context-graph';
 
+// --- Enhancement 10: Memory System (Second Brain) ---
+export * from './memory';
+
 // --- Utilities ---
 export { SimpleTokenEstimator } from './utils/token-estimator';
 export { EmbeddingService, MockEmbeddingService } from './utils/embedding-service';
