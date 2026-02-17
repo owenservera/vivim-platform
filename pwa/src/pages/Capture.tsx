@@ -1,3 +1,4 @@
+import './Capture.css';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { captureUrlStream } from '../lib/api';
@@ -411,31 +412,37 @@ export const Capture: React.FC = () => {
 
               {/* Console */}
               {sessionLogs.length > 0 && (
-                <div className="w-full bg-gray-900 dark:bg-black rounded-xl p-4 text-left">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-xs font-semibold text-green-400 uppercase tracking-wider">
-                      Quantum Tunnel Monitor
+                <div className="w-full bg-black/90 dark:bg-black rounded-2xl p-4 text-left border border-white/5 shadow-inner mt-2">
+                  <div className="flex items-center justify-between mb-3 px-1">
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                      <span className="text-[10px] font-black text-green-400 uppercase tracking-[0.2em]">
+                        Sync_Stream.live
+                      </span>
+                    </div>
+                    <span className="text-[9px] text-white/30 font-mono">
+                      BUF: {sessionLogs.length}/50
                     </span>
                   </div>
-                  <div className="space-y-1 max-h-32 overflow-y-auto ios-scrollbar-thin">
+                  <div className="space-y-1.5 max-h-40 overflow-y-auto ios-scrollbar-hide font-mono">
                     {sessionLogs.map((log, i) => (
-                      <div key={log.id} className="text-xs font-mono">
-                        <span className="text-gray-500">[{sessionLogs.length - i}]</span>
+                      <div key={log.id} className="text-[10px] leading-relaxed flex gap-2">
+                        <span className="text-white/20 shrink-0">{(sessionLogs.length - i).toString().padStart(2, '0')}</span>
                         <span
-                          className={
+                          className={cn(
+                            'break-all',
                             log.level === 'ERROR'
                               ? 'text-red-400'
                               : log.level === 'WARN'
                               ? 'text-yellow-400'
                               : log.message.includes('✓')
-                              ? 'text-green-400'
+                              ? 'text-green-400 font-bold'
                               : log.source === 'server'
                               ? 'text-blue-400'
-                              : 'text-gray-400'
-                          }
+                              : 'text-white/70'
+                          )}
                         >
-                          {log.source === 'server' && '📡 '}
+                          {log.source === 'server' && <span className="opacity-50 mr-1">📡</span>}
                           {log.message}
                         </span>
                       </div>
@@ -448,81 +455,65 @@ export const Capture: React.FC = () => {
 
           {/* Success */}
           {status === 'success' && captured && (
-            <div className="flex flex-col items-center text-center">
-              <div className="w-20 h-20 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mb-6">
+            <div className="flex flex-col items-center text-center animate-in zoom-in-95 duration-300">
+              <div className="w-20 h-20 bg-green-500/10 dark:bg-green-500/20 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-green-500/10">
                 <CheckCircle className="w-10 h-10 text-green-500" />
               </div>
 
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                Captured!
+                Knowledge Captured
               </h2>
-              <p className="text-gray-500 dark:text-gray-400 mb-6">"{captured.title}"</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 px-4">
+                Successfully materialized <span className="font-bold text-gray-900 dark:text-white">"{captured.title}"</span>
+              </p>
 
               {/* Verification Badge */}
-              <div className="flex items-center gap-2 mb-6">
-                <Shield className="w-5 h-5 text-green-500" />
-                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                  Cryptographically verified
+              <div className="flex items-center gap-2 mb-8 bg-gray-50 dark:bg-gray-800/50 px-4 py-2 rounded-full border border-gray-100 dark:border-gray-700">
+                <Shield className="w-4 h-4 text-green-500" />
+                <span className="text-xs font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+                  Verified Local Materialization
                 </span>
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-4 w-full mb-6">
-                <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
-                  <span className="text-2xl font-bold text-gray-900 dark:text-white">
+              <div className="grid grid-cols-3 gap-3 w-full mb-8">
+                <div className="flex flex-col items-center p-3 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700">
+                  <span className="text-xl font-black text-gray-900 dark:text-white">
                     {captured.messageCount}
                   </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">Messages</span>
+                  <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-tighter">Messages</span>
                 </div>
-                <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
-                  <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {captured.wordCount}
+                <div className="flex flex-col items-center p-3 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700">
+                  <span className="text-xl font-black text-gray-900 dark:text-white">
+                    {(captured.wordCount / 1000).toFixed(1)}k
                   </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">Words</span>
+                  <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-tighter">Words</span>
                 </div>
-                <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
-                  <span className="text-lg font-bold text-gray-900 dark:text-white capitalize">
+                <div className="flex flex-col items-center p-3 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700">
+                  <span className="text-sm font-black text-gray-900 dark:text-white truncate w-full capitalize">
                     {captured.provider}
                   </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400">Source</span>
+                  <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-tighter">Engine</span>
                 </div>
-              </div>
-
-              {/* Content Hash */}
-              <div className="w-full p-4 bg-gray-50 dark:bg-gray-800 rounded-xl mb-6">
-                <p className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-1">
-                  Content Hash
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-500 font-mono">
-                  {captured.contentHash.slice(0, 32)}...
-                </p>
               </div>
 
               {/* Actions */}
-              <div className="flex gap-3 w-full">
+              <div className="flex flex-col gap-3 w-full px-2">
                 <IOSButton
                   variant="primary"
                   fullWidth
                   onClick={handleView}
                   icon={<Download className="w-5 h-5" />}
+                  className="rounded-2xl h-14 text-lg shadow-xl shadow-blue-500/20"
                 >
-                  View Conversation
+                  Enter Intelligence
                 </IOSButton>
-                <IOSButton
-                  variant="secondary"
-                  fullWidth
+                <button
                   onClick={() => navigate('/')}
+                  className="text-sm font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors py-2"
                 >
-                  Done
-                </IOSButton>
-              </div>
-
-              {/* Privacy notice */}
-              <div className="flex items-center gap-2 mt-6">
-                <Lock className="w-4 h-4 text-gray-500" />
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  Private • Signed with Ed25519
-                </span>
+                  DISMISS
+                </button>
               </div>
             </div>
           )}

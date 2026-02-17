@@ -22,6 +22,7 @@ import rateLimit from 'express-rate-limit';
 import { logger } from './lib/logger.js';
 import { config, validateConfig } from './config/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { serverErrorReporter, errorReportingMiddleware } from './utils/server-error-reporting.js';
 import { requestLogger } from './middleware/requestLogger.js';
 import { requestId } from './middleware/requestId.js';
 import { captureRouter } from './routes/capture.js';
@@ -36,7 +37,9 @@ import { aiRouter } from './routes/ai.js';
 import { aiChatRouter } from './routes/ai-chat.js';
 import { aiSettingsRouter } from './routes/ai-settings.js';
 import { omniRouter } from './routes/omni.js';
+import { zaiMcpRouter } from './routes/zai-mcp.js';
 import { createSettingsRoutes } from './routes/context-settings.ts';
+import { errorsRouter } from './routes/errors.js';
 import { disconnectPrisma, getPrismaClient } from './lib/database.js';
 import { setupSwagger } from './docs/swagger.js';
 import { logBroadcaster } from './lib/logBroadcaster.js';
@@ -44,11 +47,22 @@ import identityV2Router from './routes/identity-v2.js';
 import circleRouter from './routes/circles.js';
 import sharingRouter from './routes/sharing.js';
 import feedV2Router from './routes/feed-v2.js';
+import unifiedApiRouter from './routes/unified-api.js';
 import portabilityRouter from './routes/portability.js';
 import authRouter from './routes/auth.js';
 import accountRouter from './routes/account.js';
 import contextV2Router from './routes/context-v2.js';
 import memoryRouter from './routes/memory.js';
+import memorySearchRouter from './routes/memory-search.js';
+import { debugRouter } from './routes/debug.js';
+import { collectionsRouter } from './routes/collections.js';
+import socialRouter from './routes/social.js';
+import adminNetworkRouter from './routes/admin/network.js';
+import adminDatabaseRouter from './routes/admin/database.js';
+import adminSystemRouter from './routes/admin/system.js';
+import adminCrdtRouter from './routes/admin/crdt.js';
+import adminPubsubRouter from './routes/admin/pubsub.js';
+import adminDataflowRouter from './routes/admin/dataflow.js';
 
 // Validate configuration on startup
 try {
@@ -96,17 +110,28 @@ app.use(
       includeSubDomains: true,
       preload: true,
     },
-  }),
+  })
 );
 
 // CORS - Cross-Origin Resource Sharing (Enhanced Security)
 // Use standard cors package for proper preflight handling
-app.use(cors({
-  origin: true, // Allow any origin
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-ID', 'X-Requested-With', 'X-API-Key', 'Accept', 'Cache-Control', 'x-user-id'],
-}));
+app.use(
+  cors({
+    origin: true, // Allow any origin
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Request-ID',
+      'X-Requested-With',
+      'X-API-Key',
+      'Accept',
+      'Cache-Control',
+      'x-user-id',
+    ],
+  })
+);
 
 // Custom CORS middleware for additional logging and headers
 const allowedOrigins = config.isDevelopment
@@ -160,12 +185,17 @@ app.use((req, res, next) => {
   }
 
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Request-ID, X-Requested-With, X-API-Key, Accept, Cache-Control');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization, X-Request-ID, X-Requested-With, X-API-Key, Accept, Cache-Control'
+  );
   res.header('Access-Control-Allow-Credentials', 'true');
 
   if (req.method === 'OPTIONS') {
     if (config.isDevelopment) {
-      console.log(`🔧 [CORS PRE-FLIGHT] ${req.method} ${req.path} - Origin: ${origin || 'none'} - Result: ${isAllowed ? '✅ ALLOWED' : '❌ BLOCKED'}`);
+      console.log(
+        `🔧 [CORS PRE-FLIGHT] ${req.method} ${req.path} - Origin: ${origin || 'none'} - Result: ${isAllowed ? '✅ ALLOWED' : '❌ BLOCKED'}`
+      );
     }
     return res.status(200).end();
   }
@@ -214,7 +244,7 @@ app.use(
   express.json({
     limit: '1mb', // Prevent memory exhaustion attacks
     strict: true, // Only parse objects and arrays
-  }),
+  })
 );
 
 // Parse URL-encoded bodies
@@ -222,7 +252,7 @@ app.use(
   express.urlencoded({
     extended: false,
     limit: '1mb',
-  }),
+  })
 );
 
 // ============================================================================
@@ -231,18 +261,26 @@ app.use(
 import session from 'express-session';
 import passport from './middleware/google-auth.js';
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'dev-secret-change-in-production',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: !config.isDevelopment,
-    httpOnly: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000
-  }
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'dev-secret-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: !config.isDevelopment,
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      sameSite: 'lax',
+    },
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Development auth bypass (must be after passport, before routes)
+import { devAuthBypass, logDevAuthStatus } from './middleware/dev-auth.js';
+app.use(devAuthBypass);
+app.use(logDevAuthStatus);
 
 // ============================================================================
 // CUSTOM MIDDLEWARE
@@ -255,49 +293,55 @@ app.use(requestId);
 app.use((req, res, next) => {
   const startTime = Date.now();
   const requestId = req.id;
-  const {method} = req;
-  const {path} = req;
-  const {ip} = req;
+  const { method } = req;
+  const { path } = req;
+  const { ip } = req;
   const userAgent = req.get('User-Agent') || 'Unknown';
 
   // Log incoming request in a human-readable format
   console.log('\n╔══════════════════════════════════════════════════════════════╗');
   console.log('║                        REQUEST RECEIVED                      ║');
   console.log('╠══════════════════════════════════════════════════════════════╣');
-  console.log(`║  🆔 ID:        ${requestId.substring(0, 8)}...${requestId.substring(requestId.length-4)}`);
+  console.log(
+    `║  🆔 ID:        ${requestId.substring(0, 8)}...${requestId.substring(requestId.length - 4)}`
+  );
   console.log(`║  🧭 METHOD:    ${method.padEnd(10)}`);
   console.log(`║  📍 PATH:      ${path}`);
   console.log(`║  🌐 FROM:      ${ip}`);
   console.log(`║  ⏰ TIME:      ${new Date().toISOString()}`);
-  console.log(`║  🤖 AGENT:     ${userAgent.substring(0, 40)}${userAgent.length > 40 ? '...' : ''}`);
+  console.log(
+    `║  🤖 AGENT:     ${userAgent.substring(0, 40)}${userAgent.length > 40 ? '...' : ''}`
+  );
   console.log('╚══════════════════════════════════════════════════════════════╝');
 
   // Capture the original end method to log response
   const originalEnd = res.end;
-  res.end = function(chunk, encoding, callback) {
+  res.end = function (chunk, encoding, callback) {
     const duration = Date.now() - startTime;
-    const {statusCode} = res;
+    const { statusCode } = res;
 
     // Determine status category for readability
     let statusCategory = 'UNKNOWN';
     if (statusCode >= 200 && statusCode < 300) {
-statusCategory = '✅ SUCCESS';
-} else if (statusCode >= 300 && statusCode < 400) {
-statusCategory = '🔄 REDIRECT';
-} else if (statusCode >= 400 && statusCode < 500) {
-statusCategory = '❌ CLIENT_ERROR';
-} else if (statusCode >= 500) {
-statusCategory = '💥 SERVER_ERROR';
-}
+      statusCategory = '✅ SUCCESS';
+    } else if (statusCode >= 300 && statusCode < 400) {
+      statusCategory = '🔄 REDIRECT';
+    } else if (statusCode >= 400 && statusCode < 500) {
+      statusCategory = '❌ CLIENT_ERROR';
+    } else if (statusCode >= 500) {
+      statusCategory = '💥 SERVER_ERROR';
+    }
 
     // Log response in a human-readable format
     console.log('╔══════════════════════════════════════════════════════════════╗');
     console.log('║                        RESPONSE SENT                         ║');
     console.log('╠══════════════════════════════════════════════════════════════╣');
-    console.log(`║  🆔 ID:        ${requestId.substring(0, 8)}...${requestId.substring(requestId.length-4)}`);
+    console.log(
+      `║  🆔 ID:        ${requestId.substring(0, 8)}...${requestId.substring(requestId.length - 4)}`
+    );
     console.log(`║  🏷️  STATUS:    ${statusCode} ${statusCategory}`);
     console.log(`║  ⏱️  DURATION:  ${duration}ms`);
-    console.log(`║  📦 SIZE:      ${(chunk ? Buffer.byteLength(chunk) : 0)} bytes`);
+    console.log(`║  📦 SIZE:      ${chunk ? Buffer.byteLength(chunk) : 0} bytes`);
     console.log(`║  🧭 METHOD:    ${method}`);
     console.log(`║  📍 PATH:      ${path}`);
     console.log('╚══════════════════════════════════════════════════════════════╝\n');
@@ -315,6 +359,7 @@ statusCategory = '💥 SERVER_ERROR';
 
 // Health check (no auth, no rate limit)
 app.use('/', healthRouter);
+app.use('/api/v1', healthRouter);
 
 // API routes
 app.use('/api/v1', captureRouter);
@@ -327,6 +372,7 @@ app.use('/api/v2/identity', identityV2Router);
 app.use('/api/v2/circles', circleRouter);
 app.use('/api/v2/sharing', sharingRouter);
 app.use('/api/v2/feed', feedV2Router);
+app.use('/api/unified', unifiedApiRouter);
 app.use('/api/v2/portability', portabilityRouter);
 app.use('/api/v1/acus', acusRouter);
 app.use('/api/v1/sync', syncRouter);
@@ -336,8 +382,23 @@ app.use('/api/v1/ai/chat', aiChatRouter);
 app.use('/api/v1/ai/settings', aiSettingsRouter);
 app.use('/api/v1/settings', createSettingsRoutes(getPrismaClient()));
 app.use('/api/v1/omni', omniRouter);
+app.use('/api/v1/zai-mcp', zaiMcpRouter);
 app.use('/api/v2/context', contextV2Router);
 app.use('/api/v2/memories', memoryRouter);
+app.use('/api/v2/memories/query', memorySearchRouter);
+app.use('/api/v1/errors', errorsRouter);
+app.use('/api/v1/debug', debugRouter);
+app.use('/api/v1/collections', collectionsRouter);
+app.use('/api/v3/social', socialRouter);
+app.use('/api/v1/social', socialRouter);
+
+// Admin routes
+app.use('/api/admin/network', adminNetworkRouter);
+app.use('/api/admin/database', adminDatabaseRouter);
+app.use('/api/admin/system', adminSystemRouter);
+app.use('/api/admin/crdt', adminCrdtRouter);
+app.use('/api/admin/pubsub', adminPubsubRouter);
+app.use('/api/admin/dataflow', adminDataflowRouter);
 
 // API Documentation (Swagger)
 if (config.enableSwagger) {
@@ -406,7 +467,9 @@ const server = app.listen(config.port, '0.0.0.0', () => {
   console.log(`║  ⏱️  START TIME:        ${startTime}        ║`);
   console.log(`║  💻 PLATFORM:          Node ${process.version} (${process.platform})     ║`);
   console.log(`║  🆔 PROCESS ID:         PID: ${process.pid}                        ║`);
-  console.log(`║  🏷️  MODE:              ${config.isDevelopment ? '🧪 DEVELOPMENT' : '🔒 PRODUCTION'}                 ║`);
+  console.log(
+    `║  🏷️  MODE:              ${config.isDevelopment ? '🧪 DEVELOPMENT' : '🔒 PRODUCTION'}                 ║`
+  );
   console.log('║                                                              ║');
   console.log('╠══════════════════════════════════════════════════════════════╣');
   console.log('║                    CONNECTION INSTRUCTIONS                   ║');
@@ -418,7 +481,10 @@ const server = app.listen(config.port, '0.0.0.0', () => {
   console.log('║                                                              ║');
   console.log('╚══════════════════════════════════════════════════════════════╝\n');
 
-  logger.info({ port: config.port, env: config.nodeEnv, localIp }, 'System Manifest Broadcast Complete');
+  logger.info(
+    { port: config.port, env: config.nodeEnv, localIp },
+    'System Manifest Broadcast Complete'
+  );
 });
 
 // ============================================================================
@@ -427,6 +493,13 @@ const server = app.listen(config.port, '0.0.0.0', () => {
 import { socketService } from './services/socket.ts';
 socketService.initialize(server);
 logger.info('🔌 Socket service ready for Data Sync & P2P');
+
+// ============================================================================
+// ADMIN WEBSOCKET SERVICE
+// ============================================================================
+import { adminWsService } from './services/admin-ws-service.js';
+adminWsService.initialize(server);
+logger.info('🔌 Admin WebSocket service ready for real-time updates');
 
 // ============================================================================
 // GRACEFUL SHUTDOWN

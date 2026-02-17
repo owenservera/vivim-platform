@@ -75,11 +75,12 @@ export class TeamCRDT {
   }
 
   setName(name: string): void {
-    const yName = this.doc.get('name') as Y.Text;
+    const map = this.doc.getMap('teamData');
+    const yName = map.get('name') as Y.Text;
     if (!yName) {
       const newName = new Y.Text();
       newName.insert(0, name);
-      this.doc.set('name', newName);
+      map.set('name', newName);
     } else {
       yName.delete(0, yName.length);
       yName.insert(0, name);
@@ -92,11 +93,12 @@ export class TeamCRDT {
   }
 
   setDescription(description: string): void {
-    const yDesc = this.doc.get('description') as Y.Text;
+    const map = this.doc.getMap('teamData');
+    const yDesc = map.get('description') as Y.Text;
     if (!yDesc) {
       const newDesc = new Y.Text();
       newDesc.insert(0, description);
-      this.doc.set('description', newDesc);
+      map.set('description', newDesc);
     } else {
       yDesc.delete(0, yDesc.length);
       yDesc.insert(0, description);

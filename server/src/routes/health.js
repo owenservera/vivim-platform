@@ -163,4 +163,19 @@ router.get('/health/admin', requireApiKey(), async (req, res) => {
   res.status(dbHealthy ? 200 : 503).json(adminHealthData);
 });
 
+// ============================================================================
+// CAPABILITIES
+// ============================================================================
+
+router.get('/capabilities', (req, res) => {
+  res.json({
+    aiActions: true,
+    sharing: true,
+    circles: true,
+    offlineQueue: true,
+    semanticSearch: true,
+    lineage: true,
+  });
+});
+
 export { router as healthRouter };

@@ -92,6 +92,8 @@ export const ConversationCard: React.FC<ConversationCardProps> = ({
     qwen: '🌐',
     deepseek: '🔍',
     kimi: '🎯',
+    perplexity: '🔮',
+    other: '💬',
     default: '💬',
   };
 
@@ -101,6 +103,9 @@ export const ConversationCard: React.FC<ConversationCardProps> = ({
     gemini: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
     grok: 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400',
     zai: 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400',
+    perplexity: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400',
+    kimi: 'bg-pink-100 text-pink-600 dark:bg-pink-900/30 dark:text-pink-400',
+    other: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
     default: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
   };
 
@@ -267,16 +272,21 @@ export const ConversationCard: React.FC<ConversationCardProps> = ({
     onAIClick?.('find_related', conversation.id);
   }, [conversation.id, onAIClick]);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    
-    if (diff < 60000) return 'Just now';
-    if (diff < 3600000) return `${Math.floor(diff / 60000)}m`;
-    if (diff < 86400000) return `${Math.floor(diff / 3600000)}h`;
-    if (diff < 604800000) return `${Math.floor(diff / 86400000)}d`;
-    return date.toLocaleDateString();
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return 'Unknown';
+    try {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diff = now.getTime() - date.getTime();
+
+      if (diff < 60000) return 'Just now';
+      if (diff < 3600000) return `${Math.floor(diff / 60000)}m`;
+      if (diff < 86400000) return `${Math.floor(diff / 3600000)}h`;
+      if (diff < 604800000) return `${Math.floor(diff / 86400000)}d`;
+      return date.toLocaleDateString();
+    } catch {
+      return 'Unknown';
+    }
   };
 
   if (variant === 'compact') {
@@ -298,7 +308,7 @@ export const ConversationCard: React.FC<ConversationCardProps> = ({
                 {conversation.title}
               </h4>
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                {conversation.stats.totalMessages} messages · {formatDate(conversation.stats.lastMessageAt || conversation.createdAt)}
+                {conversation.stats?.totalMessages ?? conversation.messages?.length ?? 0} messages · {formatDate(conversation.stats?.lastMessageAt || conversation.createdAt)}
               </p>
             </div>
             {localPinned && <Pin className="w-4 h-4 text-blue-500" />}
@@ -332,10 +342,10 @@ export const ConversationCard: React.FC<ConversationCardProps> = ({
               className={providerColors[conversation.provider] || providerColors.default}
             />
             
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 overflow-hidden">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
-                  <h3 className="font-semibold text-gray-900 dark:text-white truncate pr-8">
+                  <h3 className="font-semibold text-gray-900 dark:text-white truncate">
                     {conversation.title}
                   </h3>
                   <div className="flex items-center gap-2 mt-1 flex-wrap">
@@ -344,7 +354,7 @@ export const ConversationCard: React.FC<ConversationCardProps> = ({
                     </span>
                     <span className="text-gray-300">·</span>
                     <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {conversation.stats.totalMessages} messages
+                      {conversation.stats?.totalMessages ?? conversation.messages?.length ?? 0} messages
                     </span>
                     <span className="text-gray-300">·</span>
                     <span className="text-xs text-gray-500 dark:text-gray-400">

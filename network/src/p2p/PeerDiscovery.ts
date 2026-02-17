@@ -20,12 +20,15 @@ export class PeerDiscovery extends EventEmitter {
   constructor(config: PeerDiscoveryConfig) {
     super();
     this.config = {
-      bootstrapPeers: [],
       enableMDNS: true,
       enableDHT: true,
       discoveryInterval: 30000,
-      ...config,
+      ...config
     };
+    // Ensure bootstrapPeers is always an array
+    if (!this.config.bootstrapPeers) {
+      this.config.bootstrapPeers = [];
+    }
   }
 
   async initialize(libp2pNode: any): Promise<void> {

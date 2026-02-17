@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import type { NetworkNode, NodeConnection, NetworkMetric, DatabaseTable, QueryResult, DataFlow, CRDTDocument, LogEntry } from '../types'
 
 interface AppState {
-  activePanel: 'database' | 'network' | 'dataflow' | 'actions' | 'logs'
+  activePanel: 'overview' | 'database' | 'network' | 'dataflow' | 'crdt' | 'realtime-logs' | 'actions' | 'logs'
   setActivePanel: (panel: AppState['activePanel']) => void
   
   networkNodes: NetworkNode[]
@@ -38,7 +38,7 @@ interface AppState {
 }
 
 export const useAppStore = create<AppState>((set) => ({
-  activePanel: 'database',
+  activePanel: 'overview',
   setActivePanel: (panel) => set({ activePanel: panel }),
   
   networkNodes: [],

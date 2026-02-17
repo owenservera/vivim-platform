@@ -694,8 +694,20 @@ export class Storage {
       totalConversations: conversations.length,
       totalMessages,
       totalNodes: await this.objectStore.getSize(),
-      storageSize: 0  // TODO: Calculate actual storage size
+      storageSize: await this.calculateStorageSize()
     };
+  }
+
+  private async calculateStorageSize(): Promise<number> {
+    try {
+      if (navigator.storage && navigator.storage.estimate) {
+        const estimate = await navigator.storage.estimate();
+        return estimate.usage || 0;
+      }
+    } catch (e) {
+      console.warn('Failed to calculate storage size', e);
+    }
+    return 0;
   }
 
   // ========================================================================

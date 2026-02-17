@@ -13,6 +13,15 @@ import * as Y from 'yjs';
 import { WebsocketProvider } from 'y-websocket';
 import { IndexeddbPersistence } from 'y-indexeddb';
 import { useSyncStore } from './stores';
+import { log } from './logger';
+
+// Try to import UnifiedDebugService for centralized error reporting
+let unifiedDebugService: any = null;
+try {
+  unifiedDebugService = require('./unified-debug-service').unifiedDebugService;
+} catch (e) {
+  // UnifiedDebugService not available yet
+}
 
 // ============================================================================
 // Types
@@ -44,6 +53,10 @@ class YjsSyncManager {
   private wsProvider: WebsocketProvider | null = null;
   private persistence: IndexeddbPersistence | null = null;
   private peerId: string = '';
+  private wsUrl: string = '';
+  private reconnectAttempts: number = 0;
+  private maxReconnectAttempts: number = 5;
+  private reconnectDelay: number = 2000;
   
   // Shared types
   private conversations: Y.Map<ConversationData> | null = null;
@@ -63,11 +76,26 @@ class YjsSyncManager {
     // Setup IndexedDB persistence
     this.persistence = new IndexeddbPersistence('openscroll-yjs', this.doc);
     
-    await new Promise<void>((resolve) => {
-      this.persistence!.once('synced', () => {
-        console.log('✅ Loaded from IndexedDB');
-        resolve();
-      });
+    // Add timeout to prevent hanging forever
+    const syncTimeout = setTimeout(() => {
+      console.warn('⚠️ IndexedDB sync timeout after 5s');
+      log.sync.warn('IndexedDB sync timeout after 5s');
+    }, 5000);
+    
+    await Promise.race([
+      new Promise<void>((resolve) => {
+        this.persistence!.once('synced', () => {
+          clearTimeout(syncTimeout);
+          console.log('✅ Loaded from IndexedDB');
+          resolve();
+        });
+      }),
+      new Promise<void>((resolve) => 
+        setTimeout(() => resolve(), 5000)
+      )
+    ]).catch(err => {
+      console.warn('⚠️ IndexedDB sync error, continuing anyway:', err);
+      log.sync.warn('IndexedDB sync error', err instanceof Error ? err : new Error(String(err)));
     });
     
     // Setup WebSocket provider if URL provided
@@ -86,28 +114,59 @@ class YjsSyncManager {
   
   /**
    * Connect to WebSocket sync server
+   * @param url - WebSocket URL
+   * @param isReconnect - If true, don't reset reconnectAttempts (internal use)
    */
-  connectWebSocket(url: string): void {
+  connectWebSocket(url: string, isReconnect: boolean = false): void {
     if (!this.doc) {
       console.error('Document not initialized');
+      log.sync.error('WebSocket: Document not initialized');
       return;
     }
     
+    // Clean up existing provider before creating new one
+    if (this.wsProvider) {
+      console.log('🧹 Cleaning up existing WebSocket provider');
+      this.wsProvider.disconnect();
+      this.wsProvider.destroy();
+      this.wsProvider = null;
+    }
+    
+    // Store URL for potential reconnection
+    this.wsUrl = url;
+    // Only reset reconnect counter if not a reconnection attempt
+    if (!isReconnect) {
+      this.reconnectAttempts = 0;
+    }
+    
+    const roomName = `openscroll-${this.peerId}`;
+    log.sync.info(`WebSocket: Connecting to ${url} with room ${roomName}`);
+    console.log('🔌 Creating WebSocketProvider:', { url, roomName });
+    
     // Create WebSocket provider
-    this.wsProvider = new WebsocketProvider(
-      url,
-      `openscroll-${this.peerId}`,
-      this.doc,
-      {
-        connect: true,
-      }
-    );
+    try {
+      this.wsProvider = new WebsocketProvider(
+        url,
+        roomName,
+        this.doc,
+        {
+          connect: true,
+        }
+      );
+      console.log('✅ WebSocketProvider created');
+    } catch (err) {
+      console.error('❌ Failed to create WebSocketProvider:', err);
+      log.sync.error('Failed to create WebSocketProvider', err instanceof Error ? err : new Error(String(err)), { url, roomName });
+      return;
+    }
     
     // Connection status
     this.wsProvider.on('status', ({ status }: { status: string }) => {
       console.log('🔌 WebSocket status:', status);
+      log.sync.info(`WebSocket status changed: ${status}`);
       
       if (status === 'connected') {
+        this.reconnectAttempts = 0; // Reset reconnect counter on success
         useSyncStore.getState().setStatus('idle');
       } else if (status === 'disconnected') {
         useSyncStore.getState().setStatus('offline');
@@ -116,17 +175,74 @@ class YjsSyncManager {
       }
     });
 
-    // Handle connection errors gracefully
-    this.wsProvider.on('connection-error', (error: Error) => {
-      console.warn('⚠️ WebSocket connection error:', error.message);
+    // Handle connection errors gracefully with better logging
+    this.wsProvider.on('connection-error', (event: Event) => {
+      const eventObj = event as any;
+      const errorMsg = eventObj.message || eventObj.reason || `WebSocket connection error (type: ${event.type})`;
+      const target = eventObj.target;
+      const readyState = target?.readyState !== undefined ? `readyState: ${target.readyState}` : '';
+      
+      console.warn('⚠️ WebSocket connection error:', errorMsg, readyState);
+      log.sync.error(`WebSocket connection error: ${errorMsg}`, new Error(errorMsg), { eventType: event.type, readyState: target?.readyState });
+      
+      // Report to UnifiedDebugService if available
+      if (unifiedDebugService) {
+        unifiedDebugService.error('WebSocket', `Connection error: ${errorMsg}`, new Error(errorMsg), { url, eventType: event.type, readyState: target?.readyState });
+      }
+      
       useSyncStore.getState().setStatus('offline');
     });
 
-    // Timeout to stop trying after 10 seconds
+    // Handle WebSocket close events with reconnection logic
+    this.wsProvider.on('close', (event: Event) => {
+      const eventObj = event as any;
+      const reason = eventObj.reason || 'No reason provided';
+      const code = eventObj.code || 'Unknown code';
+      console.warn('⚠️ WebSocket closed:', code, reason);
+      log.sync.warn(`WebSocket closed: code=${code}, reason=${reason}, reconnectAttempts=${this.reconnectAttempts}/${this.maxReconnectAttempts}`);
+      
+      if (unifiedDebugService) {
+        unifiedDebugService.warn('WebSocket', `Connection closed: ${code} - ${reason}`);
+      }
+      
+      // Attempt reconnection if not maxed out
+      if (this.reconnectAttempts < this.maxReconnectAttempts && this.wsUrl) {
+        this.reconnectAttempts++;
+        const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1); // Exponential backoff
+        console.log(`🔄 Attempting reconnection ${this.reconnectAttempts}/${this.maxReconnectAttempts} in ${delay}ms...`);
+        setTimeout(() => {
+          if (this.wsUrl) {
+            this.connectWebSocket(this.wsUrl, true); // Pass true to indicate reconnection
+          }
+        }, delay);
+      }
+    });
+    
+    // Handle WebSocket errors
+    this.wsProvider.on('error', (event: Event) => {
+      const eventObj = event as any;
+      const errorMsg = eventObj.message || eventObj.reason || `WebSocket error (type: ${event.type})`;
+      const target = eventObj.target;
+      
+      console.warn('⚠️ WebSocket error:', errorMsg);
+      log.sync.error(`WebSocket error: ${errorMsg}`, new Error(errorMsg), { eventType: event.type, readyState: target?.readyState });
+      
+      if (unifiedDebugService) {
+        unifiedDebugService.error('WebSocket', `Error: ${errorMsg}`, new Error(errorMsg), { url, eventType: event.type, readyState: target?.readyState });
+      }
+    });
+
+    // Timeout to stop trying after 10 seconds - but allow for reconnections
     setTimeout(() => {
-      if (this.wsProvider && this.wsProvider.wsconnected === false) {
-        console.warn('⚠️ WebSocket connection timed out. Running in offline mode.');
-        useSyncStore.getState().setStatus('offline');
+      if (this.wsProvider && this.reconnectAttempts >= this.maxReconnectAttempts) {
+        if (this.wsProvider.wsconnected === false) {
+          console.warn('⚠️ WebSocket max reconnection attempts reached. Running in offline mode.');
+          log.sync.warn('WebSocket max reconnection attempts reached, falling back to offline mode');
+          useSyncStore.getState().setStatus('offline');
+        } else if (this.wsProvider.wsconnected === true) {
+          console.log('✅ WebSocket connected successfully');
+          log.sync.info('WebSocket connected successfully');
+        }
       }
     }, 10000);
     
@@ -134,6 +250,7 @@ class YjsSyncManager {
     this.wsProvider.on('sync', (isSynced: boolean) => {
       if (isSynced) {
         console.log('✅ Synced with server');
+        log.sync.info('WebSocket: Sync complete with server');
         useSyncStore.getState().setLastSync(new Date().toISOString());
       } else {
         useSyncStore.getState().setStatus('syncing');
@@ -170,7 +287,7 @@ class YjsSyncManager {
   }
   
   /**
-   * Disconnect from WebSocket
+   * Disconnect from WebSocket and cleanup resources
    */
   disconnect(): void {
     if (this.wsProvider) {
@@ -178,6 +295,19 @@ class YjsSyncManager {
       this.wsProvider.destroy();
       this.wsProvider = null;
     }
+    if (this.persistence) {
+      this.persistence.destroy();
+      this.persistence = null;
+    }
+    if (this.doc) {
+      this.doc.destroy();
+      this.doc = null;
+    }
+    this.conversations = null;
+    this.messages = null;
+    this.wsUrl = '';
+    this.reconnectAttempts = 0;
+    console.log('🧹 Sync manager disconnected and cleaned up');
   }
   
   /**

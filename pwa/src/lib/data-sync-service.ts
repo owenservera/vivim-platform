@@ -7,6 +7,7 @@ import { apiClient } from './api';
 import { getStorage } from './storage-v2';
 import { conversationService } from './service/conversation-service';
 import { logger } from './logger';
+import { useIdentityStore } from '../stores/identity.store';
 import type { Conversation } from '../types/conversation';
 
 export interface SyncProgress {
@@ -126,33 +127,67 @@ export class DataSyncService {
 
   /**
    * Fetches all conversations from the backend
+   * SECURITY: Only fetches conversations owned by the authenticated user
    */
   private async fetchAllConversations(): Promise<any[]> {
     try {
-      // Fetch all conversations in batches to handle large datasets
-      const batchSize = 50;
-      let offset = 0;
-      let allConversations: any[] = [];
-      let hasMore = true;
+      // Add overall timeout for the entire fetch operation
+      const overallTimeout = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('fetchAllConversations timed out after 45 seconds')), 45000)
+      );
 
-      while (hasMore) {
-        const response = await apiClient.get('/conversations', {
-          params: { 
-            limit: batchSize, 
-            offset,
-            include_messages: true // Include messages in the response
-          }
-        });
+      const fetchOperation = (async () => {
+        // Fetch all conversations in batches to handle large datasets
+        const batchSize = 50;
+        let offset = 0;
+        let allConversations: any[] = [];
+        let hasMore = true;
 
-        const batch = response.data?.conversations || [];
-        allConversations = allConversations.concat(batch);
-        
-        // If we got fewer than the batch size, we've reached the end
-        hasMore = batch.length === batchSize;
-        offset += batchSize;
-      }
+        while (hasMore) {
+          // Add timeout to each batch request
+          const batchTimeout = new Promise<any>((_, reject) =>
+            setTimeout(() => reject(new Error('Batch fetch timed out')), 10000)
+          );
 
-      return allConversations;
+          // SECURITY: Backend filters by authenticated user's userId automatically
+          const response = await Promise.race([
+            apiClient.get('/conversations', {
+              params: {
+                limit: batchSize,
+                offset,
+                include_messages: true // Include messages in the response
+              }
+            }),
+            batchTimeout
+          ]);
+
+          const batch = response?.data?.conversations || [];
+
+          // SECURITY: Double-check ownership on client side
+          const currentUserId = useIdentityStore.getState().did;
+          const validBatch = batch.filter((conv: any) => {
+            if (!conv.ownerId) {
+              logger.warn('DataSyncService', `Conversation ${conv.id} has no ownerId, skipping`);
+              return false;
+            }
+            if (currentUserId && conv.ownerId !== currentUserId) {
+              logger.warn('DataSyncService', `Conversation ${conv.id} ownerId mismatch, skipping`);
+              return false;
+            }
+            return true;
+          });
+
+          allConversations = allConversations.concat(validBatch);
+
+          // If we got fewer than the batch size, we've reached the end
+          hasMore = batch.length === batchSize;
+          offset += batchSize;
+        }
+
+        return allConversations;
+      })();
+
+      return await Promise.race([fetchOperation, overallTimeout]);
     } catch (error) {
       logger.error('DataSyncService', 'Failed to fetch conversations from backend', error as Error);
       throw error;
@@ -303,12 +338,22 @@ export class DataSyncService {
       title: backendConv.title || 'Untitled Conversation',
       provider: backendConv.provider || 'other',
       sourceUrl: backendConv.sourceUrl || '',
+      state: (backendConv.state as 'ACTIVE' | 'ARCHIVED' | 'DELETED') || 'ACTIVE',
+      version: backendConv.version || 1,
+      ownerId: backendConv.ownerId || undefined,
+      contentHash: backendConv.contentHash || undefined,
+      createdAt: backendConv.createdAt,
+      updatedAt: backendConv.updatedAt || backendConv.createdAt,
+      capturedAt: backendConv.capturedAt || backendConv.createdAt,
+      exportedAt: backendConv.capturedAt || backendConv.updatedAt, // Deprecated, kept for compatibility
+      tags: backendConv.tags || [],
       messages,
       metadata: {
         ...backendConv.metadata,
         model: backendConv.model || 'unknown',
         importedFromBackend: true,
-        backendId: backendConv.id
+        backendId: backendConv.id,
+        tags: backendConv.tags || []
       },
       stats: {
         totalMessages: backendConv.messageCount || messages.length,
@@ -322,9 +367,7 @@ export class DataSyncService {
         totalToolCalls: backendConv.totalToolCalls || 0,
         firstMessageAt: backendConv.createdAt,
         lastMessageAt: backendConv.updatedAt || backendConv.createdAt
-      },
-      createdAt: backendConv.createdAt,
-      exportedAt: backendConv.capturedAt || backendConv.updatedAt
+      }
     };
   }
 
@@ -333,12 +376,18 @@ export class DataSyncService {
    */
   async needsFullSync(): Promise<boolean> {
     try {
-      // Check if we have any conversations locally
-      const localConversations = await conversationService.getAllConversations();
+      // Add timeout to prevent hanging when storage is slow
+      const localConversations = await Promise.race([
+        conversationService.getAllConversations(),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('needsFullSync check timed out after 10 seconds')), 10000)
+        )
+      ]);
       return localConversations.length === 0;
-    } catch {
+    } catch (error) {
       // If there's an error checking local data, assume we need a sync
-      return true;
+      console.warn('[DataSyncService] Error checking if sync needed:', error);
+      return false; // Changed to false to avoid unnecessary syncs on timeout
     }
   }
 

@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { clsx } from 'clsx'
 import { useAppStore } from '../../store/appStore'
-import { 
-  Network, 
-  Activity, 
-  Radio, 
-  Wifi, 
-  WifiOff,
+import {
+  Network,
+  Activity,
+  Radio,
+  Wifi,
   MapPin,
   Clock,
   Gauge,
@@ -15,12 +14,10 @@ import {
   Smartphone,
   Cloud,
   HardDrive,
-  Box,
   Home,
   Zap,
   RefreshCw,
   TrendingUp,
-  TrendingDown,
   Minus
 } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts'

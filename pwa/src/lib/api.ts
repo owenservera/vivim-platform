@@ -1,6 +1,6 @@
 import type { Conversation } from '../types/conversation';
 import { log } from './logger';
-import { kyberEncapsulate, symmetricEncrypt, symmetricDecrypt } from './storage-v2/crypto';
+import { kyberEncapsulate, symmetricEncrypt, symmetricDecrypt, sha256 } from './storage-v2/crypto';
 
 // Basic configuration from Meta environment variables
 // Supports dynamic override via localStorage to avoid "stone age" rebuild cycles
@@ -26,8 +26,7 @@ const getApiKey = () => {
     return envApiKey;
   }
 
-  // Default API key for development
-  return 'sk-openscroll-dev-key-123456789'; // This should be replaced with a real key in production
+  return null; // No default key for production safety
 };
 
 const API_BASE_URL = getApiBaseUrl();
@@ -38,14 +37,22 @@ const API_BASE_URL = getApiBaseUrl();
  */
 async function performHandshake() {
     log.api.info('Initiating Post-Quantum Handshake...');
+    const apiKey = getApiKey();
+    if (!apiKey) throw new Error('API Key required for handshake');
+
     const response = await fetch(`${API_BASE_URL}/handshake`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${getApiKey()}`,
-          'X-API-Key': getApiKey()
+          'Authorization': `Bearer ${apiKey}`,
+          'X-API-Key': apiKey
         },
         mode: 'cors'
     });
+    
+    if (!response.ok) {
+        throw new Error(`Handshake failed: ${response.status}`);
+    }
+    
     const { publicKey } = await response.json();
 
     log.api.debug('Server PQC Public Key received, encapsulating...');
@@ -59,6 +66,11 @@ async function performHandshake() {
  * @throws Error if capture fails
  */
 export async function captureUrl(url: string): Promise<Conversation> {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    throw new Error('Authentication required: Please configure your API Key');
+  }
+
   const apiBaseUrl = getApiBaseUrl();
   // Try multiple endpoints for resilience
   const endpoints = [
@@ -77,8 +89,9 @@ export async function captureUrl(url: string): Promise<Conversation> {
       // 1. Establish Zero-Moment Tunnel
       const { sharedSecret, ciphertext: pqcCiphertext } = await performHandshake();
 
-      // 2. Encrypt Payload
-      const payload = JSON.stringify({ url });
+      // 2. Encrypt Payload & Generate Integrity Hash
+      const contentHash = await sha256(url);
+      const payload = JSON.stringify({ url, contentHash, timestamp: new Date().toISOString() });
       const encrypted = symmetricEncrypt(payload, sharedSecret);
 
       // 3. Send Encrypted Request with API key
@@ -86,8 +99,9 @@ export async function captureUrl(url: string): Promise<Conversation> {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${getApiKey()}`,
-          'X-API-Key': getApiKey()
+          'Authorization': `Bearer ${apiKey}`,
+          'X-API-Key': apiKey,
+          'X-Content-Hash': contentHash
         },
         mode: 'cors',
         body: JSON.stringify({
@@ -131,8 +145,13 @@ export async function captureUrl(url: string): Promise<Conversation> {
         throw error;
       }
 
+      // Verify server-side content hash if provided
+      if (result.contentHash && result.contentHash !== data.contentHash) {
+        log.api.error('Data integrity check failed: Content hash mismatch');
+        throw new Error('Data integrity violation: The received data was corrupted or tampered with.');
+      }
+
       // Adapter: Transform server response to match PWA schema
-      // 1. Map `parts` to `content` if `content` is missing
       data.messages = data.messages.map((msg: Record<string, unknown>) => {
         let content = msg.content || msg.parts || [];
 
@@ -140,7 +159,6 @@ export async function captureUrl(url: string): Promise<Conversation> {
         if (Array.isArray(content)) {
           content = content.map((part: any) => ({
             ...part,
-            // Flatten metadata into top-level props for Client UI compatibility
             language: part.metadata?.language || part.language,
             alt: part.metadata?.alt || part.alt,
             caption: part.metadata?.caption || part.metadata?.title,
@@ -151,7 +169,6 @@ export async function captureUrl(url: string): Promise<Conversation> {
         return {
           ...msg,
           content,
-          // Ensure specific fields are mapped or defaulted
           role: msg.role || ((msg.author as Record<string, unknown>)?.role === 'user' ? 'user' : 'assistant'),
         };
       });

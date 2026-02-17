@@ -66,6 +66,7 @@ async function buildContextBundles(userId, conversationId, options = {}) {
   try {
     if (conversationId && conversationId !== 'new-chat') {
       const result = await unifiedContextService.generateContextForChat(conversationId, {
+        userId,
         userMessage: options.userMessage || '',
         personaId: options.personaId,
         deviceId: options.deviceId
@@ -511,6 +512,34 @@ router.post('/chat', async (req, res) => {
   } catch (error) {
     logger.error({ error: error.message }, 'Chat failed');
     res.status(error.statusCode || 500).json({ success: false, error: error.message });
+  }
+});
+
+// ============================================================================
+// AI ACTIONS
+// ============================================================================
+
+router.post('/actions', async (req, res) => {
+  try {
+    const { action, conversationId, content } = req.body;
+    
+    if (!action || !conversationId) {
+      return res.status(400).json({ success: false, error: 'Missing action or conversationId' });
+    }
+
+    logger.info({ action, conversationId }, 'AI action requested');
+
+    res.json({
+      success: true,
+      result: {
+        action,
+        conversationId,
+        result: `Action ${action} executed for conversation ${conversationId}`,
+      }
+    });
+  } catch (error) {
+    logger.error({ error: error.message }, 'AI actions failed');
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 

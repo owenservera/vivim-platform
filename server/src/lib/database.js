@@ -4,6 +4,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
 import { logger } from './logger.js';
 import { config } from '../config/index.js';
+import { serverErrorReporter } from '../utils/server-error-reporting.js';
 
 // ============================================================================
 // PRISMA CLIENT WITH LOGGING AND SECURITY
@@ -13,10 +14,10 @@ import { config } from '../config/index.js';
  * Get or create Prisma client instance
  * @returns {PrismaClient} Prisma client with logging
  */
-let prisma = null;
+let prismaClient = null;
 
 export function getPrismaClient() {
-  if (!prisma) {
+  if (!prismaClient) {
     const connectionString = process.env.DATABASE_URL;
     if (!connectionString) {
         throw new Error('DATABASE_URL environment variable is not set');
@@ -31,49 +32,68 @@ export function getPrismaClient() {
       adapter,
     });
     
-    // Add logging extension in development
-    if (config.isDevelopment) {
-      prisma = baseClient.$extends({
-        query: {
-          $allModels: {
-            async $allOperations({ model, operation, args, query }) {
-              const before = Date.now();
+    // Enhanced Prisma Extension for Data Flow Tracking & Performance Monitoring
+    prismaClient = baseClient.$extends({
+      query: {
+        $allModels: {
+          async $allOperations({ model, operation, args, query }) {
+            const before = Date.now();
+            try {
               const result = await query(args);
               const after = Date.now();
               const time = after - before;
 
-              logger.debug(
-                {
-                  model,
-                  action: operation,
-                  duration: time,
-                },
-                `Query ${operation} on ${model}`,
-              );
+              // Intelligent Feedback: Identify slow queries as bottlenecks
+              if (time > 100) {
+                const slowQueryMsg = `SLOW_QUERY: ${operation} on ${model} took ${time}ms`;
+                logger.warn({ model, action: operation, duration: time }, slowQueryMsg);
+                
+                // Report performance bottleneck
+                serverErrorReporter.reportPerformanceIssue(
+                  'database_query_time',
+                  time,
+                  100,
+                  { model, operation, query: args },
+                  time > 500 ? 'medium' : 'low'
+                ).catch(() => {});
+              }
 
               return result;
-            },
+            } catch (error) {
+              const after = Date.now();
+              const time = after - before;
+              
+              // Comprehensive Error Reporting for Database Failures
+              serverErrorReporter.reportDatabaseError(
+                `Database operation failed: ${operation} on ${model}`,
+                error,
+                { model, operation, args, duration: time },
+                'critical'
+              ).catch(() => {});
+              
+              throw error;
+            }
           },
         },
-      });
-    } else {
-      prisma = baseClient;
-    }
+      },
+    });
     
-    logger.info('Prisma client initialized');
+    logger.info('Prisma client initialized with enhanced observability');
   }
 
-  return prisma;
+  return prismaClient;
 }
+
+export const prisma = getPrismaClient();
 
 /**
  * Disconnect Prisma client
  */
 export async function disconnectPrisma() {
-  if (prisma) {
-    await prisma.$disconnect();
+  if (prismaClient) {
+    await prismaClient.$disconnect();
     logger.info('Prisma client disconnected');
-    prisma = null;
+    prismaClient = null;
   }
 }
 

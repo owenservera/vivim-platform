@@ -48,8 +48,8 @@ export class InstanceDiscovery extends EventEmitter {
         throw new Error(`HTTP ${response.status}`);
       }
 
-      const data = await response.json();
-      
+      const data: any = await response.json();
+
       const instance: InstanceInfo = {
         domain: data.domain || new URL(url).hostname,
         did: data.did || '',
@@ -87,7 +87,7 @@ export class InstanceDiscovery extends EventEmitter {
         });
         
         if (response.ok) {
-          const data = await response.json();
+          const data: any = await response.json();
           for (const instanceData of data.instances || []) {
             const instance = await this.discoverInstance(instanceData.domain);
             if (instance) {
@@ -123,8 +123,8 @@ export class InstanceDiscovery extends EventEmitter {
   private async resolveTXTRecord(domain: string): Promise<string | null> {
     try {
       const response = await fetch(`https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=TXT`);
-      const data = await response.json();
-      
+      const data: any = await response.json();
+
       if (data.Answer) {
         for (const answer of data.Answer) {
           if (answer.type === 16) {

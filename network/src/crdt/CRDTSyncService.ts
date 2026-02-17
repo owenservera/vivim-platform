@@ -57,21 +57,22 @@ export class CRDTSyncService extends EventEmitter {
   private async setupWebRTCProvider(config: CRDTSyncConfig, doc: Y.Doc): Promise<void> {
     const provider = new WebrtcProvider(config.docId, doc, {
       signaling: config.signalingServers || ['wss://signaling.vivim.net'],
-      password: null,
+      password: undefined,
       awareness: undefined,
       maxConns: 20,
-      filterStdOut: true,
     });
 
-    provider.on('synced', (isSynced: boolean) => {
+    provider.on('synced', (syncData: { synced: boolean }) => {
+      const isSynced = syncData.synced;
       log.debug({ docId: config.docId, isSynced }, 'WebRTC sync status changed');
       this.updateSyncState(config.docId, { status: isSynced ? 'synced' : 'syncing' });
       this.emit('sync:status', { docId: config.docId, synced: isSynced });
     });
 
-    provider.on('peers', (peers: string[]) => {
-      log.debug({ docId: config.docId, peerCount: peers.length }, 'Peers updated');
-      this.emit('sync:peers', { docId: config.docId, peers });
+    provider.on('peers', (peersData: { added: string[]; removed: string[]; webrtcPeers: string[]; bcPeers: string[] }) => {
+      const allPeers = [...peersData.added, ...peersData.removed, ...peersData.webrtcPeers, ...peersData.bcPeers];
+      log.debug({ docId: config.docId, peerCount: allPeers.length }, 'Peers updated');
+      this.emit('sync:peers', { docId: config.docId, peers: allPeers });
     });
 
     this.providers.set(config.docId, provider);
@@ -100,7 +101,7 @@ export class CRDTSyncService extends EventEmitter {
   }
 
   private setupDocumentHandlers(docId: string, doc: Y.Doc): void {
-    doc.on('update', (update: Uint8Array, origin: unknown, doc: Y.Doc) => {
+    doc.on('update', (update: Uint8Array, origin: unknown, doc: Y.Doc, transaction: Y.Transaction) => {
       if (origin === 'remote') return;
 
       const vectorClock = this.vectorClocks.get(docId) || {};
@@ -114,11 +115,7 @@ export class CRDTSyncService extends EventEmitter {
         state.lastSyncedAt = new Date();
       }
 
-      this.emit('document:update', { docId, update, origin });
-    });
-
-    doc.on('observe', (event: Y.YEvent<Y.AbstractType<unknown>>, transaction: Y.Transaction) => {
-      this.emit('document:observe', { docId, event, transaction });
+      this.emit('document:update', { docId, update, origin, doc, transaction });
     });
   }
 

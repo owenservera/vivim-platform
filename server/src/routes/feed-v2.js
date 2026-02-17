@@ -6,6 +6,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { feedService } from '../services/feed-service.js';
+import { generateContextualFeed, processFeedEngagement } from '../services/feed-context-integration.js';
 import { authenticateDID } from '../middleware/auth.js';
 import { logger } from '../lib/logger.js';
 
@@ -140,10 +141,86 @@ router.post('/interact/:contentId', authenticateDID, async (req, res) => {
       return res.status(400).json({ success: false, error: result.error });
     }
 
+    await processFeedEngagement({
+      userId: req.user.userId,
+      contentId: req.params.contentId,
+      contentType: 'acu',
+      action: parsed.data.action,
+      metadata: parsed.data
+    });
+
     res.json({ success: true });
   } catch (error) {
     log.error({ error: error.message }, 'Track interaction failed');
     res.status(500).json({ success: false, error: 'Failed to track interaction' });
+  }
+});
+
+router.get('/contextual', authenticateDID, async (req, res) => {
+  try {
+    const { limit, offset, topics } = req.query;
+
+    const activeTopics = topics ? topics.toString().split(',') : [];
+    
+    const result = await feedService.generateContextualFeed(req.user.userId, {
+      limit: limit ? parseInt(limit.toString()) : 20,
+      offset: offset ? parseInt(offset.toString()) : 0,
+      activeTopics
+    });
+
+    if (!result.success) {
+      return res.status(400).json({ success: false, error: result.error });
+    }
+
+    res.json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    log.error({ error: error.message }, 'Contextual feed failed');
+    res.status(500).json({ success: false, error: 'Failed to get contextual feed' });
+  }
+});
+
+router.get('/similar/:conversationId', authenticateDID, async (req, res) => {
+  try {
+    const { limit } = req.query;
+
+    const result = await feedService.getSimilarConversations(
+      req.user.userId,
+      req.params.conversationId,
+      { limit: limit ? parseInt(limit.toString()) : 10 }
+    );
+
+    if (!result.success) {
+      return res.status(400).json({ success: false, error: result.error });
+    }
+
+    res.json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    log.error({ error: error.message }, 'Get similar conversations failed');
+    res.status(500).json({ success: false, error: 'Failed to get similar conversations' });
+  }
+});
+
+router.get('/privacy', authenticateDID, async (req, res) => {
+  try {
+    const preferences = await feedService.getFeedPreferences(req.user.userId);
+    const privacy = await feedService.enforcePrivacyBudget(req.user.userId, preferences);
+    
+    res.json({
+      success: true,
+      data: {
+        privacyBudget: preferences.privacyBudget,
+        settings: privacy
+      }
+    });
+  } catch (error) {
+    log.error({ error: error.message }, 'Get privacy settings failed');
+    res.status(500).json({ success: false, error: 'Failed to get privacy settings' });
   }
 });
 

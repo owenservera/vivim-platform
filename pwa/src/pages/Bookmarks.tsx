@@ -1,26 +1,29 @@
-/**
- * Bookmarks Page
- * Shows all favorited/saved conversations
- */
-
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Star } from 'lucide-react';
+import { 
+  IOSTopBar, 
+  ConversationCard, 
+  EmptyBookmarks, 
+  IOSSkeletonList,
+  IOSButton,
+  useIOSToast,
+  toast
+} from '../components/ios';
 import {
   listConversationsForRecommendation,
   getSortedBookmarks,
   clearBookmarks,
   type Conversation
 } from '../lib/recommendation';
-import './ForYou.css';
+import { Trash2 } from 'lucide-react';
 
 interface BookmarkedConversation extends Conversation {
   bookmarkedAt: number;
 }
 
-export function Bookmarks() {
+export const Bookmarks: React.FC = () => {
   const [bookmarks, setBookmarks] = useState<BookmarkedConversation[]>([]);
   const [loading, setLoading] = useState(true);
+  const { toast: showToast } = useIOSToast();
 
   useEffect(() => {
     loadBookmarkedConversations();
@@ -54,6 +57,7 @@ export function Bookmarks() {
       setBookmarks(bookmarked);
     } catch (error) {
       console.error('[Bookmarks] Error:', error);
+      showToast(toast.error('Failed to load bookmarks'));
     } finally {
       setLoading(false);
     }
@@ -63,98 +67,48 @@ export function Bookmarks() {
     if (confirm('Clear all bookmarks? This cannot be undone.')) {
       clearBookmarks();
       setBookmarks([]);
+      showToast(toast.success('Bookmarks cleared'));
     }
   };
 
-  const formatTimestamp = (timestamp: number) => {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-
-    if (diffMins < 60) return 'Just now';
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-    return date.toLocaleDateString();
-  };
-
   return (
-    <div className="for-you-page">
-      <header className="for-you-header">
-        <div>
-          <h1>Bookmarks</h1>
-          <p className="subtitle">
-            {bookmarks.length} saved conversation{bookmarks.length !== 1 ? 's' : ''}
-          </p>
-        </div>
-        {bookmarks.length > 0 && (
-          <button
-            onClick={handleClearAll}
-            className="text-btn"
-          >
-            Clear All
-          </button>
-        )}
-      </header>
-
-      {/* Loading */}
-      {loading && (
-        <div className="loading-container">
-          <div className="spinner" />
-          <p>Loading bookmarks...</p>
-        </div>
-      )}
-
-      {/* Empty State */}
-      {!loading && bookmarks.length === 0 && (
-        <div className="empty-container">
-          <div className="empty-icon">
-            <Star className="w-12 h-12 opacity-20" />
-          </div>
-          <h2>No bookmarks yet</h2>
-          <p>Save important conversations to find them later</p>
-        </div>
-      )}
-
-      {/* Bookmarks List */}
-      {!loading && bookmarks.length > 0 && (
-        <div className="recommendations-list">
-          {bookmarks.map((convo) => (
-            <Link
-              key={convo.id}
-              to={`/conversation/${convo.id}`}
-              className="bookmark-item"
+    <div className="flex flex-col min-h-full bg-gray-50 dark:bg-gray-950 pb-20">
+      <IOSTopBar 
+        title="Bookmarks" 
+        rightAction={
+          bookmarks.length > 0 ? (
+            <button 
+              onClick={handleClearAll}
+              className="text-red-500 font-medium text-sm px-2 py-1"
             >
-              <div className="bookmark-header">
-                <div className="bookmark-icon">
-                  <Star className="w-4 h-4 text-yellow-500" />
-                </div>
-                <div className="bookmark-content">
-                  <h4 className="bookmark-title">{convo.title}</h4>
-                  <div className="bookmark-meta">
-                    <span className="provider-badge">{convo.provider}</span>
-                    <span className="dot">•</span>
-                    <span>{convo.stats.totalMessages} messages</span>
-                    <span className="dot">•</span>
-                    <span className="bookmark-time">
-                      Saved {formatTimestamp(convo.bookmarkedAt)}
-                    </span>
-                  </div>
-                  {convo.metadata?.tags && (convo.metadata.tags as string[]).length > 0 && (
-                    <div className="bookmark-tags">
-                      {(convo.metadata.tags as string[]).slice(0, 3).map(tag => (
-                        <span key={tag} className="tag-chip">{tag}</span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
+              Clear
+            </button>
+          ) : undefined
+        }
+      />
+
+      <div className="px-4 py-4">
+        {loading ? (
+          <IOSSkeletonList count={5} />
+        ) : bookmarks.length === 0 ? (
+          <EmptyBookmarks onAction={() => window.history.back()} />
+        ) : (
+          <div className="space-y-3">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-1">
+              {bookmarks.length} saved conversation{bookmarks.length !== 1 ? 's' : ''}
+            </p>
+            {bookmarks.map((convo) => (
+              <ConversationCard
+                key={convo.id}
+                conversation={convo}
+                variant="default"
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
+
+export default Bookmarks;

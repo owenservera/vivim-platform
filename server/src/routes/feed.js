@@ -130,4 +130,16 @@ return 'In-depth discussion';
   return 'Recent capture';
 }
 
+router.post('/engagement', async (req, res) => {
+  const { acuId, action, metadata } = req.body;
+  
+  if (!acuId || !action) {
+    return res.status(400).json({ error: 'Missing acuId or action' });
+  }
+
+  console.log(`[ENGAGEMENT] ${action} on ${acuId}`);
+  
+  res.json({ success: true });
+});
+
 export default router;

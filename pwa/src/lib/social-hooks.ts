@@ -249,13 +249,13 @@ export const socialService = {
     return result.channel;
   },
 
-  async getChannelMessages(channelId: string, limit = 50, offset = 0): Promise<ChannelMessage[]> {
-    const result = await fetchApi<{ success: boolean; messages: ChannelMessage[] }>(`/teams/${'TODO'}/channels/${channelId}/messages?limit=${limit}&offset=${offset}`);
+  async getChannelMessages(teamId: string, channelId: string, limit = 50, offset = 0): Promise<ChannelMessage[]> {
+    const result = await fetchApi<{ success: boolean; messages: ChannelMessage[] }>(`/teams/${teamId}/channels/${channelId}/messages?limit=${limit}&offset=${offset}`);
     return result.messages;
   },
 
-  async sendMessage(channelId: string, data: SendChannelMessageRequest): Promise<ChannelMessage> {
-    const result = await fetchApi<{ success: boolean; message: ChannelMessage }>(`/teams/TODO/channels/${channelId}/messages`, {
+  async sendMessage(teamId: string, channelId: string, data: SendChannelMessageRequest): Promise<ChannelMessage> {
+    const result = await fetchApi<{ success: boolean; message: ChannelMessage }>(`/teams/${teamId}/channels/${channelId}/messages`, {
       method: 'POST',
       body: JSON.stringify(data),
     });

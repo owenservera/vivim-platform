@@ -2,6 +2,7 @@ import { defineConfig, createLogger } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import { consoleForwardPlugin } from 'vite-console-forward-plugin'
+import * as path from 'path'
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 const isVerbose = process.env.VITE_DEBUG === 'true';
@@ -95,6 +96,12 @@ function getConsoleLevels(): LogLevel[] {
 }
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@common': path.resolve(__dirname, '../common'),
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   plugins: [
     react(),
     consoleForwardPlugin({
@@ -295,12 +302,14 @@ export default defineConfig({
     }
   ],
   ssr: {
-    noExternal: true
+    noExternal: ['@vitejs/plugin-react', 'vite-plugin-pwa']
   },
   optimizeDeps: {
     include: ['@testing-library/react', '@testing-library/jest-dom']
   },
   server: {
+    port: 5173,
+    strictPort: false,
     fs: {
       allow: ['.']
     },
@@ -308,13 +317,28 @@ export default defineConfig({
       '^/api': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        ws: true
+        ws: true,
+        configure: (proxy, _options) => {
+            proxy.on('proxyReq', (proxyReq, req) => {
+              if (req.headers.cookie) {
+                proxyReq.setHeader('cookie', req.headers.cookie);
+              }
+            });
+            proxy.on('proxyRes', (proxyRes) => {
+              const cookies = proxyRes.headers['set-cookie'];
+              if (cookies) {
+                proxyRes.headers['set-cookie'] = cookies.map((cookie: string) => 
+                  cookie.replace(/; Secure/, '; Secure').replace(/; SameSite=None/, '; SameSite=Lax')
+                );
+              }
+            });
+          }
       }
     }
   },
   build: {
     sourcemap: true,
-    target: 'esnext',
+    target: 'es2020',
     minify: 'esbuild'
   },
   esbuild: {

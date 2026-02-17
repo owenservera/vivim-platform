@@ -184,10 +184,19 @@ async function gatherFeedCandidates(userId, preferences) {
 
 /**
  * Rank feed items using multiple factors
+ * Now uses dynamic weights from user preferences
  */
 async function rankFeedItems(candidates, userId, preferences) {
   const prisma = getPrismaClient();
   const ranked = [];
+
+  // Get dynamic weights from preferences
+  const weights = {
+    recency: (preferences.recencyWeight || 30) / 100,
+    relevance: (preferences.relevanceWeight || 40) / 100,
+    socialProof: (preferences.socialProofWeight || 20) / 100,
+    diversity: (preferences.diversityWeight || 10) / 100
+  };
 
   for (const candidate of candidates) {
     const factors = await calculateRankingFactors(
@@ -196,21 +205,21 @@ async function rankFeedItems(candidates, userId, preferences) {
       preferences
     );
 
-    // Weighted sum
+    // Weighted sum using dynamic weights
     const score =
-      factors.recency * (preferences.recencyWeight / 100) +
-      factors.relevance * (preferences.relevanceWeight / 100) +
-      factors.socialProof * (preferences.socialProofWeight / 100) +
-      factors.diversity * (preferences.diversityWeight / 100);
+      factors.recency * weights.recency +
+      factors.relevance * weights.relevance +
+      factors.socialProof * weights.socialProof +
+      factors.diversity * weights.diversity;
 
     ranked.push({
       ...candidate,
       score,
-      rankingFactors: factors
+      rankingFactors: factors,
+      weightsUsed: weights
     });
   }
 
-  // Sort by score descending
   return ranked.sort((a, b) => b.score - a.score);
 }
 
@@ -764,27 +773,129 @@ export async function trackInteraction(
 }
 
 // ============================================================================
+// Similar Conversations
+// ============================================================================
+
+export async function getSimilarConversations(
+  userId,
+  conversationId,
+  options = {}
+) {
+  try {
+    const prisma = getPrismaClient();
+    const { limit = 10 } = options;
+
+    const sourceConv = await prisma.conversation.findUnique({
+      where: { id: conversationId },
+      include: {
+        topicConversations: { include: { topic: true } },
+        atomicChatUnits: { take: 5, orderBy: { messageIndex: 'desc' } }
+      }
+    });
+
+    if (!sourceConv) {
+      return { success: false, error: 'Conversation not found' };
+    }
+
+    const sourceTopics = sourceConv.topicConversations.map(tc => tc.topic.slug);
+
+    const similar = await prisma.$queryRaw`
+      SELECT 
+        c.id, c.title, c.provider, c.owner_id as "ownerId",
+        c."messageCount", c."totalWords", c."capturedAt",
+        COUNT(DISTINCT tc.topic_id) as "topicOverlap"
+      FROM conversations c
+      LEFT JOIN topic_conversations tc ON c.id = tc.conversation_id
+      WHERE c.id != ${conversationId}
+        AND c.owner_id = ${userId}
+      GROUP BY c.id, c.title, c.provider, c."ownerId", c."messageCount", c."totalWords", c."capturedAt"
+      ORDER BY "topicOverlap" DESC, c."capturedAt" DESC
+      LIMIT ${limit}
+    `;
+
+    const recommendations = similar.map(conv => ({
+      conversation: { id: conv.id, title: conv.title, provider: conv.provider, ownerId: conv.ownerId },
+      score: Math.min(100, Number(conv.topicOverlap) * 25),
+      reason: { icon: 'hash', text: `${conv.topicOverlap} shared topics` },
+      source: 'similar'
+    }));
+
+    return { success: true, recommendations };
+  } catch (error) {
+    log.error({ userId, conversationId, error: error.message }, 'Get similar conversations failed');
+    return { success: false, error: 'Failed to get similar conversations' };
+  }
+}
+
+// ============================================================================
+// Privacy Budget Enforcement
+// ============================================================================
+
+export async function enforcePrivacyBudget(userId, preferences) {
+  const budget = preferences.privacyBudget || 50;
+  const personalizationRatio = budget / 100;
+  
+  return {
+    allowTopicMatching: personalizationRatio > 0.2,
+    allowSocialProof: personalizationRatio > 0.3,
+    allowNetworkDiscovery: personalizationRatio > 0.4,
+    allowTrending: personalizationRatio > 0.1,
+    maxRecencyDays: Math.max(1, Math.floor(30 * personalizationRatio)),
+    maxNetworkDegree: personalizationRatio > 0.5 ? 2 : 1
+  };
+}
+
+// ============================================================================
+// Context-Aware Feed
+// ============================================================================
+
+export async function generateContextualFeed(userId, options = {}) {
+  try {
+    const prisma = getPrismaClient();
+    const { limit = 20, activeTopics = [] } = options;
+
+    const preferences = await getFeedPreferences(userId);
+    const privacy = await enforcePrivacyBudget(userId, preferences);
+    const candidates = await gatherFeedCandidates(userId, preferences);
+    
+    if (activeTopics.length > 0 && privacy.allowTopicMatching) {
+      for (const candidate of candidates) {
+        const matchCount = (candidate.topicSlugs || []).filter(t => activeTopics.includes(t)).length;
+        if (matchCount > 0) {
+          candidate.topicBoost = Math.min(0.5, matchCount * 0.15);
+          candidate.score = (candidate.score || 0) * (1 + candidate.topicBoost);
+        }
+      }
+    }
+    
+    const ranked = await rankFeedItems(candidates, userId, preferences);
+    const diversified = applyDiversity(ranked, preferences);
+    
+    return {
+      success: true,
+      items: diversified.slice(0, limit),
+      contextBoost: { activeTopics, privacy, boosted: candidates.filter(c => c.topicBoost).length }
+    };
+  } catch (error) {
+    log.error({ userId, error: error.message }, 'Contextual feed generation failed');
+    return { success: false, error: 'Failed to generate contextual feed' };
+  }
+}
+
+// ============================================================================
 // Export Service
 // ============================================================================
 
 export const feedService = {
-  // Feed
   generateFeed,
-  
-  // Discovery
+  generateContextualFeed,
   generateDiscovery,
-  
-  // Transparency
+  getSimilarConversations,
   explainRecommendation,
-  
-  // Preferences
   getFeedPreferences,
   updateFeedPreferences,
-  
-  // Tracking
+  enforcePrivacyBudget,
   trackInteraction,
-  
-  // Constants
   DEFAULT_FEED_LIMIT,
   MAX_FEED_LIMIT
 };

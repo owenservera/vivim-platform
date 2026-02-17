@@ -1,12 +1,30 @@
-/**
- * Collections Page
- * 
- * Manage conversation collections and organization
- */
-
-import { useState, useEffect, useCallback } from 'react';
-import { Folder, FolderPlus, Settings, MoreVertical, Plus, Trash2, Edit2, ChevronRight, X, Loader2, MessageSquare } from 'lucide-react';
 import './Collections.css';
+import { useState, useEffect, useCallback } from 'react';
+import {
+  Folder,
+  FolderPlus,
+  Settings,
+  MoreVertical,
+  Plus,
+  Trash2,
+  Edit2,
+  ChevronRight,
+  X,
+  Loader2,
+  MessageSquare,
+  ChevronLeft
+} from 'lucide-react';
+import { 
+  IOSTopBar, 
+  IOSCard, 
+  IOSButton, 
+  IOSModal, 
+  IOSSkeletonList,
+  ConversationCard,
+  useIOSToast,
+  toast
+} from '../components/ios';
+import { cn } from '../lib/utils';
 
 interface Collection {
   id: string;
@@ -28,19 +46,19 @@ interface Conversation {
   addedAt: string;
 }
 
-export function Collections() {
+export const Collections: React.FC = () => {
   const [collections, setCollections] = useState<Collection[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [conversations, setConversations] = useState<any[]>([]); // Using any for now to match ConversationCard expectation
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newCollectionName, setNewCollectionName] = useState('');
-  const [newCollectionColor, setNewCollectionColor] = useState('#7c3aed');
-  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; collection: Collection | null }>({ x: 0, y: 0, collection: null });
+  const [newCollectionColor, setNewCollectionColor] = useState('#6366f1');
+  const { toast: showToast } = useIOSToast();
 
-  // Fetch collections
   const fetchCollections = useCallback(async () => {
     try {
+      setLoading(true);
       const response = await fetch('/api/v1/collections');
       const data = await response.json();
       setCollections(data.collections || []);
@@ -51,7 +69,6 @@ export function Collections() {
     }
   }, []);
 
-  // Fetch conversations for selected collection
   const fetchConversations = useCallback(async (collectionId: string) => {
     try {
       const response = await fetch(`/api/v1/collections/${collectionId}/conversations`);
@@ -72,8 +89,8 @@ export function Collections() {
     }
   }, [selectedCollection, fetchConversations]);
 
-  const handleCreateCollection = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCreateCollection = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!newCollectionName.trim()) return;
 
     try {
@@ -91,9 +108,10 @@ export function Collections() {
         setCollections(prev => [...prev, newCollection]);
         setShowCreateModal(false);
         setNewCollectionName('');
+        showToast(toast.success('Collection created'));
       }
     } catch (error) {
-      console.error('Failed to create collection:', error);
+      showToast(toast.error('Failed to create collection'));
     }
   };
 
@@ -107,205 +125,168 @@ export function Collections() {
         setSelectedCollection(null);
         setConversations([]);
       }
+      showToast(toast.success('Collection deleted'));
     } catch (error) {
-      console.error('Failed to delete collection:', error);
+      showToast(toast.error('Failed to delete collection'));
     }
   };
 
-  const handleContextMenu = (e: React.MouseEvent, collection: Collection) => {
-    e.preventDefault();
-    setContextMenu({ x: e.clientX, y: e.clientY, collection });
-  };
-
-  const handleCloseContextMenu = () => {
-    setContextMenu({ x: 0, y: 0, collection: null });
-  };
-
   const COLORS = [
-    '#7c3aed', '#6366f1', '#3b82f6', '#06b6d4', '#10b981',
-    '#f59e0b', '#ef4444', '#ec4899', '#8b5cf6', '#64748b'
+    '#6366f1', '#8b5cf6', '#3b82f6', '#06b6d4', '#10b981',
+    '#f59e0b', '#ef4444', '#ec4899', '#64748b'
   ];
 
-  return (
-    <div className="collections-page">
-      <aside className="collections-sidebar">
-        <div className="sidebar-header">
-          <h2>Collections</h2>
-          <button className="add-btn" onClick={() => setShowCreateModal(true)}>
-            <FolderPlus size={18} />
-          </button>
-        </div>
+  const handleBack = () => {
+    if (selectedCollection) {
+      setSelectedCollection(null);
+    } else {
+      window.history.back();
+    }
+  };
 
-        <div className="collections-list">
-          {loading ? (
-            <div className="loading">
-              <Loader2 className="spinner" size={24} />
-              <span>Loading...</span>
-            </div>
-          ) : collections.length === 0 ? (
-            <div className="empty-state">
-              <Folder size={40} />
-              <p>No collections yet</p>
-              <button className="create-btn" onClick={() => setShowCreateModal(true)}>
-                Create your first collection
+  return (
+    <div className="flex flex-col min-h-full bg-gray-50 dark:bg-gray-950 pb-20">
+      <IOSTopBar 
+        title={selectedCollection ? selectedCollection.name : "Collections"} 
+        showBackButton
+        onBack={handleBack}
+        rightAction={
+          !selectedCollection && (
+            <button 
+              onClick={() => setShowCreateModal(true)}
+              className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-full transition-colors"
+            >
+              <FolderPlus size={22} />
+            </button>
+          )
+        }
+      />
+
+      <div className="px-4 py-4">
+        {selectedCollection ? (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between px-1">
+              <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                {conversations.length} Items in this collection
+              </p>
+              <button 
+                onClick={() => handleDeleteCollection(selectedCollection.id)}
+                className="text-[10px] font-bold text-red-500 uppercase tracking-widest"
+              >
+                Delete
               </button>
             </div>
-          ) : (
-            collections.map(collection => (
-              <div
-                key={collection.id}
-                className={`collection-item ${selectedCollection?.id === collection.id ? 'active' : ''}`}
-                onClick={() => setSelectedCollection(collection)}
-                onContextMenu={(e) => handleContextMenu(e, collection)}
-              >
-                <div 
-                  className="collection-icon" 
-                  style={{ backgroundColor: collection.color }}
-                >
-                  <Folder size={18} />
-                </div>
-                <div className="collection-info">
-                  <span className="collection-name">{collection.name}</span>
-                  <span className="collection-count">{collection.itemCount} items</span>
-                </div>
-                <ChevronRight size={16} className="chevron" />
-              </div>
-            ))
-          )}
-        </div>
-      </aside>
 
-      <main className="collections-main">
-        {selectedCollection ? (
-          <>
-            <header className="collection-header">
-              <div className="header-info">
-                <div 
-                  className="header-icon"
-                  style={{ backgroundColor: selectedCollection.color }}
-                >
-                  <Folder size={24} />
-                </div>
-                <div>
-                  <h2>{selectedCollection.name}</h2>
-                  {selectedCollection.description && (
-                    <p>{selectedCollection.description}</p>
-                  )}
-                </div>
-              </div>
-              <div className="header-actions">
-                <button className="action-btn">
-                  <Settings size={18} />
-                </button>
-              </div>
-            </header>
-
-            <div className="collection-content">
+            <div className="space-y-3">
               {conversations.length === 0 ? (
-                <div className="empty-state">
-                  <MessageSquare size={40} />
-                  <p>No conversations in this collection</p>
-                  <span className="hint">Add conversations from the conversation view</span>
+                <div className="py-20 text-center opacity-40">
+                  <MessageSquare size={48} className="mx-auto mb-4" />
+                  <p className="text-sm font-medium">No items found</p>
                 </div>
               ) : (
-                <div className="conversations-grid">
-                  {conversations.map(conv => (
-                    <div key={conv.id} className="conversation-card">
-                      <div className="card-header">
-                        <MessageSquare size={16} />
-                        <span className="provider-badge">{conv.provider}</span>
-                      </div>
-                      <h3>{conv.title}</h3>
-                      <p className="card-meta">
-                        {conv.messageCount} messages • {conv.model}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+                conversations.map(conv => (
+                  <ConversationCard key={conv.id} conversation={conv} />
+                ))
               )}
             </div>
-          </>
+          </div>
         ) : (
-          <div className="no-selection">
-            <Folder size={64} />
-            <h2>Select a Collection</h2>
-            <p>Choose a collection from the sidebar to view its contents</p>
+          <div className="space-y-3">
+            {loading ? (
+              <IOSSkeletonList count={5} />
+            ) : collections.length === 0 ? (
+              <div className="py-20 text-center opacity-40">
+                <Folder size={64} className="mx-auto mb-4" />
+                <h3 className="text-lg font-bold">No Collections</h3>
+                <p className="text-sm mb-6">Organize your intelligence into folders</p>
+                <IOSButton variant="secondary" onClick={() => setShowCreateModal(true)}>
+                  Create New
+                </IOSButton>
+              </div>
+            ) : (
+              collections.map(collection => (
+                <IOSCard
+                  key={collection.id}
+                  padding="md"
+                  clickable
+                  onClick={() => setSelectedCollection(collection)}
+                  className="flex items-center gap-4 group"
+                >
+                  <div 
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-black/5 flex-shrink-0"
+                    style={{ backgroundColor: collection.color }}
+                  >
+                    <Folder className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-gray-900 dark:text-white truncate">
+                      {collection.name}
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      {collection.itemCount} Items · Knowledge Folder
+                    </p>
+                  </div>
+                  <ChevronRight size={18} className="text-gray-300 group-hover:text-gray-500 transition-colors flex-shrink-0" />
+                </IOSCard>
+              ))
+            )}
           </div>
         )}
-      </main>
+      </div>
 
-      {/* Context Menu */}
-      {contextMenu.collection && (
-        <>
-          <div className="context-menu-overlay" onClick={handleCloseContextMenu} />
-          <div 
-            className="context-menu"
-            style={{ top: contextMenu.y, left: contextMenu.x }}
-          >
-            <button className="context-item">
-              <Edit2 size={14} />
-              Rename
-            </button>
-            <button 
-              className="context-item danger"
-              onClick={() => {
-                handleDeleteCollection(contextMenu.collection!.id);
-                handleCloseContextMenu();
-              }}
-            >
-              <Trash2 size={14} />
-              Delete
-            </button>
+      <IOSModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        title="New Collection"
+        footer={
+          <div className="flex gap-3 w-full">
+            <IOSButton variant="secondary" fullWidth onClick={() => setShowCreateModal(false)}>
+              Cancel
+            </IOSButton>
+            <IOSButton variant="primary" fullWidth onClick={() => handleCreateCollection()} disabled={!newCollectionName.trim()}>
+              Create
+            </IOSButton>
           </div>
-        </>
-      )}
+        }
+      >
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest px-1">
+              Name
+            </label>
+            <input
+              type="text"
+              value={newCollectionName}
+              onChange={e => setNewCollectionName(e.target.value)}
+              placeholder="e.g. Research, Projects, Personal"
+              className="w-full bg-gray-50 dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-2xl px-4 py-3 text-sm font-medium focus:outline-none focus:border-blue-500 transition-colors"
+              autoFocus
+            />
+          </div>
 
-      {/* Create Modal */}
-      {showCreateModal && (
-        <div className="modal-overlay" onClick={() => setShowCreateModal(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setShowCreateModal(false)}>
-              <X size={20} />
-            </button>
-            
-            <h2>Create Collection</h2>
-            
-            <form onSubmit={handleCreateCollection}>
-              <div className="form-group">
-                <label>Name</label>
-                <input
-                  type="text"
-                  value={newCollectionName}
-                  onChange={e => setNewCollectionName(e.target.value)}
-                  placeholder="My Collection"
-                  autoFocus
+          <div className="space-y-3">
+            <label className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest px-1">
+              Label Color
+            </label>
+            <div className="grid grid-cols-5 gap-3">
+              {COLORS.map(color => (
+                <button
+                  key={color}
+                  type="button"
+                  className={cn(
+                    "w-full aspect-square rounded-xl transition-all border-4",
+                    newCollectionColor === color ? "border-blue-500/50 scale-110 shadow-lg shadow-black/10" : "border-transparent"
+                  )}
+                  style={{ backgroundColor: color }}
+                  onClick={() => setNewCollectionColor(color)}
                 />
-              </div>
-              
-              <div className="form-group">
-                <label>Color</label>
-                <div className="color-picker">
-                  {COLORS.map(color => (
-                    <button
-                      key={color}
-                      type="button"
-                      className={`color-option ${newCollectionColor === color ? 'selected' : ''}`}
-                      style={{ backgroundColor: color }}
-                      onClick={() => setNewCollectionColor(color)}
-                    />
-                  ))}
-                </div>
-              </div>
-              
-              <button type="submit" className="create-submit-btn">
-                Create Collection
-              </button>
-            </form>
+              ))}
+            </div>
           </div>
         </div>
-      )}
+      </IOSModal>
     </div>
   );
-}
+};
 
 export default Collections;

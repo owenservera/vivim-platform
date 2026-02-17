@@ -1,406 +1,170 @@
 /**
- * Sync API Routes
+ * Sync Controller
  * 
- * Implements the sync protocol for PWA-Server synchronization
- * Protocol: Last-write-wins with CRDT support for Yjs documents
- * 
- * Endpoints:
- * - POST /api/v1/sync/push   - Push local changes to server
- * - GET  /api/v1/sync/pull   - Pull server changes
- * - POST /api/v1/sync/resolve - Resolve conflicts
- * - GET  /api/v1/sync/status - Get sync status
+ * Handles delta-synchronization between clients and server.
+ * Uses Hybrid Logical Clocks (HLC) and Vector Clocks for consistency.
  */
 
-import express from 'express';
+import { Router } from 'express';
+import { requireApiKey } from '../middleware/auth.js';
+import { createRequestLogger } from '../lib/logger.js';
 import { getPrismaClient } from '../lib/database.js';
-import { logger } from '../lib/logger.js';
+import { z } from 'zod';
 
-const router = express.Router();
+const router = Router();
+const prisma = getPrismaClient();
 
-/**
- * POST /api/v1/sync/push
- * Push local changes to server
- */
-router.post('/push', async (req, res) => {
-  try {
-    const {
-      deviceId,
-      userId,
-      changes,
-      lastSyncTimestamp,
-    } = req.body;
+// ============================================================================
+// Schema Validation
+// ============================================================================
 
-    if (!deviceId || !changes || !Array.isArray(changes)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Invalid request: deviceId and changes array required',
-      });
-    }
-
-    logger.info(`Sync push from device ${deviceId}: ${changes.length} changes`);
-
-    const results = {
-      accepted: [],
-      rejected: [],
-      conflicts: [],
-    };
-
-    // Process each change
-    for (const change of changes) {
-      try {
-        const result = await processChange(change, deviceId, userId);
-        
-        if (result.conflict) {
-          results.conflicts.push({
-            changeId: change.id,
-            reason: result.reason,
-            serverVersion: result.serverVersion,
-            clientVersion: change,
-          });
-        } else if (result.accepted) {
-          results.accepted.push(change.id);
-        } else {
-          results.rejected.push({
-            changeId: change.id,
-            reason: result.reason,
-          });
-        }
-      } catch (error) {
-        logger.error(`Failed to process change ${change.id}`, { error: error.message });
-        results.rejected.push({
-          changeId: change.id,
-          reason: error.message,
-        });
-      }
-    }
-
-    // Update last sync timestamp for device
-    const newSyncTimestamp = new Date().toISOString();
-
-    res.json({
-      success: true,
-      syncTimestamp: newSyncTimestamp,
-      results,
-    });
-
-  } catch (error) {
-    logger.error('Sync push failed', { error: error.message });
-    res.status(500).json({
-      success: false,
-      error: 'Sync push failed',
-      message: error.message,
-    });
-  }
+const SyncPacketSchema = z.object({
+  deviceId: z.string(),
+  lastSyncId: z.string().optional(), // Cursor
+  operations: z.array(z.object({
+    id: z.string(),
+    entityType: z.string(), // 'conversation', 'message', 'acu'
+    entityId: z.string(),
+    operation: z.enum(['INSERT', 'UPDATE', 'DELETE']),
+    payload: z.any(),
+    hlcTimestamp: z.string(),
+    vectorClock: z.record(z.number()).optional()
+  }))
 });
 
-/**
- * GET /api/v1/sync/pull
- * Pull server changes since last sync
- */
-router.get('/pull', async (req, res) => {
+// ============================================================================
+// PULL CHANGES (Downstream)
+// ============================================================================
+
+router.get('/pull', requireApiKey(), async (req, res, next) => {
+  const log = createRequestLogger(req);
   try {
-    const {
-      deviceId,
-      userId,
-      since,
-    } = req.query;
+    const { deviceId, lastSyncId, limit = 100 } = req.query;
 
     if (!deviceId) {
-      return res.status(400).json({
-        success: false,
-        error: 'deviceId required',
-      });
+      return res.status(400).json({ error: 'deviceId required' });
     }
 
-    const sinceDate = since ? new Date(since) : new Date(0);
+    // Fetch operations since the last known sync ID (cursor)
+    // Ordered by HLC timestamp to ensure causal consistency
+    const operations = await prisma.syncOperation.findMany({
+      where: {
+        deviceId: { not: String(deviceId) }, // Don't send back own changes
+        ...(lastSyncId ? { id: { gt: String(lastSyncId) } } : {})
+      },
+      orderBy: {
+        hlcTimestamp: 'asc'
+      },
+      take: Number(limit)
+    });
 
-    logger.info(`Sync pull for device ${deviceId} since ${sinceDate.toISOString()}`);
-
-    // Get all changes since timestamp
-    const [conversations, messages] = await Promise.all([
-      // Conversations updated since last sync
-      getPrismaClient().conversation.findMany({
-        where: {
-          updatedAt: { gt: sinceDate },
-          ...(userId && { ownerId: userId }),
-        },
-        include: {
-          messages: {
-            where: {
-              createdAt: { gt: sinceDate },
-            },
-            orderBy: { messageIndex: 'asc' },
-          },
-        },
-        orderBy: { updatedAt: 'desc' },
-      }),
-
-      // Standalone message updates (in case conversation wasn't updated)
-      getPrismaClient().message.findMany({
-        where: {
-          createdAt: { gt: sinceDate },
-        },
-        orderBy: { createdAt: 'desc' },
-      }),
-    ]);
-
-    const changes = {
-      conversations: conversations.map(conv => ({
-        type: 'conversation',
-        action: 'upsert',
-        data: conv,
-        timestamp: conv.updatedAt.toISOString(),
-      })),
-      messages: messages.map(msg => ({
-        type: 'message',
-        action: 'upsert',
-        data: msg,
-        timestamp: msg.createdAt.toISOString(),
-      })),
-    };
-
-    const syncTimestamp = new Date().toISOString();
+    const newSyncId = operations.length > 0 ? operations[operations.length - 1].id : lastSyncId;
 
     res.json({
-      success: true,
-      syncTimestamp,
-      changes,
-      stats: {
-        conversations: conversations.length,
-        messages: messages.length,
-        total: conversations.length + messages.length,
-      },
+      syncId: newSyncId,
+      operations,
+      hasMore: operations.length === Number(limit)
     });
 
   } catch (error) {
-    logger.error('Sync pull failed', { error: error.message });
-    res.status(500).json({
-      success: false,
-      error: 'Sync pull failed',
-      message: error.message,
-    });
+    next(error);
   }
 });
 
-/**
- * POST /api/v1/sync/resolve
- * Resolve sync conflicts
- */
-router.post('/resolve', async (req, res) => {
+// ============================================================================
+// PUSH CHANGES (Upstream)
+// ============================================================================
+
+router.post('/push', requireApiKey(), async (req, res, next) => {
+  const log = createRequestLogger(req);
   try {
-    const {
-      conflictId,
-      resolution, // 'server' | 'client' | 'merge'
-      mergedData,
-    } = req.body;
+    const packet = SyncPacketSchema.parse(req.body);
+    const results = [];
 
-    if (!conflictId || !resolution) {
-      return res.status(400).json({
-        success: false,
-        error: 'conflictId and resolution required',
-      });
-    }
-
-    logger.info(`Resolving conflict ${conflictId} with strategy: ${resolution}`);
-
-    // In a real implementation, you'd fetch the conflict from a conflicts table
-    // For now, we'll just acknowledge the resolution
-
-    let result;
-    switch (resolution) {
-      case 'server':
-        result = { strategy: 'server-wins', applied: true };
-        break;
-      case 'client':
-        result = { strategy: 'client-wins', applied: true };
-        break;
-      case 'merge':
-        if (!mergedData) {
-          return res.status(400).json({
-            success: false,
-            error: 'mergedData required for merge resolution',
-          });
-        }
-        result = { strategy: 'manual-merge', applied: true, data: mergedData };
-        break;
-      default:
-        return res.status(400).json({
-          success: false,
-          error: 'Invalid resolution strategy',
+    // Process operations in a transaction
+    await prisma.$transaction(async (tx) => {
+      for (const op of packet.operations) {
+        // 1. Conflict Resolution (LWW based on HLC)
+        // Check if we have a newer version already
+        const existing = await tx.syncOperation.findFirst({
+          where: {
+            entityType: op.entityType,
+            entityId: op.entityId,
+            hlcTimestamp: { gt: op.hlcTimestamp }
+          }
         });
-    }
 
-    res.json({
-      success: true,
-      conflictId,
-      resolution: result,
+        if (existing) {
+          log.info({ opId: op.id }, 'Conflict: Local version is newer, ignoring push');
+          results.push({ id: op.id, status: 'conflict_ignored' });
+          continue;
+        }
+
+        // 2. Apply Change to Domain Model
+        try {
+          await applyOperationToDomain(tx, op);
+          
+          // 3. Record Operation for Other Clients
+          await tx.syncOperation.create({
+            data: {
+              id: op.id, // Keep client ID for idempotency
+              authorDid: req.user?.did || 'unknown',
+              deviceId: packet.deviceId,
+              tableName: op.entityType + 's', // Simple pluralization
+              recordId: op.entityId,
+              entityType: op.entityType,
+              entityId: op.entityId,
+              operation: op.operation,
+              payload: op.payload,
+              hlcTimestamp: op.hlcTimestamp,
+              isProcessed: true
+            }
+          });
+          
+          results.push({ id: op.id, status: 'applied' });
+        } catch (domainError) {
+          log.error({ error: domainError, op }, 'Failed to apply domain operation');
+          results.push({ id: op.id, status: 'failed', error: domainError.message });
+        }
+      }
     });
+
+    res.json({ results });
 
   } catch (error) {
-    logger.error('Conflict resolution failed', { error: error.message });
-    res.status(500).json({
-      success: false,
-      error: 'Conflict resolution failed',
-      message: error.message,
-    });
+    next(error);
   }
 });
 
-/**
- * GET /api/v1/sync/status
- * Get sync status for a device
- */
-router.get('/status', async (req, res) => {
-  try {
-    const { deviceId, userId } = req.query;
+// ============================================================================
+// Domain Logic Adapter
+// ============================================================================
 
-    if (!deviceId) {
-      return res.status(400).json({
-        success: false,
-        error: 'deviceId required',
+async function applyOperationToDomain(tx, op) {
+  const { entityType, operation, payload } = op;
+
+  // Safety: Remove sensitive fields or sanitize payload here
+  // For now, we trust the schema validation somewhat
+
+  if (entityType === 'conversation') {
+    if (operation === 'INSERT' || operation === 'UPDATE') {
+      await tx.conversation.upsert({
+        where: { id: payload.id },
+        update: payload,
+        create: payload
       });
+    } else if (operation === 'DELETE') {
+      await tx.conversation.delete({ where: { id: payload.id } });
     }
-
-    // Get latest conversation update time
-    const latestConversation = await getPrismaClient().conversation.findFirst({
-      where: userId ? { ownerId: userId } : {},
-      orderBy: { updatedAt: 'desc' },
-      select: { updatedAt: true },
-    });
-
-    // Get total counts
-    const [conversationCount, messageCount] = await Promise.all([
-      getPrismaClient().conversation.count({
-        where: userId ? { ownerId: userId } : {},
-      }),
-      getPrismaClient().message.count(),
-    ]);
-
-    res.json({
-      success: true,
-      status: {
-        deviceId,
-        lastServerUpdate: latestConversation?.updatedAt?.toISOString() || null,
-        serverCounts: {
-          conversations: conversationCount,
-          messages: messageCount,
-        },
-        syncAvailable: true,
-      },
-    });
-
-  } catch (error) {
-    logger.error('Sync status check failed', { error: error.message });
-    res.status(500).json({
-      success: false,
-      error: 'Sync status check failed',
-      message: error.message,
-    });
-  }
-});
-
-/**
- * Helper: Process a single change
- */
-async function processChange(change, deviceId, userId) {
-  const { type, action, data, timestamp } = change;
-
-  // Check for conflicts (last-write-wins)
-  if (type === 'conversation') {
-    const existing = await getPrismaClient().conversation.findUnique({
-      where: { id: data.id },
-    });
-
-    if (existing) {
-      const serverTime = new Date(existing.updatedAt);
-      const clientTime = new Date(timestamp);
-
-      // Conflict: server version is newer
-      if (serverTime > clientTime) {
-        return {
-          accepted: false,
-          conflict: true,
-          reason: 'Server version is newer',
-          serverVersion: existing,
-        };
-      }
-    }
-
-    // No conflict, apply change
-    if (action === 'upsert') {
-      await getPrismaClient().conversation.upsert({
-        where: { id: data.id },
-        update: {
-          ...data,
-          ownerId: userId || data.ownerId,
-          updatedAt: new Date(timestamp),
-        },
-        create: {
-          ...data,
-          ownerId: userId || data.ownerId,
-          createdAt: new Date(data.createdAt || timestamp),
-          updatedAt: new Date(timestamp),
-        },
-      });
-
-      return { accepted: true };
-    }
-
-    if (action === 'delete') {
-      await getPrismaClient().conversation.delete({
-        where: { id: data.id },
-      });
-      return { accepted: true };
+  } 
+  else if (entityType === 'message') {
+    if (operation === 'INSERT') {
+      await tx.message.create({ data: payload });
+    } else if (operation === 'UPDATE') {
+      await tx.message.update({ where: { id: payload.id }, data: payload });
     }
   }
-
-  if (type === 'message') {
-    const existing = await getPrismaClient().message.findUnique({
-      where: { id: data.id },
-    });
-
-    if (existing) {
-      const serverTime = new Date(existing.createdAt);
-      const clientTime = new Date(timestamp);
-
-      if (serverTime > clientTime) {
-        return {
-          accepted: false,
-          conflict: true,
-          reason: 'Server version is newer',
-          serverVersion: existing,
-        };
-      }
-    }
-
-    if (action === 'upsert') {
-      await getPrismaClient().message.upsert({
-        where: { id: data.id },
-        update: {
-          ...data,
-          createdAt: new Date(data.createdAt || timestamp),
-        },
-        create: {
-          ...data,
-          createdAt: new Date(data.createdAt || timestamp),
-        },
-      });
-
-      return { accepted: true };
-    }
-
-    if (action === 'delete') {
-      await getPrismaClient().message.delete({
-        where: { id: data.id },
-      });
-      return { accepted: true };
-    }
-  }
-
-  return {
-    accepted: false,
-    reason: `Unknown change type: ${type} or action: ${action}`,
-  };
+  // Add other entities...
 }
 
 export default router;

@@ -1,22 +1,20 @@
 import { useState } from 'react'
 import { clsx } from 'clsx'
-import { useAppStore } from '../store/appStore'
-import { 
-  Table, 
-  Search, 
-  Play, 
-  RefreshCw, 
-  Download, 
+import { useAppStore } from '../../store/appStore'
+import {
+  Search,
+  Play,
+  RefreshCw,
+  Download,
   Upload,
   ChevronRight,
   ChevronDown,
   Database,
-  HardDrive,
   Rows3,
   Clock,
   AlertCircle
 } from 'lucide-react'
-import { mockQueryResult } from '../lib/mockData'
+import { mockQueryResult } from '../../lib/mockData'
 
 export default function DatabasePanel() {
   const { tables, queryResult, setQueryResult, isLoading, setIsLoading } = useAppStore()

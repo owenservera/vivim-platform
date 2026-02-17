@@ -72,11 +72,11 @@ export class CircleCRDT {
     });
 
     settings.observe(() => {
-      const circleSettings: CircleSettings = {} as CircleSettings;
+      const circleSettings: Partial<CircleSettings> = {};
       settings.forEach((value, key) => {
         (circleSettings as Record<string, unknown>)[key] = value;
       });
-      this.emit('settings:change', circleSettings);
+      this.emit('settings:change', circleSettings as CircleSettings);
     });
 
     contentRefs.observe(() => {
@@ -175,7 +175,7 @@ export class CircleCRDT {
     }
   }
 
-  private emit(event: string, data: unknown): void {
-    log.debug({ docId: this.docId, event }, 'Emitting event');
+  private emit(event: string, data?: unknown): void {
+    log.debug({ docId: this.docId, event, data }, 'Emitting event');
   }
 }

@@ -36,7 +36,7 @@ describe('calculateStatsOptimized', () => {
     const stats = calculateStatsOptimized(conversation);
 
     expect(stats.totalMessages).toBe(2);
-    expect(stats.totalWords).toBe(9);
+    expect(stats.totalWords).toBe(10); // "Hello world" (2) + "Hi there! How can I help you today?" (8)
     expect(stats.totalCharacters).toBe(45);
   });
 

@@ -184,9 +184,16 @@ export interface Conversation {
   provider: 'chatgpt' | 'claude' | 'gemini' | 'grok' | 'qwen' | 'deepseek' | 'perplexity' | 'zai' | 'kimi' | 'other';
   sourceUrl: string;
   title: string;
+  state?: 'ACTIVE' | 'ARCHIVED' | 'DELETED';
+  version?: number;
+  ownerId?: string;
+  contentHash?: string;
   createdAt: string;
-  exportedAt: string;
+  updatedAt: string;
+  capturedAt: string;
+  exportedAt?: string; // Deprecated, use capturedAt
   metadata?: ConversationMetadata;
+  tags?: string[];
   messages: Message[];
   stats: ConversationStats;
 }

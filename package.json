@@ -1,0 +1,36 @@
+{
+  "name": "vivim-monorepo",
+  "version": "1.0.0",
+  "description": "VIVIM Monorepo - PWA, Server, Network Engine, and Admin Panel",
+  "scripts": {
+    "dev": "concurrently \"cd pwa && bun run dev\" \"cd server && bun run dev\" \"cd network && bun run dev:ws\" \"cd admin-panel && bun run dev\"",
+    "dev:debug": "LOG_LEVEL=debug DEBUG=true bun run dev",
+    "dev:pwa": "cd pwa && bun run dev",
+    "dev:server": "cd server && bun run dev",
+    "dev:network": "cd network && bun run dev",
+    "dev:network:ws": "cd network && HOST=0.0.0.0 bun run dev:ws",
+    "dev:server:debug": "cd server && LOG_LEVEL=debug bun run dev",
+    "dev:network:debug": "cd network && LOG_LEVEL=debug bun run dev",
+    "dev:admin": "cd admin-panel && bun run dev",
+    "start": "concurrently \"cd pwa && bun run preview\" \"cd server && bun run start\" \"cd network && bun run start\"",
+    "build": "cd pwa && bun run build && cd ../server && bun run build && cd ../network && bun run build",
+    "test": "cd pwa && bun run test & cd server && bun run test & cd network && bun run test",
+    "dev:admin-standalone": "cd admin-panel && bun run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "keywords": [
+    "vivim",
+    "monorepo",
+    "pwa",
+    "server",
+    "network",
+    "p2p"
+  ],
+  "author": "VIVIM Team",
+  "license": "MIT",
+  "engines": {
+    "bun": ">=1.0.0"
+  }
+}

@@ -463,8 +463,6 @@ export class PrivacyManager {
     const root = nodes.find(n => n.type === 'root') as ConversationRoot | undefined;
     let onChainAnchor: OnChainAnchor | undefined;
 
-    // TODO: Add onChainAnchors to PrivacyState type definition
-    // For now, access safely
     if (root?.privacy && 'onChainAnchors' in root.privacy) {
       const anchors = (root.privacy as unknown as { onChainAnchors: OnChainAnchor[] }).onChainAnchors;
       if (Array.isArray(anchors) && anchors.length > 0) {

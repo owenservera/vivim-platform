@@ -84,7 +84,7 @@ The frontend demonstrates a well-structured component architecture with:
 - **Database**: PostgreSQL with pgvector extension
 - **AI SDK**: AI SDK 6.0.82 with multi-provider support
 - **Web Scraping**: Playwright 1.58.2 with stealth plugins
-- **Vector Store**: Qdrant 1.16.2
+- **Vector Store**: PostgreSQL with pgvector (built-in)
 - **Authentication**: Passport with Google OAuth 2.0
 - **Validation**: Zod 4.3.6
 

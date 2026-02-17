@@ -49,8 +49,8 @@ export const IOSTopBar: React.FC<IOSTopBarProps> = ({
 
         {/* Center Section - Title */}
         {title && (
-          <div className="flex-1 text-center">
-            <h1 className="text-base font-semibold text-gray-900 dark:text-white">
+          <div className="flex-1 text-center min-w-0 px-2">
+            <h1 className="text-base font-semibold text-gray-900 dark:text-white truncate">
               {title}
             </h1>
           </div>
@@ -129,8 +129,8 @@ export const IOSDefaultTopBar: React.FC = () => {
 export const IOSMinimalTopBar: React.FC<{ title: string }> = ({ title }) => {
   return (
     <header className="fixed top-0 left-0 right-0 h-14 ios-safe-top bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/50 z-[1030]">
-      <div className="flex items-center justify-center h-full px-4">
-        <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+      <div className="flex items-center justify-center h-full px-4 min-w-0">
+        <h1 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
           {title}
         </h1>
       </div>

@@ -59,11 +59,12 @@ router.get('/', requireApiKey(), async (req, res, next) => {
       orderDirection,
       startDate,
       endDate,
+      userId: req.auth?.userId, // ADD: Pass userId for ownership filtering
     };
 
     const result = await listConversations(options);
 
-    log.info({ count: result.conversations.length, userId: req.auth?.apiKeyPrefix }, 'Conversations listed');
+    log.info({ count: result.conversations.length, userId: req.auth?.userId }, 'User conversations listed');
 
     res.json(result);
   } catch (error) {
@@ -94,6 +95,55 @@ router.get('/:id', requireApiKey(), async (req, res, next) => {
     log.info({ conversationId: id, userId: req.auth?.apiKeyPrefix }, 'Conversation retrieved');
 
     res.json({ data: conversation });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ============================================================================
+// GET CONVERSATION MESSAGES (PAGINATED)
+// ============================================================================
+
+/**
+ * GET /api/v1/conversations/:id/messages
+ *
+ * Get messages for a single conversation with pagination
+ *
+ * Query params:
+ * - limit: Results per page (default: 50)
+ * - offset: Page offset (default: 0)
+ */
+router.get('/:id/messages', requireApiKey(), async (req, res, next) => {
+  const log = createRequestLogger(req);
+
+  try {
+    const { id } = req.params;
+    const { limit = 50, offset = 0 } = req.query;
+
+    const { getPrismaClient } = await import('../lib/database.js');
+    const prisma = getPrismaClient();
+
+    const [messages, total] = await Promise.all([
+      prisma.message.findMany({
+        where: { conversationId: id },
+        take: parseInt(limit, 10),
+        skip: parseInt(offset, 10),
+        orderBy: { messageIndex: 'asc' },
+      }),
+      prisma.message.count({ where: { conversationId: id } }),
+    ]);
+
+    log.info({ conversationId: id, count: messages.length }, 'Messages retrieved');
+
+    res.json({
+      data: messages,
+      pagination: {
+        total,
+        limit: parseInt(limit, 10),
+        offset: parseInt(offset, 10),
+        hasMore: parseInt(offset, 10) + messages.length < total,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -207,6 +257,66 @@ router.delete('/:id', requireApiKey(), async (req, res, next) => {
     res.json({
       message: 'Conversation deleted',
       id: conversation.id,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/:id/fork', requireApiKey(), async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const prisma = getPrismaClient();
+    
+    const source = await prisma.conversation.findUnique({ where: { id } });
+    if (!source) {
+      return res.status(404).json({ error: 'Conversation not found' });
+    }
+
+    const forked = await prisma.conversation.create({
+      data: {
+        title: `${source.title} (Fork)`,
+        sourceUrl: source.sourceUrl,
+        provider: source.provider,
+        model: source.model,
+        userId: req.auth?.userId,
+      }
+    });
+
+    log.info({ sourceId: id, forkedId: forked.id, userId: req.auth?.apiKeyPrefix }, 'Conversation forked');
+
+    res.json({
+      success: true,
+      id: forked.id,
+      forkedFrom: id,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/:id/related', requireApiKey(), async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const prisma = getPrismaClient();
+    
+    const conversation = await prisma.conversation.findUnique({ where: { id } });
+    if (!conversation) {
+      return res.status(404).json({ error: 'Conversation not found' });
+    }
+
+    const related = await prisma.conversation.findMany({
+      where: {
+        id: { not: id },
+        userId: req.auth?.userId,
+      },
+      take: 5,
+      orderBy: { createdAt: 'desc' },
+    });
+
+    res.json({
+      success: true,
+      related,
     });
   } catch (error) {
     next(error);

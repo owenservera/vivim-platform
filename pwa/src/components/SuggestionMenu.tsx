@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Command, Zap, User, FileText, Save, Globe, Hash, Smile, HelpCircle } from 'lucide-react';
+import { Command, Zap, User, FileText, Save, Globe, Hash, Smile, HelpCircle, GitBranch, BookOpen, Code } from 'lucide-react';
 import './SuggestionMenu.css';
 
 export type TriggerType = '/' | '@' | '+' | '!' | '#';
@@ -25,7 +25,7 @@ interface SuggestionMenuProps {
 const getIcon = (iconName: string | any) => {
   if (typeof iconName !== 'string') return iconName || HelpCircle;
   
-  const map: Record<string, any> = {
+const map: Record<string, any> = {
     'zap': Zap,
     'command': Command,
     'user': User,
@@ -34,7 +34,11 @@ const getIcon = (iconName: string | any) => {
     'globe': Globe,
     'hash': Hash,
     'smile': Smile,
-    'bot': BotIcon // defined below
+    'bot': BotIcon,
+    'github': Globe,
+    'git-branch': GitBranch,
+    'book-open': BookOpen,
+    'file-code': Code,
   };
   return map[iconName.toLowerCase()] || HelpCircle;
 };

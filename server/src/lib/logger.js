@@ -10,10 +10,7 @@
 
 import pino from 'pino';
 import { config } from '../config/index.js';
-
-// ============================================================================
-// LOGGER CONFIGURATION
-// ============================================================================
+import { randomUUID } from 'crypto';
 
 const pinoConfig = {
   level: config.logLevel,
@@ -23,9 +20,9 @@ const pinoConfig = {
     },
   },
   timestamp: pino.stdTimeFunctions.isoTime,
+  levelKey: 'level',
 };
 
-// Use pretty printing in development, JSON in production
 const isPretty = config.logFormat === 'pretty';
 
 export const logger = pino(
@@ -41,37 +38,39 @@ export const logger = pino(
           },
         },
       }
-    : pinoConfig,
+    : pinoConfig
 );
 
-// ============================================================================
-// CHILD LOGGER CREATOR
-// ============================================================================
+let correlationCounter = 0;
 
-/**
- * Create a child logger with bound context
- * @param {Object} context - Context to bind to all log entries
- * @returns {pino.Logger} Child logger instance
- */
+export function generateCorrelationId() {
+  return `corr_${Date.now()}_${++correlationCounter}_${randomUUID().slice(0, 8)}`;
+}
+
 export function createLogger(context) {
   return logger.child(context);
 }
 
-// ============================================================================
-// REQUEST LOGGER
-// ============================================================================
-
-/**
- * Create a logger bound to a specific request
- * @param {Object} req - Express request object
- * @returns {pino.Logger} Request-scoped logger
- */
 export function createRequestLogger(req) {
+  if (!req || !req.headers) {
+    return logger.child({ correlationId: generateCorrelationId() });
+  }
+  const correlationId = req.headers['x-correlation-id'] || req.id || generateCorrelationId();
   return logger.child({
+    correlationId,
     requestId: req.id,
     ip: req.ip,
     method: req.method,
     path: req.path,
+  });
+}
+
+export function createOperationLogger(operation, context = {}) {
+  const operationId = `op_${Date.now()}_${randomUUID().slice(0, 8)}`;
+  return logger.child({
+    operationId,
+    operation,
+    ...context,
   });
 }
 

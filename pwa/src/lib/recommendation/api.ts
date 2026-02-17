@@ -1,5 +1,9 @@
 /**
  * Recommendation API Client
+ * 
+ * Unified client that works in both development and production.
+ * - Development: Uses client-side knowledge mixer
+ * - Production: Calls server API with fallback to client-side
  */
 
 import type {
@@ -19,6 +23,9 @@ import { listConversationsForRecommendation } from './storage-adapter';
 import { log } from './logger';
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:3000/api';
+const USE_SERVER_API = import.meta.env.VITE_USE_SERVER_FEED !== 'false';
+
+const isDev = import.meta.env.DEV;
 
 // ============================================================================
 // For You Feed
@@ -28,9 +35,20 @@ export async function getForYouFeed(
   conversations: Conversation[],
   request?: ForYouFeedRequest
 ): Promise<ForYouFeedResponse> {
-  // For Phase 1: Use client-side generation
-  // TODO: In production, this will call the server API
+  if (isDev || !USE_SERVER_API) {
+    return getForYouFeedLocal(conversations, request);
+  }
+  
+  return getForYouFeedFromServer({
+    limit: request?.limit,
+    context: request?.context
+  });
+}
 
+async function getForYouFeedLocal(
+  conversations: Conversation[],
+  request?: ForYouFeedRequest
+): Promise<ForYouFeedResponse> {
   try {
     const recommendations = await knowledgeMixer.generateFeed(
       conversations,
@@ -72,6 +90,16 @@ export async function getForYouFeed(
 // ============================================================================
 
 export async function getSimilarConversations(
+  request: SimilarConversationsRequest
+): Promise<SimilarConversationsResponse> {
+  if (!isDev && USE_SERVER_API) {
+    return getSimilarConversationsFromServer(request);
+  }
+  
+  return getSimilarConversationsLocal(request);
+}
+
+async function getSimilarConversationsLocal(
   request: SimilarConversationsRequest
 ): Promise<SimilarConversationsResponse> {
   try {
@@ -182,12 +210,32 @@ function getReasonText(providerMatch: number, topicOverlap: number, qualityDiff:
 export async function sendFeedback(
   request: FeedbackRequest
 ): Promise<FeedbackResponse> {
-  // TODO: Implement feedback tracking
-  log.api.info('[sendFeedback] Feedback received:', request);
+  try {
+    const response = await fetch(`${API_BASE}/v2/feed/interact/${request.conversationId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        action: request.action,
+        duration: request.duration,
+        completionRate: request.completionRate
+      })
+    });
 
-  return {
-    status: 'success'
-  };
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    log.api.info('[sendFeedback] Feedback sent successfully:', request);
+    return { status: 'success' };
+  } catch (error) {
+    log.api.error('[sendFeedback] Failed to send feedback:', error);
+    return {
+      status: 'error',
+      error: error instanceof Error ? error.message : 'Failed to send feedback'
+    };
+  }
 }
 
 // ============================================================================
@@ -207,18 +255,75 @@ export async function getForYouFeedFromServer(
       params.set('query', request.context.searchQuery);
     }
 
-    const response = await fetch(`${API_BASE}/feed/for-you?${params.toString()}`);
+    const response = await fetch(`${API_BASE}/v2/feed?${params.toString()}`);
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
-    return await response.json();
+    const data = await response.json();
+    
+    if (data.success) {
+      return {
+        status: 'success',
+        data: {
+          recommendations: data.data.items.map((item: any) => ({
+            conversation: { id: item.contentId },
+            score: item.score,
+            reason: { icon: 'zap', text: item.source },
+            source: item.source
+          })),
+          metadata: {
+            generatedAt: new Date().toISOString(),
+            totalCandidates: data.data.totalCandidates || data.data.items.length,
+            sources: {},
+            diversityMetrics: {}
+          }
+        }
+      };
+    }
+    
+    return {
+      status: 'error',
+      error: data.error || 'Failed to fetch feed'
+    };
   } catch (error) {
     log.api.error('[getForYouFeedFromServer] Error:', error);
     return {
       status: 'error',
       error: error instanceof Error ? error.message : 'Failed to fetch feed'
+    };
+  }
+}
+
+async function getSimilarConversationsFromServer(
+  request: SimilarConversationsRequest
+): Promise<SimilarConversationsResponse> {
+  try {
+    const response = await fetch(`${API_BASE}/v2/feed/similar/${request.conversationId}?limit=${request.limit || 10}`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    
+    if (data.success) {
+      return {
+        status: 'success',
+        data: data.data.recommendations || []
+      };
+    }
+    
+    return {
+      status: 'error',
+      error: data.error || 'Failed to get similar conversations'
+    };
+  } catch (error) {
+    log.api.error('[getSimilarConversationsFromServer] Error:', error);
+    return {
+      status: 'error',
+      error: error instanceof Error ? error.message : 'Failed to get similar conversations'
     };
   }
 }

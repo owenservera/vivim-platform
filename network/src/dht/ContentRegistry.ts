@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events';
 import { createModuleLogger } from '../utils/logger.js';
-import type { ContentLocation } from '../types.js';
 
 const log = createModuleLogger('dht:registry');
 

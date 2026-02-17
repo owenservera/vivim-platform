@@ -101,7 +101,7 @@ The VIVIM platform consists of three primary components:
 | **AI SDK** | ai (AI SDK) | Version 6.0.82 |
 | **AI Providers** | OpenAI, Anthropic, Google, xAI | Multi-provider support |
 | **Web Scraping** | Playwright + Cheerio | Version 1.58.2 |
-| **Vector Store** | Qdrant | Version 1.16.2 |
+| **Vector Store** | PostgreSQL + pgvector | Built-in vector support |
 | **Authentication** | Passport + OAuth | Google OAuth 2.0 |
 | **Session** | express-session | Version 1.19.0 |
 | **Logging** | Pino | Version 10.3.1 |
@@ -142,7 +142,6 @@ The VIVIM platform consists of three primary components:
 {
   "dependencies": {
     "@prisma/client": "^7.3.0",
-    "@qdrant/js-client-rest": "^1.16.2",
     "ai": "^6.0.82",
     "express": "^5.2.1",
     "playwright": "^1.58.2",

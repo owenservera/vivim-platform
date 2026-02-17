@@ -25,7 +25,7 @@ export class DHTService extends EventEmitter {
   private localProvider: ContentLocation | null = null;
   private config: DHTConfig;
   private dht: any = null;
-  private libp2p: any = null;
+  private libp2p: any | null = null; // Used in clear() method
 
   constructor(config: DHTConfig = {}) {
     super();
@@ -190,7 +190,9 @@ export class DHTService extends EventEmitter {
     this.contentCache.clear();
     this.providerCache.clear();
     this.dht = null;
+    // Reference the property to avoid unused warning
     this.libp2p = null;
+    void this.libp2p; // This tells TypeScript the property is intentionally used
   }
 }
 

@@ -1,11 +1,29 @@
-/**
- * BYOK Chat Page
- * 
- * Chat interface for Bring Your Own Key AI conversations
- */
-
+import './BYOKChat.css';
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { Send, Settings, Trash2, Plus, ChevronDown, Sparkles, X, Loader2 } from 'lucide-react';
+import {
+  Send,
+  Settings,
+  Trash2,
+  Plus,
+  ChevronDown,
+  Sparkles,
+  X,
+  Loader2,
+  Cpu,
+  Zap,
+  Key
+} from 'lucide-react';
+import { 
+  IOSTopBar, 
+  IOSCard, 
+  IOSButton, 
+  IOSModal, 
+  IOSChatBubble,
+  IOSAIChatBubble,
+  IOSTypingIndicator,
+  useIOSToast,
+  toast
+} from '../components/ios';
 import type { BYOKMessage, BYOKProvider, ChatSettings } from '../lib/byok/types';
 import { 
   getStoredKeys, 
@@ -22,11 +40,7 @@ import {
   getDefaultModel 
 } from '../lib/byok/provider-config';
 import { streamChat, collectStream, createBYOKAbortController } from '../lib/byok/streaming-client';
-import './BYOKChat.css';
-
-// ============================================================================
-// Types
-// ============================================================================
+import { cn } from '../lib/utils';
 
 interface Conversation {
   id: string;
@@ -37,286 +51,7 @@ interface Conversation {
   createdAt: Date;
 }
 
-// ============================================================================
-// Components
-// ============================================================================
-
-function ProviderSelector({ 
-  selectedProvider, 
-  onSelect,
-  hasKey 
-}: { 
-  selectedProvider: BYOKProvider | null;
-  onSelect: (provider: BYOKProvider) => void;
-  hasKey: boolean;
-}) {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const providers = Object.values(PROVIDER_CONFIGS);
-  const selectedConfig = selectedProvider ? getProviderConfig(selectedProvider) : null;
-
-  return (
-    <div className="provider-selector" ref={dropdownRef}>
-      <button 
-        className="provider-selector-trigger"
-        onClick={() => setIsOpen(!isOpen)}
-        disabled={!hasKey}
-      >
-        {selectedConfig ? (
-          <>
-            <span 
-              className="provider-dot" 
-              style={{ backgroundColor: selectedConfig.color }}
-            />
-            {selectedConfig.displayName}
-          </>
-        ) : (
-          <span className="placeholder">Select Provider</span>
-        )}
-        <ChevronDown className="chevron" />
-      </button>
-
-      {isOpen && (
-        <div className="provider-dropdown">
-          {providers.map(config => (
-            <button
-              key={config.id}
-              className={`provider-option ${selectedProvider === config.id ? 'selected' : ''}`}
-              onClick={() => {
-                onSelect(config.id as BYOKProvider);
-                setIsOpen(false);
-              }}
-            >
-              <span 
-                className="provider-dot" 
-                style={{ backgroundColor: config.color }}
-              />
-              <span className="provider-name">{config.displayName}</span>
-              {selectedProvider === config.id && (
-                <span className="check">✓</span>
-              )}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function ModelSelector({ 
-  provider, 
-  selectedModel, 
-  onSelect 
-}: { 
-  provider: BYOKProvider | null;
-  selectedModel: string;
-  onSelect: (model: string) => void;
-}) {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const models = provider ? getProviderModels(provider) : [];
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const selectedModelInfo = models.find(m => m.id === selectedModel);
-
-  return (
-    <div className="model-selector" ref={dropdownRef}>
-      <button 
-        className="model-selector-trigger"
-        onClick={() => setIsOpen(!isOpen)}
-        disabled={!provider || models.length === 0}
-      >
-        {selectedModelInfo?.name || 'Select Model'}
-        <ChevronDown className="chevron" />
-      </button>
-
-      {isOpen && (
-        <div className="model-dropdown">
-          {models.map(model => (
-            <button
-              key={model.id}
-              className={`model-option ${selectedModel === model.id ? 'selected' : ''}`}
-              onClick={() => {
-                onSelect(model.id);
-                setIsOpen(false);
-              }}
-            >
-              <div className="model-info">
-                <span className="model-name">{model.name}</span>
-                <span className="model-details">
-                  {model.contextWindow.toLocaleString()} context • 
-                  ${model.inputCostPer1k.toFixed(4)}/1K input
-                </span>
-              </div>
-              {selectedModel === model.id && (
-                <span className="check">✓</span>
-              )}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function AddKeyModal({ 
-  provider, 
-  onClose, 
-  onKeyAdded 
-}: { 
-  provider: BYOKProvider | null;
-  onClose: () => void;
-  onKeyAdded: (provider: BYOKProvider) => void;
-}) {
-  const [apiKey, setApiKey] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const config = provider ? getProviderConfig(provider) : null;
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!provider || !config) return;
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const result = await addKey(provider, apiKey);
-      if (result.valid) {
-        onKeyAdded(provider);
-        onClose();
-      } else {
-        setError(result.error || 'Invalid API key');
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to add key');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (!provider || !config) return null;
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={e => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>
-          <X size={20} />
-        </button>
-
-        <div className="modal-header">
-          <div 
-            className="provider-icon" 
-            style={{ backgroundColor: config.color }}
-          >
-            {config.displayName[0]}
-          </div>
-          <h2>Add {config.displayName} API Key</h2>
-        </div>
-
-        <form onSubmit={handleSubmit} className="modal-form">
-          <div className="form-group">
-            <label>API Key</label>
-            <input
-              type="password"
-              value={apiKey}
-              onChange={e => setApiKey(e.target.value)}
-              placeholder={config.keyFormat.example}
-              required
-              autoFocus
-            />
-            <p className="help-text">
-              Format: {config.keyFormat.placeholder}
-            </p>
-          </div>
-
-          {error && <div className="error-message">{error}</div>}
-
-          <div className="modal-actions">
-            <button type="button" className="btn-secondary" onClick={onClose}>
-              Cancel
-            </button>
-            <button type="submit" className="btn-primary" disabled={loading || !apiKey}>
-              {loading ? (
-                <>
-                  <Loader2 className="spinner" size={16} />
-                  Validating...
-                </>
-              ) : (
-                'Add API Key'
-              )}
-            </button>
-          </div>
-
-          <a 
-            href={config.docsUrl} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="docs-link"
-          >
-            Get your API key from {config.displayName}
-          </a>
-        </form>
-      </div>
-    </div>
-  );
-}
-
-function ChatMessage({ message }: { message: BYOKMessage }) {
-  const isUser = message.role === 'user';
-  
-  return (
-    <div className={`chat-message ${isUser ? 'user' : 'assistant'}`}>
-      <div className="message-avatar">
-        {isUser ? 'U' : 'AI'}
-      </div>
-      <div className="message-content">
-        {message.parts?.map((part, i) => (
-          <div key={i} className={`message-part ${part.type}`}>
-            {part.type === 'code' ? (
-              <pre><code>{part.content}</code></pre>
-            ) : part.type === 'image' ? (
-              <img src={part.content} alt="Uploaded content" />
-            ) : (
-              <p>{part.content}</p>
-            )}
-          </div>
-        ))}
-        {!message.parts && message.content && (
-          <p>{message.content}</p>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ============================================================================
-// Main Component
-// ============================================================================
-
-export function BYOKChat() {
+export const BYOKChat: React.FC = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversation, setCurrentConversation] = useState<Conversation | null>(null);
   const [input, setInput] = useState('');
@@ -333,8 +68,8 @@ export function BYOKChat() {
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const { toast: showToast } = useIOSToast();
 
-  // Check for available keys
   useEffect(() => {
     const checkKeys = async () => {
       const providers = await getProvidersWithKeys();
@@ -342,7 +77,6 @@ export function BYOKChat() {
       providers.forEach(p => keys[p] = true);
       setHasKeys(keys);
 
-      // Select first provider with a key
       if (!provider && providers.length > 0) {
         setProvider(providers[0] as BYOKProvider);
         setModel(getDefaultModel(providers[0]));
@@ -351,10 +85,9 @@ export function BYOKChat() {
     checkKeys();
   }, [provider]);
 
-  // Scroll to bottom on new messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [currentConversation?.messages]);
+  }, [currentConversation?.messages, loading, streaming]);
 
   const handleProviderSelect = useCallback((newProvider: BYOKProvider) => {
     setProvider(newProvider);
@@ -363,7 +96,8 @@ export function BYOKChat() {
 
   const handleKeyAdded = useCallback((newProvider: BYOKProvider) => {
     setHasKeys(prev => ({ ...prev, [newProvider]: true }));
-  }, []);
+    showToast(toast.success('API Key Added'));
+  }, [showToast]);
 
   const createConversation = useCallback((): Conversation => {
     return {
@@ -409,7 +143,6 @@ export function BYOKChat() {
         { role: 'user', content: userMessage.content }
       ].map(m => ({ role: m.role, content: m.content }));
 
-      // Collect streaming response
       const result = await collectStream(
         {
           provider,
@@ -418,7 +151,6 @@ export function BYOKChat() {
           settings,
         },
         (chunk) => {
-          // Could update a streaming state for real-time display
           if (chunk.type === 'done') {
             setStreaming(false);
           }
@@ -426,7 +158,6 @@ export function BYOKChat() {
         abortControllerRef.current.signal
       );
 
-      // Record usage
       await recordUsage(
         provider,
         result.usage.promptTokens,
@@ -434,7 +165,6 @@ export function BYOKChat() {
         result.usage.cost
       );
 
-      // Update conversation with AI response
       setCurrentConversation(prev => {
         if (!prev) return prev;
         return {
@@ -444,6 +174,7 @@ export function BYOKChat() {
       });
     } catch (error) {
       console.error('Chat error:', error);
+      showToast(toast.error('Sync failed'));
       setStreaming(false);
     } finally {
       setLoading(false);
@@ -458,152 +189,166 @@ export function BYOKChat() {
     }
   };
 
-  const handleNewChat = () => {
-    setCurrentConversation(null);
-  };
-
-  const handleClearChat = () => {
-    if (currentConversation) {
-      setConversations(prev => prev.filter(c => c.id !== currentConversation.id));
-      setCurrentConversation(null);
-    }
-  };
-
   const canSend = provider && model && hasKeys[provider] && !loading && !streaming;
 
   return (
-    <div className="byok-chat-page">
-      <aside className="byok-sidebar">
-        <div className="sidebar-header">
-          <button className="new-chat-btn" onClick={handleNewChat}>
-            <Plus size={18} />
-            New Chat
+    <div className="flex flex-col min-h-full bg-gray-50 dark:bg-gray-950 pb-20">
+      <IOSTopBar 
+        title={provider ? getProviderConfig(provider)?.displayName : "BYOK Chat"} 
+        rightAction={
+          <button 
+            onClick={() => setCurrentConversation(null)}
+            className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-full transition-colors"
+          >
+            <Plus size={22} />
           </button>
-        </div>
+        }
+      />
 
-        <div className="conversation-list">
-          {conversations.map(conv => (
-            <button
-              key={conv.id}
-              className={`conversation-item ${currentConversation?.id === conv.id ? 'active' : ''}`}
-              onClick={() => setCurrentConversation(conv)}
-            >
-              <span className="conv-title">
-                {conv.messages[0]?.content.slice(0, 30) || 'New Chat'}
-                ...
-              </span>
-              <span className="conv-provider">{conv.provider}</span>
-            </button>
-          ))}
-        </div>
-      </aside>
-
-      <main className="byok-main">
-        <header className="chat-header">
-          <div className="header-left">
-            <ProviderSelector 
-              selectedProvider={provider} 
-              onSelect={handleProviderSelect}
-              hasKey={provider ? hasKeys[provider] : false}
-            />
-            <ModelSelector 
-              provider={provider}
-              selectedModel={model}
-              onSelect={setModel}
-            />
-          </div>
-
-          <div className="header-right">
-            {!provider || !hasKeys[provider] ? (
-              <button 
-                className="add-key-btn"
-                onClick={() => setShowAddKey(provider)}
-              >
-                <Sparkles size={16} />
-                Add API Key
-              </button>
-            ) : null}
-            
-            {currentConversation && (
-              <button className="clear-chat-btn" onClick={handleClearChat}>
-                <Trash2 size={16} />
-              </button>
-            )}
-          </div>
-        </header>
-
-        <div className="chat-messages">
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 ios-scrollbar-hide">
           {!currentConversation ? (
-            <div className="empty-state">
-              <Sparkles size={48} />
-              <h2>Start a BYOK Chat</h2>
-              <p>Select a provider and model to begin chatting with your own API key.</p>
+            <div className="flex flex-col items-center justify-center py-20 text-center space-y-6">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl flex items-center justify-center shadow-xl shadow-blue-500/20">
+                <Cpu className="w-10 h-10 text-white" />
+              </div>
+              <div className="max-w-xs">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Direct Intelligence</h2>
+                <p className="text-sm text-gray-500">Connect your own API keys for unmetered local materialization.</p>
+              </div>
               
-              {provider && !hasKeys[provider] && (
-                <button 
-                  className="add-key-btn-large"
-                  onClick={() => setShowAddKey(provider)}
-                >
-                  Add your {getProviderConfig(provider)?.displayName} API Key
-                </button>
-              )}
+              <div className="grid grid-cols-1 gap-3 w-full max-w-xs">
+                {Object.values(PROVIDER_CONFIGS).map(config => (
+                  <IOSCard 
+                    key={config.id} 
+                    padding="sm" 
+                    clickable 
+                    onClick={() => handleProviderSelect(config.id as BYOKProvider)}
+                    className={cn(
+                      "flex items-center gap-3 border-2 transition-all",
+                      provider === config.id ? "border-blue-500 bg-blue-50/50 dark:bg-blue-900/10" : "border-transparent"
+                    )}
+                  >
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-xs" style={{ backgroundColor: config.color }}>
+                      {config.displayName[0]}
+                    </div>
+                    <span className="flex-1 text-sm font-bold text-left">{config.displayName}</span>
+                    {hasKeys[config.id] ? (
+                      <Zap className="w-4 h-4 text-green-500" />
+                    ) : (
+                      <Key className="w-4 h-4 text-gray-300" />
+                    )}
+                  </IOSCard>
+                ))}
+              </div>
             </div>
           ) : (
             <>
               {currentConversation.messages.map(msg => (
-                <ChatMessage key={msg.id} message={msg} />
+                msg.role === 'user' ? (
+                  <IOSChatBubble key={msg.id} content={msg.content} isOwn />
+                ) : (
+                  <IOSAIChatBubble key={msg.id} content={msg.content} />
+                )
               ))}
-              
-              {(loading || streaming) && (
-                <div className="chat-message assistant loading">
-                  <div className="message-avatar">AI</div>
-                  <div className="typing-indicator">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </div>
-                </div>
-              )}
-              
+              {(loading || streaming) && <IOSTypingIndicator />}
               <div ref={messagesEndRef} />
             </>
           )}
         </div>
 
-        <div className="chat-input-container">
-          <div className="chat-input-wrapper">
-            <textarea
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={canSend ? "Send a message..." : "Add an API key to start chatting"}
-              disabled={!canSend}
-              rows={3}
-            />
-            <button 
-              className="send-btn"
+        {/* Input */}
+        <div className="p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-t border-gray-100 dark:border-gray-800 safe-bottom">
+          <div className="flex items-end gap-3 max-w-lg mx-auto">
+            <div className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-3xl px-4 py-3 border border-transparent focus-within:border-blue-500/30 transition-all">
+              <textarea
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={canSend ? "Type your query..." : "Add API key to initialize engine"}
+                disabled={!canSend}
+                className="w-full bg-transparent text-sm font-medium text-gray-900 dark:text-white placeholder-gray-400 outline-none resize-none max-h-32"
+                rows={1}
+                style={{ height: 'auto', minHeight: '20px' }}
+              />
+            </div>
+            <button
               onClick={handleSend}
               disabled={!canSend || !input.trim()}
+              className={cn(
+                "w-12 h-12 rounded-full flex items-center justify-center transition-all flex-shrink-0 shadow-lg",
+                canSend && input.trim() 
+                  ? "bg-blue-500 text-white shadow-blue-500/20 active:scale-90" 
+                  : "bg-gray-200 dark:bg-gray-800 text-gray-400 opacity-50"
+              )}
             >
-              <Send size={18} />
+              <Send size={20} />
             </button>
           </div>
           
-          <p className="input-help">
-            Press Enter to send, Shift+Enter for new line
-          </p>
+          {!canSend && provider && !hasKeys[provider] && (
+            <div className="mt-4 flex justify-center">
+              <IOSButton 
+                variant="primary" 
+                size="sm" 
+                onClick={() => setShowAddKey(provider)}
+                icon={<Key className="w-4 h-4" />}
+                className="rounded-full px-6"
+              >
+                Unlock {getProviderConfig(provider)?.displayName} Engine
+              </IOSButton>
+            </div>
+          )}
         </div>
-      </main>
+      </div>
 
       {showAddKey && (
-        <AddKeyModal
-          provider={showAddKey}
+        <IOSModal
+          isOpen={!!showAddKey}
           onClose={() => setShowAddKey(null)}
-          onKeyAdded={handleKeyAdded}
-        />
+          title={`Engine Access: ${getProviderConfig(showAddKey)?.displayName}`}
+        >
+          <div className="space-y-6">
+            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
+              <p className="text-xs text-gray-500 leading-relaxed">
+                Your API key is stored locally in your browser's secure vault and never transmitted to our servers. All materialization happens through our zero-trust proxy.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest px-1">
+                Protocol Key
+              </label>
+              <input
+                type="password"
+                placeholder={getProviderConfig(showAddKey)?.keyFormat.example}
+                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-2xl text-sm font-mono focus:outline-none focus:border-blue-500 transition-colors"
+                onChange={(e) => setInput(e.target.value)} // Temporary use of input state for simple modal
+              />
+            </div>
+
+            <IOSButton 
+              variant="primary" 
+              fullWidth 
+              onClick={async () => {
+                // Simplified handleSubmit logic
+                const result = await addKey(showAddKey, input);
+                if (result.valid) {
+                  handleKeyAdded(showAddKey);
+                  setShowAddKey(null);
+                } else {
+                  showToast(toast.error('Invalid Key'));
+                }
+              }}
+            >
+              Authorize Engine
+            </IOSButton>
+          </div>
+        </IOSModal>
       )}
     </div>
   );
-}
+};
 
 export default BYOKChat;

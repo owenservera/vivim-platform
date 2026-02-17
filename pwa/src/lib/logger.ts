@@ -156,6 +156,10 @@ class Logger {
     return [...this.logs].reverse();
   }
 
+  getAllLogs(): LogEntry[] {
+    return [...this.logs];
+  }
+
   clearLogs() {
     this.logs = [];
     localStorage.removeItem(this.storageKey);
@@ -288,13 +292,15 @@ export const log = {
     debug: (msg: string, data?: unknown) => logger.log(LogLevel.DEBUG, 'API', msg, 'client', data),
     info: (msg: string, data?: unknown) => logger.log(LogLevel.INFO, 'API', msg, 'client', data),
     warn: (msg: string, data?: unknown) => logger.log(LogLevel.WARN, 'API', msg, 'client', data),
-    error: (msg: string, error?: Error, data?: unknown) => logger.log(LogLevel.ERROR, 'API', msg, 'client', data, error)
+    error: (msg: string, error?: Error, data?: unknown) => logger.log(LogLevel.ERROR, 'API', msg, 'client', data, error),
+    getLogs: () => logger.getAllLogs()
   },
   storage: {
     debug: (msg: string, data?: unknown) => logger.log(LogLevel.DEBUG, 'STORAGE', msg, 'client', data),
     info: (msg: string, data?: unknown) => logger.log(LogLevel.INFO, 'STORAGE', msg, 'client', data),
     warn: (msg: string, data?: unknown) => logger.log(LogLevel.WARN, 'STORAGE', msg, 'client', data),
-    error: (msg: string, error?: Error, data?: unknown) => logger.log(LogLevel.ERROR, 'STORAGE', msg, 'client', data, error)
+    error: (msg: string, error?: Error, data?: unknown) => logger.log(LogLevel.ERROR, 'STORAGE', msg, 'client', data, error),
+    getLogs: () => logger.getAllLogs()
   },
   dag: {
     debug: (msg: string, data?: unknown) => logger.log(LogLevel.DEBUG, 'DAG', msg, 'client', data),

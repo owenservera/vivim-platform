@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { randomBytes, createCipheriv, createDecipheriv, ECDH } from 'crypto';
+import { randomBytes, createCipheriv, createDecipheriv, createECDH } from 'crypto';
 import { createModuleLogger } from '../utils/logger.js';
 
 const log = createModuleLogger('security:e2e');
@@ -23,7 +23,7 @@ export interface E2EConfig {
 
 export class E2EEncryption extends EventEmitter {
   private keyPair: KeyPair | null = null;
-  private ecdh: ECDH;
+  private ecdh: any; // Using any since ECDH types vary
   private config: E2EConfig;
 
   constructor(config: E2EConfig = {}) {
@@ -33,9 +33,7 @@ export class E2EEncryption extends EventEmitter {
       cipher: 'aes-256-gcm',
       ...config,
     };
-    this.ecdh = this.config.algorithm === 'x25519' 
-      ? new ECDH('x25519') 
-      : new ECDH('secp256k1');
+    this.ecdh = createECDH(this.config.algorithm || 'x25519');
   }
 
   generateKeyPair(): KeyPair {
@@ -62,9 +60,7 @@ export class E2EEncryption extends EventEmitter {
       throw new Error('Key pair not initialized');
     }
 
-    const ephemeral = this.config.algorithm === 'x25519'
-      ? new ECDH('x25519')
-      : new ECDH('secp256k1');
+    const ephemeral = createECDH(this.config.algorithm || 'x25519');
     ephemeral.generateKeys();
 
     const sharedSecret = ephemeral.computeSecret(recipientPublicKey);
@@ -89,15 +85,13 @@ export class E2EEncryption extends EventEmitter {
 
   async decryptMessage(
     encrypted: EncryptedMessage,
-    senderPublicKey: Uint8Array
+    _senderPublicKey: Uint8Array
   ): Promise<string> {
     if (!this.keyPair) {
       throw new Error('Key pair not initialized');
     }
 
-    const ephemeral = this.config.algorithm === 'x25519'
-      ? new ECDH('x25519')
-      : new ECDH('secp256k1');
+    const ephemeral = createECDH(this.config.algorithm || 'x25519');
     ephemeral.setPrivateKey(this.keyPair.privateKey);
 
     const sharedSecret = ephemeral.computeSecret(encrypted.ephemeralPublicKey);
@@ -118,11 +112,11 @@ export class E2EEncryption extends EventEmitter {
   }
 
   private deriveKey(sharedSecret: Buffer, purpose: string): Buffer {
-    const info = `vivim-${purpose}-v1`;
-    return Buffer.from(
-      sharedSecret.toString('base64') + info,
-      'utf8'
-    ).slice(0, 32);
+    // Using a more standard KDF-like approach with HMAC-SHA256
+    const info = Buffer.from(`vivim-${purpose}-v1`, 'utf8');
+    const hmac = require('crypto').createHmac('sha256', sharedSecret);
+    hmac.update(info);
+    return hmac.digest().slice(0, 32);
   }
 
   getPublicKey(): Uint8Array | null {

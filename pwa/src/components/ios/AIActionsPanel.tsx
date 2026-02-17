@@ -49,7 +49,7 @@ export const AIActionsPanel: React.FC<AIActionsPanelProps> = ({
       id: 'summarize',
       label: 'Summarize',
       icon: <Text className="w-5 h-5" />,
-      description: 'Generate a concise summary',
+      description: 'Generate concise summary',
     },
     {
       id: 'expand',
@@ -61,61 +61,61 @@ export const AIActionsPanel: React.FC<AIActionsPanelProps> = ({
       id: 'simplify',
       label: 'Simplify',
       icon: <Minimize2 className="w-5 h-5" />,
-      description: 'Make it easier to understand',
+      description: 'Make easier to understand',
     },
     {
       id: 'translate',
       label: 'Translate',
       icon: <Languages className="w-5 h-5" />,
-      description: 'Convert to another language',
+      description: 'Convert language',
     },
     {
       id: 'extract_insights',
-      label: 'Extract Insights',
+      label: 'Insights',
       icon: <Lightbulb className="w-5 h-5" />,
-      description: 'Pull out key takeaways',
+      description: 'Pull key takeaways',
     },
     {
       id: 'generate_title',
-      label: 'Generate Title',
+      label: 'Title',
       icon: <Type className="w-5 h-5" />,
-      description: 'Auto-generate a better title',
+      description: 'Better auto-title',
     },
     {
       id: 'generate_questions',
-      label: 'Study Questions',
+      label: 'Questions',
       icon: <HelpCircle className="w-5 h-5" />,
-      description: 'Create questions for review',
+      description: 'Study questions',
     },
     {
       id: 'find_related',
-      label: 'Find Related',
+      label: 'Related',
       icon: <GitBranch className="w-5 h-5" />,
-      description: 'Discover similar conversations',
+      description: 'Similar chats',
     },
     {
       id: 'check_contradictions',
-      label: 'Check Facts',
+      label: 'Fact Check',
       icon: <ShieldCheck className="w-5 h-5" />,
       description: 'Validate claims',
     },
     {
       id: 'continue_chat',
-      label: 'Continue Chat',
+      label: 'Resume',
       icon: <MessageSquarePlus className="w-5 h-5" />,
-      description: 'Resume the conversation',
+      description: 'Keep chatting',
     },
     {
       id: 'switch_model',
-      label: 'Switch Model',
+      label: 'Model',
       icon: <Zap className="w-5 h-5" />,
-      description: 'Continue with different AI',
+      description: 'Change AI',
     },
     {
       id: 'compare_models',
-      label: 'Compare Models',
+      label: 'Compare',
       icon: <Columns className="w-5 h-5" />,
-      description: 'Run across multiple AIs',
+      description: 'Multiple AIs',
     },
   ];
 
@@ -181,68 +181,69 @@ export const AIActionsPanel: React.FC<AIActionsPanelProps> = ({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[1060] flex items-center justify-center p-4">
       <div 
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm" 
+        className="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" 
         onClick={onClose}
       />
       
       <IOSCard 
         variant="elevated" 
-        padding="lg" 
-        className="relative w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col"
+        padding="none" 
+        className="relative w-full max-w-lg max-h-[85vh] overflow-hidden flex flex-col rounded-3xl shadow-2xl border border-white/10"
       >
-        <div className="flex items-center justify-between mb-4 shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center">
+        {/* Header */}
+        <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-800 shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-purple-500/20">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                AI Actions
+            <div className="min-w-0">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
+                AI Intelligence
               </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[200px]">
+              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                 {conversationTitle}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+            className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
+        {/* Content */}
         {result ? (
-          <div className="flex-1 overflow-hidden flex flex-col">
-            <div className="flex items-center gap-2 mb-3">
-              <Check className="w-5 h-5 text-green-500" />
-              <span className="font-medium text-gray-900 dark:text-white capitalize">
-                {activeAction?.replace('_', ' ')}
+          <div className="flex-1 overflow-hidden flex flex-col p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center">
+                <Check className="w-3.5 h-3.5 text-green-500" />
+              </div>
+              <span className="font-semibold text-sm text-gray-900 dark:text-white capitalize">
+                {activeAction?.replace('_', ' ')} Result
               </span>
             </div>
             
-            <div className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 rounded-xl p-4 mb-4">
-              <pre className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-sans">
+            <div className="flex-1 overflow-y-auto bg-gray-50 dark:bg-black/40 rounded-2xl p-4 mb-5 border border-gray-100 dark:border-gray-800 ios-scrollbar-thin">
+              <pre className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-sans leading-relaxed">
                 {result.content}
               </pre>
             </div>
 
             {result.metadata && (
-              <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-4">
-                <span>Model: {result.metadata.model}</span>
-                <span>Tokens: {result.metadata.tokens}</span>
-                <span>Confidence: {Math.round((result.metadata.confidence || 0) * 100)}%</span>
+              <div className="flex items-center gap-4 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-5 px-1">
+                <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> {result.metadata.model}</span>
+                <span>{result.metadata.tokens} Tokens</span>
+                <span>{Math.round((result.metadata.confidence || 0) * 100)}% Match</span>
               </div>
             )}
 
-            <div className="flex gap-3 shrink-0">
+            <div className="grid grid-cols-2 gap-3 shrink-0">
               <IOSButton variant="secondary" onClick={() => setResult(null)} fullWidth>
                 Back
-              </IOSButton>
-              <IOSButton variant="secondary" onClick={handleCopy} fullWidth icon={<Text className="w-4 h-4" />}>
-                Copy
               </IOSButton>
               <IOSButton variant="primary" onClick={handleUseResult} fullWidth>
                 Apply
@@ -250,47 +251,48 @@ export const AIActionsPanel: React.FC<AIActionsPanelProps> = ({
             </div>
           </div>
         ) : (
-          <>
-            <div className="flex-1 overflow-y-auto -mx-4 px-4">
-              {isProcessing ? (
-                <div className="flex flex-col items-center justify-center py-12">
-                  <Loader2 className="w-10 h-10 text-purple-500 animate-spin mb-4" />
-                  <p className="text-gray-600 dark:text-gray-300 font-medium capitalize">
-                    {activeAction?.replace('_', ' ')}...
-                  </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    Processing with AI
-                  </p>
+          <div className="flex-1 overflow-y-auto p-5 ios-scrollbar-hide">
+            {isProcessing ? (
+              <div className="flex flex-col items-center justify-center py-20">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-purple-500/20 blur-xl rounded-full animate-pulse" />
+                  <Loader2 className="w-12 h-12 text-purple-500 animate-spin relative" />
                 </div>
-              ) : (
-                <div className="grid grid-cols-2 gap-3">
-                  {actions.map((action) => (
-                    <button
-                      key={action.id}
-                      onClick={() => handleAction(action.id)}
-                      className={cn(
-                        'flex flex-col items-start gap-2 p-4 rounded-xl border-2 transition-all text-left',
-                        'border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-700',
-                        'hover:bg-purple-50 dark:hover:bg-purple-900/10'
-                      )}
-                    >
-                      <div className="text-purple-600 dark:text-purple-400">
-                        {action.icon}
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm text-gray-900 dark:text-white">
-                          {action.label}
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                          {action.description}
-                        </p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </>
+                <p className="text-gray-900 dark:text-white font-bold mt-6 capitalize text-lg">
+                  {activeAction?.replace('_', ' ')}...
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                  Synchronizing with neural engine
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 pb-2">
+                {actions.map((action) => (
+                  <button
+                    key={action.id}
+                    onClick={() => handleAction(action.id)}
+                    className={cn(
+                      'flex flex-col items-start gap-2 p-4 rounded-2xl border-2 transition-all text-left group',
+                      'border-gray-100 dark:border-gray-800 hover:border-purple-200 dark:hover:border-purple-900/50',
+                      'hover:bg-purple-50/50 dark:hover:bg-purple-900/10 active:scale-[0.98]'
+                    )}
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400 group-hover:bg-white dark:group-hover:bg-gray-700 transition-colors">
+                      {action.icon}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-bold text-sm text-gray-900 dark:text-white truncate">
+                        {action.label}
+                      </p>
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-1 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
+                        {action.description}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         )}
       </IOSCard>
     </div>

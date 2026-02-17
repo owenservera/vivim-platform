@@ -34,13 +34,13 @@ export class FederationServer extends EventEmitter {
     this.app.get('/circle/:id', this.handleGetCircle.bind(this));
     this.app.post('/circle/:id/members', this.handleAddMember.bind(this));
 
-    this.app.use((err: Error, req: Request, res: Response, next: Function) => {
-      log.error({ error: err.message, path: req.path }, 'Request error');
+    this.app.use((err: Error, _req: Request, res: Response, _next: Function) => {
+      log.error({ error: err.message }, 'Request error');
       res.status(500).json({ error: 'Internal server error' });
     });
   }
 
-  private handleWellKnown(req: Request, res: Response): void {
+  private handleWellKnown(_req: Request, res: Response): void {
     res.json({
       domain: new URL(this.config.instanceUrl).hostname,
       did: this.config.did,
@@ -70,7 +70,7 @@ export class FederationServer extends EventEmitter {
     });
   }
 
-  private handleGetOutbox(req: Request, res: Response): void {
+  private handleGetOutbox(_req: Request, res: Response): void {
     res.json({
       '@context': 'https://www.w3.org/ns/activitystreams',
       id: `${this.config.instanceUrl}/outbox`,
@@ -80,7 +80,7 @@ export class FederationServer extends EventEmitter {
     });
   }
 
-  private handleGetInbox(req: Request, res: Response): void {
+  private handleGetInbox(_req: Request, res: Response): void {
     res.json({
       '@context': 'https://www.w3.org/ns/activitystreams',
       id: `${this.config.instanceUrl}/inbox`,

@@ -139,7 +139,9 @@ export class DatabaseManager {
         const data = JSON.parse(stored);
         return data.version ?? 0;
       }
-    } catch {}
+    } catch (error) {
+      log.storage.warn('Failed to read stored DB version', { error });
+    }
     return 0;
   }
 

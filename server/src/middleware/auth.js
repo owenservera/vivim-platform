@@ -74,12 +74,30 @@ function extractApiKey(req) {
  */
 export function requireApiKey(permissions = []) {
   return (req, res, next) => {
-    // PURE DEV MODE: Always allow
+    const apiKey = extractApiKey(req);
+
+    if (!isValidApiKey(apiKey)) {
+      const log = req.log || logger;
+      log.warn({ 
+        path: req.path, 
+        method: req.method,
+        hasKey: !!apiKey,
+        ip: req.ip 
+      }, 'Unauthorized API access attempt');
+      
+      return res.status(401).json({
+        success: false,
+        error: 'Unauthorized: Invalid or missing API key',
+        code: 'UNAUTHORIZED'
+      });
+    }
+
     req.auth = {
       isAuthenticated: true,
-      apiKey: 'dev-mode',
+      apiKey: `${apiKey.substring(0, 8)}...`,
       permissions: permissions,
     };
+    
     return next();
   };
 }

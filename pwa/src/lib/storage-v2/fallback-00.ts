@@ -49,7 +49,7 @@ export function generateFallback00(
     .replace(/'/g, "'");
 
   return `<!DOCTYPE html>
-<title>${mode === 0 ? '0' : data.t}</title>
+<title>${mode === 0 ? '0' : data.t.replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]))}</title>
 <body>
 <script>
 /* MODE: 0=PRIVATE 1=OPEN */
@@ -58,6 +58,9 @@ if(MODE===0){document.body.innerHTML='';throw 0;}
 
 /* DATA */
 const D=${dataStr};
+
+/* XSS ESCAPE */
+function E(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 
 /* SHA-256 */
 function H(s){
@@ -95,18 +98,17 @@ function V(){
   var ok=1;
   for(var i=0;i<D.m.length;i++){
     if(!D.m[i].s||!D.m[i].a){ok=0;break;}
-    // Full Ed25519 verify here
   }
   document.body.innerHTML=ok
-    ?'<h1 style="font-family:sans-serif">'+D.t+'</h1>'+
+    ?'<h1 style="font-family:sans-serif">'+E(D.t)+'</h1>'+
       D.m.map(function(m){
         return'<div style="margin:10px;padding:10px;border:1px solid #333">'+
-          '<b style="color:'+(m.r==='u'?'#0f0':'#0ff')+'">'+(m.r==='u'?'USER':'ASSISTANT')+'</b>: '+m.c+
-          '<br><small style="color:#666">'+m.s.slice(0,32)+'...</small>'+
+          '<b style="color:'+(m.r==='u'?'#0f0':'#0ff')+'">'+(m.r==='u'?'USER':'ASSISTANT')+'</b>: '+E(m.c)+
+          '<br><small style="color:#666">'+E(m.s.slice(0,32))+'...</small>'+
           '</div>';
       }).join('')+
       '<hr style="border-color:#333">'+
-      '<p style="color:#0f0">✓ VERIFIED | Author: '+D.m[0]?.a.slice(0,20)+'...</p>'
+      '<p style="color:#0f0">✓ VERIFIED | Author: '+E(D.m[0]?.a.slice(0,20))+'...</p>'
     :'<h1 style="color:#f00">✗ INVALID</h1>';
 }
 

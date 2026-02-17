@@ -19,10 +19,10 @@ vi.mock('socket.io-client', () => ({
 // Mock IndexedDBObjectStore
 vi.mock('../storage-v2/object-store', () => {
   return {
-    IndexedDBObjectStore: vi.fn().mockImplementation(() => ({
-      put: vi.fn().mockResolvedValue('hash'),
-      delete: vi.fn().mockResolvedValue(undefined),
-    })),
+    IndexedDBObjectStore: class {
+      put = vi.fn().mockResolvedValue('hash');
+      delete = vi.fn().mockResolvedValue(undefined);
+    },
   };
 });
 
@@ -53,9 +53,11 @@ describe('SyncEngine', () => {
   it('should handle connect event', () => {
     engine.connect('fake-token');
     const connectCallback = mockSocket.on.mock.calls.find(call => call[0] === 'connect')[1];
-    
+
+    // Simulate socket connection
+    mockSocket.connected = true;
     connectCallback();
-    
+
     expect(useSyncStore.getState().isConnected).toBe(true);
     // Should trigger pull
     expect(mockSocket.emit).toHaveBeenCalledWith('sync:pull', expect.any(Object));

@@ -4,53 +4,14 @@
  * Global test configuration and fixtures
  */
 
-import { vi } from 'vitest';
-
 // Mock environment variables
 process.env.NODE_ENV = 'test';
 process.env.LOG_LEVEL = 'error'; // Reduce noise in tests
 process.env.LOG_FORMAT = 'json';
 
-// Mock console methods to reduce noise
-global.console = {
-  ...console,
-  log: vi.fn(),
-  debug: vi.fn(),
-  info: vi.fn(),
-  warn: vi.fn(),
-};
-
 // Mock database connection
-vi.mock('../src/lib/database.js', () => ({
-  getPrismaClient: vi.fn(() => ({
-    conversation: {
-      create: vi.fn(),
-      findUnique: vi.fn(),
-      findMany: vi.fn(),
-      count: vi.fn(),
-      update: vi.fn(),
-      delete: vi.fn(),
-      groupBy: vi.fn(),
-    },
-    captureAttempt: {
-      create: vi.fn(),
-      update: vi.fn(),
-      findMany: vi.fn(),
-      count: vi.fn(),
-      findFirst: vi.fn(),
-      aggregate: vi.fn(),
-    },
-    $disconnect: vi.fn(),
-    $transaction: vi.fn(),
-  })),
-  disconnectPrisma: vi.fn(),
-  checkDatabaseHealth: vi.fn(() => true),
-  getDatabaseStats: vi.fn(() => ({
-    conversations: 0,
-    captureAttempts: 0,
-  })),
-  withTransaction: vi.fn(),
-}));
+import { mockDatabase } from './test-helpers.js';
+mockDatabase();
 
 // Test fixtures
 export const fixtures = {
@@ -92,7 +53,3 @@ export const fixtures = {
   },
 };
 
-// Cleanup after each test
-afterEach(() => {
-  vi.clearAllMocks();
-});

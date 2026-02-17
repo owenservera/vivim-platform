@@ -91,17 +91,35 @@ export class OmniService {
   }
 
   async searchActions(query) {
-    const actions = await this.prisma.systemAction.findMany({
-      where: {
-        OR: [
-          { label: { contains: query, mode: 'insensitive' } },
-          { trigger: { contains: query, mode: 'insensitive' } },
-        ],
-      },
-      take: 5,
-    });
+    const zaiActions = [
+      { id: 'websearch', label: 'Web Search', subLabel: 'Search the web', trigger: 'websearch', icon: 'globe' },
+      { id: 'readurl', label: 'Web Reader', subLabel: 'Read a webpage', trigger: 'read', icon: 'book-open' },
+      { id: 'github', label: 'GitHub Search', subLabel: 'Search repos', trigger: 'github', icon: 'github' },
+      { id: 'githubtree', label: 'GitHub Tree', subLabel: 'Repo structure', trigger: 'githubtree', icon: 'git-branch' },
+      { id: 'githubfile', label: 'GitHub File', subLabel: 'Read file', trigger: 'githubfile', icon: 'file-code' },
+    ];
 
-    return actions.map(a => ({
+    const filteredZai = zaiActions.filter(a => 
+      a.label.toLowerCase().includes(query.toLowerCase()) ||
+      a.trigger.toLowerCase().includes(query.toLowerCase())
+    );
+
+    let dbActions = [];
+    try {
+      dbActions = await this.prisma.systemAction.findMany({
+        where: {
+          OR: [
+            { label: { contains: query, mode: 'insensitive' } },
+            { trigger: { contains: query, mode: 'insensitive' } },
+          ],
+        },
+        take: 5,
+      });
+    } catch (e) {
+      // DB not ready, skip
+    }
+
+    const dbMapped = dbActions.map(a => ({
       id: a.actionCode,
       label: a.label,
       subLabel: a.subLabel,
@@ -109,6 +127,17 @@ export class OmniService {
       type: '!',
       icon: a.icon || 'zap',
     }));
+
+    const zaiMapped = filteredZai.map(a => ({
+      id: a.id,
+      label: a.label,
+      subLabel: a.subLabel,
+      value: `!${a.trigger}`,
+      type: '!',
+      icon: a.icon,
+    }));
+
+    return [...zaiMapped, ...dbMapped];
   }
 
   async searchCommands(query) {

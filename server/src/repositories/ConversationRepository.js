@@ -42,6 +42,7 @@ export async function createConversation(data, userClient = null) {
       createdAt: new Date(data.createdAt),
       updatedAt: new Date(data.updatedAt || new Date()),
       capturedAt: new Date(data.capturedAt || new Date()),
+      contentHash: data.contentHash || null,
       
       messageCount: data.messageCount || data.stats?.totalMessages || data.messages?.length || 0,
       userMessageCount: data.userMessageCount || data.stats?.userMessageCount || 0,
@@ -60,59 +61,54 @@ export async function createConversation(data, userClient = null) {
     };
 
     let conversation;
-    let operationType;
 
-    if (existing) {
-      logger.info({ id: existing.id, sourceUrl: data.sourceUrl }, 'Updating existing conversation in database');
+    // Use upsert to handle create/update of the conversation record itself
+    conversation = await db.conversation.upsert({
+      where: { sourceUrl: data.sourceUrl },
+      update: {
+        ...conversationData,
+        version: { increment: 1 } // Ensure version increments on update
+      },
+      create: {
+        id: data.id || uuidv4(),
+        sourceUrl: data.sourceUrl,
+        ...conversationData,
+        version: 1
+      },
+      include: {
+        messages: {
+          select: { id: true, messageIndex: true }
+        }
+      }
+    });
+
+    const existingMessageIds = new Set(conversation.messages.map(m => m.id));
+    const newMessages = (data.messages || []).filter(msg => !existingMessageIds.has(msg.id));
+
+    if (newMessages.length > 0) {
+      logger.info({ 
+        conversationId: conversation.id, 
+        count: newMessages.length 
+      }, 'Creating new messages for conversation');
       
-      await db.message.deleteMany({
-        where: { conversationId: existing.id },
+      await db.message.createMany({
+        data: newMessages.map((msg, index) => ({
+          id: msg.id || uuidv4(),
+          conversationId: conversation.id,
+          role: msg.role,
+          author: msg.author,
+          messageIndex: msg.messageIndex ?? (conversation.messages.length + index),
+          parts: msg.parts || [],
+          createdAt: new Date(msg.createdAt || msg.timestamp || new Date()),
+          status: msg.status || 'completed',
+          contentHash: msg.contentHash || null,
+          tokenCount: msg.tokenCount,
+          metadata: msg.metadata || {},
+        })),
       });
-
-      conversation = await db.conversation.update({
-        where: { id: existing.id },
-        data: {
-          ...conversationData,
-          messages: {
-            create: (data.messages || []).map((msg, index) => ({
-              id: msg.id,
-              role: msg.role,
-              author: msg.author,
-              messageIndex: msg.messageIndex ?? index,
-              parts: msg.parts || [],
-              createdAt: new Date(msg.createdAt || msg.timestamp || new Date()),
-              status: msg.status || 'completed',
-              tokenCount: msg.tokenCount,
-              metadata: msg.metadata || {},
-            })),
-          },
-        },
-      });
-      operationType = 'UPDATE';
-    } else {
-      conversation = await db.conversation.create({
-        data: {
-          id: data.id,
-          sourceUrl: data.sourceUrl,
-          ...conversationData,
-          messages: {
-            create: (data.messages || []).map((msg, index) => ({
-              id: msg.id,
-              role: msg.role,
-              author: msg.author,
-              messageIndex: msg.messageIndex ?? index,
-              parts: msg.parts || [],
-              createdAt: new Date(msg.createdAt || msg.timestamp || new Date()),
-              status: msg.status || 'completed',
-              tokenCount: msg.tokenCount,
-              metadata: msg.metadata || {},
-            })),
-          },
-        },
-      });
-      logger.info({ id: conversation.id }, 'Conversation saved to database');
-      operationType = 'INSERT';
     }
+    
+    return conversation;
     
     return conversation;
   } catch (error) {
@@ -136,7 +132,11 @@ export async function findConversationById(id) {
   try {
     const conversation = await getPrismaClient().conversation.findUnique({
       where: { id },
-      include: { messages: true },
+      include: { 
+        _count: {
+          select: { messages: true }
+        }
+      },
     });
 
     return conversation;
@@ -181,10 +181,17 @@ export async function listConversations(options = {}) {
     orderDirection = 'desc',
     startDate,
     endDate,
+    userId, // ADD: Filter by user ID
+    includeShared = false, // ADD: Include conversations shared with user
   } = options;
 
   try {
     const where = {};
+
+    // SECURITY: Filter by userId to only return user's own conversations
+    if (userId) {
+      where.ownerId = userId;
+    }
 
     // Filter by provider
     if (provider) {
@@ -195,11 +202,16 @@ export async function listConversations(options = {}) {
     if (startDate || endDate) {
       where.createdAt = {};
       if (startDate) {
-where.createdAt.gte = new Date(startDate);
-}
+        where.createdAt.gte = new Date(startDate);
+      }
       if (endDate) {
-where.createdAt.lte = new Date(endDate);
-}
+        where.createdAt.lte = new Date(endDate);
+      }
+    }
+
+    // Filter out archived/deleted conversations by default
+    if (!options.includeArchived) {
+      where.state = 'ACTIVE';
     }
 
     const [conversations, total] = await Promise.all([

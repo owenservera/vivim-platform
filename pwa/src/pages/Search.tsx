@@ -1,15 +1,24 @@
+import './Search.css';
 import { useEffect, useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
-import { IOSCard, IOSSkeletonList, EmptySearch } from '../components/ios';
+import {
+  IOSCard,
+  IOSSkeletonList,
+  EmptySearch,
+  IOSTopBar,
+  IOSSearchBar,
+  ConversationCard,
+  IOSToastProvider,
+  useIOSToast,
+  toast
+} from '../components/ios';
 import { CoreApi } from '../lib/core-api';
 import { conversationService } from '../lib/service/conversation-service';
-import { useIOSToast } from '../components/ios';
+import { cn } from '../lib/utils';
 import type { Conversation } from '../types/conversation';
 
-export function Search() {
+export const Search: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState<Conversation[]>([]);
-  const [serverResults, setServerResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchMode, setSearchMode] = useState<'local' | 'server'>('local');
   const { toast: showToast } = useIOSToast();
@@ -28,7 +37,6 @@ export function Search() {
   const handleSearch = useCallback(async (query: string) => {
     if (!query.trim()) {
       setResults([]);
-      setServerResults([]);
       return;
     }
 
@@ -36,7 +44,7 @@ export function Search() {
 
     try {
       if (searchMode === 'local') {
-        const conversations = await conversationService.getAll();
+        const conversations = await conversationService.getAllConversations();
         const filtered = conversations.filter(conv =>
           conv.title.toLowerCase().includes(query.toLowerCase()) ||
           conv.provider.toLowerCase().includes(query.toLowerCase())
@@ -44,10 +52,11 @@ export function Search() {
         setResults(filtered);
       } else {
         const response = await CoreApi.search(query);
-        setServerResults(response);
+        // Map server results to Conversation type if needed
+        setResults(response);
       }
     } catch (error) {
-      showToast('Search failed', { variant: 'error' });
+      showToast(toast.error('Search failed'));
     } finally {
       setLoading(false);
     }
@@ -61,67 +70,58 @@ export function Search() {
   }, [searchQuery, handleSearch]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-md mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">Search</h1>
+    <div className="flex flex-col min-h-full bg-gray-50 dark:bg-gray-950 pb-20">
+      <IOSTopBar title="Search" />
+      
+      <div className="px-4 py-4 space-y-4">
+        <IOSSearchBar
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Search conversations..."
+          autoFocus
+        />
 
-        <div className="space-y-4">
-          <IOSCard>
-            <input
-              type="text"
-              placeholder="Search conversations..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full p-3 border rounded-lg"
-            />
-          </IOSCard>
-
-          <div className="flex gap-2">
+        <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
+          {(['local', 'server'] as const).map((mode) => (
             <button
-              onClick={() => setSearchMode('local')}
-              className={`px-4 py-2 rounded-lg ${searchMode === 'local' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+              key={mode}
+              onClick={() => setSearchMode(mode)}
+              className={cn(
+                'flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all capitalize',
+                searchMode === mode
+                  ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'
+              )}
             >
-              Local
+              {mode}
             </button>
-            <button
-              onClick={() => setSearchMode('server')}
-              className={`px-4 py-2 rounded-lg ${searchMode === 'server' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-            >
-              Server
-            </button>
-          </div>
+          ))}
+        </div>
 
+        <div className="space-y-3">
           {loading ? (
-            <IOSSkeletonList count={3} />
-          ) : searchMode === 'local' ? (
-            results.length > 0 ? (
-              results.map((conv) => (
-                <Link key={conv.id} to={`/conversation/${conv.id}`}>
-                  <IOSCard>
-                    <h3 className="font-semibold">{conv.title}</h3>
-                    <p className="text-sm text-gray-500">{conv.provider}</p>
-                  </IOSCard>
-                </Link>
-              ))
-            ) : searchQuery ? (
-              <EmptySearch onAction={() => setSearchQuery('')} />
-            ) : null
+            <IOSSkeletonList count={5} />
+          ) : results.length > 0 ? (
+            results.map((conv) => (
+              <ConversationCard 
+                key={conv.id} 
+                conversation={conv} 
+                variant="default"
+              />
+            ))
+          ) : searchQuery ? (
+            <EmptySearch onAction={() => setSearchQuery('')} />
           ) : (
-            serverResults.length > 0 ? (
-              serverResults.map((result) => (
-                <Link key={result.id} to={`/conversation/${result.id}`}>
-                  <IOSCard>
-                    <h3 className="font-semibold">{result.title}</h3>
-                    <p className="text-sm text-gray-500">{result.provider}</p>
-                  </IOSCard>
-                </Link>
-              ))
-            ) : searchQuery ? (
-              <EmptySearch onAction={() => setSearchQuery('')} />
-            ) : null
+            <div className="text-center py-12">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Type something to start searching {searchMode} conversations
+              </p>
+            </div>
           )}
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default Search;

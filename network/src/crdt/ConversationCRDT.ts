@@ -143,7 +143,7 @@ export class ConversationCRDT {
     metadata.set(key, value);
   }
 
-  private emit(event: string, data: unknown): void {
-    log.debug({ docId: this.docId, event }, 'Emitting event');
+  private emit(event: string, data?: unknown): void {
+    log.debug({ docId: this.docId, event, data }, 'Emitting event');
   }
 }

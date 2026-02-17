@@ -109,3 +109,65 @@ export interface LogEntry {
   message: string;
   metadata?: Record<string, unknown>;
 }
+
+export interface SystemStats {
+  cpu: {
+    usage: number;
+    cores: number;
+  };
+  memory: {
+    total: number;
+    used: number;
+    free: number;
+    usage: number;
+  };
+  disk: {
+    total: number;
+    used: number;
+    free: number;
+    usage: number;
+  };
+  uptime: number;
+  loadAverage: number[];
+  timestamp: string;
+}
+
+export interface UserStats {
+  totalUsers: number;
+  activeUsers: number;
+  newUsersToday: number;
+  newUsersThisWeek: number;
+  newUsersThisMonth: number;
+  topUsersByActivity: Array<{
+    id: string;
+    name: string;
+    activityScore: number;
+    lastActive: string;
+  }>;
+}
+
+export interface ConversationStats {
+  totalConversations: number;
+  activeConversations: number;
+  conversationsToday: number;
+  conversationsThisWeek: number;
+  conversationsThisMonth: number;
+  averageMessagesPerConversation: number;
+  topConversationsByActivity: Array<{
+    id: string;
+    title: string;
+    messageCount: number;
+    lastActivity: string;
+  }>;
+}
+
+export interface StorageStats {
+  totalSize: number;
+  usedSize: number;
+  freeSize: number;
+  usage: number;
+  conversations: number;
+  messages: number;
+  attachments: number;
+  indexes: number;
+}

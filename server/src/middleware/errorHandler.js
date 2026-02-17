@@ -6,6 +6,7 @@
 
 import { logger } from '../lib/logger.js';
 import { config } from '../config/index.js';
+import { serverErrorReporter } from '../utils/server-error-reporting.js';
 
 // ============================================================================
 // ERROR CLASS HIERARCHY
@@ -97,6 +98,18 @@ function formatError(error) {
 export function errorHandler(error, req, res, _next) {
   const log = req.id ? logger.child({ requestId: req.id }) : logger;
 
+  // Prepare error context
+  const errorContext = {
+    path: req.path,
+    method: req.method,
+    ip: req.ip,
+    userAgent: req.get('User-Agent'),
+    userId: req.user?.id || req.session?.userId || null,
+    requestId: req.id,
+    statusCode: error.statusCode || 500,
+    timestamp: new Date().toISOString()
+  };
+
   // Log error
   log.error(
     {
@@ -104,9 +117,26 @@ export function errorHandler(error, req, res, _next) {
       code: error.code,
       statusCode: error.statusCode || 500,
       stack: config.isDevelopment ? error.stack : undefined,
+      ...errorContext
     },
     'Error handled by global handler',
   );
+
+  // Report error to centralized error reporting system
+  const fullErrorMessage = `UNHANDLED_EXCEPTION [${req.method} ${req.path}]: ${error.message}`;
+  serverErrorReporter.reportServerError(
+    fullErrorMessage,
+    error,
+    { 
+      ...errorContext,
+      errorName: error.name,
+      errorCode: error.code,
+      stack: error.stack
+    },
+    error.statusCode >= 500 ? 'critical' : 'high'
+  ).catch(reportErr => {
+    logger.error({ reportError: reportErr.message }, 'Failed to report error to centralized system');
+  });
 
   // Determine status code
   const statusCode = error.statusCode || 500;

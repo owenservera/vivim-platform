@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { 
-  Terminal, Bug, X, Trash2, Download, Copy, Search, 
-  ChevronDown, Pause, Play, 
+import {
+  Terminal, Bug, X, Trash2, Download, Copy, Search,
+  ChevronDown, Pause, Play,
   Maximize2, Minimize2, Activity, Cpu, Database
 } from 'lucide-react';
-import { logger, type LogEntry, LogLevel, type LogSource } from '../lib/logger';
+import { unifiedDebugService, type DebugLog, type DebugLevel } from '../lib/unified-debug-service';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -16,10 +16,10 @@ function cn(...inputs: ClassValue[]) {
 // ATOMS
 // ============================================================================
 
-const Badge = ({ children, className, variant = 'default' }: { 
-  children: React.ReactNode; 
+const Badge = ({ children, className, variant = 'default' }: {
+  children: React.ReactNode;
   className?: string;
-  variant?: 'default' | 'error' | 'warn' | 'info' | 'debug' | 'server' | 'client';
+  variant?: 'default' | 'error' | 'warn' | 'info' | 'debug' | 'trace' | 'server' | 'client';
 }) => {
   const variants = {
     default: 'bg-gray-800 text-gray-400',
@@ -27,6 +27,7 @@ const Badge = ({ children, className, variant = 'default' }: {
     warn: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/50',
     info: 'bg-blue-500/20 text-blue-400 border-blue-500/50',
     debug: 'bg-gray-700/50 text-gray-400 border-gray-600/50',
+    trace: 'bg-gray-800/80 text-gray-500 border-gray-700/50',
     server: 'bg-purple-500/20 text-purple-400 border-purple-500/50',
     client: 'bg-green-500/20 text-green-400 border-green-500/50',
   };
@@ -46,17 +47,17 @@ const Badge = ({ children, className, variant = 'default' }: {
 // LOG ITEM
 // ============================================================================
 
-const LogItem = React.memo(({ log, isExpanded, onToggle }: { 
-  log: LogEntry; 
-  isExpanded: boolean; 
+const LogItem = React.memo(({ log, isExpanded, onToggle }: {
+  log: DebugLog;
+  isExpanded: boolean;
   onToggle: () => void;
 }) => {
-  const levelVariant = log.level.toLowerCase() as any;
+  const levelVariant = log.level as any;
   const hasDetails = !!(log.data || log.error);
 
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const text = `[${new Date(log.timestamp).toISOString()}] [${log.level}] [${log.source.toUpperCase()}] [${log.module}] ${log.message}${
+    const text = `[${new Date(log.timestamp).toISOString()}] [${log.level.toUpperCase()}] [${log.component.toUpperCase()}] [${log.module}] ${log.message}${
       log.data ? '\nData: ' + JSON.stringify(log.data, null, 2) : ''
     }${log.error ? '\nError: ' + log.error.stack : ''}`;
     navigator.clipboard.writeText(text);
@@ -102,8 +103,8 @@ const LogItem = React.memo(({ log, isExpanded, onToggle }: {
 
         <span className={cn(
           "break-all selection:bg-blue-500/30",
-          log.level === LogLevel.ERROR ? "text-red-400" : 
-          log.level === LogLevel.WARN ? "text-yellow-200" : "text-white/80",
+          log.level === 'error' ? "text-red-400" : 
+          log.level === 'warn' ? "text-yellow-200" : "text-white/80",
           !isExpanded && "truncate"
         )}>
           {log.message}
@@ -149,10 +150,10 @@ const LogItem = React.memo(({ log, isExpanded, onToggle }: {
 export const DebugPanel: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isZenMode, setIsZenMode] = useState(false);
-  const [activeSource, setActiveSource] = useState<LogSource | 'both'>('both');
-  const [activeLevel, setActiveLevel] = useState<LogLevel | 'ALL'>('ALL');
+  const [activeComponent, setActiveComponent] = useState<'both' | 'client' | 'server'>('both');
+  const [activeLevel, setActiveLevel] = useState<DebugLevel | 'ALL'>('ALL');
   const [search, setSearch] = useState('');
-  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [logs, setLogs] = useState<DebugLog[]>([]);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [isPaused, setIsPaused] = useState(false);
   const [autoScroll, setAutoScroll] = useState(true);
@@ -175,21 +176,17 @@ export const DebugPanel: React.FC = () => {
 
   // Initial load & Subscription
   useEffect(() => {
-    setLogs(logger.getLogs());
+    setLogs(unifiedDebugService.getLogs());
 
-    const handleNewLog = (log: LogEntry) => {
-      if (pausedRef.current && log.id !== 'clear') return;
-      if (log.id === 'clear') {
-        setLogs([]);
-        return;
-      }
+    const handleNewLog = (log: DebugLog) => {
+      if (pausedRef.current) return;
       setLogs(prev => [log, ...prev].slice(0, 2000));
     };
 
-    logger.addListener(handleNewLog);
-    
+    const unsubscribe = unifiedDebugService.addListener(handleNewLog);
+
     return () => {
-      logger.removeListener(handleNewLog);
+      unsubscribe();
     };
   }, []);
 
@@ -203,14 +200,17 @@ export const DebugPanel: React.FC = () => {
   // Filtering
   const filteredLogs = useMemo(() => {
     return logs.filter(l => {
-      const matchSource = activeSource === 'both' || l.source === activeSource;
+      const matchSource = activeComponent === 'both' || 
+        (activeComponent === 'client' && l.source === 'client') || 
+        (activeComponent === 'server' && l.source === 'server');
       const matchLevel = activeLevel === 'ALL' || l.level === activeLevel;
-      const matchSearch = !search || 
+      const matchSearch = !search ||
         l.message.toLowerCase().includes(search.toLowerCase()) ||
-        l.module.toLowerCase().includes(search.toLowerCase());
+        l.module.toLowerCase().includes(search.toLowerCase()) ||
+        l.component.toLowerCase().includes(search.toLowerCase());
       return matchSource && matchLevel && matchSearch;
     });
-  }, [logs, activeSource, activeLevel, search]);
+  }, [logs, activeComponent, activeLevel, search]);
 
   const toggleExpand = (id: string) => {
     setExpandedIds(prev => {
@@ -222,9 +222,9 @@ export const DebugPanel: React.FC = () => {
   };
 
   const stats = useMemo(() => ({
-    server: logs.filter(l => l.source === 'server').length,
     client: logs.filter(l => l.source === 'client').length,
-    errors: logs.filter(l => l.level === LogLevel.ERROR).length
+    server: logs.filter(l => l.source === 'server').length,
+    errors: logs.filter(l => l.level === 'error').length
   }), [logs]);
 
   if (!isOpen) {
@@ -295,10 +295,10 @@ export const DebugPanel: React.FC = () => {
           {(['both', 'client', 'server'] as const).map(s => (
             <button
               key={s}
-              onClick={() => setActiveSource(s)}
+              onClick={() => setActiveComponent(s)}
               className={cn(
                 "px-2 py-1 text-[9px] font-black uppercase tracking-widest border border-white/10 transition-all",
-                activeSource === s ? "bg-white text-black border-white" : "text-white/40 hover:text-white hover:bg-white/5"
+                activeComponent === s ? "bg-white text-black border-white" : "text-white/40 hover:text-white hover:bg-white/5"
               )}
             >
               {s}
@@ -309,7 +309,7 @@ export const DebugPanel: React.FC = () => {
         <div className="h-4 w-px bg-white/10 mx-1" />
 
         <div className="flex gap-1">
-          {(['ALL', LogLevel.INFO, LogLevel.WARN, LogLevel.ERROR, LogLevel.DEBUG] as const).map(l => (
+          {(['ALL', 'trace', 'debug', 'info', 'warn', 'error'] as const).map(l => (
             <button
               key={l}
               onClick={() => setActiveLevel(l)}
@@ -318,7 +318,7 @@ export const DebugPanel: React.FC = () => {
                 activeLevel === l ? "bg-white text-black border-white" : "text-white/40 hover:text-white hover:bg-white/5"
               )}
             >
-              {l === 'ALL' ? 'ALL' : l.slice(0,3)}
+              {l === 'ALL' ? 'ALL' : l.slice(0,3).toUpperCase()}
             </button>
           ))}
         </div>
@@ -335,21 +335,14 @@ export const DebugPanel: React.FC = () => {
           >
             {isPaused ? <Play size={14} /> : <Pause size={14} />}
           </button>
-          <button 
-            onClick={() => logger.clearLogs()}
+          <button
+            onClick={() => unifiedDebugService.clearLogs()}
             className="p-2 text-white/40 hover:text-red-400 border border-transparent hover:border-red-400/50 rounded-sm transition-all"
           >
             <Trash2 size={14} />
           </button>
-          <button 
-            onClick={() => {
-              const blob = new Blob([JSON.stringify(logs, null, 2)], { type: 'application/json' });
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = `openscroll_dump_${Date.now()}.json`;
-              a.click();
-            }}
+          <button
+            onClick={() => unifiedDebugService.downloadLogs()}
             className="p-2 text-white/40 hover:text-blue-400 border border-transparent hover:border-blue-400/50 rounded-sm transition-all"
           >
             <Download size={14} />

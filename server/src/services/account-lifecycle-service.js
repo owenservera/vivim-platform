@@ -1,6 +1,6 @@
 /**
  * User Account Lifecycle Service
- * 
+ *
  * Handles:
  * - Soft delete (account deactivation)
  * - Hard delete (GDPR erasure)
@@ -10,6 +10,7 @@
 
 import { getPrismaClient } from '../lib/database.js';
 import { logger } from '../lib/logger.js';
+import { debugReporter } from './debug-reporter.js';
 
 const log = logger.child({ module: 'account-lifecycle' });
 
@@ -20,7 +21,7 @@ export async function checkAccountStatus(userId) {
   const prisma = getPrismaClient();
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { status: true, deletedAt: true, suspendedAt: true, bannedAt: true }
+    select: { status: true, deletedAt: true, suspendedAt: true, bannedAt: true },
   });
   return user;
 }
@@ -48,7 +49,7 @@ export async function canUserAccess(userId) {
 export async function requestAccountDeletion(userId, options = {}) {
   const prisma = getPrismaClient();
   const user = await prisma.user.findUnique({ where: { id: userId } });
-  
+
   if (!user) {
     return { success: false, error: 'User not found' };
   }
@@ -58,15 +59,17 @@ export async function requestAccountDeletion(userId, options = {}) {
   }
 
   const now = new Date();
-  const scheduledDeletion = new Date(now.getTime() + DELETION_GRACE_PERIOD_DAYS * 24 * 60 * 60 * 1000);
+  const scheduledDeletion = new Date(
+    now.getTime() + DELETION_GRACE_PERIOD_DAYS * 24 * 60 * 60 * 1000
+  );
 
   await prisma.user.update({
     where: { id: userId },
     data: {
       status: 'DELETING',
       deletionRequestedAt: now,
-      deletedAt: scheduledDeletion
-    }
+      deletedAt: scheduledDeletion,
+    },
   });
 
   log.info({ userId, scheduledDeletion }, 'Account deletion scheduled');
@@ -78,15 +81,15 @@ export async function requestAccountDeletion(userId, options = {}) {
   return {
     success: true,
     scheduledDeletion: scheduledDeletion.toISOString(),
-    gracePeriodDays: DELETION_GRACE_PERIOD_DAYS
+    gracePeriodDays: DELETION_GRACE_PERIOD_DAYS,
   };
 }
 
 export async function cancelAccountDeletion(userId) {
   const prisma = getPrismaClient();
-  
+
   const user = await prisma.user.findUnique({ where: { id: userId } });
-  
+
   if (!user || user.status !== 'DELETING') {
     return { success: false, error: 'No pending deletion' };
   }
@@ -96,8 +99,8 @@ export async function cancelAccountDeletion(userId) {
     data: {
       status: 'ACTIVE',
       deletionRequestedAt: null,
-      deletedAt: null
-    }
+      deletedAt: null,
+    },
   });
 
   log.info({ userId }, 'Account deletion cancelled');
@@ -106,14 +109,15 @@ export async function cancelAccountDeletion(userId) {
 
 export async function performHardDelete(userId) {
   const prisma = getPrismaClient();
-  
+
   log.info({ userId }, 'Starting hard delete');
+  debugReporter.trackInfo({ category: 'account', message: 'Starting hard delete' }, { userId });
 
   try {
     await prisma.$transaction([
       prisma.user.update({
         where: { id: userId },
-        data: { status: 'DELETED' }
+        data: { status: 'DELETED' },
       }),
       prisma.user.update({
         where: { id: userId },
@@ -126,14 +130,16 @@ export async function performHardDelete(userId) {
           handle: null,
           did: `did:deleted:${userId}`,
           settings: {},
-          privacyPreferences: {}
-        }
-      })
+          privacyPreferences: {},
+        },
+      }),
     ]);
 
     log.info({ userId }, 'Hard delete completed');
+    debugReporter.trackInfo({ category: 'account', message: 'Hard delete completed' }, { userId });
     return { success: true };
   } catch (error) {
+    debugReporter.trackError(error, { operation: 'performHardDelete', userId });
     log.error({ userId, error: error.message }, 'Hard delete failed');
     return { success: false, error: error.message };
   }
@@ -146,10 +152,10 @@ export async function processScheduledDeletions() {
   const usersToDelete = await prisma.user.findMany({
     where: {
       status: 'DELETING',
-      deletedAt: { lte: now }
+      deletedAt: { lte: now },
     },
     take: MAX_DELETION_BATCH,
-    select: { id: true }
+    select: { id: true },
   });
 
   log.info({ count: usersToDelete.length }, 'Processing scheduled deletions');
@@ -163,14 +169,14 @@ export async function processScheduledDeletions() {
 
 export async function suspendAccount(userId, reason) {
   const prisma = getPrismaClient();
-  
+
   await prisma.user.update({
     where: { id: userId },
     data: {
       status: 'SUSPENDED',
       suspendedAt: new Date(),
-      suspensionReason: reason
-    }
+      suspensionReason: reason,
+    },
   });
 
   log.info({ userId, reason }, 'Account suspended');
@@ -179,14 +185,14 @@ export async function suspendAccount(userId, reason) {
 
 export async function unsuspendAccount(userId) {
   const prisma = getPrismaClient();
-  
+
   await prisma.user.update({
     where: { id: userId },
     data: {
       status: 'ACTIVE',
       suspendedAt: null,
-      suspensionReason: null
-    }
+      suspensionReason: null,
+    },
   });
 
   log.info({ userId }, 'Account unsuspended');
@@ -195,14 +201,14 @@ export async function unsuspendAccount(userId) {
 
 export async function banAccount(userId, reason) {
   const prisma = getPrismaClient();
-  
+
   await prisma.user.update({
     where: { id: userId },
     data: {
       status: 'BANNED',
       bannedAt: new Date(),
-      banReason: reason
-    }
+      banReason: reason,
+    },
   });
 
   log.info({ userId, reason }, 'Account banned');
@@ -211,14 +217,14 @@ export async function banAccount(userId, reason) {
 
 export async function unbanAccount(userId) {
   const prisma = getPrismaClient();
-  
+
   await prisma.user.update({
     where: { id: userId },
     data: {
       status: 'ACTIVE',
       bannedAt: null,
-      banReason: null
-    }
+      banReason: null,
+    },
   });
 
   log.info({ userId }, 'Account unbanned');
@@ -244,8 +250,8 @@ export async function getAccountInfo(userId) {
       suspendedAt: true,
       suspensionReason: true,
       bannedAt: true,
-      banReason: true
-    }
+      banReason: true,
+    },
   });
   return user;
 }
@@ -262,7 +268,7 @@ export const accountLifecycle = {
   unsuspendAccount,
   banAccount,
   unbanAccount,
-  getAccountInfo
+  getAccountInfo,
 };
 
 export default accountLifecycle;

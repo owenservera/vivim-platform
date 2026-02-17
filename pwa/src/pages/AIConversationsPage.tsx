@@ -1,8 +1,3 @@
-/**
- * AI Conversations Page
- * Dedicated page for managing AI conversations with sidebar and chat view
- */
-
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
@@ -18,11 +13,23 @@ import {
   ChevronRight,
   MoreVertical,
   RefreshCw,
+  Cpu,
+  Zap
 } from 'lucide-react';
 import { useAIConversations } from '../hooks/useAIConversations';
 import type { Conversation } from '../types/conversation';
 import { RemuxDialog } from '../components/RemuxDialog';
 import { ConversationChatView } from '../components/ConversationChatView';
+import { 
+  IOSTopBar, 
+  IOSCard, 
+  IOSButton, 
+  IOSAvatar, 
+  IOSSkeletonList,
+  useIOSToast,
+  toast
+} from '../components/ios';
+import { cn } from '../lib/utils';
 
 interface AIConversationsPageProps {
   initialConversationId?: string;
@@ -47,6 +54,8 @@ export const AIConversationsPage: React.FC<AIConversationsPageProps> = ({ initia
     deleteConversation,
     clearFilters,
   } = useAIConversations();
+
+  const { toast: showToast } = useIOSToast();
 
   // Sync URL param with selected conversation
   React.useEffect(() => {
@@ -81,26 +90,29 @@ export const AIConversationsPage: React.FC<AIConversationsPageProps> = ({ initia
 
     if (days === 0) return 'Today';
     if (days === 1) return 'Yesterday';
-    if (days < 7) return `${days} days ago`;
+    if (days < 7) return `${days}d ago`;
     return date.toLocaleDateString();
   };
 
   const hasActiveFilters = filters.search || filters.provider || filters.dateRange !== 'all' || filters.pinned !== null;
 
   return (
-    <div className="flex h-screen bg-gray-950 text-white overflow-hidden">
-      {/* Sidebar */}
-      <aside className="w-80 flex flex-col border-r border-gray-800 bg-gray-900/50">
+    <div className="flex h-full bg-gray-50 dark:bg-gray-950 overflow-hidden">
+      {/* Sidebar - Hidden on mobile if conversation selected */}
+      <aside className={cn(
+        "w-full md:w-80 flex flex-col border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 transition-all",
+        selectedConversation ? "hidden md:flex" : "flex"
+      )}>
         {/* Header */}
-        <div className="p-4 border-b border-gray-800">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-lg font-semibold flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-blue-400" />
-              AI Conversations
+        <div className="p-4 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center justify-between mb-4 px-1">
+            <h1 className="text-lg font-bold flex items-center gap-2 text-gray-900 dark:text-white">
+              <Sparkles className="w-5 h-5 text-blue-500" />
+              Intelligence
             </h1>
             <button
               onClick={handleNewChat}
-              className="p-2 bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors"
+              className="p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full transition-all shadow-lg shadow-blue-500/20 active:scale-90"
             >
               <Plus className="w-5 h-5" />
             </button>
@@ -108,119 +120,95 @@ export const AIConversationsPage: React.FC<AIConversationsPageProps> = ({ initia
 
           {/* Search */}
           <div className="relative mb-3">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search conversations..."
+              placeholder="Search history..."
               value={filters.search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-8 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+              className="w-full pl-9 pr-8 py-2.5 bg-gray-50 dark:bg-gray-800 border border-transparent focus:border-blue-500/30 rounded-xl text-sm focus:outline-none transition-all"
             />
-            {filters.search && (
-              <button
-                onClick={() => setSearch('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-white"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
           </div>
 
           {/* Filter Toggle */}
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors ${
-              hasActiveFilters ? 'bg-blue-600/20 text-blue-400' : 'bg-gray-800 text-gray-400 hover:text-white'
-            }`}
+            className={cn(
+              "w-full flex items-center gap-2 px-3 py-2 text-xs font-bold uppercase tracking-widest rounded-xl transition-all",
+              hasActiveFilters 
+                ? "bg-blue-500/10 text-blue-600 dark:text-blue-400" 
+                : "bg-gray-50 dark:bg-gray-800 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+            )}
           >
-            <Filter className="w-4 h-4" />
+            <Filter className="w-3.5 h-3.5" />
             Filters
             {hasActiveFilters && (
-              <span className="ml-auto w-2 h-2 bg-blue-400 rounded-full" />
+              <span className="ml-auto w-1.5 h-1.5 bg-blue-500 rounded-full" />
             )}
           </button>
         </div>
 
         {/* Filters Panel */}
         {showFilters && (
-          <div className="p-4 border-b border-gray-800 space-y-3 animate-slideIn">
-            {/* Provider Filter */}
+          <div className="p-4 border-b border-gray-100 dark:border-gray-800 space-y-4 animate-in slide-in-from-top-2 duration-200">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Provider</label>
+              <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 px-1">Engine</label>
               <select
                 value={filters.provider || ''}
                 onChange={(e) => setProvider(e.target.value || null)}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+                className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:border-blue-500/50"
               >
-                <option value="">All Providers</option>
+                <option value="">All Engines</option>
                 {providers.map(p => (
                   <option key={p} value={p}>{p}</option>
                 ))}
               </select>
             </div>
 
-            {/* Date Range */}
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Date</label>
+              <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 px-1">Time Horizon</label>
               <select
                 value={filters.dateRange}
                 onChange={(e) => setDateRange(e.target.value as any)}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+                className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:border-blue-500/50"
               >
-                <option value="all">All Time</option>
+                <option value="all">Infinity</option>
                 <option value="today">Today</option>
                 <option value="week">Past Week</option>
                 <option value="month">Past Month</option>
               </select>
             </div>
 
-            {/* Sort */}
-            <div>
-              <label className="block text-xs text-gray-500 mb-1">Sort</label>
-              <select
-                value={filters.sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm focus:outline-none focus:border-blue-500"
-              >
-                <option value="recent">Most Recent</option>
-                <option value="oldest">Oldest First</option>
-                <option value="name">Name</option>
-              </select>
-            </div>
-
-            {/* Clear Filters */}
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="w-full py-2 text-sm text-gray-400 hover:text-white flex items-center justify-center gap-2"
+                className="w-full py-2 text-[10px] font-bold text-gray-400 hover:text-red-500 uppercase tracking-[0.2em] transition-colors"
               >
-                <X className="w-4 h-4" />
-                Clear Filters
+                Reset Filters
               </button>
             )}
           </div>
         )}
 
         {/* Conversation List */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto ios-scrollbar-hide">
           {isLoading ? (
-            <div className="p-8 text-center text-gray-500">
-              <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-3" />
-              Loading conversations...
+            <div className="p-6">
+              <IOSSkeletonList count={6} />
             </div>
           ) : conversations.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
-              <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p className="text-sm">No conversations yet</p>
+            <div className="p-8 text-center opacity-40">
+              <MessageSquare size={40} className="mx-auto mb-4" />
+              <p className="text-sm font-bold">No intelligence found</p>
               <button
                 onClick={handleNewChat}
-                className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm transition-colors"
+                className="mt-4 text-xs font-bold text-blue-500 uppercase tracking-widest"
               >
-                Start New Chat
+                Start New Session
               </button>
             </div>
           ) : (
-            <div className="py-2">
+            <div className="divide-y divide-gray-50 dark:divide-gray-800/50">
               {conversations.map((conversation) => (
                 <ConversationListItem
                   key={conversation.id}
@@ -237,8 +225,11 @@ export const AIConversationsPage: React.FC<AIConversationsPageProps> = ({ initia
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col">
+      {/* Main Content - Full width on mobile if selected */}
+      <main className={cn(
+        "flex-1 flex flex-col min-w-0 bg-white dark:bg-gray-950 transition-all",
+        !selectedConversation ? "hidden md:flex" : "flex"
+      )}>
         {selectedConversation ? (
           <ConversationChatView
             conversation={selectedConversation}
@@ -246,7 +237,25 @@ export const AIConversationsPage: React.FC<AIConversationsPageProps> = ({ initia
             onRemix={() => handleRemix(selectedConversation)}
           />
         ) : (
-          <EmptyState onNewChat={handleNewChat} />
+          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+            <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 rounded-[2.5rem] flex items-center justify-center mb-8 shadow-inner border border-white/10">
+              <Cpu className="w-10 h-10 text-gray-400 dark:text-gray-600" />
+            </div>
+            <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-2 uppercase tracking-tighter">
+              Awaiting Selection
+            </h2>
+            <p className="text-sm text-gray-500 max-w-xs leading-relaxed">
+              Activate a materialization from the repository to visualize the knowledge graph.
+            </p>
+            <IOSButton
+              variant="primary"
+              className="mt-8 rounded-full px-8 shadow-xl shadow-blue-500/20"
+              onClick={handleNewChat}
+              icon={<Zap className="w-4 h-4" />}
+            >
+              Start New Chat
+            </IOSButton>
+          </div>
         )}
       </main>
 
@@ -282,6 +291,129 @@ interface ConversationListItemProps {
 }
 
 const ConversationListItem: React.FC<ConversationListItemProps> = ({
+  conversation,
+  isSelected,
+  onSelect,
+  onDelete,
+  onRemix,
+  formatDate,
+}) => {
+  const [showMenu, setShowMenu] = useState(false);
+
+  return (
+    <div
+      onClick={onSelect}
+      className={cn(
+        "px-4 py-4 cursor-pointer transition-all border-l-4",
+        isSelected 
+          ? "bg-blue-50/50 dark:bg-blue-900/10 border-blue-500" 
+          : "hover:bg-gray-50 dark:hover:bg-gray-800/50 border-transparent"
+      )}
+    >
+      <div className="flex items-start gap-3">
+        <div className={cn(
+          "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm transition-transform",
+          isSelected && "scale-110",
+          conversation.provider === 'zai' ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' :
+          conversation.provider === 'chatgpt' ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400' :
+          'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
+        )}>
+          <Bot className="w-5 h-5" />
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <h3 className={cn(
+              "font-bold text-sm truncate",
+              isSelected ? "text-gray-900 dark:text-white" : "text-gray-700 dark:text-gray-300"
+            )}>
+              {conversation.title}
+            </h3>
+            {conversation.metadata?.isPinned && (
+              <Pin className="w-3 h-3 text-blue-500 fill-current" />
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 mt-1 flex-wrap">
+            <span className="text-[10px] font-black uppercase tracking-tighter text-gray-400">
+              {conversation.provider}
+            </span>
+            <span className="w-1 h-1 bg-gray-300 rounded-full" />
+            <span className="text-[10px] font-bold text-gray-400">
+              {conversation.stats.totalMessages} MSGS
+            </span>
+            <span className="w-1 h-1 bg-gray-300 rounded-full" />
+            <span className="text-[10px] font-bold text-gray-400">
+              {formatDate(conversation.createdAt)}
+            </span>
+          </div>
+        </div>
+
+        <div className="relative">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowMenu(!showMenu);
+            }}
+            className="p-1.5 text-gray-300 hover:text-gray-600 dark:hover:text-gray-400 rounded-lg transition-colors"
+          >
+            <MoreVertical className="w-4 h-4" />
+          </button>
+
+          {showMenu && (
+            <>
+              <div
+                className="fixed inset-0 z-10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowMenu(false);
+                }}
+              />
+              <div className="absolute right-0 top-full mt-1 w-40 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-2xl z-20 py-1 animate-in fade-in zoom-in-95 duration-200">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onRemix();
+                    setShowMenu(false);
+                  }}
+                  className="w-full px-4 py-2.5 text-left text-xs font-bold text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 flex items-center gap-3 uppercase tracking-widest"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  Remix
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete();
+                    setShowMenu(false);
+                  }}
+                  className="w-full px-4 py-2.5 text-left text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-3 uppercase tracking-widest"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  Delete
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Conversation List Item Component
+ */
+interface ConversationListItemProps {
+  conversation: Conversation;
+  isSelected: boolean;
+  onSelect: () => void;
+  onDelete: () => void;
+  onRemix: () => void;
+  formatDate: (date: string) => string;
+}
+
+const ConversationListItemGrid: React.FC<ConversationListItemProps> = ({
   conversation,
   isSelected,
   onSelect,

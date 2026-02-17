@@ -1,4 +1,6 @@
+import './Settings.css';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   IOSSettingsPage,
   IOSButton,
@@ -9,7 +11,10 @@ import {
 import { getStorage } from '../lib/storage-v2';
 import { loginWithGoogle, getAccountInfo, requestAccountDeletion, type User as AuthUser, type AccountInfo } from '../lib/auth-api';
 import { useAuth } from '../lib/auth-context';
-import { User, Bell, Shield, Database, Palette, Info, LogOut, Trash2 } from 'lucide-react';
+import { useDeviceContext } from '../lib/device-context';
+import { DeviceType } from '../lib/device-detection';
+import { Smartphone, Monitor, Tablet, RotateCcw } from 'lucide-react';
+import { User, Bell, Shield, Database, Palette, Info, LogOut, Trash2, ChevronRight } from 'lucide-react';
 
 export const Settings: React.FC = () => {
   const [did, setDid] = useState<string>('');
@@ -19,6 +24,8 @@ export const Settings: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useIOSToast();
   const { user: googleUser, logout } = useAuth();
+  const { deviceType, forceDeviceType, resetDeviceType, isForced } = useDeviceContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadData = async () => {
@@ -100,20 +107,21 @@ export const Settings: React.FC = () => {
 
   const settingsGroups = [
     {
-      title: loading ? 'Loading...' : (googleUser ? 'Google Account' : 'Sign In'),
+      title: loading ? 'Loading...' : (googleUser ? 'Account' : 'Sign In'),
       items: loading ? [] : googleUser ? [
+        {
+          id: 'view-account',
+          label: 'View Account Details',
+          value: 'Manage your profile',
+          icon: <User className="w-5 h-5" />,
+          type: 'action' as const,
+          onClick: () => navigate('/account'),
+        },
         {
           id: 'google-email',
           label: 'Email',
           value: googleUser.email,
-          icon: <User className="w-5 h-5" />,
-          type: 'default' as const,
-        },
-        {
-          id: 'google-name',
-          label: 'Name',
-          value: googleUser.displayName || 'Not set',
-          icon: <User className="w-5 h-5" />,
+          icon: <ChevronRight className="w-5 h-5" />,
           type: 'default' as const,
         },
       ] : [
@@ -160,6 +168,31 @@ export const Settings: React.FC = () => {
           toggleValue: darkMode,
           onToggle: handleToggleDarkMode,
         },
+        {
+          id: 'deviceType',
+          label: 'Device Type',
+          icon: deviceType === 'mobile' ? <Smartphone className="w-5 h-5" /> :
+                 deviceType === 'tablet' ? <Tablet className="w-5 h-5" /> :
+                 <Monitor className="w-5 h-5" />,
+          type: 'navigation' as const,
+          value: isForced ? `${deviceType} (Forced)` : deviceType,
+          onClick: () => {
+            const nextType: DeviceType = deviceType === 'mobile' ? 'desktop' :
+                                   deviceType === 'desktop' ? 'tablet' : 'mobile';
+            forceDeviceType(nextType);
+            toast(toastHelper.success(`Switched to ${nextType} view`));
+          },
+        },
+        ...(isForced ? [{
+          id: 'resetDeviceType',
+          label: 'Reset Device Type',
+          icon: <RotateCcw className="w-5 h-5" />,
+          type: 'action' as const,
+          onClick: () => {
+            resetDeviceType();
+            toast(toastHelper.success('Device type reset to auto-detect'));
+          },
+        }] : []),
       ],
     },
     {

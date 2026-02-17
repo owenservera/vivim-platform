@@ -1,17 +1,16 @@
 import { useState, useEffect, useRef } from 'react'
 import { clsx } from 'clsx'
 import { useAppStore } from '../../store/appStore'
-import { 
-  FileText, 
-  Search, 
-  Trash2, 
-  Download, 
+import {
+  FileText,
+  Search,
+  Trash2,
+  Download,
   Filter,
   AlertCircle,
   AlertTriangle,
   Info,
   Bug,
-  Clock,
   ChevronDown,
   ChevronRight,
   RefreshCw

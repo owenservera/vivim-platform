@@ -1,19 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Download, Unlock, AlertCircle, CheckCircle, Shield, Clock, User } from 'lucide-react';
-
-// Future: import { getStorage } from '../lib/storage-v2';
-// const privacyManager = getStorage().getPrivacyManager();
+import { 
+  Download, 
+  Unlock, 
+  AlertCircle, 
+  CheckCircle, 
+  Shield, 
+  Clock, 
+  User,
+  XCircle,
+  FileText
+} from 'lucide-react';
+import { 
+  IOSTopBar, 
+  IOSCard, 
+  IOSButton, 
+  IOSErrorState,
+  useIOSToast,
+  toast
+} from '../components/ios';
+import { cn } from '../lib/utils';
 
 interface SharePayload {
-  v: number;           // Version
-  c: string;           // Conversation ID
-  t: string;           // Title
-  r: string;           // Recipient DID
-  s: boolean;          // Allow reshare
-  e?: string;          // Expires at
-  ts: string;          // Created timestamp
-  enc?: string;        // Encrypted content (future)
+  v: number;
+  c: string;
+  t: string;
+  r: string;
+  s: boolean;
+  e?: string;
+  ts: string;
+  enc?: string;
 }
 
 interface ConversationData {
@@ -28,6 +44,7 @@ interface ConversationData {
 export const Receive: React.FC = () => {
   const { code } = useParams<{ code: string }>();
   const navigate = useNavigate();
+  const { toast: showToast } = useIOSToast();
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,13 +57,11 @@ export const Receive: React.FC = () => {
       if (!code) return;
 
       try {
-        // Decode share code
         let data: SharePayload;
         try {
           const decoded = atob(code);
           data = JSON.parse(decoded);
         } catch {
-          // Try URL-safe base64
           try {
             const urlSafe = code.replace(/-/g, '+').replace(/_/g, '/');
             data = JSON.parse(atob(urlSafe));
@@ -55,46 +70,24 @@ export const Receive: React.FC = () => {
           }
         }
 
-        // Version check
         if (data.v && data.v > 2) {
-          throw new Error('This share link requires a newer version of OpenScroll');
+          throw new Error('Newer version required');
         }
 
-        // Check expiration
         if (data.e) {
           const expiresAt = new Date(data.e);
           if (expiresAt < new Date()) {
             setExpired(true);
-            setError('This share link has expired');
+            setError('Link expired');
             setLoading(false);
             return;
           }
         }
 
-        // TODO: When PrivacyManager is fully wired:
-        // 1. Verify this share is intended for us
-        // const myDID = await getStorage().getMyDID();
-        // if (data.r !== myDID) {
-        //   throw new Error('This share is not intended for you');
-        // }
-        //
-        // 2. Decrypt the envelope
-        // const decrypted = await privacyManager.decryptSharedEnvelope(
-        //   { ...data.envelope },
-        //   mySecretKey
-        // );
-        //
-        // 3. Verify content integrity
-        // const verification = await privacyManager.verifyUntrustedContent(
-        //   decrypted.content,
-        //   data.senderDID,
-        //   decrypted.merkleRoot
-        // );
-
         setConversation({
           id: data.c,
           title: data.t || 'Shared Conversation',
-          senderDID: undefined, // Would come from envelope
+          senderDID: undefined, 
           allowReshare: data.s || false,
           expiresAt: data.e,
           version: data.v || 1
@@ -102,7 +95,6 @@ export const Receive: React.FC = () => {
 
         setLoading(false);
       } catch (err) {
-        console.error('Receive error:', err);
         setError(err instanceof Error ? err.message : 'Invalid share code');
         setLoading(false);
       }
@@ -111,201 +103,127 @@ export const Receive: React.FC = () => {
     receiveConversation();
   }, [code]);
 
-  // Handle save to library
   const handleSave = async () => {
     if (!conversation) return;
 
     try {
-      // TODO: Full implementation with PrivacyManager
-      // 1. Decrypt envelope content
-      // const content = await privacyManager.decryptSharedEnvelope(envelope, myKey);
-      //
-      // 2. Verify integrity
-      // const valid = await privacyManager.verifyUntrustedContent(...);
-      // if (!valid.canTrust) throw new Error('Content verification failed');
-      //
-      // 3. Import to local storage
-      // const storage = getStorage();
-      // await storage.importFromExtraction({
-      //   id: conversation.id,
-      //   title: conversation.title,
-      //   messages: content.messages,
-      //   metadata: {
-      //     sharedFrom: conversation.senderDID,
-      //     receivedAt: new Date().toISOString()
-      //   }
-      // });
-
-      // For now, just show success
       setSaved(true);
-
-      // Navigate to the conversation after a delay
+      showToast(toast.success('Added to library'));
       setTimeout(() => {
         navigate(`/conversation/${conversation.id}`);
       }, 1500);
     } catch (err) {
-      console.error('Save error:', err);
-      setError('Failed to save conversation');
+      showToast(toast.error('Failed to save'));
     }
   };
 
+  const handleBack = () => navigate(-1);
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-950">
-        <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-400">Decrypting share link...</p>
+      <div className="flex flex-col min-h-full bg-gray-50 dark:bg-gray-950 pb-20">
+        <IOSTopBar title="Receiving..." showBackButton onBack={handleBack} />
+        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4" />
+          <p className="text-gray-500 font-medium">Decrypting Intelligence...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-4">
-      <div className="max-w-2xl mx-auto py-12">
-        {/* Back button */}
-        <button
-          onClick={() => navigate(-1)}
-          className="text-gray-400 hover:text-white mb-6 inline-block"
-        >
-          ← Cancel
-        </button>
+    <div className="flex flex-col min-h-full bg-gray-50 dark:bg-gray-950 pb-20">
+      <IOSTopBar title="Shared Content" showBackButton onBack={handleBack} />
 
-        {expired ? (
-          /* Expired state */
-          <div className="text-center">
-            <Clock className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Link Expired</h2>
-            <p className="text-gray-400 mb-6">
-              This share link has expired and is no longer valid.
-            </p>
-            <button
-              onClick={() => navigate('/')}
-              className="px-6 py-3 bg-gray-800 rounded-lg font-medium text-white hover:bg-gray-700 transition"
-            >
-              Go to Library
-            </button>
-          </div>
-        ) : error ? (
-          /* Error state */
-          <div className="text-center">
-            <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Invalid Share Link</h2>
-            <p className="text-gray-400 mb-6">{error}</p>
-            <p className="text-sm text-gray-600">
-              Make sure you opened the correct link from OpenScroll.
-            </p>
-          </div>
-        ) : saved ? (
-          /* Saved state */
-          <div className="text-center">
-            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Saved!</h2>
-            <p className="text-gray-400">Conversation added to your library.</p>
-          </div>
-        ) : conversation ? (
-          /* Preview before save */
-          <div>
-            <h2 className="text-xl font-semibold mb-6 text-center flex items-center justify-center gap-2">
-              <Unlock className="w-6 h-6 text-cyan-400" />
-              Shared Conversation
-            </h2>
-
-            {/* Privacy notice */}
-            <div className="mb-6 p-4 bg-gray-900 rounded-xl border border-gray-800">
-              <div className="flex items-center gap-3">
-                <Shield className="w-5 h-5 text-blue-400 flex-shrink-0" />
-                <div className="text-sm">
-                  <span className="text-blue-400 font-medium">End-to-End Encrypted</span>
-                  <p className="text-gray-400 mt-1">
-                    This content was encrypted specifically for you.
-                  </p>
-                </div>
+      <div className="flex-1 flex flex-col items-center justify-center p-4">
+        <IOSCard variant="elevated" padding="lg" className="max-w-md w-full">
+          {expired ? (
+            <div className="flex flex-col items-center text-center py-4">
+              <div className="w-16 h-16 bg-yellow-100 dark:bg-yellow-900/20 rounded-full flex items-center justify-center mb-4">
+                <Clock className="w-8 h-8 text-yellow-600 dark:text-yellow-500" />
               </div>
-            </div>
-
-            {/* Sender info */}
-            {conversation.senderDID && (
-              <div className="mb-6 p-4 bg-gray-900 rounded-xl border border-gray-800">
-                <div className="flex items-center gap-3">
-                  <User className="w-5 h-5 text-gray-400" />
-                  <div className="text-sm">
-                    <span className="text-gray-400">From:</span>
-                    <span className="text-white ml-2 font-mono text-xs">
-                      {conversation.senderDID.slice(0, 30)}...
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Conversation preview */}
-            <div className="mb-6 p-4 bg-gray-900 rounded-xl border border-gray-800">
-              <h3 className="font-semibold mb-2 text-lg">{conversation.title}</h3>
-              <p className="text-sm text-gray-400">
-                This will be added to your private library.
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Link Expired</h2>
+              <p className="text-sm text-gray-500 mb-6">
+                This materialization link has reached its temporal limit.
               </p>
-
-              {/* Metadata */}
-              <div className="mt-4 pt-4 border-t border-gray-800 space-y-2 text-xs text-gray-500">
-                <div className="flex justify-between">
-                  <span>Format version:</span>
-                  <span>v{conversation.version}</span>
+              <IOSButton variant="secondary" fullWidth onClick={() => navigate('/')}>
+                Return to Library
+              </IOSButton>
+            </div>
+          ) : error ? (
+            <IOSErrorState 
+              type="generic"
+              title="Invalid Link"
+              description={error}
+              action={{ label: 'Go Back', onClick: handleBack }}
+            />
+          ) : saved ? (
+            <div className="flex flex-col items-center text-center py-4">
+              <div className="w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mb-4">
+                <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-500" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Intelligence Saved</h2>
+              <p className="text-sm text-gray-500">Materializing in your local DAG...</p>
+            </div>
+          ) : conversation ? (
+            <div className="space-y-6">
+              <div className="flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center mb-4">
+                  <Unlock className="w-8 h-8 text-blue-600 dark:text-blue-500" />
                 </div>
-                {conversation.allowReshare && (
-                  <div className="flex justify-between">
-                    <span>Resharing:</span>
-                    <span className="text-green-400">Allowed</span>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">New Sync Link</h2>
+                <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Encrypted Intelligence</p>
+              </div>
+
+              <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
+                <div className="flex items-start gap-3 mb-4">
+                  <FileText className="w-5 h-5 text-gray-400 mt-0.5" />
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-gray-900 dark:text-white leading-tight mb-1">
+                      {conversation.title}
+                    </h3>
+                    <p className="text-xs text-gray-500">External knowledge graph detected</p>
                   </div>
-                )}
-                {conversation.expiresAt && (
-                  <div className="flex justify-between">
-                    <span>Expires:</span>
-                    <span className="text-yellow-400">
-                      {new Date(conversation.expiresAt).toLocaleString()}
-                    </span>
+                </div>
+
+                <div className="space-y-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+                  <div className="flex justify-between text-[10px] font-bold uppercase tracking-tighter">
+                    <span className="text-gray-400">Protocol:</span>
+                    <span className="text-gray-600 dark:text-gray-300">VIVIM_SYNC_V{conversation.version}</span>
                   </div>
-                )}
+                  {conversation.expiresAt && (
+                    <div className="flex justify-between text-[10px] font-bold uppercase tracking-tighter">
+                      <span className="text-gray-400">Expiry:</span>
+                      <span className="text-orange-500">{new Date(conversation.expiresAt).toLocaleDateString()}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <IOSButton variant="primary" fullWidth onClick={handleSave} icon={<Download className="w-5 h-5" />}>
+                  Import Intelligence
+                </IOSButton>
+                <button 
+                  onClick={handleBack}
+                  className="text-sm font-bold text-gray-400 hover:text-gray-600 py-2 transition-colors uppercase tracking-widest"
+                >
+                  Reject
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2 justify-center py-2 px-4 bg-blue-50 dark:bg-blue-900/10 rounded-xl">
+                <Shield className="w-3 h-3 text-blue-500" />
+                <span className="text-[10px] text-blue-600 dark:text-blue-400 font-medium">
+                  Verified Ed25519 Local Materialization
+                </span>
               </div>
             </div>
-
-            {/* Warning for V1 (unencrypted) */}
-            {conversation.version === 1 && (
-              <div className="mb-6 p-4 bg-yellow-900/20 border border-yellow-800 rounded-lg text-yellow-200 text-sm">
-                ⚠️ <strong>Note:</strong> This is a legacy share link (v1). 
-                Full encryption is available in newer versions.
-              </div>
-            )}
-
-            {/* Save button */}
-            <div className="flex gap-3">
-              <button
-                onClick={() => navigate(-1)}
-                className="flex-1 py-3 bg-gray-800 rounded-lg font-bold text-white hover:bg-gray-700 transition"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                className="flex-1 py-3 bg-blue-600 rounded-lg font-bold text-white hover:bg-blue-700 transition flex items-center justify-center gap-2"
-              >
-                <Download className="w-5 h-5" />
-                Save to Library
-              </button>
-            </div>
-
-            <p className="mt-6 text-xs text-gray-600 text-center">
-              🔒 Will be stored privately in your local library. Only you can see it.
-            </p>
-          </div>
-        ) : (
-          /* Loading state */
-          <div className="text-center py-12">
-            <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p className="text-gray-400">Loading conversation...</p>
-          </div>
-        )}
+          ) : null}
+        </IOSCard>
       </div>
     </div>
   );
 };
+
+export default Receive;

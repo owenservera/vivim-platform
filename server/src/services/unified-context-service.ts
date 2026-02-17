@@ -81,7 +81,12 @@ export class UnifiedContextService {
    * Main entry point - generates context for a chat request
    * Uses new engine if available, falls back to old one
    */
-  async generateContextForChat(conversationId: string, options = {}): Promise<{
+  async generateContextForChat(conversationId: string, options: {
+    userId?: string;
+    userMessage?: string;
+    personaId?: string;
+    deviceId?: string;
+  } = {}): Promise<{
     systemPrompt: string;
     layers: any;
     stats: any;
@@ -90,10 +95,17 @@ export class UnifiedContextService {
     const log = logger.child({ conversationId });
     log.info({ options }, 'Generating context');
 
+    // Use userId from options if provided, otherwise try to derive from conversationId
+    let userId = options.userId;
+    
     // Try new dynamic context assembler first
     if (this.config.enableNewContextEngine && this.dynamicAssembler) {
       try {
-        const userId = await this.getUserIdForConversation(conversationId);
+        // If userId not provided in options, try to get from conversation
+        if (!userId) {
+          userId = await this.getUserIdForConversation(conversationId);
+        }
+        
         if (!userId) {
           throw new Error('Could not determine user for conversation');
         }

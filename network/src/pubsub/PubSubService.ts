@@ -59,6 +59,7 @@ export class PubSubService extends EventEmitter {
         type: 'pubsub',
         payload: message.data,
         timestamp: new Date(message.seqno ? Number(message.seqno) : Date.now()),
+        priority: 5,
       };
       this.emit('message', msg);
     });

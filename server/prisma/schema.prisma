@@ -21,6 +21,7 @@ model Conversation {
   provider                String
   sourceUrl               String                   @unique
   contentHash             String?
+  version                 Int                      @default(1)
   title                   String
   model                   String?
   state                   String                   @default("ACTIVE")
@@ -56,6 +57,7 @@ model Conversation {
   @@index([createdAt(sort: Desc)])
   @@index([ownerId])
   @@index([tags])
+  @@index([version])
   @@map("conversations")
 }
 
@@ -66,6 +68,7 @@ model Message {
   author         String?
   parts          Json
   contentHash    String?
+  version        Int              @default(1)
   createdAt      DateTime         @db.Timestamptz(6)
   messageIndex   Int
   status         String           @default("completed")
@@ -78,6 +81,7 @@ model Message {
   @@index([conversationId, messageIndex])
   @@index([conversationId, createdAt])
   @@index([role])
+  @@index([contentHash])
   @@map("messages")
 }
 
@@ -228,6 +232,8 @@ model AtomicChatUnit {
   authorDid           String
   signature           Bytes
   content             String
+  contentHash         String?
+  version             Int              @default(1)
   language            String?
   type                String
   category            String
@@ -288,6 +294,7 @@ model AtomicChatUnit {
   @@index([createdAt(sort: Desc)])
   @@index([sharingPolicy])
   @@index([tags])
+  @@index([contentHash])
   @@map("atomic_chat_units")
 }
 

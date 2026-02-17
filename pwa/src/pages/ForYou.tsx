@@ -1,9 +1,4 @@
-/**
- * For You Feed Page
- * Displays personalized recommendations using X-algorithm
- * Refactored for simplicity and performance
- */
-
+import './ForYou.css';
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -21,14 +16,29 @@ import {
 import { TopicFilter } from '../components/recommendation/TopicFilter';
 import { SettingsPanel } from '../components/recommendation/SettingsPanel';
 import { RecommendationsList } from '../components/recommendation/RecommendationsList';
-import { AlertCircle, Inbox, PlayCircle, FlaskConical, Sliders, RefreshCw } from 'lucide-react';
-import './ForYou.css';
+import { 
+  AlertCircle, 
+  Inbox, 
+  PlayCircle, 
+  FlaskConical, 
+  Sliders, 
+  RefreshCw,
+  Sparkles,
+  Zap
+} from 'lucide-react';
+import { 
+  IOSTopBar, 
+  IOSCard, 
+  IOSButton, 
+  IOSSkeletonList,
+  IOSErrorState
+} from '../components/ios';
+import { cn } from '../lib/utils';
 
-export function ForYou() {
+export const ForYou: React.FC = () => {
   const navigate = useNavigate();
   const analytics = useRecommendationAnalytics();
 
-  // State
   const [recommendations, setRecommendations] = useState<RecommendationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,67 +47,54 @@ export function ForYou() {
   const [allTopics, setAllTopics] = useState<{ name: string; count: number }[]>([]);
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
 
-  // Load user preferences with memoization
   const [_userPrefs, setUserPrefs] = useState<UserPreferences>(() => loadUserPreferences());
 
-  // Load feed - memoized to prevent unnecessary re-renders
   const loadFeed = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Load conversations
       let conversations;
 
       if (useTestData) {
-        console.log('[ForYou] Using test data');
         conversations = generateTestConversations(25);
       } else {
         conversations = await listConversationsForRecommendation({ limit: 100 });
 
         if (conversations.length === 0) {
-          setError('No conversations yet. Capture some conversations or enable test mode below.');
           setLoading(false);
           return;
         }
       }
 
-      // Generate feed
       const response = await getForYouFeed(conversations, { limit: 20 });
 
       if (response.status === 'success' && response.data) {
         setRecommendations(response.data.recommendations);
-
-        // Extract topics from conversations
         const topics = extractTopics(conversations);
         setAllTopics(topics);
 
-        // Track analytics
         analytics.trackFeedGenerated({
           feedSize: response.data.recommendations.length,
           sourceDistribution: response.data.metadata.sources,
           diversityMetrics: response.data.metadata.diversityMetrics
         });
 
-        // Track impressions
         analytics.trackImpressions(response.data.recommendations);
       } else {
         setError(response.error || 'Failed to generate feed');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
-      console.error('[ForYou] Error loading feed:', err);
     } finally {
       setLoading(false);
     }
   }, [useTestData, analytics]);
 
-  // Initial load
   useEffect(() => {
     loadFeed();
   }, [loadFeed]);
 
-  // Handlers
   const handleConversationClick = useCallback((conversationId: string) => {
     const item = recommendations.find(r => r.conversation.id === conversationId);
     if (item) {
@@ -142,7 +139,6 @@ export function ForYou() {
     setUserPrefs(prefs);
   }, []);
 
-  // Memoized handlers to prevent unnecessary re-renders
   const handleToggleSettings = useCallback(() => {
     setShowSettings(prev => !prev);
   }, []);
@@ -151,12 +147,18 @@ export function ForYou() {
     loadFeed();
   }, [loadFeed]);
 
+  const handleBack = () => navigate(-1);
+
   if (loading) {
     return (
-      <div className="for-you-page">
-        <div className="loading-container">
-          <div className="spinner" />
-          <p>Generating your feed...</p>
+      <div className="flex flex-col min-h-full bg-gray-50 dark:bg-gray-950 pb-20">
+        <IOSTopBar title="For You" />
+        <div className="p-4 space-y-4">
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4" />
+            <p className="text-gray-500 font-medium uppercase tracking-[0.2em] text-[10px]">Processing Engine...</p>
+          </div>
+          <IOSSkeletonList count={5} />
         </div>
       </div>
     );
@@ -164,13 +166,15 @@ export function ForYou() {
 
   if (error) {
     return (
-      <div className="for-you-page">
-        <div className="error-container">
-          <div className="error-icon">
-            <AlertCircle className="w-12 h-12 opacity-20" />
-          </div>
-          <h2>Unable to generate feed</h2>
-          <p>{error}</p>
+      <div className="flex flex-col min-h-full bg-gray-50 dark:bg-gray-950 pb-20">
+        <IOSTopBar title="For You" />
+        <div className="flex-1 flex items-center justify-center p-4">
+          <IOSErrorState 
+            type="generic"
+            title="Engine Error"
+            description={error}
+            action={{ label: 'Restart Engine', onClick: loadFeed }}
+          />
         </div>
       </div>
     );
@@ -178,80 +182,82 @@ export function ForYou() {
 
   if (recommendations.length === 0) {
     return (
-      <div className="for-you-page">
-        <div className="empty-container">
-          <div className="empty-icon">
-            <Inbox className="w-12 h-12 opacity-20" />
+      <div className="flex flex-col min-h-full bg-gray-50 dark:bg-gray-950 pb-20">
+        <IOSTopBar title="For You" />
+        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-6">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl flex items-center justify-center shadow-xl shadow-blue-500/20">
+            <Sparkles className="w-10 h-10 text-white" />
           </div>
-          <h2>No recommendations yet</h2>
-          <p>Capture more conversations or enable test mode to see recommendations</p>
-          <button
-            className="btn-test-mode"
+          <div className="max-w-xs">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Initialize Feed</h2>
+            <p className="text-sm text-gray-500">Capture more intelligence or activate simulation mode to visualize recommendations.</p>
+          </div>
+          <IOSButton
+            variant="primary"
+            className="rounded-full px-8 shadow-xl shadow-blue-500/20"
             onClick={() => setUseTestData(true)}
+            icon={<Zap className="w-4 h-4" />}
           >
-            <PlayCircle className="w-4 h-4 mr-2" />
-            Use Test Data
-          </button>
+            Activate Simulation
+          </IOSButton>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="for-you-page">
-      <header className="for-you-header">
-        <div>
-          <h1>For You</h1>
-          <p className="subtitle">Personalized discoveries from your library</p>
-        </div>
-        <div className="header-actions">
-          {useTestData && (
-            <span className="test-mode-badge">
-              <FlaskConical className="w-3 h-3 mr-1" />
-              Test Mode
-            </span>
-          )}
-          <button
-            className="icon-btn"
-            onClick={handleToggleSettings}
-            title="Recommendation settings"
-          >
-            <Sliders className="w-4 h-4" />
-          </button>
-          <button
-            className="refresh-btn"
-            onClick={handleRefresh}
-            title="Refresh feed"
-          >
-            <RefreshCw className="w-4 h-4" />
-          </button>
-        </div>
-      </header>
-
-      {showSettings && (
-        <SettingsPanel
-          userPrefs={loadUserPreferences()}
-          onPrefsChange={handlePrefsChange}
-          onResetDismissed={handleResetDismissed}
-        />
-      )}
-
-      {!loading && allTopics.length > 0 && (
-        <TopicFilter
-          topics={allTopics}
-          selectedTopics={selectedTopics}
-          onTopicToggle={handleTopicToggle}
-          onClearAll={handleClearTopics}
-        />
-      )}
-
-      <RecommendationsList
-        recommendations={recommendations}
-        loading={loading}
-        selectedTopics={selectedTopics}
-        onConversationClick={handleConversationClick}
-        onDismiss={handleDismiss}
+    <div className="flex flex-col min-h-full bg-gray-50 dark:bg-gray-950 pb-20">
+      <IOSTopBar 
+        title="For You" 
+        rightAction={
+          <div className="flex items-center">
+            <button 
+              onClick={handleToggleSettings}
+              className={cn(
+                "p-2 rounded-full transition-colors",
+                showSettings ? "text-blue-500 bg-blue-50 dark:bg-blue-900/20" : "text-gray-500"
+              )}
+            >
+              <Sliders className="w-5 h-5" />
+            </button>
+            <button 
+              onClick={handleRefresh}
+              className="p-2 text-gray-500 hover:text-blue-500 transition-colors"
+            >
+              <RefreshCw className="w-5 h-5" />
+            </button>
+          </div>
+        }
       />
+
+      <div className="px-4 py-4 space-y-6">
+        {showSettings && (
+          <SettingsPanel
+            userPrefs={loadUserPreferences()}
+            onPrefsChange={handlePrefsChange}
+            onResetDismissed={handleResetDismissed}
+          />
+        )}
+
+        {!loading && allTopics.length > 0 && (
+          <TopicFilter
+            topics={allTopics}
+            selectedTopics={selectedTopics}
+            onTopicToggle={handleTopicToggle}
+            onClearAll={handleClearTopics}
+          />
+        )}
+
+        <RecommendationsList
+          recommendations={recommendations}
+          loading={loading}
+          selectedTopics={selectedTopics}
+          onConversationClick={handleConversationClick}
+          onDismiss={handleDismiss}
+        />
+      </div>
     </div>
   );
-}
+};
+
+export default ForYou;

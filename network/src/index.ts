@@ -45,4 +45,4 @@ export type {
 } from './types.js';
 
 // Utils
-export { Logger } from './utils/logger.js';
+export { logger, createModuleLogger } from './utils/logger.js';

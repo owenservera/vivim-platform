@@ -6,19 +6,22 @@
 
 import type { FeedResponse, EngagementEvent } from '../types/acu';
 import { userFeedService } from './user-feed-service';
+import { useIdentityStore } from '../stores/identity.store';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export class FeedAPI {
   private baseUrl: string;
-  private userId: string;
   private useLocalMode: boolean;
 
   constructor(baseUrl: string = API_BASE) {
     this.baseUrl = baseUrl;
-    this.userId = 'default-user'; // TODO: Get from auth
-    // Only use local mode if explicitly enabled via env var
     this.useLocalMode = import.meta.env.VITE_USE_LOCAL_FEED === 'true';
+  }
+
+  private getUserId(): string {
+    const identity = useIdentityStore.getState();
+    return identity.did || 'anonymous';
   }
 
   /**
@@ -57,7 +60,7 @@ export class FeedAPI {
 
     const response = await fetch(`${this.baseUrl}/api/v1/feed?${params}`, {
       headers: {
-        'x-user-id': this.userId,
+        'x-user-id': this.getUserId(),
       },
     });
 
@@ -91,7 +94,7 @@ export class FeedAPI {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-user-id': this.userId,
+        'x-user-id': this.getUserId(),
       },
       body: JSON.stringify(event),
     });
@@ -102,11 +105,8 @@ export class FeedAPI {
     }
   }
 
-  /**
-   * Set user ID for requests
-   */
-  setUserId(userId: string) {
-    this.userId = userId;
+  setUserId(_userId: string) {
+    console.warn('FeedAPI.setUserId is deprecated - user ID is now sourced from identity store');
   }
 
   /**

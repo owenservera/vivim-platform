@@ -14,6 +14,7 @@ import { unifiedContextService } from '../services/unified-context-service.js';
 import { logger } from '../lib/logger.js';
 import { ProviderConfig, getDefaultProvider } from '../types/ai.js';
 import { freshChatSchema } from '../validators/ai.js';
+import { executeZAIAction, isMCPConfigured } from '../services/zai-mcp-service.js';
 
 const router = Router();
 
@@ -96,6 +97,42 @@ router.post('/start', async (req, res) => {
 });
 
 /**
+ * Parse Z.AI MCP action from message
+ */
+function parseZAIAction(message) {
+  const trimmed = message.trim();
+  
+  if (!trimmed.startsWith('!')) return null;
+
+  const parts = trimmed.slice(1).split(/\s+/);
+  const action = parts[0]?.toLowerCase();
+  const args = parts.slice(1).join(' ');
+
+  const actionMap = {
+    websearch: { action: 'websearch', params: { query: args } },
+    read: { action: 'readurl', params: { url: args } },
+    readurl: { action: 'readurl', params: { url: args } },
+    github: { action: 'github', params: parseGithubArgs(args) },
+    githubtree: { action: 'github', params: { repo: args, structure: true } },
+    githubfile: { action: 'github', params: parseGithubFileArgs(args) },
+  };
+
+  return actionMap[action] || null;
+}
+
+function parseGithubArgs(args) {
+  const match = args.match(/^([^\/]+\/[^\s]+)?\s*(.*)$/);
+  if (!match) return { repo: args, query: '' };
+  return { repo: match[1] || '', query: match[2] || '' };
+}
+
+function parseGithubFileArgs(args) {
+  const match = args.match(/^([^\/]+\/[^\s]+)\s+(.+)$/);
+  if (!match) return { repo: args, file: '' };
+  return { repo: match[1], file: match[2] };
+}
+
+/**
  * POST /send - Send a message in an existing fresh conversation
  */
 router.post('/send', async (req, res) => {
@@ -112,6 +149,74 @@ router.post('/send', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Conversation not found or expired' });
     }
 
+    if (isMCPConfigured()) {
+      const zaiAction = parseZAIAction(message);
+      if (zaiAction) {
+        try {
+          const result = await executeZAIAction(zaiAction.action, zaiAction.params);
+          
+          let responseText = `🔍 **${zaiAction.action.toUpperCase()} Result**\n\n`;
+          
+          if (zaiAction.action === 'websearch') {
+            responseText += `Found ${result.count} results for "${result.query}":\n\n`;
+            result.results?.slice(0, 5).forEach((r, i) => {
+              responseText += `${i + 1}. **${r.title || r.name || 'Result'}**\n`;
+              responseText += `   ${r.url || r.link || ''}\n`;
+              responseText += `   ${(r.content || r.description || '').slice(0, 200)}...\n\n`;
+            });
+          } else if (zaiAction.action === 'readurl') {
+            responseText += `📄 **${result.title}**\n\n`;
+            responseText += result.content?.slice(0, 3000) || result.summary || 'No content';
+          } else if (zaiAction.action === 'github') {
+            if (result.structure) {
+              responseText += `📁 **${result.repo}**\n\n`;
+              result.structure?.slice(0, 20).forEach(item => {
+                responseText += `${item.type === 'tree' ? '📁' : '📄'} ${item.path}\n`;
+              });
+            } else if (result.content) {
+              responseText += `📄 **${result.file}** from ${result.repo}\n\n`;
+              responseText += '```\n' + result.content?.slice(0, 5000) + '\n```';
+            } else {
+              responseText += `Found ${result.count} results in **${result.repo}** for "${result.query}":\n\n`;
+              result.results?.slice(0, 5).forEach((r, i) => {
+                responseText += `${i + 1}. ${r.title || r.name || 'Result'}\n`;
+                responseText += `   ${r.content || r.description || ''}\n\n`;
+              });
+            }
+          }
+
+          conv.messages.push({ 
+            role: 'assistant', 
+            content: responseText, 
+            timestamp: new Date().toISOString(),
+            metadata: { isZAIAction: true, tool: zaiAction.action }
+          });
+
+          return res.json({
+            success: true,
+            data: {
+              content: responseText,
+              model: 'zai-mcp',
+              provider: 'zai',
+              isZAIAction: true,
+              conversationId,
+            },
+          });
+        } catch (actionError) {
+          logger.error({ error: actionError.message, action: zaiAction }, 'Z.AI MCP action failed');
+          return res.json({
+            success: true,
+            data: {
+              content: `❌ Error: ${actionError.message}`,
+              model: 'zai-mcp',
+              provider: 'zai',
+              conversationId,
+            },
+          });
+        }
+      }
+    }
+
     // Add user message
     conv.messages.push({ role: 'user', content: message, timestamp: new Date().toISOString() });
     conv.lastActivity = Date.now();
@@ -123,6 +228,7 @@ router.post('/send', async (req, res) => {
     if (userId) {
       try {
         contextResult = await unifiedContextService.generateContextForChat(conversationId, {
+          userId,
           userMessage: message,
           personaId: conv.personaId
         });
@@ -204,6 +310,7 @@ router.post('/stream', async (req, res) => {
     if (userId) {
       try {
         contextResult = await unifiedContextService.generateContextForChat(convId, {
+          userId,
           userMessage: message,
           personaId: personaId || 'default'
         });

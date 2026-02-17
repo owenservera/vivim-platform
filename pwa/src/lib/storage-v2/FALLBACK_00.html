@@ -105,14 +105,21 @@ function S(s){
 // STR to bytes
 function B(s){return{c:s};}
 
+// HTML escape to prevent XSS
+function E(s){
+  return String(s).replace(/[&<>"']/g,function(c){
+    return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
 // RENDER
 function R(){
-  var h='<h1>'+DATA.t+'</h1>';
+  var h='<h1>'+E(DATA.t)+'</h1>';
   for(var i=0;i<DATA.m.length;i++){
     var m=DATA.m[i];
     h+='<div class="msg">'+
-      '<span class="role">'+(m.r==='u'?'USER':'BOT')+'</span>: '+m.c+
-      '<br><span class="sig">s:'+m.s.slice(0,16)+'... a:'+m.a.slice(0,16)+'</span>'+
+      '<span class="role">'+(m.r==='u'?'USER':'BOT')+'</span>: '+E(m.c)+
+      '<br><span class="sig">s:'+E(m.s.slice(0,16))+'... a:'+E(m.a.slice(0,16))+'</span>'+
       '</div>';
   }
   document.getElementById('d').innerHTML=h;

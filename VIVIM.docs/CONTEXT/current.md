@@ -130,7 +130,7 @@ User Message
      v
 +---------------------------------------------------------------+
 | 4. JIT RETRIEVAL (hybrid-retrieval.ts)                       |
-|    - Hybrid search: semantic (Qdrant/PostgreSQL) + keyword    |
+|    - Hybrid search: semantic (PostgreSQL/pgvector) + keyword   |
 |    - Reciprocal Rank Fusion (RRF) for merging                |
 |    - Retrieve relevant ACUs and memories                    |
 |    - L6: JIT Knowledge (additional context)                  |
@@ -339,7 +339,7 @@ User Message
 +---------+      +------------+     +-------------+
 | Semantic |      |  Keyword   |     |   Extract   |
 | Search   |      |   Search   |     |  Keywords   |
-| (Qdrant/ |      |  (Postgres) |     |  from text  |
+| (Postgres/ |      |  (Postgres) |     |  from text  |
 | Postgres) |      |            |     |             |
 +----+------+      +-----+------+     +-------------+
      |                |
@@ -368,7 +368,7 @@ const combinedScore = (semanticWeight * rrf) + (keywordWeight * (item.similarity
 
 ### 6.3 Fallback Strategy
 
-1. **Qdrant** (vector database) - Primary for semantic search
+1. **PostgreSQL/pgvector** - Primary for semantic search
 2. **PostgreSQL** - Fallback using raw SQL with array operations
 3. **Prisma ORM** - Final fallback with recent items
 
@@ -726,7 +726,7 @@ model EntityProfile {
 ### 15.2 Database Requirements
 
 - **PostgreSQL** with:
-  - `vector` extension (optional, for Qdrant fallback)
+  - `vector` extension (required for semantic search)
   - JSON support for composition fields
   - Composite unique constraints for bundles
 

@@ -1,15 +1,20 @@
-/**
- * Analytics Dashboard
- * Shows recommendation interaction patterns and insights
- */
-
+import './Analytics.css';
 import { useState, useEffect } from 'react';
 import { useRecommendationAnalytics, STORAGE_KEYS } from '../lib/recommendation';
 import { 
   RefreshCw, LayoutGrid, Eye, MousePointer2, TrendingUp, 
-  Tag, Inbox, Shield, MousePointer, XCircle, Activity 
+  Tag, Inbox, Shield, MousePointer, XCircle, Activity,
+  Trash2
 } from 'lucide-react';
-import './Analytics.css';
+import { 
+  IOSTopBar, 
+  IOSCard, 
+  IOSButton, 
+  IOSEmptyState,
+  useIOSToast,
+  toast
+} from '../components/ios';
+import { cn } from '../lib/utils';
 
 interface AnalyticsEvent {
   type: string;
@@ -17,9 +22,10 @@ interface AnalyticsEvent {
   timestamp: number;
 }
 
-export function Analytics() {
-  useRecommendationAnalytics(); // Intentionally unused, but called for side effects
+export const Analytics: React.FC = () => {
+  useRecommendationAnalytics(); 
   const [events, setEvents] = useState<AnalyticsEvent[]>([]);
+  const { toast: showToast } = useIOSToast();
   const [stats, setStats] = useState({
     totalFeeds: 0,
     totalImpressions: 0,
@@ -31,18 +37,15 @@ export function Analytics() {
   });
 
   const loadAnalytics = () => {
-    // Load events from localStorage
     const stored = localStorage.getItem(STORAGE_KEYS.ANALYTICS);
     if (stored) {
       const allEvents: AnalyticsEvent[] = JSON.parse(stored);
 
-      // Calculate stats
       const feeds = allEvents.filter(e => e.type === 'feed_generated');
       const impressions = allEvents.filter(e => e.type === 'recommendation_impression');
       const clicks = allEvents.filter(e => e.type === 'clicked');
       const dismissals = allEvents.filter(e => e.type === 'dismissed');
 
-      // Calculate source distribution
       const sourceMap = new Map<string, number>();
       feeds.forEach(feedEvent => {
         const sources = feedEvent.data.sourceDistribution as Record<string, number> | undefined;
@@ -57,7 +60,6 @@ export function Analytics() {
         .sort((a, b) => b.count - a.count)
         .slice(0, 5);
 
-      // Recent activity
       const recentActivity = allEvents
         .sort((a, b) => b.timestamp - a.timestamp)
         .slice(0, 10);
@@ -81,17 +83,20 @@ export function Analytics() {
   }, []);
 
   const handleClearAnalytics = () => {
-    localStorage.removeItem(STORAGE_KEYS.ANALYTICS);
-    setEvents([]);
-    setStats({
-      totalFeeds: 0,
-      totalImpressions: 0,
-      totalClicks: 0,
-      totalDismissions: 0,
-      clickThroughRate: 0,
-      topSources: [],
-      recentActivity: []
-    });
+    if (confirm('Clear all analytics data?')) {
+      localStorage.removeItem(STORAGE_KEYS.ANALYTICS);
+      setEvents([]);
+      setStats({
+        totalFeeds: 0,
+        totalImpressions: 0,
+        totalClicks: 0,
+        totalDismissions: 0,
+        clickThroughRate: 0,
+        topSources: [],
+        recentActivity: []
+      });
+      showToast(toast.success('Analytics cleared'));
+    }
   };
 
   const formatTimestamp = (timestamp: number) => {
@@ -111,7 +116,7 @@ export function Analytics() {
     switch (type) {
       case 'feed_generated': return <LayoutGrid className={className} />;
       case 'recommendation_impression': return <Eye className={className} />;
-      case 'clicked': return <MousePointer className={className} />;
+      case 'clicked': return <MousePointer2 className={className} />;
       case 'dismissed': return <XCircle className={className} />;
       default: return <Activity className={className} />;
     }
@@ -123,124 +128,134 @@ export function Analytics() {
       case 'recommendation_impression': return 'Viewed recommendation';
       case 'clicked': return 'Clicked recommendation';
       case 'dismissed': return 'Dismissed recommendation';
-      default: return type;
+      default: return type.replace(/_/g, ' ');
     }
   };
 
   return (
-    <div className="analytics-page">
-      {/* Overview Stats */}
-      <div className="analytics-overview">
-        <div className="analytics-header">
-          <h3>Overview</h3>
-          <button
+    <div className="flex flex-col min-h-full bg-gray-50 dark:bg-gray-950 pb-20">
+      <IOSTopBar 
+        title="Analytics" 
+        rightAction={
+          <button 
             onClick={loadAnalytics}
-            className="icon-btn"
-            title="Refresh"
+            className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className="w-5 h-5" />
           </button>
-        </div>
+        }
+      />
 
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-icon">
-              <LayoutGrid className="w-5 h-5 text-primary-500" />
-            </div>
-            <div className="stat-content">
-              <div className="stat-value">{stats.totalFeeds}</div>
-              <div className="stat-label">Feeds Generated</div>
-            </div>
+      <div className="px-4 py-4 space-y-6">
+        {/* Overview */}
+        <section>
+          <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-1">
+            Overview
+          </h3>
+          <div className="grid grid-cols-2 gap-3">
+            <IOSCard padding="sm" className="flex flex-col items-center text-center">
+              <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-2">
+                <LayoutGrid className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div className="text-xl font-bold text-gray-900 dark:text-white">{stats.totalFeeds}</div>
+              <div className="text-[10px] text-gray-500 dark:text-gray-400">Feeds Generated</div>
+            </IOSCard>
+            <IOSCard padding="sm" className="flex flex-col items-center text-center">
+              <div className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-2">
+                <Eye className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div className="text-xl font-bold text-gray-900 dark:text-white">{stats.totalImpressions}</div>
+              <div className="text-[10px] text-gray-500 dark:text-gray-400">Impressions</div>
+            </IOSCard>
+            <IOSCard padding="sm" className="flex flex-col items-center text-center">
+              <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-2">
+                <MousePointer2 className="w-4 h-4 text-green-600 dark:text-green-400" />
+              </div>
+              <div className="text-xl font-bold text-gray-900 dark:text-white">{stats.totalClicks}</div>
+              <div className="text-[10px] text-gray-500 dark:text-gray-400">Clicks</div>
+            </IOSCard>
+            <IOSCard padding="sm" className="flex flex-col items-center text-center">
+              <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mb-2">
+                <TrendingUp className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+              </div>
+              <div className="text-xl font-bold text-gray-900 dark:text-white">{stats.clickThroughRate.toFixed(1)}%</div>
+              <div className="text-[10px] text-gray-500 dark:text-gray-400">CTR</div>
+            </IOSCard>
           </div>
-
-          <div className="stat-card">
-            <div className="stat-icon">
-              <Eye className="w-5 h-5 text-accent-500" />
-            </div>
-            <div className="stat-content">
-              <div className="stat-value">{stats.totalImpressions}</div>
-              <div className="stat-label">Impressions</div>
-            </div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-icon">
-              <MousePointer2 className="w-5 h-5 text-success-500" />
-            </div>
-            <div className="stat-content">
-              <div className="stat-value">{stats.totalClicks}</div>
-              <div className="stat-label">Clicks</div>
-            </div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-icon">
-              <TrendingUp className="w-5 h-5 text-warning-500" />
-            </div>
-            <div className="stat-content">
-              <div className="stat-value">{stats.clickThroughRate.toFixed(1)}%</div>
-              <div className="stat-label">Click-through Rate</div>
-            </div>
-          </div>
-        </div>
+        </section>
 
         {/* Top Sources */}
         {stats.topSources.length > 0 && (
-          <div className="analytics-top-sources">
-            <h4>Top Recommendation Sources</h4>
-            <div className="source-tags">
+          <section>
+            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 px-1">
+              Top Sources
+            </h3>
+            <IOSCard padding="md" className="space-y-3">
               {stats.topSources.map(({ source, count }) => (
-                <div key={source} className="source-tag">
-                  <Tag className="w-3 h-3" />
-                  <span>{source}: {count}</span>
+                <div key={source} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Tag className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                    <span className="text-sm text-gray-700 dark:text-gray-300 truncate capitalize">{source}</span>
+                  </div>
+                  <span className="text-sm font-bold text-gray-900 dark:text-white">{count}</span>
                 </div>
               ))}
-            </div>
-          </div>
+            </IOSCard>
+          </section>
         )}
-      </div>
 
-      {/* Recent Activity */}
-      <div className="analytics-activity">
-        <div className="analytics-header">
-          <h3>Recent Activity</h3>
-          {events.length > 0 && (
-            <button
-              onClick={handleClearAnalytics}
-              className="text-btn"
-            >
-              Clear All
-            </button>
+        {/* Recent Activity */}
+        <section>
+          <div className="flex items-center justify-between mb-3 px-1">
+            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+              Recent Activity
+            </h3>
+            {events.length > 0 && (
+              <button 
+                onClick={handleClearAnalytics}
+                className="text-[10px] font-bold text-red-500 uppercase tracking-tighter"
+              >
+                Clear All
+              </button>
+            )}
+          </div>
+
+          {stats.recentActivity.length === 0 ? (
+            <IOSCard padding="lg" className="flex flex-col items-center justify-center text-center opacity-60">
+              <Inbox className="w-10 h-10 text-gray-300 mb-2" />
+              <p className="text-sm text-gray-500">No activity recorded yet</p>
+            </IOSCard>
+          ) : (
+            <IOSCard padding="none" className="divide-y divide-gray-100 dark:divide-gray-800">
+              {stats.recentActivity.map((event, index) => (
+                <div key={index} className="flex items-center gap-3 p-3 min-w-0">
+                  <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center flex-shrink-0">
+                    <EventIcon type={event.type} className="w-4 h-4 text-gray-400" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                      {getEventLabel(event.type)}
+                    </div>
+                    <div className="text-[10px] text-gray-500 dark:text-gray-400">
+                      {formatTimestamp(event.timestamp)}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </IOSCard>
           )}
+        </section>
+
+        {/* Privacy Note */}
+        <div className="flex items-center gap-2 p-4 bg-blue-50 dark:bg-blue-900/10 rounded-2xl">
+          <Shield className="w-4 h-4 text-blue-500 flex-shrink-0" />
+          <p className="text-[10px] text-blue-700 dark:text-blue-300 leading-tight">
+            Privacy First: All analytics data is stored locally on your device and never transmitted to our servers.
+          </p>
         </div>
-
-        {stats.recentActivity.length === 0 ? (
-          <div className="empty-state-small">
-            <Inbox className="w-10 h-10" />
-            <p>No activity yet</p>
-          </div>
-        ) : (
-          <div className="activity-list">
-            {stats.recentActivity.map((event, index) => (
-              <div key={index} className="activity-item">
-                <div className="activity-icon">
-                  <EventIcon type={event.type} className="w-4 h-4" />
-                </div>
-                <div className="activity-content">
-                  <div className="activity-label">{getEventLabel(event.type)}</div>
-                  <div className="activity-time">{formatTimestamp(event.timestamp)}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Privacy Note */}
-      <div className="analytics-privacy">
-        <Shield className="w-5 h-5" />
-        <p>All analytics data is stored locally on your device and never shared.</p>
       </div>
     </div>
   );
-}
+};
+
+export default Analytics;

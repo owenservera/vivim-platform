@@ -1,6 +1,6 @@
 /**
  * Identity API Routes v2
- * 
+ *
  * Complete REST API for identity management
  * Base: /api/v2/identity
  */
@@ -11,6 +11,7 @@ import { identityService } from '../services/identity-service.js';
 import { authenticateDID, optionalAuth, requireVerification } from '../middleware/auth.js';
 import { getPrismaClient } from '../lib/database.js';
 import { logger } from '../lib/logger.js';
+import { debugReporter } from '../services/debug-reporter.js';
 
 const router = Router();
 const log = logger.child({ module: 'identity-routes-v2' });
@@ -22,10 +23,15 @@ const log = logger.child({ module: 'identity-routes-v2' });
 const registerUserSchema = z.object({
   did: z.string().startsWith('did:key:z'),
   publicKey: z.string(),
-  handle: z.string().min(3).max(30).regex(/^[a-zA-Z0-9_]+$/).optional(),
+  handle: z
+    .string()
+    .min(3)
+    .max(30)
+    .regex(/^[a-zA-Z0-9_]+$/)
+    .optional(),
   displayName: z.string().min(1).max(100).optional(),
   email: z.string().email().optional(),
-  avatarUrl: z.string().url().optional()
+  avatarUrl: z.string().url().optional(),
 });
 
 const registerDeviceSchema = z.object({
@@ -39,23 +45,23 @@ const registerDeviceSchema = z.object({
     canSign: z.boolean(),
     canEncrypt: z.boolean(),
     hasBiometrics: z.boolean(),
-    hasSecureEnclave: z.boolean()
+    hasSecureEnclave: z.boolean(),
   }),
-  delegationProof: z.string()
+  delegationProof: z.string(),
 });
 
 const verifyEmailSchema = z.object({
-  email: z.string().email()
+  email: z.string().email(),
 });
 
 const completeVerificationSchema = z.object({
   email: z.string().email(),
-  code: z.string().length(6)
+  code: z.string().length(6),
 });
 
 const verifyPhoneSchema = z.object({
   phoneNumber: z.string().min(6).max(15),
-  countryCode: z.string().length(2)
+  countryCode: z.string().length(2),
 });
 
 // ============================================================================
@@ -73,7 +79,7 @@ router.post('/users/register', async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
@@ -84,14 +90,14 @@ router.post('/users/register', async (req, res) => {
       {
         email: parsed.data.email,
         displayName: parsed.data.displayName,
-        avatarUrl: parsed.data.avatarUrl
+        avatarUrl: parsed.data.avatarUrl,
       }
     );
 
     if (!result.success) {
       return res.status(409).json({
         success: false,
-        error: result.error
+        error: result.error,
       });
     }
 
@@ -102,14 +108,14 @@ router.post('/users/register', async (req, res) => {
         did: result.user.did,
         handle: result.user.handle,
         verificationLevel: result.user.verificationLevel,
-        createdAt: result.user.createdAt
-      }
+        createdAt: result.user.createdAt,
+      },
     });
   } catch (error) {
     log.error({ error: error.message }, 'User registration failed');
     res.status(500).json({
       success: false,
-      error: 'Registration failed'
+      error: 'Registration failed',
     });
   }
 });
@@ -125,7 +131,7 @@ router.get('/users/:did', optionalAuth, async (req, res) => {
     if (!identityService.validateDID(did)) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid DID format'
+        error: 'Invalid DID format',
       });
     }
 
@@ -147,15 +153,15 @@ router.get('/users/:did', optionalAuth, async (req, res) => {
           email: true,
           emailVerified: true,
           phoneNumber: true,
-          phoneVerified: true
-        })
-      }
+          phoneVerified: true,
+        }),
+      },
     });
 
     if (!user) {
       return res.status(404).json({
         success: false,
-        error: 'User not found'
+        error: 'User not found',
       });
     }
 
@@ -168,19 +174,19 @@ router.get('/users/:did', optionalAuth, async (req, res) => {
       true,
       {
         ipAddress: req.ip,
-        userAgent: req.get('user-agent')
+        userAgent: req.get('user-agent'),
       }
     );
 
     res.json({
       success: true,
-      data: user
+      data: user,
     });
   } catch (error) {
     log.error({ did: req.params.did, error: error.message }, 'Get user failed');
     res.status(500).json({
       success: false,
-      error: 'Failed to get user'
+      error: 'Failed to get user',
     });
   }
 });
@@ -197,14 +203,14 @@ router.put('/users/:did', authenticateDID, async (req, res) => {
     if (req.user.did !== did) {
       return res.status(403).json({
         success: false,
-        error: 'Can only update your own profile'
+        error: 'Can only update your own profile',
       });
     }
 
     const updateSchema = z.object({
       displayName: z.string().min(1).max(100).optional(),
       avatarUrl: z.string().url().optional(),
-      privacyPreferences: z.record(z.any()).optional()
+      privacyPreferences: z.record(z.any()).optional(),
     });
 
     const parsed = updateSchema.safeParse(req.body);
@@ -212,14 +218,14 @@ router.put('/users/:did', authenticateDID, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
     const prisma = getPrismaClient();
     const user = await prisma.user.update({
       where: { did },
-      data: parsed.data
+      data: parsed.data,
     });
 
     res.json({
@@ -228,14 +234,14 @@ router.put('/users/:did', authenticateDID, async (req, res) => {
         did: user.did,
         displayName: user.displayName,
         avatarUrl: user.avatarUrl,
-        updatedAt: user.updatedAt
-      }
+        updatedAt: user.updatedAt,
+      },
     });
   } catch (error) {
     log.error({ did: req.params.did, error: error.message }, 'Update user failed');
     res.status(500).json({
       success: false,
-      error: 'Failed to update profile'
+      error: 'Failed to update profile',
     });
   }
 });
@@ -255,19 +261,16 @@ router.post('/devices', async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
-    const result = await identityService.registerDevice(
-      parsed.data.masterDID,
-      parsed.data
-    );
+    const result = await identityService.registerDevice(parsed.data.masterDID, parsed.data);
 
     if (!result.success) {
       return res.status(400).json({
         success: false,
-        error: result.error
+        error: result.error,
       });
     }
 
@@ -277,14 +280,14 @@ router.post('/devices', async (req, res) => {
         deviceId: result.device.deviceId,
         name: result.device.deviceName,
         platform: result.device.platform,
-        registeredAt: result.device.createdAt
-      }
+        registeredAt: result.device.createdAt,
+      },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Device registration failed');
     res.status(500).json({
       success: false,
-      error: 'Device registration failed'
+      error: 'Device registration failed',
     });
   }
 });
@@ -299,21 +302,21 @@ router.get('/devices', authenticateDID, async (req, res) => {
 
     res.json({
       success: true,
-      data: devices.map(d => ({
+      data: devices.map((d) => ({
         deviceId: d.deviceId,
         name: d.deviceName,
         platform: d.platform,
         isActive: d.isActive,
         isTrusted: d.isTrusted,
         lastSeenAt: d.lastSeenAt,
-        capabilities: d.metadata?.capabilities
-      }))
+        capabilities: d.metadata?.capabilities,
+      })),
     });
   } catch (error) {
     log.error({ userId: req.user.userId, error: error.message }, 'Get devices failed');
     res.status(500).json({
       success: false,
-      error: 'Failed to get devices'
+      error: 'Failed to get devices',
     });
   }
 });
@@ -327,28 +330,24 @@ router.delete('/devices/:deviceId', authenticateDID, async (req, res) => {
     const { deviceId } = req.params;
     const { reason } = req.body;
 
-    const success = await identityService.revokeDevice(
-      req.user.userId,
-      deviceId,
-      reason
-    );
+    const success = await identityService.revokeDevice(req.user.userId, deviceId, reason);
 
     if (!success) {
       return res.status(404).json({
         success: false,
-        error: 'Device not found'
+        error: 'Device not found',
       });
     }
 
     res.json({
       success: true,
-      message: 'Device revoked successfully'
+      message: 'Device revoked successfully',
     });
   } catch (error) {
     log.error({ deviceId: req.params.deviceId, error: error.message }, 'Revoke device failed');
     res.status(500).json({
       success: false,
-      error: 'Failed to revoke device'
+      error: 'Failed to revoke device',
     });
   }
 });
@@ -368,7 +367,7 @@ router.post('/verify/email', authenticateDID, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
@@ -380,7 +379,7 @@ router.post('/verify/email', authenticateDID, async (req, res) => {
     if (!result.success) {
       return res.status(400).json({
         success: false,
-        error: result.error
+        error: result.error,
       });
     }
 
@@ -388,13 +387,20 @@ router.post('/verify/email', authenticateDID, async (req, res) => {
       success: true,
       message: 'Verification email sent',
       // Only return code in development
-      ...(process.env.NODE_ENV === 'development' && { code: result.code })
+      ...(process.env.NODE_ENV === 'development' && { code: result.code }),
     });
   } catch (error) {
-    log.error({ userId: req.user.userId, error: error.message }, 'Email verification initiation failed');
+    debugReporter.trackError(error, {
+      operation: 'initiateEmailVerification',
+      userId: req.user?.userId,
+    });
+    log.error(
+      { userId: req.user.userId, error: error.message },
+      'Email verification initiation failed'
+    );
     res.status(500).json({
       success: false,
-      error: 'Failed to initiate verification'
+      error: 'Failed to initiate verification',
     });
   }
 });
@@ -410,7 +416,7 @@ router.post('/verify/email/complete', authenticateDID, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
@@ -423,19 +429,22 @@ router.post('/verify/email/complete', authenticateDID, async (req, res) => {
     if (!success) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid or expired code'
+        error: 'Invalid or expired code',
       });
     }
 
     res.json({
       success: true,
-      message: 'Email verified successfully'
+      message: 'Email verified successfully',
     });
   } catch (error) {
-    log.error({ userId: req.user.userId, error: error.message }, 'Email verification completion failed');
+    log.error(
+      { userId: req.user.userId, error: error.message },
+      'Email verification completion failed'
+    );
     res.status(500).json({
       success: false,
-      error: 'Failed to complete verification'
+      error: 'Failed to complete verification',
     });
   }
 });
@@ -451,7 +460,7 @@ router.post('/verify/phone', authenticateDID, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
@@ -463,20 +472,23 @@ router.post('/verify/phone', authenticateDID, async (req, res) => {
     if (!result.success) {
       return res.status(400).json({
         success: false,
-        error: result.error
+        error: result.error,
       });
     }
 
     res.json({
       success: true,
       message: 'Verification SMS sent',
-      ...(process.env.NODE_ENV === 'development' && { code: result.code })
+      ...(process.env.NODE_ENV === 'development' && { code: result.code }),
     });
   } catch (error) {
-    log.error({ userId: req.user.userId, error: error.message }, 'Phone verification initiation failed');
+    log.error(
+      { userId: req.user.userId, error: error.message },
+      'Phone verification initiation failed'
+    );
     res.status(500).json({
       success: false,
-      error: 'Failed to initiate verification'
+      error: 'Failed to initiate verification',
     });
   }
 });
@@ -497,7 +509,7 @@ router.get('/transparency/access-log', authenticateDID, async (req, res) => {
       targetType: targetType?.toString(),
       action: action?.toString(),
       limit: parseInt(limit.toString()),
-      offset: parseInt(offset.toString())
+      offset: parseInt(offset.toString()),
     });
 
     res.json({
@@ -506,14 +518,14 @@ router.get('/transparency/access-log', authenticateDID, async (req, res) => {
       pagination: {
         limit: parseInt(limit.toString()),
         offset: parseInt(offset.toString()),
-        total: logs.length
-      }
+        total: logs.length,
+      },
     });
   } catch (error) {
     log.error({ userId: req.user.userId, error: error.message }, 'Get access log failed');
     res.status(500).json({
       success: false,
-      error: 'Failed to get access log'
+      error: 'Failed to get access log',
     });
   }
 });
@@ -528,20 +540,20 @@ router.get('/consents', authenticateDID, async (req, res) => {
     const consents = await prisma.consentRecord.findMany({
       where: {
         userId: req.user.userId,
-        status: 'active'
+        status: 'active',
       },
-      orderBy: { grantedAt: 'desc' }
+      orderBy: { grantedAt: 'desc' },
     });
 
     res.json({
       success: true,
-      data: consents
+      data: consents,
     });
   } catch (error) {
     log.error({ userId: req.user.userId, error: error.message }, 'Get consents failed');
     res.status(500).json({
       success: false,
-      error: 'Failed to get consents'
+      error: 'Failed to get consents',
     });
   }
 });
@@ -557,7 +569,7 @@ router.post('/consents', authenticateDID, async (req, res) => {
       allowed: z.boolean(),
       dataTypes: z.array(z.string()).optional(),
       conditions: z.record(z.any()).optional(),
-      expiresAt: z.string().datetime().optional()
+      expiresAt: z.string().datetime().optional(),
     });
 
     const parsed = consentSchema.safeParse(req.body);
@@ -565,7 +577,7 @@ router.post('/consents', authenticateDID, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
@@ -576,19 +588,19 @@ router.post('/consents', authenticateDID, async (req, res) => {
       {
         dataTypes: parsed.data.dataTypes,
         conditions: parsed.data.conditions,
-        expiresAt: parsed.data.expiresAt ? new Date(parsed.data.expiresAt) : undefined
+        expiresAt: parsed.data.expiresAt ? new Date(parsed.data.expiresAt) : undefined,
       }
     );
 
     res.status(201).json({
       success: true,
-      data: consent
+      data: consent,
     });
   } catch (error) {
     log.error({ userId: req.user.userId, error: error.message }, 'Record consent failed');
     res.status(500).json({
       success: false,
-      error: 'Failed to record consent'
+      error: 'Failed to record consent',
     });
   }
 });
@@ -605,14 +617,14 @@ router.delete('/consents/:consentId', authenticateDID, async (req, res) => {
     const consent = await prisma.consentRecord.findFirst({
       where: {
         id: consentId,
-        userId: req.user.userId
-      }
+        userId: req.user.userId,
+      },
     });
 
     if (!consent) {
       return res.status(404).json({
         success: false,
-        error: 'Consent not found'
+        error: 'Consent not found',
       });
     }
 
@@ -620,19 +632,19 @@ router.delete('/consents/:consentId', authenticateDID, async (req, res) => {
       where: { id: consentId },
       data: {
         status: 'revoked',
-        revokedAt: new Date()
-      }
+        revokedAt: new Date(),
+      },
     });
 
     res.json({
       success: true,
-      message: 'Consent revoked'
+      message: 'Consent revoked',
     });
   } catch (error) {
     log.error({ consentId: req.params.consentId, error: error.message }, 'Revoke consent failed');
     res.status(500).json({
       success: false,
-      error: 'Failed to revoke consent'
+      error: 'Failed to revoke consent',
     });
   }
 });
@@ -654,19 +666,19 @@ router.get('/did/:did', async (req, res) => {
     if (!didDocument) {
       return res.status(404).json({
         success: false,
-        error: 'DID not found or invalid'
+        error: 'DID not found or invalid',
       });
     }
 
     res.json({
       success: true,
-      data: didDocument
+      data: didDocument,
     });
   } catch (error) {
     log.error({ did: req.params.did, error: error.message }, 'DID resolution failed');
     res.status(500).json({
       success: false,
-      error: 'Failed to resolve DID'
+      error: 'Failed to resolve DID',
     });
   }
 });

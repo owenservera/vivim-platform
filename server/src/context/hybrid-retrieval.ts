@@ -1,13 +1,5 @@
-/**
- * Hybrid Retrieval Service for L5 JIT Knowledge
- *
- * Combines semantic search (Qdrant) with keyword search.
- * Uses Reciprocal Rank Fusion (RRF) to merge result sets.
- */
-
 import { Prisma } from '@prisma/client';
 import type { PrismaClient } from '@prisma/client';
-import { QdrantVectorStore, getQdrantVectorStore } from './qdrant-vector-store.js';
 import { logger } from '../lib/logger.js';
 
 interface SearchResult {
@@ -25,7 +17,6 @@ interface HybridRetrievalConfig {
   keywordWeight: number;
   maxResults: number;
   similarityThreshold: number;
-  useQdrant?: boolean;
 }
 
 interface RetrievalResult {
@@ -35,9 +26,7 @@ interface RetrievalResult {
 
 export class HybridRetrievalService {
   private prisma: PrismaClient;
-  private qdrant: QdrantVectorStore | null = null;
   private config: HybridRetrievalConfig;
-  private qdrantAvailable: boolean = false;
 
   constructor(prisma: PrismaClient, config?: Partial<HybridRetrievalConfig>) {
     this.prisma = prisma;
@@ -45,35 +34,10 @@ export class HybridRetrievalService {
       semanticWeight: config?.semanticWeight ?? 0.6,
       keywordWeight: config?.keywordWeight ?? 0.4,
       maxResults: config?.maxResults ?? 10,
-      similarityThreshold: config?.similarityThreshold ?? 0.3,
-      useQdrant: config?.useQdrant ?? true
+      similarityThreshold: config?.similarityThreshold ?? 0.3
     };
-
-    // Try to initialize Qdrant
-    if (this.config.useQdrant) {
-      this.initializeQdrant();
-    }
   }
 
-  private async initializeQdrant(): Promise<void> {
-    try {
-      this.qdrant = getQdrantVectorStore();
-      this.qdrantAvailable = await this.qdrant.initialize();
-      if (this.qdrantAvailable) {
-        logger.info('Qdrant vector store connected');
-      } else {
-        logger.warn('Qdrant initialization failed, using fallback');
-      }
-    } catch (error) {
-      logger.warn({ error }, 'Qdrant not available, using PostgreSQL fallback');
-      this.qdrantAvailable = false;
-    }
-  }
-
-  /**
-   * Main hybrid retrieval method
-   * Combines semantic and keyword search with RRF fusion
-   */
   async retrieve(
     userId: string,
     message: string,
@@ -82,7 +46,6 @@ export class HybridRetrievalService {
   ): Promise<RetrievalResult> {
     const keywords = this.extractKeywords(message);
 
-    // Run semantic and keyword searches in parallel
     const [semanticAcus, keywordAcus, semanticMemories, keywordMemories] = await Promise.all([
       this.semanticSearchACUs(userId, embedding, topicSlugs),
       this.keywordSearchACUs(userId, keywords, topicSlugs),
@@ -90,7 +53,6 @@ export class HybridRetrievalService {
       this.keywordSearchMemories(userId, keywords)
     ]);
 
-    // Fuse results using RRF
     const fusedAcus = this.fuseResults(semanticAcus, keywordAcus);
     const fusedMemories = this.fuseResults(semanticMemories, keywordMemories);
 
@@ -100,35 +62,7 @@ export class HybridRetrievalService {
     };
   }
 
-  /**
-   * Semantic search using Qdrant or PostgreSQL fallback
-   */
   private async semanticSearchACUs(
-    userId: string,
-    embedding: number[],
-    topicSlugs: string[]
-  ): Promise<SearchResult[]> {
-    // Try Qdrant first if available
-    if (this.qdrantAvailable && this.qdrant) {
-      const results = await this.qdrant.search(userId, embedding, {
-        limit: 20,
-        scoreThreshold: this.config.similarityThreshold,
-        type: 'acu'
-      });
-
-      return results
-        .filter(r => !topicSlugs.includes(r.category || ''))
-        .map(r => ({ ...r, source: 'semantic' as const }));
-    }
-
-    // Fallback to PostgreSQL
-    return this.postgresSemanticSearch(userId, embedding, topicSlugs);
-  }
-
-  /**
-   * PostgreSQL fallback when Qdrant unavailable
-   */
-  private async postgresSemanticSearch(
     userId: string,
     embedding: number[],
     topicSlugs: string[]
@@ -141,18 +75,19 @@ export class HybridRetrievalService {
           type,
           category,
           "createdAt",
-          0.5 as similarity
+          1 - (embedding <=> ${embedding}::vector) as similarity
         FROM atomic_chat_units
         WHERE "authorDid" = ${userId}
           AND state = 'ACTIVE'
           AND embedding IS NOT NULL
           AND array_length(embedding, 1) > 0
-        ORDER BY "createdAt" DESC
+        ORDER BY embedding <=> ${embedding}::vector
         LIMIT 20
       `;
 
       return results
         .filter(r => r.similarity >= this.config.similarityThreshold)
+        .filter(r => !topicSlugs.includes(r.category || ''))
         .map(r => ({
           id: r.id,
           content: r.content,
@@ -163,17 +98,13 @@ export class HybridRetrievalService {
           source: 'semantic' as const
         }));
     } catch (error) {
-      logger.warn({ error }, 'PostgreSQL semantic search failed');
-      return this.fallbackSemanticSearch(userId, embedding, topicSlugs);
+      logger.warn({ error }, 'PostgreSQL semantic search failed, using fallback');
+      return this.fallbackSemanticSearch(userId, topicSlugs);
     }
   }
 
-  /**
-   * Fallback when no vector DB is available
-   */
   private async fallbackSemanticSearch(
     userId: string,
-    embedding: number[],
     topicSlugs: string[]
   ): Promise<SearchResult[]> {
     const acus = await this.prisma.atomicChatUnit.findMany({
@@ -200,32 +131,7 @@ export class HybridRetrievalService {
       }));
   }
 
-  /**
-   * Semantic search for memories
-   */
   private async semanticSearchMemories(
-    userId: string,
-    embedding: number[]
-  ): Promise<SearchResult[]> {
-    // Try Qdrant first if available
-    if (this.qdrantAvailable && this.qdrant) {
-      const results = await this.qdrant.search(userId, embedding, {
-        limit: 10,
-        scoreThreshold: this.config.similarityThreshold,
-        type: 'memory'
-      });
-
-      return results.map(r => ({ ...r, source: 'semantic' as const }));
-    }
-
-    // Fallback to PostgreSQL
-    return this.postgresMemorySearch(userId, embedding);
-  }
-
-  /**
-   * PostgreSQL memory search fallback
-   */
-  private async postgresMemorySearch(
     userId: string,
     embedding: number[]
   ): Promise<SearchResult[]> {
@@ -237,14 +143,14 @@ export class HybridRetrievalService {
           category,
           importance,
           "createdAt",
-          0.5 as similarity
+          1 - (embedding <=> ${embedding}::vector) as similarity
         FROM memories
         WHERE "userId" = ${userId}
           AND "isActive" = true
           AND embedding IS NOT NULL
           AND array_length(embedding, 1) > 0
           AND importance < 0.8
-        ORDER BY "createdAt" DESC
+        ORDER BY embedding <=> ${embedding}::vector
         LIMIT 10
       `;
 
@@ -265,9 +171,6 @@ export class HybridRetrievalService {
     }
   }
 
-  /**
-   * Keyword-based search for ACUs
-   */
   private async keywordSearchACUs(
     userId: string,
     keywords: string[],
@@ -277,7 +180,6 @@ export class HybridRetrievalService {
       return [];
     }
 
-    // Build OR conditions for keyword matching
     const conditions = keywords.map(k => 
       Prisma.sql`LOWER(content) LIKE LOWER(${'%' + k + '%'})`
     );
@@ -312,11 +214,6 @@ export class HybridRetrievalService {
     }));
   }
 
-
-
-  /**
-   * Keyword-based search for memories
-   */
   private async keywordSearchMemories(
     userId: string,
     keywords: string[]
@@ -351,15 +248,10 @@ export class HybridRetrievalService {
     }));
   }
 
-  /**
-   * Reciprocal Rank Fusion (RRF) to merge result sets
-   * RRF score = 1 / (rank + k), where k = 60 (constant)
-   */
   private fuseResults(semantic: SearchResult[], keyword: SearchResult[]): SearchResult[] {
-    const k = 60; // RRF constant
+    const k = 60;
     const scoreMap = new Map<string, { result: SearchResult; rrf: number }>();
 
-    // Score semantic results
     semantic.forEach((item, index) => {
       const rrf = 1 / (index + k);
       const combinedScore = (this.config.semanticWeight * rrf) + 
@@ -367,14 +259,12 @@ export class HybridRetrievalService {
       scoreMap.set(item.id, { result: item, rrf: combinedScore });
     });
 
-    // Score and merge keyword results
     keyword.forEach((item, index) => {
       const rrf = 1 / (index + k);
       const combinedScore = (this.config.keywordWeight * rrf) + 
         (this.config.semanticWeight * (item.similarity || 0));
       
       if (scoreMap.has(item.id)) {
-        // Item exists in both - average the scores
         const existing = scoreMap.get(item.id)!;
         existing.rrf = (existing.rrf + combinedScore) / 2;
         existing.result = {
@@ -387,24 +277,18 @@ export class HybridRetrievalService {
       }
     });
 
-    // Sort by combined RRF score and return
     return Array.from(scoreMap.values())
       .sort((a, b) => b.rrf - a.rrf)
       .map(x => x.result);
   }
 
-  /**
-   * Extract keywords from message for keyword search
-   */
   private extractKeywords(message: string): string[] {
-    // Clean and tokenize
     const words = message
       .toLowerCase()
       .replace(/[^\w\s]/g, ' ')
       .split(/\s+/)
       .filter(word => word.length > 2);
 
-    // Remove common stopwords
     const stopwords = new Set([
       'the', 'is', 'at', 'which', 'on', 'and', 'a', 'an', 'in', 'to', 'of',
       'for', 'with', 'from', 'this', 'that', 'it', 'are', 'was', 'were',
@@ -414,7 +298,6 @@ export class HybridRetrievalService {
       'hello', 'hi', 'hey', 'there', 'their', 'they', 'you', 'your'
     ]);
 
-    // Count word frequency
     const wordCounts = new Map<string, number>();
     for (const word of words) {
       if (!stopwords.has(word)) {
@@ -422,18 +305,13 @@ export class HybridRetrievalService {
       }
     }
 
-    // Return top keywords sorted by frequency
     return Array.from(wordCounts.entries())
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
       .map(([word]) => word);
   }
 
-  /**
-   * Calculate keyword match score
-   */
   private calculateKeywordScore(keywords: string[]): Prisma.Sql {
-    // Return SQL that calculates match score based on keyword count
     const cases = keywords.map((k, i) => 
       Prisma.sql`CASE WHEN LOWER(content) LIKE LOWER(${'%' + k + '%'}) THEN ${1 / (i + 1)} ELSE 0 END`
     );

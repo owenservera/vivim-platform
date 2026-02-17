@@ -5,6 +5,14 @@ import { asHash } from '../storage-v2/types';
 import type { Conversation, Message, ContentBlock, ConversationStats } from '../../types/conversation';
 import type { MessageNode, ConversationRoot } from '../storage-v2/types';
 
+// Try to import UnifiedDebugService for centralized error reporting
+let unifiedDebugService: any = null;
+try {
+  unifiedDebugService = require('../unified-debug-service').unifiedDebugService;
+} catch (e) {
+  // UnifiedDebugService not available yet - that's okay
+}
+
 let unifiedDBInitialized = false;
 
 async function getUnifiedDBWithInit() {
@@ -28,57 +36,112 @@ export class ConversationService {
    * Get all conversations formatted for the UI
    */
   async getAllConversations(): Promise<Conversation[]> {
-    log.storage.debug('Service: Fetching all conversations...');
-    const list = await this.storage.listConversations();
-    log.storage.debug(`Service: Found ${list.length} conversations in index.`);
-    
-    const conversations = list.map(({ root, messageCount, lastMessageAt }) => {
-      // Ensure we have a valid conversation ID
-      const conversationId = root.conversationId || root.id || `conv-${Date.now()}`;
-      
-      return {
-        id: conversationId,
-        title: root.title || 'Untitled Conversation',
-        provider: (root.metadata?.provider as Conversation['provider']) || 'other',
-        sourceUrl: (root.metadata?.sourceUrl as string) || '',
-        createdAt: root.metadata?.createdAt as string || root.timestamp || new Date().toISOString(),
-        exportedAt: root.timestamp || new Date().toISOString(),
-        messages: [], // We'll load messages individually when needed
-        stats: {
-          totalMessages: messageCount || 0,
-          totalWords: root.metadata?.totalWords || 0,
-          totalCharacters: root.metadata?.totalCharacters || 0,
-          totalCodeBlocks: root.metadata?.totalCodeBlocks || 0,
-          totalMermaidDiagrams: root.metadata?.totalMermaidDiagrams || 0,
-          totalImages: root.metadata?.totalImages || 0,
-          totalTables: root.metadata?.totalTables || 0,
-          totalLatexBlocks: root.metadata?.totalLatexBlocks || 0,
-          totalToolCalls: root.metadata?.totalToolCalls || 0,
-          firstMessageAt: root.metadata?.createdAt as string || root.timestamp || new Date().toISOString(),
-          lastMessageAt: lastMessageAt || root.timestamp || new Date().toISOString()
-        },
-        metadata: {
-          ...root.metadata,
-          model: root.metadata?.model || 'unknown',
-          tags: root.metadata?.tags || []
-        }
-      };
+    const startTime = Date.now();
+    const requestId = `svc_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+
+    log.storage.info(`[${requestId}] ========== CONVERSATION SERVICE: getAllConversations START ==========`);
+
+    // Add timeout to prevent infinite hanging when storage is not available
+    const timeoutPromise = new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Conversation service timed out after 15 seconds')), 15000);
     });
 
-    // Validate conversations before returning
     try {
-      const unifiedDB = await getUnifiedDBWithInit();
-      for (const convo of conversations) {
-        const validation = unifiedDB.validate(convo, 'conversation');
-        if (!validation.valid) {
-          log.storage.warn(`Conversation ${convo.id} failed validation`, { errors: validation.errors });
-        }
-      }
-    } catch (e) {
-      log.storage.warn('Validation skipped - DB not ready', { error: e });
-    }
+      log.storage.debug(`[${requestId}] Fetching all conversations from storage...`);
 
-    return conversations;
+      // Wrap storage call in timeout protection
+      const list = await Promise.race([
+        this.storage.listConversations(),
+        timeoutPromise
+      ]);
+      log.storage.debug(`[${requestId}] Found ${list.length} conversations in storage index.`);
+
+      const conversations = list.map(({ root, messageCount, lastMessageAt }) => {
+        // Ensure we have a valid conversation ID
+        const conversationId = root.conversationId || root.id || `conv-${Date.now()}`;
+
+        return {
+          id: conversationId,
+          title: root.title || 'Untitled Conversation',
+          provider: (root.metadata?.provider as Conversation['provider']) || 'other',
+          sourceUrl: (root.metadata?.sourceUrl as string) || '',
+          state: (root.metadata?.state as 'ACTIVE' | 'ARCHIVED' | 'DELETED') || 'ACTIVE',
+          version: root.metadata?.version as number || 1,
+          ownerId: root.metadata?.ownerId as string || undefined,
+          contentHash: root.metadata?.contentHash as string || undefined,
+          createdAt: (root.metadata?.createdAt as string) || root.timestamp || new Date().toISOString(),
+          updatedAt: (root.metadata?.updatedAt as string) || root.timestamp || new Date().toISOString(),
+          capturedAt: (root.metadata?.capturedAt as string) || root.timestamp || new Date().toISOString(),
+          exportedAt: root.timestamp || new Date().toISOString(), // Deprecated, kept for compatibility
+          tags: (root.metadata?.tags as string[]) || [],
+          messages: [], // We'll load messages individually when needed
+          stats: {
+            totalMessages: messageCount || 0,
+            totalWords: root.metadata?.totalWords || 0,
+            totalCharacters: root.metadata?.totalCharacters || 0,
+            totalCodeBlocks: root.metadata?.totalCodeBlocks || 0,
+            totalMermaidDiagrams: root.metadata?.totalMermaidDiagrams || 0,
+            totalImages: root.metadata?.totalImages || 0,
+            totalTables: root.metadata?.totalTables || 0,
+            totalLatexBlocks: root.metadata?.totalLatexBlocks || 0,
+            totalToolCalls: root.metadata?.totalToolCalls || 0,
+            firstMessageAt: (root.metadata?.createdAt as string) || root.timestamp || new Date().toISOString(),
+            lastMessageAt: lastMessageAt || root.timestamp || new Date().toISOString()
+          },
+          metadata: {
+            ...root.metadata,
+            model: root.metadata?.model || 'unknown',
+            tags: root.metadata?.tags || []
+          }
+        };
+      });
+
+      log.storage.debug(`[${requestId}] Validating ${conversations.length} conversations...`);
+      
+      // Validate conversations before returning
+      let validationErrors = 0;
+      try {
+        const unifiedDB = await getUnifiedDBWithInit();
+        for (const convo of conversations) {
+          const validation = unifiedDB.validate(convo, 'conversation');
+          if (!validation.valid) {
+            validationErrors++;
+            log.storage.warn(`[${requestId}] Conversation ${convo.id?.slice(0,10)} failed validation`, { errors: validation.errors });
+          }
+        }
+      } catch (e) {
+        log.storage.warn(`[${requestId}] Validation skipped - DB not ready`, { error: e });
+      }
+
+      const duration = Date.now() - startTime;
+      log.storage.info(`[${requestId}] ========== CONVERSATION SERVICE: getAllConversations COMPLETE ==========`,
+        { 
+          conversationCount: conversations.length, 
+          validationErrors,
+          duration: `${duration}ms`
+        }
+      );
+
+      return conversations;
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      log.storage.error(`[${requestId}] ========== CONVERSATION SERVICE: getAllConversations FAILED ==========`,
+        error instanceof Error ? error : new Error(String(error)),
+        { error: errorMsg }
+      );
+
+      // Report to UnifiedDebugService if available
+      if (unifiedDebugService) {
+        unifiedDebugService.error('ConversationService', `getAllConversations failed: ${errorMsg}`,
+          error instanceof Error ? error : new Error(String(error)),
+          { requestId, duration: Date.now() - startTime }
+        );
+      }
+
+      // Return empty array instead of throwing - allow app to degrade gracefully
+      log.storage.warn(`[${requestId}] Returning empty array due to storage failure`);
+      return [];
+    }
   }
 
   /**
@@ -105,8 +168,15 @@ export class ConversationService {
       title: root.title || 'Untitled Conversation',
       provider: (root.metadata?.provider as Conversation['provider']) || 'other',
       sourceUrl: (root.metadata?.sourceUrl as string) || '',
-      createdAt: root.metadata?.createdAt as string || root.timestamp || new Date().toISOString(),
-      exportedAt: root.timestamp || new Date().toISOString(),
+      state: (root.metadata?.state as 'ACTIVE' | 'ARCHIVED' | 'DELETED') || 'ACTIVE',
+      version: root.metadata?.version as number || 1,
+      ownerId: root.metadata?.ownerId as string || undefined,
+      contentHash: root.metadata?.contentHash as string || undefined,
+      createdAt: (root.metadata?.createdAt as string) || root.timestamp || new Date().toISOString(),
+      updatedAt: (root.metadata?.updatedAt as string) || root.timestamp || new Date().toISOString(),
+      capturedAt: (root.metadata?.capturedAt as string) || root.timestamp || new Date().toISOString(),
+      exportedAt: root.timestamp || new Date().toISOString(), // Deprecated, kept for compatibility
+      tags: (root.metadata?.tags as string[]) || [],
       metadata: {
         ...root.metadata,
         model: root.metadata?.model || 'unknown',
@@ -168,17 +238,42 @@ export class ConversationService {
     isReady: boolean;
     isOnline: boolean;
     pendingOperations: number;
+    localConversationCount: number;
   }> {
     try {
       const unifiedDB = await getUnifiedDBWithInit();
       const status = await unifiedDB.getStatus();
+      const conversations = await this.getAllConversations();
       return {
         isReady: status.isReady,
         isOnline: status.isOnline,
-        pendingOperations: status.pendingOperations
+        pendingOperations: status.pendingOperations,
+        localConversationCount: conversations.length
       };
     } catch (e) {
-      return { isReady: false, isOnline: navigator.onLine, pendingOperations: 0 };
+      const conversations = await this.getAllConversations();
+      return { 
+        isReady: false, 
+        isOnline: navigator.onLine, 
+        pendingOperations: 0,
+        localConversationCount: conversations.length
+      };
+    }
+  }
+
+  /**
+   * Check if local database is fully synced with backend
+   * This is a simplified check - in a real implementation, you might compare
+   * local count with backend count via an API call
+   */
+  async isFullySynced(): Promise<boolean> {
+    try {
+      // For now, we consider it synced if we have conversations locally
+      // In a real implementation, you might compare with backend counts
+      const conversations = await this.getAllConversations();
+      return conversations.length > 0;
+    } catch {
+      return false;
     }
   }
 

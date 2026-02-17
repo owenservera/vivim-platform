@@ -16,6 +16,14 @@ import {
 } from './crypto';
 import { log } from '../logger';
 import { asISO8601 } from './types';
+
+// Try to import UnifiedDebugService for centralized error reporting
+let unifiedDebugService: any = null;
+try {
+  unifiedDebugService = require('../unified-debug-service').unifiedDebugService;
+} catch (e) {
+  // UnifiedDebugService not available yet - that's okay
+}
 import type {
   Hash,
   MessageNode,
@@ -189,33 +197,101 @@ export class Storage {
   }
 
   /**
-   * List all conversations
+   * List all conversations with optional pagination
+   * NOTE: This returns LIGHTWEIGHT data - only root metadata, no messages
+   * Use getConversation() to load full conversation with messages
    */
-  async listConversations(): Promise<Array<{
+  async listConversations(options?: { 
+    limit?: number; 
+    offset?: number;
+  }): Promise<Array<{
     root: ConversationRoot;
     messageCount: number;
     lastMessageAt: string | null;
   }>> {
-    await this.ensureReady();
+    const startTime = Date.now();
+    const listId = `list_${Date.now()}`;
+    const { limit = 100, offset = 0 } = options || {};
+    
+    log.storage.info(`[${listId}] ========== LIST CONVERSATIONS START (limit=${limit}, offset=${offset}) ==========`);
 
-    const metadataList = await this.conversationStore.list();
-    const results = [];
-
-    for (const meta of metadataList) {
-      const root = await this.conversationStore.get(meta.conversationId);
-      if (root) {
-        const messages = await this.dagEngine.getConversationMessages(meta.conversationId);
-        results.push({
-          root,
-          messageCount: messages.length,
-          lastMessageAt: messages.length > 0
-            ? messages[messages.length - 1].timestamp
-            : null
-        });
-      }
+    try {
+      await this.ensureReady();
+      log.storage.debug(`[${listId}] Storage ready, fetching conversation list...`);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      log.storage.error(`[${listId}] Storage not ready: ${errorMsg}`,
+        error instanceof Error ? error : new Error(String(error))
+      );
+      throw error;
     }
 
-    return results;
+    try {
+      let metadataList = await this.conversationStore.list();
+      log.storage.info(`[${listId}] Found ${metadataList.length} conversations in index`);
+      
+      // If the index is empty, try to rebuild it
+      if (metadataList.length === 0) {
+        log.storage.warn(`[${listId}] Conversation index is empty, attempting to rebuild...`);
+        
+        try {
+          await this.rebuildConversationIndex();
+          
+          // Try to get the list again after rebuilding
+          metadataList = await this.conversationStore.list();
+          log.storage.info(`[${listId}] After rebuild: found ${metadataList.length} conversations in index`);
+        } catch (rebuildError) {
+          const rebuildErrorMsg = rebuildError instanceof Error ? rebuildError.message : String(rebuildError);
+          log.storage.error(`[${listId}] Failed to rebuild conversation index: ${rebuildErrorMsg}`,
+            rebuildError instanceof Error ? rebuildError : new Error(String(rebuildError))
+          );
+          // Continue with empty list rather than throwing
+        }
+      }
+      
+      // Apply pagination
+      const paginatedMetadata = metadataList.slice(offset, offset + limit);
+      log.storage.debug(`[${listId}] Paginated: ${paginatedMetadata.length} conversations (offset=${offset}, limit=${limit})`);
+      
+      // For each conversation, get the root and message count from index (NOT from fetching all messages)
+      const results = [];
+
+      for (const meta of paginatedMetadata) {
+        try {
+          const root = await this.conversationStore.get(meta.conversationId);
+          if (root) {
+            // Use messageCount from index metadata instead of fetching all messages
+            results.push({
+              root,
+              messageCount: meta.messageCount || 0,
+              lastMessageAt: meta.lastMessageAt || null
+            });
+          }
+        } catch (convError) {
+          const errorMsg = convError instanceof Error ? convError.message : String(convError);
+          log.storage.warn(`[${listId}] Failed to get conversation ${meta.conversationId?.slice(0,10)}: ${errorMsg}`);
+        }
+      }
+
+      const duration = Date.now() - startTime;
+      log.storage.info(`[${listId}] ========== LIST CONVERSATIONS COMPLETE: ${results.length} in ${duration}ms ==========`);
+      return results;
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      log.storage.error(`[${listId}] List conversations failed: ${errorMsg}`,
+        error instanceof Error ? error : new Error(String(error))
+      );
+      
+      // Report to UnifiedDebugService if available
+      if (unifiedDebugService) {
+        unifiedDebugService.error('Storage', `List conversations failed: ${errorMsg}`,
+          error instanceof Error ? error : new Error(String(error)),
+          { listId, duration: Date.now() - startTime }
+        );
+      }
+      
+      throw error;
+    }
   }
 
   /**
@@ -249,7 +325,7 @@ export class Storage {
       ? [{ type: 'text', content }]
       : content;
 
-    return this.dagEngine.appendMessage({
+    const node = await this.dagEngine.appendMessage({
       conversationId,
       role,
       content: contentBlocks,
@@ -257,6 +333,21 @@ export class Storage {
       metadata,
       secretKey: this.identity.keyPair.secretKey
     });
+
+    // Update message count in index
+    try {
+      const messages = await this.dagEngine.getConversationMessages(conversationId);
+      const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
+      await this.conversationStore.updateMessageCount(
+        conversationId,
+        messages.length,
+        lastMessage?.timestamp || null
+      );
+    } catch (e) {
+      log.storage.warn('Failed to update message count in index', { error: e });
+    }
+
+    return node;
   }
 
   /**
@@ -503,6 +594,15 @@ export class Storage {
     // Phase 4: Indexing
     log.storage.debug('Phase 4: Updating conversation index...');
     await this.conversationStore.updateIndex(root);
+
+    // Update message count in index after bulk import
+    const messages = await this.dagEngine.getConversationMessages(conversationId);
+    const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
+    await this.conversationStore.updateMessageCount(
+      conversationId,
+      messages.length,
+      lastMessage?.timestamp || null
+    );
     
     log.storage.info(`✓ Import complete. Conversation ID: ${conversationId.slice(0, 10)}...`);
     return conversationId;
@@ -676,8 +776,20 @@ export class Storage {
       totalConversations: conversations.length,
       totalMessages,
       totalNodes: await this.objectStore.getSize(),
-      storageSize: 0  // TODO: Calculate actual storage size
+      storageSize: await this.calculateStorageSize()
     };
+  }
+
+  private async calculateStorageSize(): Promise<number> {
+    try {
+      if (navigator.storage && navigator.storage.estimate) {
+        const estimate = await navigator.storage.estimate();
+        return estimate.usage || 0;
+      }
+    } catch (e) {
+      logger.warn('Storage', 'Failed to calculate storage size', e);
+    }
+    return 0;
   }
 
   // ========================================================================
@@ -785,6 +897,73 @@ export class Storage {
   async saveConversation(conversation: ConversationRoot): Promise<void> {
     await this.ensureReady();
     await this.conversationStore.save(conversation);
+  }
+
+  /**
+   * Rebuild the conversation index from existing conversations
+   * This is useful when the index is corrupted or missing
+   */
+  async rebuildConversationIndex(): Promise<void> {
+    const startTime = Date.now();
+    const rebuildId = `rebuild_${Date.now()}`;
+    
+    log.storage.info(`[${rebuildId}] ========== REBUILD CONVERSATION INDEX START ==========`);
+    
+    try {
+      await this.ensureReady();
+      
+      // Get all conversation roots from the object store
+      const allConversations = await this.objectStore.getByType('conversation');
+      log.storage.info(`[${rebuildId}] Found ${allConversations.length} conversation roots in object store`);
+      
+      // Get current conversation index
+      const currentIndex = await this.conversationStore.list();
+      log.storage.info(`[${rebuildId}] Current index has ${currentIndex.length} entries`);
+      
+      // Create a map of existing index entries for quick lookup
+      const indexMap = new Map<string, ConversationMetadata>();
+      currentIndex.forEach(meta => {
+        indexMap.set(meta.conversationId, meta);
+      });
+      
+      let updatedCount = 0;
+      let addedCount = 0;
+      
+      // Process each conversation root
+      for (const node of allConversations) {
+        const root = node as ConversationRoot;
+        
+        try {
+          // Check if this conversation is already in the index
+          if (!indexMap.has(root.conversationId)) {
+            // Add missing conversation to index
+            await this.conversationStore.updateIndex(root);
+            addedCount++;
+            log.storage.debug(`[${rebuildId}] Added missing conversation to index: ${root.title} (${root.conversationId.slice(0, 10)}...)`);
+          } else {
+            // Update existing index entry
+            await this.conversationStore.updateIndex(root);
+            updatedCount++;
+            log.storage.debug(`[${rebuildId}] Updated existing conversation in index: ${root.title} (${root.conversationId.slice(0, 10)}...)`);
+          }
+        } catch (error) {
+          const errorMsg = error instanceof Error ? error.message : String(error);
+          log.storage.error(`[${rebuildId}] Failed to index conversation ${root.conversationId}: ${errorMsg}`,
+            error instanceof Error ? error : new Error(String(error))
+          );
+        }
+      }
+      
+      const duration = Date.now() - startTime;
+      log.storage.info(`[${rebuildId}] ========== REBUILD CONVERSATION INDEX COMPLETE: ${addedCount} added, ${updatedCount} updated in ${duration}ms ==========`);
+      
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      log.storage.error(`[${rebuildId}] Rebuild conversation index failed: ${errorMsg}`,
+        error instanceof Error ? error : new Error(String(error))
+      );
+      throw error;
+    }
   }
 }
 

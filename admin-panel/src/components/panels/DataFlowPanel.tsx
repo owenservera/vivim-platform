@@ -1,15 +1,12 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { clsx } from 'clsx'
 import { useAppStore } from '../../store/appStore'
-import { 
-  Workflow, 
-  RefreshCw, 
-  ZoomIn, 
-  ZoomOut, 
-  Maximize2,
+import {
+  Workflow,
+  RefreshCw,
   Dna,
   MessageSquare,
-  FileSync,
+  Files,
   Globe,
   ArrowRight,
   Play,
@@ -21,12 +18,12 @@ import {
   Boxes,
   Network
 } from 'lucide-react'
-import { mockDataFlows, mockCrdtDocuments, mockPubSubTopics } from '../../lib/mockData'
+import { mockDataFlows, mockPubSubTopics } from '../../lib/mockData'
 
 const flowTypeIcons = {
   DHT: Dna,
   PUBSUB: MessageSquare,
-  CRDT: FileSync,
+  CRDT: Files,
   FEDERATION: Globe,
 }
 
@@ -50,16 +47,14 @@ const statusColors = {
 }
 
 export default function DataFlowPanel() {
-  const { dataFlows, crdtDocuments, addLog } = useAppStore()
+  const { dataFlows, crdtDocuments } = useAppStore()
   const [view, setView] = useState<'visualization' | 'crdt' | 'pubsub'>('visualization')
   const [isPaused, setIsPaused] = useState(false)
-  const canvasRef = useRef<HTMLDivElement>(null)
 
   const activeFlows = dataFlows.filter(f => f.status === 'active')
   const pendingFlows = dataFlows.filter(f => f.status === 'pending')
   const errorFlows = dataFlows.filter(f => f.status === 'error')
 
-  const totalMessagesPerSec = activeFlows.reduce((sum, f) => sum + f.messagesPerSecond, 0)
   const totalBytesPerSec = activeFlows.reduce((sum, f) => sum + f.bytesPerSecond, 0)
 
   const formatBytes = (bytes: number) => {
@@ -130,11 +125,11 @@ export default function DataFlowPanel() {
           <Boxes size={14} className="mr-1" />
           Flow Visualization
         </button>
-        <button 
+        <button
           onClick={() => setView('crdt')}
           className={clsx('btn text-xs', view === 'crdt' ? 'btn-primary' : 'btn-secondary')}
         >
-          <FileSync size={14} className="mr-1" />
+          <Files size={14} className="mr-1" />
           CRDT Documents
         </button>
         <button 
@@ -193,7 +188,7 @@ export default function DataFlowPanel() {
                     PubSub
                   </span>
                   <span className="flex items-center gap-1">
-                    <FileSync size={12} className="text-accent-green" />
+                    <Files size={12} className="text-accent-green" />
                     CRDT
                   </span>
                   <span className="flex items-center gap-1">

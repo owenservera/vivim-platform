@@ -9,23 +9,32 @@ import { Router } from 'express';
 import { createRequestLogger } from '../lib/logger.js';
 import { ValidationError } from '../middleware/errorHandler.js';
 import { validateRequest, captureRequestSchema, syncInitSchema } from '../validators/schemas.js';
-import { extractConversation } from '../services/extractor.js';
-import { getServerPqcPublicKey, kyberDecapsulate, symmetricDecrypt, symmetricEncrypt } from '../lib/crypto.js';
+import { extractConversation, detectProvider } from '../services/extractor.js';
+import {
+  getServerPqcPublicKey,
+  kyberDecapsulate,
+  symmetricDecrypt,
+  symmetricEncrypt,
+} from '../lib/crypto.js';
 import {
   createCaptureAttempt,
   completeCaptureAttempt,
   findBySourceUrl,
 } from '../repositories/index.js';
-import { saveConversationUnified, findRecentSuccessfulUnified } from '../services/storage-adapter.js';
+import {
+  saveConversationUnified,
+  findRecentSuccessfulUnified,
+} from '../services/storage-adapter.js';
 import { requireApiKey, authenticateDID } from '../middleware/auth.js';
 import { ticketStore } from '../services/ticketStore.js';
 import { calculateMessageHash } from '../lib/crypto.js';
+import { debugReporter } from '../services/debug-reporter.js';
 
 const router = Router();
 
-// ============================================================================ 
+// ============================================================================
 // HELPERS
-// ============================================================================ 
+// ============================================================================
 
 /**
  * Sanitize and format conversation for PWA ingestion
@@ -33,14 +42,14 @@ const router = Router();
  */
 function prepareConversationForClient(conversation) {
   if (!conversation) {
-return null;
-}
+    return null;
+  }
 
-  const messages = (conversation.messages || []).map(msg => {
+  const messages = (conversation.messages || []).map((msg) => {
     const role = msg.role || 'assistant';
     const content = msg.content || msg.parts || [];
     const timestamp = msg.timestamp || msg.createdAt || new Date().toISOString();
-    
+
     return {
       ...msg,
       role,
@@ -62,9 +71,9 @@ return null;
   };
 }
 
-// ============================================================================ 
+// ============================================================================
 // QUANTUM HANDSHAKE
-// ============================================================================ 
+// ============================================================================
 
 /**
  * POST /api/v1/handshake
@@ -81,9 +90,9 @@ router.post('/handshake', (req, res) => {
   });
 });
 
-// ============================================================================ 
+// ============================================================================
 // HEALTH CHECK (VERSIONED)
-// ============================================================================ 
+// ============================================================================
 
 /**
  * GET /api/v1/
@@ -93,9 +102,9 @@ router.get('/', (req, res) => {
   res.json({ status: 'ok', service: 'OpenScroll Capture API (v1)' });
 });
 
-// ============================================================================ 
+// ============================================================================
 // CAPTURE ENDPOINT
-// ============================================================================ 
+// ============================================================================
 
 /**
  * POST /api/v1/capture
@@ -107,10 +116,10 @@ router.post('/capture', async (req, res, next) => {
   const log = createRequestLogger(req);
   let attemptId = null;
   const startTime = Date.now();
-  
+
   // Check if DID auth is available
   const hasDidAuth = req.headers['x-did'] || (req.headers['authorization'] || '').includes('did:');
-  
+
   try {
     if (hasDidAuth) {
       // Use DID authentication
@@ -134,38 +143,34 @@ router.post('/capture', async (req, res, next) => {
   } catch (authErr) {
     log.warn({ error: authErr.message }, 'Auth error, continuing...');
   }
-  
+
   const userClient = req.user?.userClient;
 
   try {
     let requestBody = req.body;
     let sharedSecret = null;
 
-    // ---------------------------------------------------------------------- 
+    // ----------------------------------------------------------------------
     // QUANTUM TUNNEL DECRYPTION
-    // ---------------------------------------------------------------------- 
+    // ----------------------------------------------------------------------
     if (req.body.pqcCiphertext && req.body.pqcPayload) {
-        log.info('Secure Quantum Tunnel detected');
-        sharedSecret = await kyberDecapsulate(req.body.pqcCiphertext);
+      log.info('Secure Quantum Tunnel detected');
+      sharedSecret = await kyberDecapsulate(req.body.pqcCiphertext);
 
-        const decryptedStr = symmetricDecrypt(
-            req.body.pqcPayload,
-            req.body.pqcNonce,
-            sharedSecret,
-        );
+      const decryptedStr = symmetricDecrypt(req.body.pqcPayload, req.body.pqcNonce, sharedSecret);
 
-        if (!decryptedStr) {
-          throw new Error('Quantum Tunnel Decryption Failed');
-        }
-        requestBody = JSON.parse(decryptedStr);
-        console.log('\n🔐 [QUANTUM TUNNEL] Decrypted secure payload for extraction\n');
+      if (!decryptedStr) {
+        throw new Error('Quantum Tunnel Decryption Failed');
+      }
+      requestBody = JSON.parse(decryptedStr);
+      console.log('\n🔐 [QUANTUM TUNNEL] Decrypted secure payload for extraction\n');
     } else {
-        requestBody = req.body;
+      requestBody = req.body;
     }
-    // ---------------------------------------------------------------------- 
+    // ----------------------------------------------------------------------
 
     const { url, options } = validateRequest(requestBody, captureRequestSchema);
-    
+
     const { detectProvider } = await import('../services/extractor.js');
 
     console.log(`\n🔍 [EXTRACTION STARTED] Processing request for: ${url}`);
@@ -177,9 +182,16 @@ router.post('/capture', async (req, res, next) => {
     const useCache = options?.cache !== false;
     if (useCache) {
       try {
-        const recentAttempt = await findRecentSuccessfulUnified(url, options?.cacheMinutes || 60, userClient);
+        const recentAttempt = await findRecentSuccessfulUnified(
+          url,
+          options?.cacheMinutes || 60,
+          userClient
+        );
         if (recentAttempt && recentAttempt.conversationId) {
-          log.info({ conversationId: recentAttempt.conversationId }, 'Returning cached conversation');
+          log.info(
+            { conversationId: recentAttempt.conversationId },
+            'Returning cached conversation'
+          );
           console.log(`💾 [CACHE HIT] Returning cached data for: ${url}\n`);
           return res.json({
             status: 'success',
@@ -196,48 +208,76 @@ router.post('/capture', async (req, res, next) => {
     }
 
     const provider = detectProvider(url);
+
+    const extractionStartTime = Date.now();
     try {
-      const attempt = await createCaptureAttempt({
-        sourceUrl: url,
+      const conversation = await extractConversation(url, options);
+
+      debugReporter.trackExtraction(
         provider,
-        status: 'pending',
-        startedAt: new Date(),
-        ipAddress: req.ip,
-      }, userClient);
+        url,
+        Date.now() - extractionStartTime,
+        conversation?.messages?.length || 0,
+        { userDid: req.user?.did, requestId: req.id }
+      );
+
+      log.info(
+        {
+          conversationId: conversation.id,
+          provider: conversation.provider,
+          messageCount: conversation.messages?.length || 0,
+          userDid: req.user?.did,
+        },
+        'Conversation captured successfully'
+      );
       attemptId = attempt.id;
       console.log(`📋 [ATTEMPT LOGGED] Capture attempt ID: ${attemptId}\n`);
     } catch (dbError) {
       log.warn({ error: dbError.message }, 'Failed to create capture attempt record');
     }
 
-    console.log(`🚀 [EXTRACTION] Starting content extraction from: ${url}`);
-    const conversation = await extractConversation(url, options);
-
-    log.info(
-      {
-        conversationId: conversation.id,
-        provider: conversation.provider,
-        messageCount: conversation.messages?.length || 0,
-        userDid: req.user?.did,
-      },
-      'Conversation captured successfully',
+    console.log(
+      `✅ [EXTRACTION COMPLETE] Retrieved ${conversation.messages?.length || 0} messages`
     );
 
-    console.log(`✅ [EXTRACTION COMPLETE] Retrieved ${conversation.messages?.length || 0} messages`);
-
+    const saveStartTime = Date.now();
     try {
       const saveResult = await saveConversationUnified(conversation, userClient);
-      console.log(`💾 [DATABASE] Conversation saved to ${saveResult.engine} for user ${req.user?.did}`);
+      debugReporter.trackInfo(
+        {
+          category: 'save',
+          message: `Conversation saved to ${saveResult.engine}`,
+        },
+        {
+          engine: saveResult.engine,
+          duration: Date.now() - saveStartTime,
+          conversationId: conversation.id,
+          userDid: req.user?.did,
+        }
+      );
+      console.log(
+        `💾 [DATABASE] Conversation saved to ${saveResult.engine} for user ${req.user?.did}`
+      );
 
       if (attemptId) {
-        await completeCaptureAttempt(attemptId, {
-          status: 'success',
-          duration: Date.now() - startTime,
-          conversationId: conversation.id,
-        }, userClient);
+        await completeCaptureAttempt(
+          attemptId,
+          {
+            status: 'success',
+            duration: Date.now() - startTime,
+            conversationId: conversation.id,
+          },
+          userClient
+        );
         console.log(`✅ [ATTEMPT COMPLETED] Capture attempt ${attemptId} marked as successful\n`);
       }
     } catch (dbError) {
+      debugReporter.trackError(dbError, {
+        operation: 'saveConversationUnified',
+        conversationId: conversation.id,
+        userDid: req.user?.did,
+        requestId: req.id,
+      });
       log.warn({ error: dbError.message }, 'Failed to save conversation to DB');
       console.log(`⚠️  [DATABASE ERROR] Failed to save to database: ${dbError.message}\n`);
     }
@@ -250,33 +290,48 @@ router.post('/capture', async (req, res, next) => {
       data: prepareConversationForClient(conversation),
     };
 
-    console.log(`🎯 [RESPONSE READY] Sending ${conversation.messages?.length || 0} messages to client\n`);
+    console.log(
+      `🎯 [RESPONSE READY] Sending ${conversation.messages?.length || 0} messages to client\n`
+    );
 
     if (sharedSecret) {
-        const encrypted = symmetricEncrypt(JSON.stringify(responseData), sharedSecret);
-        console.log('🔐 [QUANTUM ENCRYPT] Response encrypted for secure transmission\n');
-        return res.json({
-            status: 'success',
-            pqcPayload: encrypted.ciphertext,
-            pqcNonce: encrypted.nonce,
-            quantumHardened: true,
-            authenticated: true,
-            userDid: req.user?.did,
-        });
+      const encrypted = symmetricEncrypt(JSON.stringify(responseData), sharedSecret);
+      console.log('🔐 [QUANTUM ENCRYPT] Response encrypted for secure transmission\n');
+      return res.json({
+        status: 'success',
+        pqcPayload: encrypted.ciphertext,
+        pqcNonce: encrypted.nonce,
+        quantumHardened: true,
+        authenticated: true,
+        userDid: req.user?.did,
+      });
     }
 
     res.json(responseData);
   } catch (error) {
+    debugReporter.trackError(error, {
+      operation: 'extractConversation',
+      provider: detectProvider(url),
+      url,
+      duration: Date.now() - startTime,
+      userDid: req.user?.did,
+      requestId: req.id,
+    });
+
     console.log(`❌ [EXTRACTION FAILED] Error processing request: ${error.message}\n`);
 
     if (attemptId) {
       try {
-        await completeCaptureAttempt(attemptId, {
-          status: 'failed',
-          duration: Date.now() - startTime,
-          errorCode: error.code,
-          errorMessage: error.message,
-        }, userClient);
+        await completeCaptureAttempt(
+          attemptId,
+          {
+            status: 'failed',
+            duration: Date.now() - startTime,
+            errorCode: error.code,
+            errorMessage: error.message,
+          },
+          userClient
+        );
       } catch (dbError) {
         log.warn({ error: dbError.message }, 'Failed to update capture attempt');
       }
@@ -288,17 +343,17 @@ router.post('/capture', async (req, res, next) => {
 
 /**
  * POST /api/v1/capture-sync/init
- * 
+ *
  * Initialize a secure sync session.
  * Accepts PQC/Auth data and returns a short-lived ticket for the SSE connection.
  */
 router.post('/capture-sync/init', requireApiKey(), async (req, res, next) => {
   try {
-    const data = validateRequest(req.body, syncInitSchema); 
-    
+    const data = validateRequest(req.body, syncInitSchema);
+
     // Store the payload (url, crypto keys) in the ticket store
     const ticket = ticketStore.create(data);
-    
+
     res.json({
       status: 'success',
       ticket,
@@ -322,7 +377,7 @@ router.get('/capture-sync', async (req, res) => {
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
+    Connection: 'keep-alive',
     'Access-Control-Allow-Origin': '*', // Required for SSE to work across domains (e.g. PWA)
   });
 
@@ -331,8 +386,8 @@ router.get('/capture-sync', async (req, res) => {
   };
 
   // Validate Ticket
-  const ticketData = ticketStore.consume(ticket); 
-  
+  const ticketData = ticketStore.consume(ticket);
+
   if (!ticketData) {
     sendEvent('error', { message: 'Invalid or expired ticket' });
     res.end();
@@ -352,12 +407,12 @@ router.get('/capture-sync', async (req, res) => {
   const sendEncryptedEvent = (event, data) => {
     let payload = data;
     if (sharedSecret) {
-        const encrypted = symmetricEncrypt(JSON.stringify(data), sharedSecret);
-        payload = {
-            pqcPayload: encrypted.ciphertext,
-            pqcNonce: encrypted.nonce,
-            quantumHardened: true,
-        };
+      const encrypted = symmetricEncrypt(JSON.stringify(data), sharedSecret);
+      payload = {
+        pqcPayload: encrypted.ciphertext,
+        pqcNonce: encrypted.nonce,
+        quantumHardened: true,
+      };
     }
     res.write(`event: ${event}\ndata: ${JSON.stringify(payload)}\n\n`);
   };
@@ -367,37 +422,37 @@ router.get('/capture-sync', async (req, res) => {
   });
 
   try {
-    // ---------------------------------------------------------------------- 
+    // ----------------------------------------------------------------------
     // QUANTUM TUNNEL DECRYPTION (Ticket version)
-    // ---------------------------------------------------------------------- 
+    // ----------------------------------------------------------------------
     if (pqcCiphertext && pqcPayload) {
-        try {
-          sharedSecret = await kyberDecapsulate(pqcCiphertext);
-        } catch (kemError) {
-          console.error(`❌ [SYNC FAILED] KEM Decapsulation error: ${kemError.message}`);
-          throw new Error('Quantum Tunnel Handshake Failed');
-        }
+      try {
+        sharedSecret = await kyberDecapsulate(pqcCiphertext);
+      } catch (kemError) {
+        console.error(`❌ [SYNC FAILED] KEM Decapsulation error: ${kemError.message}`);
+        throw new Error('Quantum Tunnel Handshake Failed');
+      }
 
-        const decryptedUrl = symmetricDecrypt(pqcPayload, pqcNonce, sharedSecret);
-        if (!decryptedUrl) {
-          console.error('❌ [SYNC FAILED] Symmetric decryption failed for payload');
-          throw new Error('Quantum Tunnel Decryption Failed');
-        }
+      const decryptedUrl = symmetricDecrypt(pqcPayload, pqcNonce, sharedSecret);
+      if (!decryptedUrl) {
+        console.error('❌ [SYNC FAILED] Symmetric decryption failed for payload');
+        throw new Error('Quantum Tunnel Decryption Failed');
+      }
 
-        try {
-          targetUrl = JSON.parse(decryptedUrl).url;
-        } catch (jsonError) {
-          console.error('❌ [SYNC FAILED] Invalid JSON in decrypted payload');
-          throw new Error('Quantum Tunnel Payload Corrupt');
-        }
+      try {
+        targetUrl = JSON.parse(decryptedUrl).url;
+      } catch (jsonError) {
+        console.error('❌ [SYNC FAILED] Invalid JSON in decrypted payload');
+        throw new Error('Quantum Tunnel Payload Corrupt');
+      }
 
-        console.log('\n🔐 [QUANTUM TUNNEL] Streaming via Post-Quantum Secure Channel\n');
+      console.log('\n🔐 [QUANTUM TUNNEL] Streaming via Post-Quantum Secure Channel\n');
     }
-    // ---------------------------------------------------------------------- 
+    // ----------------------------------------------------------------------
 
     if (!targetUrl) {
-throw new Error('Missing target URL');
-}
+      throw new Error('Missing target URL');
+    }
 
     console.log(`\n🔄 [SYNC STARTED] Beginning real-time sync for: ${targetUrl}\n`);
 
@@ -407,19 +462,21 @@ throw new Error('Missing target URL');
       },
     });
 
-    console.log(`\n✅ [SYNC COMPLETE] Successfully extracted ${conversation.messages?.length || 0} messages\n`);
+    console.log(
+      `\n✅ [SYNC COMPLETE] Successfully extracted ${conversation.messages?.length || 0} messages\n`
+    );
 
     // DB Persistence in background (UNIFIED)
     saveConversationUnified(conversation)
-      .then(res => console.log(`💾 [BG SAVE] Saved to ${res.engine}`))
-      .catch(err => console.error('💾 [BG SAVE ERROR]:', err.message));
+      .then((res) => console.log(`💾 [BG SAVE] Saved to ${res.engine}`))
+      .catch((err) => console.error('💾 [BG SAVE ERROR]:', err.message));
 
     // Send complete
     sendEncryptedEvent('complete', {
       ...prepareConversationForClient(conversation),
       authenticated: true, // If they got a ticket, they passed auth in /init
     });
-    
+
     console.log('📤 [STREAMING] Sent complete conversation to client\n');
     clearInterval(heartbeat);
     res.end();
@@ -433,10 +490,9 @@ throw new Error('Missing target URL');
   }
 });
 
-
-// ============================================================================ 
+// ============================================================================
 // PROVIDER DETECTION
-// ============================================================================ 
+// ============================================================================
 
 router.get('/detect-provider', requireApiKey(), (req, res, next) => {
   const log = createRequestLogger(req);
@@ -455,13 +511,23 @@ router.get('/detect-provider', requireApiKey(), (req, res, next) => {
   }
 });
 
-// ============================================================================ 
+// ============================================================================
 // SUPPORTED PROVIDERS
-// ============================================================================ 
+// ============================================================================
 
 router.get('/providers', requireApiKey(), (req, res) => {
   const log = createRequestLogger(req);
-  const providers = ['claude', 'chatgpt', 'gemini', 'grok', 'deepseek', 'kimi', 'qwen', 'zai', 'mistral'];
+  const providers = [
+    'claude',
+    'chatgpt',
+    'gemini',
+    'grok',
+    'deepseek',
+    'kimi',
+    'qwen',
+    'zai',
+    'mistral',
+  ];
   log.info({ providers }, 'Supported providers list');
   res.json({ providers, count: providers.length });
 });

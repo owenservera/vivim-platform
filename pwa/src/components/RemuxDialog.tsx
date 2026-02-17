@@ -1,11 +1,8 @@
-/**
- * Remux Dialog
- * Dialog for remixing/reusing AI conversations
- */
-
 import React, { useState } from 'react';
-import { X, RefreshCw, Settings, Check, Sparkles } from 'lucide-react';
+import { X, RefreshCw, Settings, Check, Sparkles, MessageSquare, Clock } from 'lucide-react';
 import type { Conversation } from '../types/conversation';
+import { IOSModal, IOSButton, IOSCard, useIOSToast, toast } from './ios';
+import { cn } from '../lib/utils';
 
 interface RemuxDialogProps {
   conversation: Conversation | null;
@@ -19,6 +16,7 @@ export const RemuxDialog: React.FC<RemuxDialogProps> = ({ conversation, onClose,
   ));
   const [newSystemPrompt, setNewSystemPrompt] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const { toast: showToast } = useIOSToast();
 
   if (!conversation) return null;
 
@@ -56,169 +54,131 @@ export const RemuxDialog: React.FC<RemuxDialogProps> = ({ conversation, onClose,
     }
 
     onRemix(messages);
+    showToast(toast.success('Materialization remixed'));
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={onClose}
-      />
-
-      {/* Dialog */}
-      <div className="relative w-full max-w-2xl max-h-[80vh] bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl overflow-hidden animate-slideIn">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-600/20 rounded-xl flex items-center justify-center">
-              <RefreshCw className="w-5 h-5 text-purple-400" />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold">Remix Conversation</h2>
-              <p className="text-sm text-gray-500">Reuse this conversation with new context</p>
-            </div>
+    <IOSModal
+      isOpen={!!conversation}
+      onClose={onClose}
+      title="Remix Intelligence"
+      size="lg"
+      footer={
+        <div className="flex items-center justify-between w-full">
+          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-2">
+            {selectedMessages.size} Selected
+          </span>
+          <div className="flex gap-3">
+            <IOSButton variant="secondary" onClick={onClose}>
+              Cancel
+            </IOSButton>
+            <IOSButton 
+              variant="primary" 
+              onClick={handleRemix} 
+              disabled={selectedMessages.size === 0}
+              icon={<Sparkles className="w-4 h-4" />}
+            >
+              Start Remix
+            </IOSButton>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+        </div>
+      }
+    >
+      <div className="space-y-6">
+        {/* Source info */}
+        <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
+          <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center flex-shrink-0">
+            <RefreshCw className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Source Materialization</p>
+            <h3 className="text-sm font-bold text-gray-900 dark:text-white truncate">{conversation.title}</h3>
+          </div>
         </div>
 
-        {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[60vh] space-y-6">
-          {/* Conversation Title */}
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-gray-500">From:</span>
-            <span className="font-medium">{conversation.title}</span>
-            <span className="text-gray-600">•</span>
-            <span className="text-gray-500 capitalize">{conversation.provider}</span>
+        {/* Message Selection */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <label className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">
+              Select Nodes
+            </label>
+            <div className="flex gap-3">
+              <button onClick={selectAll} className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">All</button>
+              <button onClick={deselectAll} className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">None</button>
+            </div>
           </div>
 
-          {/* Message Selection */}
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <label className="text-sm font-medium">Select Messages</label>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={selectAll}
-                  className="text-xs text-blue-400 hover:text-blue-300"
-                >
-                  Select All
-                </button>
-                <span className="text-gray-600">|</span>
-                <button
-                  onClick={deselectAll}
-                  className="text-xs text-gray-400 hover:text-white"
-                >
-                  Deselect All
-                </button>
-              </div>
-            </div>
+          <div className="space-y-2 max-h-60 overflow-y-auto pr-1 ios-scrollbar-thin">
+            {conversation.messages.map((msg, index) => {
+              const isSelected = selectedMessages.has(index);
+              const content = typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content);
 
-            <div className="space-y-2">
-              {conversation.messages.map((msg, index) => {
-                const isSelected = selectedMessages.has(index);
-                const content = typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content);
-                const preview = content.slice(0, 150) + (content.length > 150 ? '...' : '');
-
-                return (
-                  <div
-                    key={msg.id}
-                    onClick={() => toggleMessage(index)}
-                    className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                      isSelected
-                        ? 'bg-purple-600/10 border border-purple-500/30'
-                        : 'bg-gray-800/50 border border-transparent hover:bg-gray-800'
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                        isSelected
-                          ? 'bg-purple-500 border-purple-500'
-                          : 'border-gray-600'
-                      }`}>
-                        {isSelected && <Check className="w-3 h-3 text-white" />}
+              return (
+                <div
+                  key={msg.id}
+                  onClick={() => toggleMessage(index)}
+                  className={cn(
+                    "p-3 rounded-xl cursor-pointer transition-all border-2",
+                    isSelected 
+                      ? "bg-purple-50/50 dark:bg-purple-900/10 border-purple-500/30" 
+                      : "bg-gray-50 dark:bg-gray-800/50 border-transparent hover:bg-gray-100 dark:hover:bg-gray-800"
+                  )}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={cn(
+                      "w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors",
+                      isSelected ? "bg-purple-500 border-purple-500" : "border-gray-300 dark:border-gray-600"
+                    )}>
+                      {isSelected && <Check className="w-3 h-3 text-white" />}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[9px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded bg-white dark:bg-gray-700 shadow-sm border border-gray-100 dark:border-gray-600">
+                          {msg.role}
+                        </span>
+                        <span className="text-[9px] text-gray-400 font-medium">
+                          {new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
+                        </span>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs font-medium capitalize text-gray-400">
-                            {msg.role}
-                          </span>
-                          <span className="text-xs text-gray-600">
-                            {new Date(msg.timestamp).toLocaleString()}
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-300 line-clamp-2">{preview}</p>
-                      </div>
+                      <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2 leading-relaxed">
+                        {content}
+                      </p>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Advanced Options */}
-          <div>
-            <button
-              onClick={() => setShowAdvanced(!showAdvanced)}
-              className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"
-            >
-              <Settings className="w-4 h-4" />
-              Advanced Options
-              <span className={`transform transition-transform ${showAdvanced ? 'rotate-180' : ''}`}>
-                ▼
-              </span>
-            </button>
-
-            {showAdvanced && (
-              <div className="mt-4 p-4 bg-gray-800/50 rounded-lg space-y-4 animate-slideIn">
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    New System Prompt (optional)
-                  </label>
-                  <textarea
-                    value={newSystemPrompt}
-                    onChange={(e) => setNewSystemPrompt(e.target.value)}
-                    placeholder="Add a new system prompt to guide the conversation..."
-                    className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-sm focus:outline-none focus:border-purple-500 resize-none"
-                    rows={3}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    This will be prepended to the selected messages as a new system instruction.
-                  </p>
                 </div>
-              </div>
-            )}
+              );
+            })}
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-gray-800 bg-gray-900/50">
-          <div className="text-sm text-gray-500">
-            {selectedMessages.size} message{selectedMessages.size !== 1 ? 's' : ''} selected
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleRemix}
-              disabled={selectedMessages.size === 0}
-              className="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-500 disabled:bg-gray-700 disabled:text-gray-500 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
-            >
-              <Sparkles className="w-4 h-4" />
-              Start Remix
-            </button>
-          </div>
+        {/* Advanced */}
+        <div className="space-y-3">
+          <button
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="flex items-center gap-2 text-[10px] font-bold text-gray-400 hover:text-gray-600 uppercase tracking-widest transition-colors px-1"
+          >
+            <Settings className="w-3.5 h-3.5" />
+            Override System Protocol
+            <span className={cn("transition-transform duration-200", showAdvanced && "rotate-180")}>▼</span>
+          </button>
+
+          {showAdvanced && (
+            <div className="p-4 bg-gray-50 dark:bg-black/40 rounded-2xl border border-gray-100 dark:border-gray-800 animate-in fade-in slide-in-from-top-2 duration-300">
+              <label className="block text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3">
+                New System Directive
+              </label>
+              <textarea
+                value={newSystemPrompt}
+                onChange={(e) => setNewSystemPrompt(e.target.value)}
+                placeholder="Initialize new behavioral constraints..."
+                className="w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-3 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/50 resize-none min-h-[80px]"
+                rows={3}
+              />
+            </div>
+          )}
         </div>
       </div>
-    </div>
+    </IOSModal>
   );
 };
 

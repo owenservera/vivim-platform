@@ -79,13 +79,13 @@ export const IOSSettingsItem: React.FC<IOSSettingsItemProps> = ({ item, isFirst 
 
     if (item.type === 'navigation' || item.value) {
       return (
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex items-center gap-2 flex-shrink-0 min-w-0 max-w-[60%]">
           {item.value && (
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+            <span className="text-sm text-gray-500 dark:text-gray-400 truncate">
               {item.value}
             </span>
           )}
-          <ChevronRight className="w-5 h-5 text-gray-400" />
+          <ChevronRight className="w-5 h-5 text-gray-400 flex-shrink-0" />
         </div>
       );
     }

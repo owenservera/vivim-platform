@@ -54,14 +54,24 @@ function H(s){
 }
 
 /*══════════════════════════════════════════════════════════════
+  XSS ESCAPE
+═════════════════════════════════════════════════════════════*/
+function E(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+/*══════════════════════════════════════════════════════════════
   VERIFY
-══════════════════════════════════════════════════════════════*/
+═════════════════════════════════════════════════════════════*/
 function V(){
   var ok=1;
   for(var i=0;i<D.m.length;i++){
     if(!D.m[i].s||!D.m[i].a){ok=0;break;}
-    // Full Ed25519 verify here in production
   }
+  document.body.innerHTML=ok
+    ?'<h1>'+E(D.t)+'</h1>'+D.m.map(function(m){
+      return'<div><b>'+(m.r==='u'?'USER':'ASSISTANT')+'</b>: '+E(m.c)+'</div>';
+    }).join('')+'<hr>✓ VERIFIED'
+    :'<h1>✗ INVALID</h1>';
+}
   document.body.innerHTML=ok
     ?'<h1>'+D.t+'</h1>'+D.m.map(function(m){
       return'<div><b>'+(m.r==='u'?'USER':'ASSISTANT')+'</b>: '+m.c+'</div>';

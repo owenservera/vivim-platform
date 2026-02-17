@@ -1,17 +1,5 @@
-/**
- * User Context System
- * 
- * Complete isolated AI context system per user.
- * Generated on user registration with personal:
- * - Database (already implemented)
- * - Vector store for embeddings
- * - AI configuration
- * - Context compilation pipeline
- */
-
-import { getUserClient, createUserDatabase, initializeUserDatabaseDir, getUserDbPath } from '../lib/user-database-manager.js';
+import { getUserClient, createUserDatabase, initializeUserDatabaseDir } from '../lib/user-database-manager.js';
 import { logger } from '../lib/logger.js';
-import crypto from 'crypto';
 
 const log = logger.child({ module: 'user-context-system' });
 
@@ -21,7 +9,6 @@ export class UserContextSystem {
   constructor(userDid) {
     this.userDid = userDid;
     this.database = null;
-    this.vectorStore = null;
     this.aiConfig = null;
     this.embeddingModel = null;
     this.initialized = false;
@@ -37,7 +24,6 @@ export class UserContextSystem {
     try {
       this.database = await getUserClient(this.userDid);
       
-      await this.initializeVectorStore();
       await this.initializeAIConfig();
       await this.initializeEmbeddingModel();
       
@@ -49,40 +35,6 @@ export class UserContextSystem {
     }
 
     return this;
-  }
-
-  async initializeVectorStore() {
-    const { QdrantClient } = await import('@qdrant/js-client-rest');
-    
-    const collectionName = `user_${this.userDid.replace(/[^a-zA-Z0-9]/g, '_')}`;
-    
-    this.vectorStore = {
-      client: new QdrantClient({
-        url: process.env.QDRANT_URL || 'http://localhost:6333',
-        apiKey: process.env.QDRANT_API_KEY,
-      }),
-      collectionName,
-      initialized: false,
-    };
-
-    try {
-      const collections = await this.vectorStore.client.getCollections();
-      const exists = collections.collections.some(c => c.name === collectionName);
-      
-      if (!exists) {
-        await this.vectorStore.client.createCollection(collectionName, {
-          vectors: {
-            size: parseInt(process.env.VECTOR_DIMENSION) || 384,
-            distance: 'Cosine',
-          },
-        });
-        log.info({ userDid: this.userDid, collectionName }, 'Created user vector collection');
-      }
-      
-      this.vectorStore.initialized = true;
-    } catch (error) {
-      log.warn({ userDid: this.userDid, error: error.message }, 'Vector store not available');
-    }
   }
 
   async initializeAIConfig() {
@@ -102,24 +54,29 @@ export class UserContextSystem {
     };
   }
 
-  async addToVectorStore(acuId, content, metadata = {}) {
-    if (!this.vectorStore?.initialized) {
-      log.warn({ userDid: this.userDid }, 'Vector store not initialized');
+  async addToVectorStore(acuId, content, embedding, metadata = {}) {
+    if (!this.database) {
+      log.warn({ userDid: this.userDid }, 'Database not initialized');
       return null;
     }
 
     try {
-      const embedding = await this.generateEmbedding(content);
-      
-      await this.vectorStore.client.upsert(this.vectorStore.collectionName, {
-        points: [{
+      await this.database.atomicChatUnit.upsert({
+        where: { id: acuId },
+        update: {
+          content: content.substring(0, 5000),
+          embedding,
+          ...metadata,
+        },
+        create: {
           id: acuId,
-          vector: embedding,
-          payload: {
-            content: content.substring(0, 5000),
-            ...metadata,
-          },
-        }],
+          content: content.substring(0, 5000),
+          embedding,
+          authorDid: this.userDid,
+          type: metadata.type || 'text',
+          state: 'ACTIVE',
+          ...metadata,
+        },
       });
 
       return true;
@@ -130,24 +87,36 @@ export class UserContextSystem {
   }
 
   async searchVectorStore(query, limit = 10) {
-    if (!this.vectorStore?.initialized) {
+    if (!this.database) {
       return [];
     }
 
     try {
-      const embedding = await this.generateEmbedding(query);
-      
-      const results = await this.vectorStore.client.search(this.vectorStore.collectionName, {
-        vector: embedding,
-        limit,
-        with_payload: true,
-      });
+      const { generateEmbedding: openAIEmbed } = await import('../services/embedding-service.js');
+      const embedding = await openAIEmbed(query, this.embeddingModel.model);
+
+      const results = await this.database.$queryRaw`
+        SELECT
+          id,
+          content,
+          type,
+          category,
+          1 - (embedding <=> ${embedding}::vector) as score
+        FROM atomic_chat_units
+        WHERE "authorDid" = ${this.userDid}
+          AND state = 'ACTIVE'
+          AND embedding IS NOT NULL
+          AND array_length(embedding, 1) > 0
+        ORDER BY embedding <=> ${embedding}::vector
+        LIMIT ${limit}
+      `;
 
       return results.map(r => ({
         id: r.id,
         score: r.score,
-        content: r.payload.content,
-        ...r.payload,
+        content: r.content,
+        type: r.type,
+        category: r.category,
       }));
     } catch (error) {
       log.error({ userDid: this.userDid, error: error.message }, 'Vector search failed');
@@ -194,7 +163,6 @@ export class UserContextSystem {
       includeTopics = true,
       includeEntities = true,
       includeMemories = true,
-      maxTokens = 4000,
       useSemanticSearch = true,
     } = options;
 
@@ -288,7 +256,6 @@ export class UserContextSystem {
   async getStats() {
     const stats = {
       database: {},
-      vectorStore: {},
       aiConfig: {},
     };
 
@@ -320,7 +287,6 @@ export class UserContextSystem {
       await this.database.$disconnect();
     }
     this.database = null;
-    this.vectorStore = null;
     this.aiConfig = null;
     this.initialized = false;
     log.info({ userDid: this.userDid }, 'UserContextSystem disconnected');

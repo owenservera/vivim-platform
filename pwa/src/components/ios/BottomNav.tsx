@@ -16,20 +16,20 @@ export interface IOSBottomNavProps {
 }
 
 const defaultNavItems: IOSNavItem[] = [
-  { to: '/', icon: <Home className="w-6 h-6" strokeWidth={2.5} />, label: 'Home' },
-  { to: '/search', icon: <Search className="w-6 h-6" strokeWidth={2.5} />, label: 'Search' },
+  { to: '/', icon: <Home className="w-5 h-5" strokeWidth={2.5} />, label: 'Home' },
+  { to: '/search', icon: <Search className="w-5 h-5" strokeWidth={2.5} />, label: 'Search' },
   {
     to: '/capture',
-    icon: <PlusCircle className="w-6 h-6" fill="currentColor" strokeWidth={0} />,
+    icon: <PlusCircle className="w-5 h-5" fill="currentColor" strokeWidth={0} />,
     label: 'Capture',
     isSpecial: true,
   },
   {
     to: '/ai-conversations',
-    icon: <MessageSquare className="w-6 h-6" strokeWidth={2.5} />,
+    icon: <MessageSquare className="w-5 h-5" strokeWidth={2.5} />,
     label: 'AI',
   },
-  { to: '/settings', icon: <Settings className="w-6 h-6" strokeWidth={2.5} />, label: 'Settings' },
+  { to: '/settings', icon: <Settings className="w-5 h-5" strokeWidth={2.5} />, label: 'Settings' },
 ];
 
 export const IOSBottomNav: React.FC<IOSBottomNavProps> = ({
@@ -39,7 +39,7 @@ export const IOSBottomNav: React.FC<IOSBottomNavProps> = ({
   return (
     <nav
       className={cn(
-        'fixed bottom-0 left-0 right-0 h-16 ios-safe-bottom bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-t border-gray-200/50 dark:border-gray-800/50 flex items-center justify-around z-[1030] shadow-[0_-1px_3px_rgba(0,0,0,0.05)]',
+        'fixed bottom-0 left-0 right-0 h-16 ios-safe-bottom bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-t border-gray-200/50 dark:border-gray-800/50 flex items-center justify-around z-[1030] shadow-[0_-1px_3px_rgba(0,0,0,0.05)] px-1',
         className
       )}
     >
@@ -48,7 +48,7 @@ export const IOSBottomNav: React.FC<IOSBottomNavProps> = ({
           key={index}
           to={item.to}
           className={({ isActive }) => {
-            const baseClasses = 'flex flex-col items-center justify-center w-full h-full space-y-1 ios-touch-feedback';
+            const baseClasses = 'flex flex-col items-center justify-center w-full h-full space-y-0.5 ios-touch-feedback min-w-0';
             const activeClasses = 'text-blue-600 dark:text-blue-400';
             const inactiveClasses = 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200';
 
@@ -64,13 +64,13 @@ export const IOSBottomNav: React.FC<IOSBottomNavProps> = ({
           }}
         >
           {item.isSpecial ? (
-            <div className="bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-full p-2.5 text-white shadow-lg shadow-blue-500/30 transform transition-transform active:scale-95">
+            <div className="bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-full p-2 text-white shadow-lg shadow-blue-500/30 transform transition-transform active:scale-95">
               {item.icon}
             </div>
           ) : (
             item.icon
           )}
-          <span className="text-[10px] font-medium">{item.label}</span>
+          <span className="text-[9px] font-medium truncate w-full text-center px-0.5">{item.label}</span>
         </NavLink>
       ))}
     </nav>

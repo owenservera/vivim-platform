@@ -15,13 +15,24 @@ export interface User {
 
 export async function getCurrentUser(): Promise<User | null> {
   try {
+    // Add 10 second timeout to prevent infinite hanging
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
     const response = await fetch(`${API_BASE}/api/v1/auth/me`, {
       credentials: 'include',
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
+
     if (!response.ok) return null;
     const data = await response.json();
     return data.success ? data.user : null;
-  } catch {
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      console.warn('[Auth] getCurrentUser timed out after 10 seconds');
+    }
     return null;
   }
 }

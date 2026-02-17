@@ -1,24 +1,23 @@
 import { useState } from 'react'
 import { clsx } from 'clsx'
 import { useAppStore } from '../../store/appStore'
-import { 
-  Zap, 
-  Play, 
-  RefreshCw, 
-  Database, 
-  Network, 
-  FileArchive, 
-  Globe, 
+import {
+  Zap,
+  Play,
+  RefreshCw,
+  Database,
+  Network,
+  Globe,
   Server,
   Radio,
   HardDrive,
   Users,
-  MessageSquare,
   Shield,
   Activity,
   CheckCircle,
   XCircle,
-  Loader2
+  Loader2,
+  Files
 } from 'lucide-react'
 
 interface Action {
@@ -91,7 +90,7 @@ const actions: Action[] = [
     name: 'Sync All CRDTs',
     description: 'Force synchronization of all CRDT documents',
     category: 'SYNC',
-    icon: FileSync,
+    icon: Files,
     handler: async () => {
       await new Promise(resolve => setTimeout(resolve, 2500))
       return { success: true, message: '12 documents synced, 3 conflicts detected' }
@@ -235,7 +234,7 @@ export default function ActionsPanel() {
                 <h3 className={clsx('font-medium flex items-center gap-2', categoryColors[category as keyof typeof categoryColors])}>
                   {category === 'NETWORK' && <Network size={16} />}
                   {category === 'DATABASE' && <Database size={16} />}
-                  {category === 'SYNC' && <FileSync size={16} />}
+                  {category === 'SYNC' && <Files size={16} />}
                   {category === 'FEDERATION' && <Globe size={16} />}
                   {category === 'SYSTEM' && <Server size={16} />}
                   {category}

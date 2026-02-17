@@ -1,6 +1,7 @@
 import { getPrismaClient } from '../lib/database.js';
 import { logger } from '../lib/logger.js';
 import { HLC } from '../lib/hlc.js';
+import { debugReporter } from './debug-reporter.js';
 import crypto from 'crypto';
 
 // In-memory clock state (for POC - in prod should be persisted)
@@ -15,11 +16,11 @@ const localClock = HLC.now(SERVER_NODE_ID);
  */
 export async function recordOperation(op, tx = null) {
   const prisma = tx || getPrismaClient();
-  
-  // Tick the clock
+
   localClock.tick();
   const timestamp = localClock.toString();
 
+  const startTime = Date.now();
   try {
     const syncOp = await prisma.syncOperation.create({
       data: {
@@ -32,19 +33,34 @@ export async function recordOperation(op, tx = null) {
         deviceDid: op.deviceDid || SERVER_NODE_ID,
         tableName: op.tableName,
         recordId: op.recordId,
-        isProcessed: true, // Local ops are already processed
+        isProcessed: true,
         appliedAt: new Date(),
       },
     });
 
-    logger.debug({ 
-      id: syncOp.id, 
-      op: op.operation, 
-      type: op.entityType, 
-    }, 'Recorded sync operation');
+    debugReporter.trackSyncOperation(op.operation, op.entityType, op.entityId, {
+      hlcTimestamp: timestamp,
+      authorDid: op.authorDid,
+      deviceDid: op.deviceDid,
+      duration: Date.now() - startTime,
+    });
+
+    logger.debug(
+      {
+        id: syncOp.id,
+        op: op.operation,
+        type: op.entityType,
+      },
+      'Recorded sync operation'
+    );
 
     return syncOp;
   } catch (error) {
+    debugReporter.trackError(error, {
+      operation: 'recordOperation',
+      entityType: op.entityType,
+      entityId: op.entityId,
+    });
     logger.error({ error: error.message }, 'Failed to record sync operation');
     throw error;
   }
@@ -57,7 +73,7 @@ export async function recordOperation(op, tx = null) {
  */
 export async function getOperationsSince(sinceHlc, limit = 100) {
   const prisma = getPrismaClient();
-  
+
   return prisma.syncOperation.findMany({
     where: {
       hlcTimestamp: { gt: sinceHlc },
@@ -74,7 +90,7 @@ export async function getOperationsSince(sinceHlc, limit = 100) {
  */
 export async function getVectorClock() {
   const prisma = getPrismaClient();
-  
+
   // Group by deviceDid and get max HLC
   const ops = await prisma.syncOperation.groupBy({
     by: ['deviceDid'],
@@ -84,7 +100,7 @@ export async function getVectorClock() {
   });
 
   const vector = {};
-  ops.forEach(op => {
+  ops.forEach((op) => {
     if (op.deviceDid && op._max.hlcTimestamp) {
       vector[op.deviceDid] = op._max.hlcTimestamp;
     }

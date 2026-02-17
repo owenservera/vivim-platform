@@ -1,4 +1,17 @@
-import { PrismaClient, Friend, Follow, Group, GroupMember, GroupPost, Team, TeamMember, TeamChannel, ChannelMember, ChannelMessage } from '@prisma/client';
+import {
+  PrismaClient,
+  Friend,
+  Follow,
+  Group,
+  GroupMember,
+  GroupPost,
+  Team,
+  TeamMember,
+  TeamChannel,
+  ChannelMember,
+  ChannelMessage,
+} from '@prisma/client';
+import { debugReporter } from './debug-reporter.js';
 
 export class SocialService {
   private prisma: PrismaClient;
@@ -40,32 +53,49 @@ export class SocialService {
     });
   }
 
-  async sendFriendRequest(requesterId: string, addresseeId: string, message?: string): Promise<Friend> {
-    const existing = await this.prisma.friend.findFirst({
-      where: {
-        OR: [
-          { requesterId, addresseeId },
-          { requesterId: addresseeId, addresseeId: requesterId },
-        ],
-      },
-    });
+  async sendFriendRequest(
+    requesterId: string,
+    addresseeId: string,
+    message?: string
+  ): Promise<Friend> {
+    const startTime = Date.now();
+    try {
+      const existing = await this.prisma.friend.findFirst({
+        where: {
+          OR: [
+            { requesterId, addresseeId },
+            { requesterId: addresseeId, addresseeId: requesterId },
+          ],
+        },
+      });
 
-    if (existing) {
-      throw new Error('Friend relationship already exists');
+      if (existing) {
+        throw new Error('Friend relationship already exists');
+      }
+
+      const friend = await this.prisma.friend.create({
+        data: {
+          requesterId,
+          addresseeId,
+          message,
+          status: 'PENDING',
+        },
+        include: {
+          requester: { select: { id: true, did: true, displayName: true, avatarUrl: true } },
+          addressee: { select: { id: true, did: true, displayName: true, avatarUrl: true } },
+        },
+      });
+
+      debugReporter.trackInfo(
+        { category: 'social', message: 'Friend request sent' },
+        { requesterId, addresseeId, duration: Date.now() - startTime }
+      );
+
+      return friend;
+    } catch (error) {
+      debugReporter.trackError(error, { operation: 'sendFriendRequest', requesterId, addresseeId });
+      throw error;
     }
-
-    return this.prisma.friend.create({
-      data: {
-        requesterId,
-        addresseeId,
-        message,
-        status: 'PENDING',
-      },
-      include: {
-        requester: { select: { id: true, did: true, displayName: true, avatarUrl: true } },
-        addressee: { select: { id: true, did: true, displayName: true, avatarUrl: true } },
-      },
-    });
   }
 
   async respondToFriendRequest(
@@ -243,12 +273,16 @@ export class SocialService {
       select: { groupId: true },
     });
 
-    const groupIds = memberships.map(m => m.groupId);
+    const groupIds = memberships.map((m) => m.groupId);
 
     return this.prisma.group.findMany({
       where: { id: { in: groupIds } },
       include: {
-        members: { include: { user: { select: { id: true, did: true, displayName: true, avatarUrl: true } } } },
+        members: {
+          include: {
+            user: { select: { id: true, did: true, displayName: true, avatarUrl: true } },
+          },
+        },
       },
       orderBy: { updatedAt: 'desc' },
     });
@@ -298,7 +332,11 @@ export class SocialService {
         },
       },
       include: {
-        members: { include: { user: { select: { id: true, did: true, displayName: true, avatarUrl: true } } } },
+        members: {
+          include: {
+            user: { select: { id: true, did: true, displayName: true, avatarUrl: true } },
+          },
+        },
       },
     });
   }
@@ -307,7 +345,11 @@ export class SocialService {
     return this.prisma.group.findUnique({
       where: { id: groupId },
       include: {
-        members: { include: { user: { select: { id: true, did: true, displayName: true, avatarUrl: true } } } },
+        members: {
+          include: {
+            user: { select: { id: true, did: true, displayName: true, avatarUrl: true } },
+          },
+        },
         posts: { orderBy: { createdAt: 'desc' }, take: 20 },
       },
     });
@@ -326,7 +368,11 @@ export class SocialService {
       where: { id: groupId },
       data,
       include: {
-        members: { include: { user: { select: { id: true, did: true, displayName: true, avatarUrl: true } } } },
+        members: {
+          include: {
+            user: { select: { id: true, did: true, displayName: true, avatarUrl: true } },
+          },
+        },
       },
     });
   }
@@ -481,12 +527,16 @@ export class SocialService {
       select: { teamId: true },
     });
 
-    const teamIds = memberships.map(m => m.teamId);
+    const teamIds = memberships.map((m) => m.teamId);
 
     return this.prisma.team.findMany({
       where: { id: { in: teamIds } },
       include: {
-        members: { include: { user: { select: { id: true, did: true, displayName: true, avatarUrl: true } } } },
+        members: {
+          include: {
+            user: { select: { id: true, did: true, displayName: true, avatarUrl: true } },
+          },
+        },
       },
       orderBy: { updatedAt: 'desc' },
     });
@@ -534,7 +584,11 @@ export class SocialService {
         },
       },
       include: {
-        members: { include: { user: { select: { id: true, did: true, displayName: true, avatarUrl: true } } } },
+        members: {
+          include: {
+            user: { select: { id: true, did: true, displayName: true, avatarUrl: true } },
+          },
+        },
         channels: true,
       },
     });
@@ -544,7 +598,11 @@ export class SocialService {
     return this.prisma.team.findUnique({
       where: { id: teamId },
       include: {
-        members: { include: { user: { select: { id: true, did: true, displayName: true, avatarUrl: true } } } },
+        members: {
+          include: {
+            user: { select: { id: true, did: true, displayName: true, avatarUrl: true } },
+          },
+        },
         channels: { orderBy: { sortOrder: 'asc' } },
       },
     });
@@ -762,7 +820,10 @@ export class SocialService {
     return { friendCount, followerCount, followingCount, groupCount, teamCount };
   }
 
-  async getRelationshipWithUser(userId: string, otherUserId: string): Promise<{
+  async getRelationshipWithUser(
+    userId: string,
+    otherUserId: string
+  ): Promise<{
     isFriend: boolean;
     friendStatus?: string;
     amIFollowing: boolean;

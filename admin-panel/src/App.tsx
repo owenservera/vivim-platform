@@ -1,65 +1,105 @@
 import { useEffect } from 'react'
 import { useAppStore } from './store/appStore'
-import { mockNetworkNodes, mockConnections, mockMetrics, mockDatabaseTables, mockDataFlows, mockCrdtDocuments, mockLogs } from './lib/mockData'
+import { networkApi, databaseApi, systemApi, crdtApi, dataflowApi, realTimeUpdates } from './lib/api'
 import Sidebar from './components/Sidebar'
 import DatabasePanel from './components/panels/DatabasePanel'
 import NetworkPanel from './components/panels/NetworkPanel'
 import DataFlowPanel from './components/panels/DataFlowPanel'
 import ActionsPanel from './components/panels/ActionsPanel'
 import LogsPanel from './components/panels/LogsPanel'
+import SystemOverviewPanel from './components/panels/SystemOverviewPanel'
+import RealTimeLogsPanel from './components/panels/RealTimeLogsPanel'
+import CRDTManagementPanel from './components/panels/CRDTManagementPanel'
 
 export default function App() {
-  const { 
-    activePanel, 
-    setNetworkNodes, 
-    setConnections, 
-    addMetric, 
-    setTables, 
-    setDataFlows, 
+  const {
+    activePanel,
+    setNetworkNodes,
+    setConnections,
+    addMetric,
+    setTables,
+    setDataFlows,
     setCrdtDocuments,
-    addLog 
+    addLog,
+    setIsLoading
   } = useAppStore()
 
   useEffect(() => {
-    setNetworkNodes(mockNetworkNodes)
-    setConnections(mockConnections)
-    setTables(mockDatabaseTables)
-    setDataFlows(mockDataFlows)
-    setCrdtDocuments(mockCrdtDocuments)
-    mockLogs.forEach(log => addLog(log))
+    const fetchData = async () => {
+      try {
+        setIsLoading(true)
 
-    const interval = setInterval(() => {
-      addMetric({
-        timestamp: new Date().toISOString(),
-        peerCount: 7 + Math.floor(Math.random() * 3),
-        connectionCount: 4 + Math.floor(Math.random() * 3),
-        bandwidthIn: 1000000 + Math.random() * 2000000,
-        bandwidthOut: 800000 + Math.random() * 1500000,
-        latencyAvg: 20 + Math.random() * 40,
-        dhtLookupTime: 10 + Math.random() * 30,
-        messageQueueSize: Math.floor(Math.random() * 100),
-        cacheHitRate: 0.7 + Math.random() * 0.25,
-        errorRate: Math.random() * 0.05,
-      })
-    }, 2000)
+        // Fetch all initial data in parallel
+        const [nodes, connections, tables, flows, documents] = await Promise.all([
+          networkApi.getNodes().catch(() => []),
+          networkApi.getConnections().catch(() => []),
+          databaseApi.getTables().catch(() => []),
+          dataflowApi.getDataFlows().catch(() => []),
+          crdtApi.getDocuments().catch(() => []),
+        ])
 
-    return () => clearInterval(interval)
+        setNetworkNodes(nodes)
+        setConnections(connections)
+        setTables(tables)
+        setDataFlows(flows)
+        setCrdtDocuments(documents)
+
+        // Fetch initial logs
+        try {
+          const logs = await systemApi.getLogs(undefined, undefined, 50)
+          logs.forEach(log => addLog(log))
+        } catch (err) {
+          console.warn('Failed to load logs:', err)
+        }
+
+        // Connect to real-time updates
+        realTimeUpdates.connect()
+
+        // Listen for network metrics updates
+        realTimeUpdates.on('network:metric', (metric: any) => {
+          addMetric(metric)
+        })
+
+        // Listen for system logs
+        realTimeUpdates.on('system:log', (log: any) => {
+          addLog(log)
+        })
+
+      } catch (err) {
+        console.error('Failed to load admin data:', err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchData()
+
+    // Cleanup
+    return () => {
+      realTimeUpdates.disconnect()
+    }
   }, [])
 
   const renderPanel = () => {
     switch (activePanel) {
+      case 'overview':
+        return <SystemOverviewPanel />
       case 'database':
         return <DatabasePanel />
       case 'network':
         return <NetworkPanel />
       case 'dataflow':
         return <DataFlowPanel />
+      case 'crdt':
+        return <CRDTManagementPanel />
+      case 'realtime-logs':
+        return <RealTimeLogsPanel />
       case 'actions':
         return <ActionsPanel />
       case 'logs':
         return <LogsPanel />
       default:
-        return <DatabasePanel />
+        return <SystemOverviewPanel />
     }
   }
 
