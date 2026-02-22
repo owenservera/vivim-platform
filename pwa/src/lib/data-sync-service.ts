@@ -8,7 +8,7 @@ import { getStorage } from './storage-v2';
 import { conversationService } from './service/conversation-service';
 import { logger } from './logger';
 import { useIdentityStore } from '../stores/identity.store';
-import type { Conversation } from '../types/conversation';
+
 
 export interface SyncProgress {
   phase: 'initializing' | 'fetching' | 'processing' | 'storing' | 'complete';
@@ -164,14 +164,13 @@ export class DataSyncService {
           const batch = response?.data?.conversations || [];
 
           // SECURITY: Double-check ownership on client side
-          const currentUserId = useIdentityStore.getState().did;
+          // NOTE: The server already filters by userId, but we verify here as a belt-and-suspenders check.
+          // We compare against userId (UUID), NOT did, because the server stores userId as ownerId.
+          const currentUserId = useIdentityStore.getState().userId;
           const validBatch = batch.filter((conv: any) => {
-            if (!conv.ownerId) {
-              logger.warn('DataSyncService', `Conversation ${conv.id} has no ownerId, skipping`);
-              return false;
-            }
-            if (currentUserId && conv.ownerId !== currentUserId) {
-              logger.warn('DataSyncService', `Conversation ${conv.id} ownerId mismatch, skipping`);
+            // If ownerId is set and doesn't match, skip (possible cross-user data leak)
+            if (conv.ownerId && currentUserId && conv.ownerId !== currentUserId) {
+              logger.warn('DataSyncService', `Conversation ${conv.id} ownerId mismatch (expected ${currentUserId}, got ${conv.ownerId}), skipping`);
               return false;
             }
             return true;

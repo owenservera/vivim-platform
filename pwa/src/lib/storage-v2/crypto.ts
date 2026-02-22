@@ -12,6 +12,7 @@
 
 import * as nacl from 'tweetnacl';
 import * as naclUtil from 'tweetnacl-util';
+import * as ed2curve from 'ed2curve';
 import type { Hash, Signature, DID } from './types';
 import { asHash, asSignature, asDID } from './types';
 
@@ -622,11 +623,14 @@ export function decryptKeyFromSender(
  * @returns X25519 public key as base64
  */
 export function ed25519ToX25519PublicKey(ed25519PublicKeyBase64: string): string {
-  // Real conversion requires big-integer arithmetic on the Ed25519 y-coordinate.
-  // For now, we use a SHA-256 derivation to provide a separate key space.
   const bytes = fromBase64(ed25519PublicKeyBase64);
-  const derived = nacl.hash(new Uint8Array([...encodeUTF8('ed2x-v1-pub'), ...bytes]));
-  return toBase64(derived.slice(0, 32));
+  const converted = ed2curve.convertPublicKey(bytes);
+  
+  if (!converted) {
+    throw new Error('Failed to convert Ed25519 public key to X25519');
+  }
+  
+  return toBase64(converted);
 }
 
 /**
@@ -636,8 +640,11 @@ export function ed25519ToX25519PublicKey(ed25519PublicKeyBase64: string): string
  */
 export function ed25519ToX25519SecretKey(ed25519SecretKeyBase64: string): string {
   const edSecret = fromBase64(ed25519SecretKeyBase64);
-  // Ed25519 secret key = 64 bytes (32 seed + 32 public)
-  // X25519 secret key = H(seed) where H is SHA-512, then clamped.
-  const hashedSeed = nacl.hash(edSecret.slice(0, 32));
-  return toBase64(hashedSeed.slice(0, 32));
+  const converted = ed2curve.convertSecretKey(edSecret);
+  
+  if (!converted) {
+    throw new Error('Failed to convert Ed25519 secret key to X25519');
+  }
+  
+  return toBase64(converted);
 }

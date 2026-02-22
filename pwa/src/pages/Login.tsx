@@ -118,16 +118,6 @@ export function Login() {
             By signing in, you agree to our Terms of Service and Privacy Policy
           </p>
         </div>
-
-        <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-          Already have an account?{' '}
-          <button
-            onClick={handleGoogleLogin}
-            className="text-blue-600 hover:text-blue-700 dark:text-blue-400"
-          >
-            Sign in
-          </button>
-        </p>
       </div>
     </div>
   );

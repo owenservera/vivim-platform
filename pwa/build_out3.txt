@@ -1,0 +1,91 @@
+$ bun --bun vite build
+Both esbuild and oxc options were set. oxc options will be used and esbuild options will be ignored.
+[36mrolldown-vite v7.2.5 [32mbuilding client environment for production...[36m[39m
+[2K
+transforming...Γ£ô 1929 modules transformed.
+rendering chunks...
+[plugin builtin:reporter] 
+(!) C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/storage-v2/crypto.ts is dynamically imported by C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/storage-v2/dag-engine.ts, C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/storage-v2/object-store.ts, C:/0-BlackBoxProject-0/vivim-app/pwa/src/pages/CaptureSimple.tsx but also statically imported by C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/api.ts, C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/storage-v2/dag-engine.ts, C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/storage-v2/index.ts, C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/storage-v2/merkle.ts, C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/storage-v2/storage.ts, dynamic import will not move module into another chunk.
+
+[plugin builtin:reporter] 
+(!) C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/api.ts is dynamically imported by C:/0-BlackBoxProject-0/vivim-app/pwa/src/components/BackgroundSync.tsx but also statically imported by C:/0-BlackBoxProject-0/vivim-app/pwa/src/components/BackgroundSync.tsx, C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/conversation-sync-service.ts, C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/data-sync-service.ts, C:/0-BlackBoxProject-0/vivim-app/pwa/src/pages/Capture.tsx, dynamic import will not move module into another chunk.
+
+[plugin builtin:reporter] 
+(!) C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/storage-v2/index.ts is dynamically imported by C:/0-BlackBoxProject-0/vivim-app/pwa/src/components/BackgroundSync.tsx, C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/recommendation/test-data-generator.ts but also statically imported by C:/0-BlackBoxProject-0/vivim-app/pwa/src/components/ios/TopBar.tsx, C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/conversation-sync-service.ts, C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/data-sync-service.ts, C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/db/unified-repository.ts, C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/feature-service.ts, C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/recommendation/sources/RediscoverySource.ts, C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/recommendation/storage-adapter.ts, C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/service/conversation-service.ts, C:/0-BlackBoxProject-0/vivim-app/pwa/src/pages/Capture.tsx, C:/0-BlackBoxProject-0/vivim-app/pwa/src/pages/Settings.tsx, dynamic import will not move module into another chunk.
+
+computing gzip size...
+dist/registerSW.js                             0.13 kB
+dist/manifest.webmanifest                      1.06 kB
+dist/index.html                                2.65 kB Γöé gzip:   0.97 kB
+dist/assets/Home-C6bi4BNb.css                  2.23 kB Γöé gzip:   0.82 kB
+dist/assets/Analytics-tyuWZfE7.css             3.35 kB Γöé gzip:   0.87 kB
+dist/assets/Settings-cJhz12V5.css              3.38 kB Γöé gzip:   0.93 kB
+dist/assets/Search-BUjcnd00.css                4.12 kB Γöé gzip:   1.11 kB
+dist/assets/Collections-Zgmwr2V0.css           6.01 kB Γöé gzip:   1.59 kB
+dist/assets/BYOKChat-kB60nUvW.css              8.14 kB Γöé gzip:   2.02 kB
+dist/assets/AIChat-D2mo6j2l.css               12.01 kB Γöé gzip:   2.65 kB
+dist/assets/Capture-DVahRww1.css              13.38 kB Γöé gzip:   2.43 kB
+dist/assets/ForYou-eC42wOd5.css               16.75 kB Γöé gzip:   3.39 kB
+dist/assets/index-BW64vdRh.css               127.61 kB Γöé gzip:  22.58 kB
+dist/assets/storage-v2-DDroQgcL.js             0.06 kB Γöé gzip:   0.08 kB
+dist/assets/identity-service-B_iCk0nL.js       0.07 kB Γöé gzip:   0.08 kB
+dist/assets/api-B-ZyVY1R.js                    0.07 kB Γöé gzip:   0.08 kB
+dist/assets/crypto-CRWFeLp1.js                 0.15 kB Γöé gzip:   0.14 kB
+dist/assets/test-data-generator-DquxA-Sy.js    0.26 kB Γöé gzip:   0.17 kB
+dist/assets/funnel-BXgRvVdX.js                 0.30 kB Γöé gzip:   0.25 kB Γöé map:     0.90 kB
+dist/assets/chart-column-2xB74OSS.js           0.30 kB Γöé gzip:   0.23 kB Γöé map:     1.05 kB
+dist/assets/key-DxOs8yfc.js                    0.30 kB Γöé gzip:   0.25 kB Γöé map:     1.00 kB
+dist/assets/wifi-bmi2p1qI.js                   0.32 kB Γöé gzip:   0.24 kB Γöé map:     1.05 kB
+dist/assets/network-DmFvpJJm.js                0.42 kB Γöé gzip:   0.27 kB Γöé map:     1.39 kB
+dist/assets/file-text-COnn4s57.js              0.43 kB Γöé gzip:   0.28 kB Γöé map:     1.26 kB
+dist/assets/hash-CBeefEYg.js                   0.45 kB Γöé gzip:   0.28 kB Γöé map:     1.95 kB
+dist/assets/Badge-B5NFEIjy.js                  0.99 kB Γöé gzip:   0.51 kB Γöé map:     2.02 kB
+dist/assets/Bookmarks-BGYaD8U7.js              1.60 kB Γöé gzip:   0.91 kB Γöé map:     4.81 kB
+dist/assets/Input-DFIUQLEH.js                  1.65 kB Γöé gzip:   0.77 kB Γöé map:     3.77 kB
+dist/assets/Button-DseY_nbx.js                 1.75 kB Γöé gzip:   0.90 kB Γöé map:     3.82 kB
+dist/assets/ConversationView-DRr3JaNV.js       2.29 kB Γöé gzip:   1.06 kB Γöé map:     6.18 kB
+dist/assets/Login-D74_MYDN.js                  3.16 kB Γöé gzip:   1.47 kB Γöé map:     6.29 kB
+dist/assets/test-data-generator-R1neqvuQ.js    3.89 kB Γöé gzip:   1.65 kB Γöé map:    10.47 kB
+dist/assets/NetworkPanel-C5FVANpB.js           4.08 kB Γöé gzip:   1.20 kB Γöé map:     8.21 kB
+dist/assets/DataFlowPanel-BI-aLJFX.js          4.77 kB Γöé gzip:   1.27 kB Γöé map:     9.55 kB
+dist/assets/Search-BD2-0Edz.js                 5.07 kB Γöé gzip:   1.99 kB Γöé map:    17.56 kB
+dist/assets/DatabasePanel-8Y41Bs2q.js          5.41 kB Γöé gzip:   1.69 kB Γöé map:    14.82 kB
+dist/assets/ActionsPanel-B2S6f0se.js           5.41 kB Γöé gzip:   1.80 kB Γöé map:    13.31 kB
+dist/assets/auth-kvuw4Awh.js                   5.73 kB Γöé gzip:   1.98 kB Γöé map:    13.62 kB
+dist/assets/AdminPanel-xKkHAy8N.js             5.77 kB Γöé gzip:   1.81 kB Γöé map:     9.72 kB
+dist/assets/Collections-CjYDmHkV.js            5.81 kB Γöé gzip:   2.18 kB Γöé map:    15.97 kB
+dist/assets/Receive-CiXz6rWf.js                5.84 kB Γöé gzip:   1.97 kB Γöé map:    12.81 kB
+dist/assets/CRDTManagementPanel-DHHxjRVd.js    6.03 kB Γöé gzip:   1.58 kB Γöé map:    13.90 kB
+dist/assets/Settings-DbggKpVC.js               6.06 kB Γöé gzip:   2.39 kB Γöé map:    20.10 kB
+dist/assets/Account-CNuqHyN3.js                6.27 kB Γöé gzip:   2.06 kB Γöé map:    13.38 kB
+dist/assets/LogsPanel-Ca7yRNv8.js              6.64 kB Γöé gzip:   1.84 kB Γöé map:    14.25 kB
+dist/assets/RealTimeLogsPanel-BIp5vejo.js      6.66 kB Γöé gzip:   2.17 kB Γöé map:    16.21 kB
+dist/assets/ErrorDashboard-EX8G_2CH.js         7.81 kB Γöé gzip:   2.34 kB Γöé map:    16.33 kB
+dist/assets/CaptureSimple-BHxt2ThD.js          8.05 kB Γöé gzip:   2.85 kB Γöé map:    15.28 kB
+dist/assets/Analytics-CUcvgoMN.js              8.64 kB Γöé gzip:   2.65 kB Γöé map:    21.17 kB
+dist/assets/SystemOverviewPanel-C372HFom.js    9.19 kB Γöé gzip:   1.92 kB Γöé map:    19.75 kB
+dist/assets/useQuery-CQZ_nLxN.js               9.97 kB Γöé gzip:   3.51 kB Γöé map:    37.39 kB
+dist/assets/admin-api-CPd61PTj.js             12.03 kB Γöé gzip:   4.07 kB Γöé map:    41.85 kB
+dist/assets/recommendation-3N3uKEHW.js        14.64 kB Γöé gzip:   5.27 kB Γöé map:    75.93 kB
+dist/assets/BYOKChat-tKmRM7EJ.js              15.91 kB Γöé gzip:   5.78 kB Γöé map:    48.63 kB
+dist/assets/AIChat-BfCa1aHU.js                16.20 kB Γöé gzip:   6.03 kB Γöé map:    80.67 kB
+dist/assets/Capture-BrbVAr_n.js               17.02 kB Γöé gzip:   4.72 kB Γöé map:    37.52 kB
+dist/assets/ForYou-B04Capua.js                17.77 kB Γöé gzip:   4.95 kB Γöé map:    51.02 kB
+dist/assets/Home-P0EJUt-c.js                  19.80 kB Γöé gzip:   6.28 kB Γöé map:    56.94 kB
+dist/assets/AIConversationsPage-CqwLK5Gb.js   22.57 kB Γöé gzip:   6.41 kB Γöé map:    63.90 kB
+dist/assets/Share-BINq_qO2.js                 25.55 kB Γöé gzip:   9.04 kB Γöé map:    87.68 kB
+dist/assets/index-D8YtKVy9.js                680.21 kB Γöé gzip: 203.99 kB Γöé map: 2,658.10 kB
+[32mΓ£ô built in 9.24s[39m
+[plugin builtin:reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+PWA v1.2.0
+mode      generateSW
+precache  68 entries (1159.80 KiB)
+files generated
+  dist/sw.js.map
+  dist/sw.js
+  dist/workbox-4b126c97.js.map
+  dist/workbox-4b126c97.js

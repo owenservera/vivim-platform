@@ -111,8 +111,7 @@ export default defineConfig({
     }),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icon.svg', 'pwa-192x192.svg'],
-      srcSw: 'src/service-worker.ts',
+      includeAssets: ['icon.svg', 'pwa-192x192.svg', 'pwa-512x512.svg'],
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff,woff2}'],
         runtimeCaching: [
@@ -175,6 +174,12 @@ export default defineConfig({
           {
             src: 'pwa-192x192.svg',
             sizes: '192x192',
+            type: 'image/svg+xml',
+            purpose: 'any maskable'
+          },
+          {
+            src: 'pwa-512x512.svg',
+            sizes: '512x512',
             type: 'image/svg+xml',
             purpose: 'any maskable'
           }

@@ -1,0 +1,4 @@
+$ tsc -b --pretty false
+src/hooks/use-error-reporting.ts(127,30): error TS1005: '>' expected.
+src/hooks/use-error-reporting.ts(127,42): error TS1109: Expression expected.
+src/hooks/use-error-reporting.ts(127,43): error TS1109: Expression expected.

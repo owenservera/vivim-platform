@@ -253,12 +253,12 @@ export class Storage {
       const paginatedMetadata = metadataList.slice(offset, offset + limit);
       log.storage.debug(`[${listId}] Paginated: ${paginatedMetadata.length} conversations (offset=${offset}, limit=${limit})`);
       
-      // For each conversation, get the root and message count from index (NOT from fetching all messages)
+      // For each conversation, get the root from OBJECTS store using rootHash
       const results = [];
 
       for (const meta of paginatedMetadata) {
         try {
-          const root = await this.conversationStore.get(meta.conversationId);
+          const root = await this.conversationStore.get(meta.rootHash);
           if (root) {
             // Use messageCount from index metadata instead of fetching all messages
             results.push({

@@ -2,11 +2,12 @@ import React, { forwardRef } from 'react';
 import { cn } from '../../lib/utils';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'destructive';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'destructive' | 'tertiary';
   size?: 'sm' | 'md' | 'lg' | 'icon';
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  fullWidth?: boolean;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -17,23 +18,25 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     isLoading = false,
     leftIcon,
     rightIcon,
+    fullWidth = false,
     children, 
     disabled,
     ...props 
   }, ref) => {
-    const baseStyles = 'btn touch-feedback inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
+    const baseStyles = 'btn touch-feedback inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
     
     const variantStyles = {
-      primary: 'bg-primary text-white hover:bg-primary/90 focus-visible:ring-primary',
-      secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 focus-visible:ring-secondary',
-      ghost: 'hover:bg-accent hover:text-accent-foreground focus-visible:ring-accent',
-      destructive: 'bg-error text-error-foreground hover:bg-error/90 focus-visible:ring-error',
+      primary: 'bg-blue-500 text-white hover:bg-blue-600 focus-visible:ring-blue-500',
+      secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus-visible:ring-gray-500',
+      ghost: 'hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:ring-gray-500',
+      destructive: 'bg-red-500 text-white hover:bg-red-600 focus-visible:ring-red-500',
+      tertiary: 'bg-transparent text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 focus-visible:ring-blue-500',
     };
 
     const sizeStyles = {
-      sm: 'h-8 px-3 text-xs',
-      md: 'h-10 px-4 py-2',
-      lg: 'h-12 px-6 text-base',
+      sm: 'h-9 px-3 text-sm',
+      md: 'h-11 px-4 py-2 text-base',
+      lg: 'h-12 px-6 text-lg',
       icon: 'h-10 w-10',
     };
 
@@ -43,6 +46,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           baseStyles,
           variantStyles[variant],
           sizeStyles[size],
+          fullWidth && 'w-full',
           className
         )}
         ref={ref}

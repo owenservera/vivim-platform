@@ -88,7 +88,7 @@ export function useAICompletion() {
         setState({ isLoading: false, error: null, response });
         return response;
       } catch (error) {
-        if ((error as any).name === 'AbortError') {
+        if (error instanceof Error && error.name === 'AbortError') {
           setState((prev) => ({ ...prev, isLoading: false }));
           throw error;
         }
@@ -220,7 +220,7 @@ export function useAIChat() {
   }, []);
 
   const sendMessage = useCallback(
-    async (content: string, options?: { provider?: AIProviderType; model?: string; stream?: boolean }): Promise<string | void> => {
+    async (content: string, options?: { provider?: AIProviderType; model?: string; stream?: boolean; maxTokens?: number; temperature?: number }): Promise<string | void> => {
       const newMessage: AIMessage = { role: 'user', content };
       const currentMessages = [...messages, newMessage];
       setMessages(currentMessages);
@@ -245,6 +245,7 @@ export function useAIChat() {
 
         if (shouldStream) {
           let fullResponse = '';
+          const streamOptions = { provider: options?.provider, model: options?.model };
           await streaming.stream(
             currentMessages,
             (chunk) => {
@@ -257,15 +258,18 @@ export function useAIChat() {
                 return [...prev, { role: 'assistant', content: fullResponse }];
               });
             },
-            { ...options, conversationId: currentId } as any
+            streamOptions
           );
           setIsLoading(false);
           return fullResponse;
         } else {
-          const response = await completion.complete(currentMessages, { 
-            ...options, 
-            conversationId: currentId 
-          } as any);
+          const completionOptions = { 
+            provider: options?.provider, 
+            model: options?.model,
+            maxTokens: options?.maxTokens,
+            temperature: options?.temperature
+          };
+          const response = await completion.complete(currentMessages, completionOptions);
           setMessages((prev) => [...prev, { role: 'assistant', content: response.content }]);
           setIsLoading(false);
           return response.content;
@@ -385,11 +389,11 @@ export function useFreshChat() {
       );
 
       return fullResponse;
-    } catch (err) {
-      if ((err as any).name === 'AbortError') {
-        setIsLoading(false);
-        return '';
-      }
+      } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') {
+          setIsLoading(false);
+          return;
+        }
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       setError(errorMessage);
       setIsLoading(false);

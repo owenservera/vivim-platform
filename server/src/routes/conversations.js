@@ -16,8 +16,12 @@ import {
   searchByTitle,
 } from '../repositories/index.js';
 import { requireApiKey } from '../middleware/auth.js';
+import { requireAuth } from '../middleware/unified-auth.js';
+import { cacheService } from '../services/cache-service.js';
+import { getPrismaClient } from '../lib/database.js';
 
 const router = Router();
+const log = { info: () => {} }; // fallback; individual routes use createRequestLogger(req)
 
 // ============================================================================
 // LIST CONVERSATIONS
@@ -37,7 +41,7 @@ const router = Router();
  * - startDate: Filter by start date
  * - endDate: Filter by end date
  */
-router.get('/', requireApiKey(), async (req, res, next) => {
+router.get('/', requireAuth, async (req, res, next) => {
   const log = createRequestLogger(req);
 
   try {
@@ -49,6 +53,7 @@ router.get('/', requireApiKey(), async (req, res, next) => {
       orderDirection = 'desc',
       startDate,
       endDate,
+      include_messages = 'false',
     } = req.query;
 
     const options = {
@@ -59,12 +64,13 @@ router.get('/', requireApiKey(), async (req, res, next) => {
       orderDirection,
       startDate,
       endDate,
-      userId: req.auth?.userId, // ADD: Pass userId for ownership filtering
+      userId: req.user?.userId, // set by unified-auth
+      includeMessages: include_messages === 'true',
     };
 
     const result = await listConversations(options);
 
-    log.info({ count: result.conversations.length, userId: req.auth?.userId }, 'User conversations listed');
+    log.info({ count: result.conversations.length, userId: req.user?.userId, includeMessages: options.includeMessages }, 'User conversations listed');
 
     res.json(result);
   } catch (error) {
@@ -81,7 +87,7 @@ router.get('/', requireApiKey(), async (req, res, next) => {
  *
  * Get a single conversation by ID
  */
-router.get('/:id', requireApiKey(), async (req, res, next) => {
+router.get('/:id', requireAuth, async (req, res, next) => {
   const log = createRequestLogger(req);
 
   try {
@@ -113,12 +119,19 @@ router.get('/:id', requireApiKey(), async (req, res, next) => {
  * - limit: Results per page (default: 50)
  * - offset: Page offset (default: 0)
  */
-router.get('/:id/messages', requireApiKey(), async (req, res, next) => {
+router.get('/:id/messages', requireAuth, async (req, res, next) => {
   const log = createRequestLogger(req);
 
   try {
     const { id } = req.params;
     const { limit = 50, offset = 0 } = req.query;
+
+    const cacheKey = `messages:${id}:${limit}:${offset}`;
+    const cached = await cacheService.get(cacheKey);
+    if (cached) {
+      log.debug({ conversationId: id, source: 'cache' }, 'Messages retrieved from cache');
+      return res.json(cached);
+    }
 
     const { getPrismaClient } = await import('../lib/database.js');
     const prisma = getPrismaClient();
@@ -133,9 +146,9 @@ router.get('/:id/messages', requireApiKey(), async (req, res, next) => {
       prisma.message.count({ where: { conversationId: id } }),
     ]);
 
-    log.info({ conversationId: id, count: messages.length }, 'Messages retrieved');
+    log.info({ conversationId: id, count: messages.length, source: 'db' }, 'Messages retrieved from db');
 
-    res.json({
+    const responseData = {
       data: messages,
       pagination: {
         total,
@@ -143,7 +156,11 @@ router.get('/:id/messages', requireApiKey(), async (req, res, next) => {
         offset: parseInt(offset, 10),
         hasMore: parseInt(offset, 10) + messages.length < total,
       },
-    });
+    };
+
+    await cacheService.set(cacheKey, responseData, 120); // Cache for 2 mins
+
+    res.json(responseData);
   } catch (error) {
     next(error);
   }
@@ -162,7 +179,7 @@ router.get('/:id/messages', requireApiKey(), async (req, res, next) => {
  * - limit: Results limit (default: 20)
  * - provider: Filter by provider
  */
-router.get('/search/:query', requireApiKey(), async (req, res, next) => {
+router.get('/search/:query', requireAuth, async (req, res, next) => {
   const log = createRequestLogger(req);
 
   try {
@@ -195,7 +212,7 @@ router.get('/search/:query', requireApiKey(), async (req, res, next) => {
  *
  * Get conversation statistics by provider
  */
-router.get('/stats/summary', requireApiKey(), async (req, res, next) => {
+router.get('/stats/summary', requireAuth, async (req, res, next) => {
   const log = createRequestLogger(req);
 
   try {
@@ -221,7 +238,7 @@ router.get('/stats/summary', requireApiKey(), async (req, res, next) => {
  * Query params:
  * - limit: Number of conversations (default: 10)
  */
-router.get('/recent', requireApiKey(), async (req, res, next) => {
+router.get('/recent', requireAuth, async (req, res, next) => {
   const log = createRequestLogger(req);
 
   try {
@@ -245,7 +262,7 @@ router.get('/recent', requireApiKey(), async (req, res, next) => {
  *
  * Delete a conversation
  */
-router.delete('/:id', requireApiKey(), async (req, res, next) => {
+router.delete('/:id', requireAuth, async (req, res, next) => {
   const log = createRequestLogger(req);
 
   try {
@@ -263,7 +280,8 @@ router.delete('/:id', requireApiKey(), async (req, res, next) => {
   }
 });
 
-router.post('/:id/fork', requireApiKey(), async (req, res, next) => {
+router.post('/:id/fork', requireAuth, async (req, res, next) => {
+  const routeLog = createRequestLogger(req);
   try {
     const { id } = req.params;
     const prisma = getPrismaClient();
@@ -276,14 +294,17 @@ router.post('/:id/fork', requireApiKey(), async (req, res, next) => {
     const forked = await prisma.conversation.create({
       data: {
         title: `${source.title} (Fork)`,
-        sourceUrl: source.sourceUrl,
+        sourceUrl: `${source.sourceUrl}#fork-${Date.now()}`, // sourceUrl must be unique
         provider: source.provider,
         model: source.model,
-        userId: req.auth?.userId,
+        ownerId: req.user?.userId ?? req.auth?.userId ?? null, // schema uses ownerId
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        capturedAt: new Date(),
       }
     });
 
-    log.info({ sourceId: id, forkedId: forked.id, userId: req.auth?.apiKeyPrefix }, 'Conversation forked');
+    routeLog.info({ sourceId: id, forkedId: forked.id }, 'Conversation forked');
 
     res.json({
       success: true,
@@ -295,7 +316,7 @@ router.post('/:id/fork', requireApiKey(), async (req, res, next) => {
   }
 });
 
-router.get('/:id/related', requireApiKey(), async (req, res, next) => {
+router.get('/:id/related', requireAuth, async (req, res, next) => {
   try {
     const { id } = req.params;
     const prisma = getPrismaClient();
@@ -308,7 +329,7 @@ router.get('/:id/related', requireApiKey(), async (req, res, next) => {
     const related = await prisma.conversation.findMany({
       where: {
         id: { not: id },
-        userId: req.auth?.userId,
+        ownerId: req.user?.userId ?? req.auth?.userId ?? null, // schema uses ownerId
       },
       take: 5,
       orderBy: { createdAt: 'desc' },

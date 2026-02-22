@@ -11,6 +11,7 @@ import { IOSBottomNav } from '../components/ios';
 import { IOSToastProvider } from '../components/ios';
 import { ResponsiveLayout } from '../components/responsive/ResponsiveLayout';
 import queryClient from '../lib/query-client';
+import { Bug } from 'lucide-react';
 
 // Lazy load pages for better performance
 const Home = lazy(() => import('../pages/Home'));
@@ -60,6 +61,10 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 
 // Layout wrapper
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
+  const toggleDebug = () => {
+    window.dispatchEvent(new CustomEvent('openscroll:open-debug'));
+  };
+  
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white font-sans antialiased selection:bg-blue-500 selection:text-white">
       <IOSDefaultTopBar />
@@ -82,6 +87,13 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
       <IOSBottomNav />
       <DebugPanel />
+      <button
+        onClick={toggleDebug}
+        className="fixed bottom-20 right-4 z-[1040] p-3 rounded-full bg-gray-900 dark:bg-gray-100 border border-gray-700 dark:border-gray-300 shadow-lg hover:scale-110 transition-transform text-gray-100 dark:text-gray-900"
+        title="Toggle Debug Panel"
+      >
+        <Bug size={20} />
+      </button>
     </div>
   );
 };
@@ -177,11 +189,9 @@ const router = createBrowserRouter([
   {
     path: "/settings",
     element: (
-      <AuthGuard>
-        <AppLayout>
-          <Settings />
-        </AppLayout>
-      </AuthGuard>
+      <AppLayout>
+        <Settings />
+      </AppLayout>
     ),
     errorElement: <ErrorBoundary />
   },
@@ -276,11 +286,9 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element: (
-      <AuthGuard>
-        <AppLayout>
-          <AdminPanel />
-        </AppLayout>
-      </AuthGuard>
+      <AppLayout>
+        <AdminPanel />
+      </AppLayout>
     ),
     errorElement: <ErrorBoundary />
   },

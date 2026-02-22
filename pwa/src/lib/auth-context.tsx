@@ -69,7 +69,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         if (validatedUser) {
           console.log('[Auth] Valid session found, auto-login:', validatedUser.email);
           setUser(validatedUser);
-          setIdentity(validatedUser.did, validatedUser.did, 1);
+          setIdentity(validatedUser.did, validatedUser.did, 1, validatedUser.id);
           unlock();
 
           try {
@@ -166,7 +166,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const validatedUser = await validateSession();
     if (validatedUser) {
       setUser(validatedUser);
-      setIdentity(validatedUser.did, validatedUser.did, 1);
+      setIdentity(validatedUser.did, validatedUser.did, 1, validatedUser.id);
       unlock();
       setError(null);
       return true;

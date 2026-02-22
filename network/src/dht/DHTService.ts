@@ -157,7 +157,9 @@ export class DHTService extends EventEmitter {
     this.providerCache.delete(contentId);
 
     if (this.dht) {
-      this.dht.cancelProvide(contentId).catch(() => {});
+      this.dht.cancelProvide(contentId).catch(err => {
+        log.error({ err, contentId }, 'Failed to cancel DHT provide');
+      });
     }
 
     log.info({ contentId }, 'Content removed from local DHT');

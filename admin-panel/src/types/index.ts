@@ -21,7 +21,6 @@ export interface NetworkNode {
   nodeId: string;
   type: 'BOOTSTRAP' | 'RELAY' | 'INDEXER' | 'STORAGE' | 'EDGE' | 'CLIENT' | 'SELF_HOSTED';
   status: 'ACTIVE' | 'DEGRADED' | 'OFFLINE' | 'BANNED';
-  region?: string;
   latency?: number;
   reputation: number;
   multiaddrs: string[];

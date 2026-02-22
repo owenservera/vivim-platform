@@ -17,6 +17,9 @@ const configSchema = z.object({
   enableSwagger: z.boolean().default(false),
   browserWsEndpoint: z.string().optional(),
   skipAuthForDevelopment: z.boolean().default(false),
+  // P2P Configuration
+  p2pListenAddresses: z.array(z.string()).default(['/ip4/0.0.0.0/tcp/4001']),
+  p2pBootstrapPeers: z.array(z.string()).default([]),
 });
 
 function loadConfig() {
@@ -32,7 +35,14 @@ function loadConfig() {
     shutdownTimeout: process.env.SHUTDOWN_TIMEOUT ? parseInt(process.env.SHUTDOWN_TIMEOUT, 10) : undefined,
     enableSwagger: process.env.ENABLE_SWAGGER === 'true',
     browserWsEndpoint: process.env.BROWSER_WS_ENDPOINT,
-    skipAuthForDevelopment: process.env.SKIP_AUTH_FOR_DEVELOPMENT === 'true',
+    skipAuthForDevelopment: process.env.SKIP_AUTH_FOR_DEVELOPMENT === 'true' || process.env.NODE_ENV === 'test',
+    // P2P Configuration
+    p2pListenAddresses: process.env.P2P_LISTEN_ADDRESSES 
+      ? process.env.P2P_LISTEN_ADDRESSES.split(',').map(s => s.trim())
+      : undefined,
+    p2pBootstrapPeers: process.env.P2P_BOOTSTRAP_PEERS
+      ? process.env.P2P_BOOTSTRAP_PEERS.split(',').map(s => s.trim()).filter(s => s)
+      : undefined,
   };
   return configSchema.parse(rawConfig);
 }
@@ -89,6 +99,13 @@ export function validateConfig() {
     // Security validations
     if (config.enableSwagger) {
       console.warn('WARNING: Swagger UI is enabled in production. This may expose API documentation publicly.');
+    }
+
+    // Session secret validation
+    if (!process.env.SESSION_SECRET) {
+      errors.push('SESSION_SECRET environment variable is required in production');
+    } else if (process.env.SESSION_SECRET.length < 32) {
+      errors.push('SESSION_SECRET must be at least 32 characters for production');
     }
 
     // Rate limiting should be more restrictive in production

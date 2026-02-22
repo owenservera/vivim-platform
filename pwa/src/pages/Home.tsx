@@ -1,11 +1,13 @@
 import './Home.css';
 import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Bot, Sparkles, RefreshCw, Wifi, WifiOff, Database, AlertCircle, CheckCircle } from 'lucide-react';
+import { Plus, Bot, Sparkles, RefreshCw, Wifi, WifiOff, Database, AlertCircle, CheckCircle, CloudOff } from 'lucide-react';
 import { conversationService } from '../lib/service/conversation-service';
 import { unifiedRepository } from '../lib/db/unified-repository';
 import { listConversationsForRecommendation, getForYouFeed } from '../lib/recommendation';
 import { logger } from '../lib/logger';
+import { apiClient } from '../lib/api';
+import { dataSyncService } from '../lib/data-sync-service';
 import {
   IOSStories,
   IOSButton,
@@ -34,10 +36,7 @@ export const Home: React.FC = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [recommendations, setRecommendations] = useState<RecommendationItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [syncing, setSyncing] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [syncError, setSyncError] = useState<string | null>(null);
-  const [backendAvailable, setBackendAvailable] = useState(true);
   const [page, setPage] = useState(1);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [aiPanelOpen, setAiPanelOpen] = useState(false);
@@ -53,6 +52,7 @@ export const Home: React.FC = () => {
   }>({ ready: false });
   const [debugPanelOpen, setDebugPanelOpen] = useState(false);
   const [debugInfo, setDebugInfo] = useState<any>(null);
+  const [apiSource, setApiSource] = useState<'local' | 'api' | null>(null); // Track where data came from
   
   const observerTarget = useRef<HTMLDivElement>(null);
   const { toast: showToast } = useIOSToast();
@@ -85,6 +85,87 @@ export const Home: React.FC = () => {
         logger.info('HOME', `[${loadId}] Retrieved ${list.length} conversations from storage`);
       } catch (serviceError) {
         logger.warn('HOME', `[${loadId}] Storage fetch failed: ${serviceError}`);
+      }
+
+      // --- FALLBACK: If local storage is empty, fetch directly from API ---
+      if (list.length === 0 && pageNum === 1 && navigator.onLine) {
+        logger.info('HOME', `[${loadId}] Local storage empty, falling back to direct API fetch`);
+        try {
+          const apiResponse = await Promise.race([
+            apiClient.get('/conversations', {
+              params: { limit: 50, offset: 0, include_messages: true }
+            }),
+            new Promise<never>((_, reject) =>
+              setTimeout(() => reject(new Error('API fallback timed out')), 15000)
+            )
+          ]);
+
+          const apiBatch: any[] = apiResponse?.data?.conversations || [];
+          logger.info('HOME', `[${loadId}] API fallback returned ${apiBatch.length} conversations`);
+
+          if (apiBatch.length > 0) {
+            // Adapt API conversations to local Conversation type for display
+            list = apiBatch.map((conv: any): Conversation => ({
+              id: conv.id,
+              title: conv.title || 'Untitled Conversation',
+              provider: conv.provider || 'other',
+              sourceUrl: conv.sourceUrl || '',
+              state: conv.state || 'ACTIVE',
+              version: conv.version || 1,
+              ownerId: conv.ownerId,
+              contentHash: conv.contentHash,
+              createdAt: conv.createdAt,
+              updatedAt: conv.updatedAt || conv.createdAt,
+              capturedAt: conv.capturedAt || conv.createdAt,
+              exportedAt: conv.capturedAt || conv.createdAt,
+              tags: conv.tags || [],
+              messages: (conv.messages || []).map((msg: any) => ({
+                id: msg.id,
+                role: msg.role,
+                content: msg.parts || [],
+                timestamp: msg.createdAt,
+                metadata: msg.metadata || {},
+                parts: msg.parts || []
+              })),
+              stats: {
+                totalMessages: conv.messageCount || (conv.messages?.length ?? 0),
+                totalWords: conv.totalWords || 0,
+                totalCharacters: conv.totalCharacters || 0,
+                totalCodeBlocks: conv.totalCodeBlocks || 0,
+                totalMermaidDiagrams: conv.totalMermaidDiagrams || 0,
+                totalImages: conv.totalImages || 0,
+                totalTables: conv.totalTables || 0,
+                totalLatexBlocks: conv.totalLatexBlocks || 0,
+                totalToolCalls: conv.totalToolCalls || 0,
+                firstMessageAt: conv.createdAt,
+                lastMessageAt: conv.updatedAt || conv.createdAt,
+              },
+              metadata: conv.metadata || {}
+            }));
+
+            setApiSource('api');
+
+            // Trigger background sync to populate local storage for next time
+            dataSyncService.syncFullDatabase((progress) => {
+              logger.info('HOME', `[Background Sync] ${progress.phase}: ${progress.message}`);
+            }).then(result => {
+              if (result.success) {
+                logger.info('HOME', `[Background Sync] Complete: ${result.syncedConversations} conversations synced`);
+                // Reload from local storage now that sync is done
+                conversationService.getAllConversations().then(localList => {
+                  if (localList.length > 0) setConversations(localList.slice(0, 10));
+                }).catch(() => {});
+              }
+            }).catch(err => {
+              logger.warn('HOME', `[Background Sync] Failed: ${err}`);
+            });
+          }
+        } catch (apiFallbackError) {
+          logger.warn('HOME', `[${loadId}] API fallback failed: ${apiFallbackError}`);
+          // Don't throw – let the empty state show
+        }
+      } else {
+        setApiSource('local');
       }
       
       const pageSize = 10;
@@ -185,7 +266,7 @@ export const Home: React.FC = () => {
 
   const collectDebugInfo = useCallback(async () => {
     try {
-      const info = {
+      const info: any = {
         timestamp: new Date().toISOString(),
         online: navigator.onLine,
         conversations: {
@@ -341,15 +422,6 @@ export const Home: React.FC = () => {
     }
   }, [conversations]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _handleShareToCircle = useCallback((id: string) => {
-    const convo = conversations.find((c) => c.id === id);
-    if (convo) {
-      setSelectedConversation(convo);
-      setCircleManagerOpen(true);
-    }
-  }, [conversations]);
-
   const sortedConversations = useMemo(() => {
     return [...conversations].sort((a, b) => {
       const aPinned = pinnedIds.has(a.id);
@@ -410,6 +482,18 @@ export const Home: React.FC = () => {
             <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400 mr-2" />
             <p className="text-sm text-green-600 dark:text-green-400">
               Storage ready{storageStatus.totalConversations !== undefined ? ` (${storageStatus.totalConversations} conversations)` : ''}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* API Source Indicator - shows when data is from live API fallback */}
+      {apiSource === 'api' && (
+        <div className="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800">
+          <div className="flex items-center justify-center">
+            <CloudOff className="w-4 h-4 text-blue-600 dark:text-blue-400 mr-2" />
+            <p className="text-sm text-blue-600 dark:text-blue-400">
+              Showing live data · syncing to local storage in background...
             </p>
           </div>
         </div>
@@ -550,7 +634,8 @@ export const Home: React.FC = () => {
         </button>
       </div>
 
-      {/* Debug Panel Toggle Button */}
+      {/* Debug Panel Toggle Button - Development only */}
+      {import.meta.env.DEV && (
       <div className="fixed bottom-20 right-20 z-10">
         <button
           onClick={async () => {
@@ -565,9 +650,10 @@ export const Home: React.FC = () => {
           <AlertCircle className="w-6 h-6 text-white" />
         </button>
       </div>
+      )}
 
-      {/* Debug Panel */}
-      {debugPanelOpen && (
+      {/* Debug Panel - Development only */}
+      {import.meta.env.DEV && debugPanelOpen && (
         <div className="fixed bottom-32 right-4 z-20 w-80 max-h-96 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden">
           <div className="p-3 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Debug Panel</h3>

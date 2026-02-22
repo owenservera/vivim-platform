@@ -7,6 +7,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   helperText?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  onRightIconClick?: () => void;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -18,51 +19,67 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     helperText,
     leftIcon,
     rightIcon,
+    onRightIconClick,
+    disabled,
+    id,
     ...props 
   }, ref) => {
-    const inputId = props.id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
     
     return (
-      <div className="space-y-1.5">
+      <div className="w-full">
         {label && (
           <label 
             htmlFor={inputId}
-            className="text-sm font-medium text-foreground leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
           >
             {label}
           </label>
         )}
         <div className="relative">
           {leftIcon && (
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none">
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
               {leftIcon}
             </div>
           )}
           <input
             type={type}
             className={cn(
-              'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+              'w-full px-4 py-3 bg-gray-100 dark:bg-gray-800 border-2 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-gray-900',
               leftIcon && 'pl-10',
               rightIcon && 'pr-10',
-              error && 'border-error focus-visible:ring-error',
+              error && 'border-red-500 focus:border-red-500',
+              disabled && 'opacity-50 cursor-not-allowed',
               className
             )}
             ref={ref}
             id={inputId}
+            disabled={disabled}
             {...props}
           />
           {rightIcon && (
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none">
-              {rightIcon}
-            </div>
+            onRightIconClick ? (
+              <button
+                type="button"
+                onClick={onRightIconClick}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                disabled={disabled}
+              >
+                {rightIcon}
+              </button>
+            ) : (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
+                {rightIcon}
+              </div>
+            )
           )}
         </div>
-        {(error || helperText) && (
-          <p className={cn(
-            'text-xs',
-            error ? 'text-error' : 'text-muted-foreground'
-          )}>
-            {error || helperText}
+        {error && (
+          <p className="mt-1.5 text-sm text-red-500">{error}</p>
+        )}
+        {helperText && !error && (
+          <p className="mt-1.5 text-sm text-gray-500 dark:text-gray-400">
+            {helperText}
           </p>
         )}
       </div>

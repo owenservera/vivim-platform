@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Search, PlusCircle, MessageSquare, Settings } from 'lucide-react';
+import { Home, Search, PlusCircle, MessageSquare, Settings, Bug, Shield } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 export interface IOSNavItem {
@@ -8,6 +8,7 @@ export interface IOSNavItem {
   icon: React.ReactNode;
   label: string;
   isSpecial?: boolean;
+  isExternal?: boolean;
 }
 
 export interface IOSBottomNavProps {
@@ -30,6 +31,7 @@ const defaultNavItems: IOSNavItem[] = [
     label: 'AI',
   },
   { to: '/settings', icon: <Settings className="w-5 h-5" strokeWidth={2.5} />, label: 'Settings' },
+  { to: '/admin', icon: <Shield className="w-5 h-5" strokeWidth={2.5} />, label: 'Admin' },
 ];
 
 export const IOSBottomNav: React.FC<IOSBottomNavProps> = ({
@@ -39,7 +41,7 @@ export const IOSBottomNav: React.FC<IOSBottomNavProps> = ({
   return (
     <nav
       className={cn(
-        'fixed bottom-0 left-0 right-0 h-16 ios-safe-bottom bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-t border-gray-200/50 dark:border-gray-800/50 flex items-center justify-around z-[1030] shadow-[0_-1px_3px_rgba(0,0,0,0.05)] px-1',
+        'fixed bottom-0 left-0 right-0 h-16 pb-[env(safe-area-inset-bottom)] bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-t border-gray-200/50 dark:border-gray-800/50 flex items-center justify-around z-[1030] shadow-[0_-1px_3px_rgba(0,0,0,0.05)] px-1',
         className
       )}
     >
@@ -88,7 +90,7 @@ export const IOSFloatingBottomNav: React.FC<IOSBottomNavProps> = ({
   return (
     <nav
       className={cn(
-        'fixed bottom-4 left-4 right-4 h-16 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-3xl border border-gray-200/50 dark:border-gray-800/50 shadow-xl flex items-center justify-around z-[1030] ios-safe-bottom',
+        'fixed bottom-4 left-4 right-4 pb-[calc(env(safe-area-inset-bottom)+16px)] bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-3xl border border-gray-200/50 dark:border-gray-800/50 shadow-xl flex items-center justify-around z-[1030]',
         className
       )}
     >
@@ -138,7 +140,7 @@ export const IOSMinimalBottomNav: React.FC<IOSBottomNavProps> = ({
   return (
     <nav
       className={cn(
-        'fixed bottom-0 left-0 right-0 h-14 ios-safe-bottom bg-transparent flex items-center justify-around z-[1030]',
+        'fixed bottom-0 left-0 right-0 h-14 pb-[env(safe-area-inset-bottom)] bg-transparent flex items-center justify-around z-[1030]',
         className
       )}
     >

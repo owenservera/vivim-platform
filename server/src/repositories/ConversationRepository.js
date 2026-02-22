@@ -8,7 +8,23 @@ import { getPrismaClient } from '../lib/database.js';
 import { logger } from '../lib/logger.js';
 import { fileStorage } from '../lib/file-storage.js';
 import { recordOperation } from '../services/sync-service.js';
+import { cacheService } from '../services/cache-service.js';
 import { v4 as uuidv4 } from 'uuid';
+
+// ============================================================================
+// TRANSACTION HELPER
+// ============================================================================
+
+/**
+ * Run a callback inside a Prisma interactive transaction
+ * @template T
+ * @param {(tx: import('@prisma/client').PrismaClient) => Promise<T>} fn
+ * @returns {Promise<T>}
+ */
+async function withTransaction(fn) {
+  const prisma = getPrismaClient();
+  return prisma.$transaction(fn);
+}
 
 // ============================================================================
 // CRUD OPERATIONS
@@ -108,7 +124,8 @@ export async function createConversation(data, userClient = null) {
       });
     }
     
-    return conversation;
+    // Invalidate cache
+    await cacheService.del(`conversation:${conversation.id}`);
     
     return conversation;
   } catch (error) {
@@ -130,6 +147,14 @@ export async function createConversation(data, userClient = null) {
  */
 export async function findConversationById(id) {
   try {
+    const cacheKey = `conversation:${id}`;
+    const cached = await cacheService.get(cacheKey);
+    if (cached) {
+      logger.debug({ id }, 'findConversationById: Cache hit');
+      // Revive date objects if necessary, though express res.json handles strings fine
+      return cached;
+    }
+
     const conversation = await getPrismaClient().conversation.findUnique({
       where: { id },
       include: { 
@@ -138,6 +163,10 @@ export async function findConversationById(id) {
         }
       },
     });
+
+    if (conversation) {
+      await cacheService.set(cacheKey, conversation, 300); // 5 min cache
+    }
 
     return conversation;
   } catch (error) {
@@ -183,6 +212,7 @@ export async function listConversations(options = {}) {
     endDate,
     userId, // ADD: Filter by user ID
     includeShared = false, // ADD: Include conversations shared with user
+    includeMessages = false, // ADD: Include messages in the response
   } = options;
 
   try {
@@ -220,6 +250,13 @@ export async function listConversations(options = {}) {
         take: limit,
         skip: offset,
         orderBy: { [orderBy]: orderDirection },
+        ...(includeMessages && {
+          include: {
+            messages: {
+              orderBy: { messageIndex: 'asc' },
+            },
+          },
+        }),
       }),
       getPrismaClient().conversation.count({ where }),
     ]);
@@ -255,6 +292,7 @@ export async function updateConversation(id, data) {
       },
     });
 
+    await cacheService.del(`conversation:${id}`);
     logger.info({ conversationId: id }, 'Conversation updated');
 
     return conversation;
@@ -275,6 +313,7 @@ export async function deleteConversation(id) {
       where: { id },
     });
 
+    await cacheService.del(`conversation:${id}`);
     logger.info({ conversationId: id }, 'Conversation deleted');
 
     return conversation;
@@ -343,6 +382,9 @@ export async function addMessageToConversation(conversationId, messageData) {
       tableName: 'messages',
       recordId: message.id,
     }, tx);
+
+    await cacheService.del(`conversation:${conversationId}`);
+    await cacheService.delPattern(`messages:${conversationId}:*`);
 
     return message;
   });

@@ -42,18 +42,20 @@ const getApiKey = () => {
   if (storedApiKey) return storedApiKey;
   const envApiKey = import.meta.env.VITE_API_KEY || import.meta.env.REACT_APP_API_KEY;
   if (envApiKey) return envApiKey;
-  return 'sk-openscroll-dev-key-123456789';
+  return null;
 };
 
 const getHeaders = (extraHeaders: Record<string, string> = {}) => {
-  const { apiKeys } = useAIStore.getState();
-  return {
+  const apiKey = getApiKey();
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${getApiKey()}`,
-    'X-API-Key': getApiKey(),
     'X-User-Id': 'dev-user',
     ...extraHeaders,
   };
+  if (apiKey) {
+    headers['Authorization'] = `Bearer ${apiKey}`;
+  }
+  return headers;
 };
 
 // ============================================================================

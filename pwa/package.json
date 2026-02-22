@@ -23,6 +23,7 @@
     "clsx": "^2.1.1",
     "dexie": "^4.0.10",
     "dexie-react-hooks": "^1.1.7",
+    "ed2curve": "^0.3.0",
     "eventemitter3": "^5.0.4",
     "idb": "^8.0.3",
     "itshover": "github:itshover/itshover",

@@ -6,7 +6,6 @@ import {
   Activity,
   Radio,
   Wifi,
-  MapPin,
   Clock,
   Gauge,
   Signal,
@@ -127,7 +126,7 @@ export default function NetworkPanel() {
                   <span className="text-sm text-dark-400">Avg Latency</span>
                   <Gauge className="w-4 h-4 text-accent-purple" />
                 </div>
-                <div className="text-2xl font-bold">{latestMetric?.latencyAvg.toFixed(0)}ms</div>
+                <div className="text-2xl font-bold">{latestMetric?.latencyAvg?.toFixed(0) ?? '0'}ms</div>
                 <div className="text-xs text-accent-green mt-1 flex items-center gap-1">
                   <Minus size={12} />
                   Stable
@@ -248,7 +247,6 @@ export default function NetworkPanel() {
                     <th className="px-4 py-3 text-left font-medium text-dark-400">Node ID</th>
                     <th className="px-4 py-3 text-left font-medium text-dark-400">Type</th>
                     <th className="px-4 py-3 text-left font-medium text-dark-400">Status</th>
-                    <th className="px-4 py-3 text-left font-medium text-dark-400">Region</th>
                     <th className="px-4 py-3 text-left font-medium text-dark-400">Latency</th>
                     <th className="px-4 py-3 text-left font-medium text-dark-400">Reputation</th>
                     <th className="px-4 py-3 text-left font-medium text-dark-400">Last Seen</th>
@@ -277,12 +275,6 @@ export default function NetworkPanel() {
                         <td className="px-4 py-3">
                           <span className={clsx('badge', statusColors[node.status])}>
                             {node.status}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-dark-300">
-                          <span className="flex items-center gap-1">
-                            <MapPin size={12} />
-                            {node.region}
                           </span>
                         </td>
                         <td className="px-4 py-3 text-dark-300">

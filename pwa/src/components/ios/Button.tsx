@@ -37,8 +37,8 @@ export const IOSButton = forwardRef<HTMLButtonElement, IOSButtonProps>(
     };
 
     const sizeStyles = {
-      sm: 'h-8 px-3 text-sm rounded-lg',
-      md: 'h-10 px-4 text-base rounded-xl',
+      sm: 'h-11 px-4 text-sm rounded-lg',
+      md: 'h-11 px-5 text-base rounded-xl',
       lg: 'h-12 px-6 text-lg rounded-2xl',
     };
 

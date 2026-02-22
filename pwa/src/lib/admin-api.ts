@@ -42,11 +42,13 @@ export interface DataFlow {
   id: string;
   source: string;
   target: string;
-  type: 'sync' | 'replication' | 'migration' | 'backup';
-  status: 'active' | 'pending' | 'completed' | 'failed';
-  throughput: number;
-  latency: number;
-  lastUpdated: string;
+  /** Server returns DHT/PubSub/CRDT/Federation from /api/admin/dataflow/flows */
+  type: 'DHT' | 'PubSub' | 'CRDT' | 'Federation' | 'sync' | 'replication' | 'migration' | 'backup';
+  status: 'active' | 'syncing' | 'pending' | 'completed' | 'failed';
+  messagesPerSecond: number;
+  bytesPerSecond: number;
+  totalMessages: number;
+  lastActivity: string;
 }
 
 export interface CRDTDocument {
@@ -157,11 +159,12 @@ class AdminApiService {
         id: flow.id,
         source: flow.source,
         target: flow.target,
-        type: flow.type || 'sync',
+        type: flow.type || 'DHT',
         status: flow.status || 'active',
-        throughput: flow.throughput || 0,
-        latency: flow.latency || 0,
-        lastUpdated: flow.lastUpdated || new Date().toISOString()
+        messagesPerSecond: flow.messagesPerSecond ?? flow.throughput ?? 0,
+        bytesPerSecond: flow.bytesPerSecond ?? 0,
+        totalMessages: flow.totalMessages ?? 0,
+        lastActivity: flow.lastActivity ?? flow.lastUpdated ?? new Date().toISOString(),
       }));
     } catch (error) {
       logger.error('ADMIN_API', 'Failed to get data flows:', error);

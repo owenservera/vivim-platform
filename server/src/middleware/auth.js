@@ -74,6 +74,11 @@ function extractApiKey(req) {
  */
 export function requireApiKey(permissions = []) {
   return (req, res, next) => {
+    // Check if already authenticated (e.g. via dev bypass or other middleware)
+    if (req.auth && req.auth.isAuthenticated) {
+      return next();
+    }
+
     const apiKey = extractApiKey(req);
 
     if (!isValidApiKey(apiKey)) {
@@ -294,6 +299,47 @@ export function requireVerification(minLevel) {
         error: `Verification level ${minLevel} required`,
         code: 'INSUFFICIENT_VERIFICATION',
         currentLevel: user?.verificationLevel || 0
+      });
+    }
+
+    next();
+  };
+}
+
+/**
+ * Require moderator role
+ */
+export function requireModerator() {
+  return async (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        error: 'Authentication required'
+      });
+    }
+
+    const { getPrismaClient } = await import('../lib/database.js');
+    const prisma = getPrismaClient();
+    
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.userId },
+      select: { status: true, settings: true }
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+
+    const settings = user.settings || {};
+    const isModerator = settings.moderator === true || settings.role === 'moderator' || settings.role === 'admin';
+    
+    if (!isModerator) {
+      return res.status(403).json({
+        success: false,
+        error: 'Moderator access required'
       });
     }
 

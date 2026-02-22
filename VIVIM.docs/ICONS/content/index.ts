@@ -1,14 +1,14 @@
 // Content/ACU type icons
-export { default as AcuQuestion } from './content/AcuQuestion';
-export { default as AcuAnswer } from './content/AcuAnswer';
-export { default as AcuCode } from './content/AcuCode';
-export { default as AcuStatement } from './content/AcuStatement';
-export { default as AcuFormula } from './content/AcuFormula';
-export { default as AcuTable } from './content/AcuTable';
-export { default as AcuImage } from './content/AcuImage';
-export { default as AcuTool } from './content/AcuTool';
-export { default as AcuToolResult } from './content/AcuToolResult';
-export { default as AcuExplanation } from './content/AcuExplanation';
-export { default as AcuSummary } from './content/AcuSummary';
-export { default as AcuWarning } from './content/AcuWarning';
-export { default as AcuError } from './content/AcuError';
+export { default as AcuQuestion } from './AcuQuestion';
+export { default as AcuAnswer } from './AcuAnswer';
+export { default as AcuCode } from './AcuCode';
+export { default as AcuStatement } from './AcuStatement';
+export { default as AcuFormula } from './AcuFormula';
+export { default as AcuTable } from './AcuTable';
+export { default as AcuImage } from './AcuImage';
+export { default as AcuTool } from './AcuTool';
+export { default as AcuToolResult } from './AcuToolResult';
+export { default as AcuExplanation } from './AcuExplanation';
+export { default as AcuSummary } from './AcuSummary';
+export { default as AcuWarning } from './AcuWarning';
+export { default as AcuError } from './AcuError';

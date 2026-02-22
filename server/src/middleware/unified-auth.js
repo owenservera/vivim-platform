@@ -6,6 +6,7 @@
 import passport from './google-auth.js';
 import { identityService } from '../services/identity-service.js';
 import { canUserAccess } from '../services/account-lifecycle-service.js';
+import { apiKeyService } from '../services/api-key-service.js';
 
 export async function requireAuth(req, res, next) {
   let userId = null;
@@ -14,13 +15,31 @@ export async function requireAuth(req, res, next) {
   if (req.isAuthenticated() && req.user?.userId) {
     userId = req.user.userId;
   } else {
-    did = req.headers['x-did'] || (req.headers['authorization'] || '').replace('Bearer did:', 'did:');
-    if (did && identityService.validateDID(did)) {
-      const publicKey = identityService.didToPublicKey(did);
-      if (publicKey) {
-        const user = await identityService.getOrCreateUser(did, Buffer.from(publicKey).toString('base64'));
-        if (user) {
-          userId = user.id;
+    // Check API Key first
+    const apiKeyHeader = req.headers['x-api-key'];
+    const authHeader = req.headers['authorization'] || '';
+    let apiKey = apiKeyHeader;
+    
+    if (!apiKey && authHeader.startsWith('Bearer vk_live_')) {
+      apiKey = authHeader.replace('Bearer ', '');
+    }
+
+    if (apiKey) {
+      const user = await apiKeyService.verifyApiKey(apiKey);
+      if (user) {
+        userId = user.id;
+        // Mock req.user for consistency
+        req.user = { userId: user.id, email: user.email, did: user.did };
+      }
+    } else {
+      did = req.headers['x-did'] || authHeader.replace('Bearer did:', 'did:');
+      if (did && did.startsWith('did:') && identityService.validateDID(did)) {
+        const publicKey = identityService.didToPublicKey(did);
+        if (publicKey) {
+          const user = await identityService.getOrCreateUser(did, Buffer.from(publicKey).toString('base64'));
+          if (user) {
+            userId = user.id;
+          }
         }
       }
     }
@@ -48,13 +67,29 @@ export async function optionalAuth(req, res, next) {
   if (req.isAuthenticated() && req.user?.userId) {
     userId = req.user.userId;
   } else {
-    const did = req.headers['x-did'];
-    if (did && identityService.validateDID(did)) {
-      const publicKey = identityService.didToPublicKey(did);
-      if (publicKey) {
-        const user = await identityService.getOrCreateUser(did, Buffer.from(publicKey).toString('base64'));
-        if (user) {
-          userId = user.id;
+    const apiKeyHeader = req.headers['x-api-key'];
+    const authHeader = req.headers['authorization'] || '';
+    let apiKey = apiKeyHeader;
+    
+    if (!apiKey && authHeader.startsWith('Bearer vk_live_')) {
+      apiKey = authHeader.replace('Bearer ', '');
+    }
+
+    if (apiKey) {
+      const user = await apiKeyService.verifyApiKey(apiKey);
+      if (user) {
+        userId = user.id;
+        req.user = { userId: user.id, email: user.email, did: user.did };
+      }
+    } else {
+      const did = req.headers['x-did'];
+      if (did && identityService.validateDID(did)) {
+        const publicKey = identityService.didToPublicKey(did);
+        if (publicKey) {
+          const user = await identityService.getOrCreateUser(did, Buffer.from(publicKey).toString('base64'));
+          if (user) {
+            userId = user.id;
+          }
         }
       }
     }

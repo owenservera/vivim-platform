@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { clsx } from 'clsx'
 import {
   Users,
@@ -44,6 +44,18 @@ export default function SystemOverviewPanel() {
   const [networkMetrics, setNetworkMetrics] = useState<NetworkMetric[]>([])
   const [systemHealth, setSystemHealth] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+
+  const handleSystemStats = useCallback((data: SystemStats) => {
+    setSystemStats(data)
+  }, [])
+
+  const handleNetworkMetrics = useCallback((data: NetworkMetric) => {
+    setNetworkMetrics(prev => [...prev.slice(-49), data])
+  }, [])
+
+  const handleSystemHealth = useCallback((data: any) => {
+    setSystemHealth(data)
+  }, [])
 
   const formatBytes = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`
@@ -106,22 +118,18 @@ export default function SystemOverviewPanel() {
   useEffect(() => {
     fetchAllData()
     
-    // Set up real-time updates
     realTimeUpdates.connect()
-    realTimeUpdates.on('system_stats', (data: SystemStats) => {
-      setSystemStats(data)
-    })
-    realTimeUpdates.on('network_metrics', (data: NetworkMetric) => {
-      setNetworkMetrics(prev => [...prev.slice(-49), data])
-    })
-    realTimeUpdates.on('system_health', (data: any) => {
-      setSystemHealth(data)
-    })
+    realTimeUpdates.on('system_stats', handleSystemStats)
+    realTimeUpdates.on('network_metrics', handleNetworkMetrics)
+    realTimeUpdates.on('system_health', handleSystemHealth)
 
     return () => {
+      realTimeUpdates.off('system_stats', handleSystemStats)
+      realTimeUpdates.off('network_metrics', handleNetworkMetrics)
+      realTimeUpdates.off('system_health', handleSystemHealth)
       realTimeUpdates.disconnect()
     }
-  }, [])
+  }, [handleSystemStats, handleNetworkMetrics, handleSystemHealth])
 
   const latestMetric = networkMetrics[networkMetrics.length - 1]
 

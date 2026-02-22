@@ -42,7 +42,10 @@ async function getOrCreateDevUser() {
 }
 
 export async function devAuthBypass(req, res, next) {
-  if (!config.isDevelopment || !config.skipAuthForDevelopment) {
+  // Allow bypass in development OR test environments
+  const isDevOrTest = config.isDevelopment || config.isTest;
+  
+  if (!isDevOrTest || !config.skipAuthForDevelopment) {
     return next();
   }
 

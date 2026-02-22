@@ -222,8 +222,9 @@ class VivimDatabase {
   async deleteConversation(id: string): Promise<void> {
     const db = await this.ready();
     await db.delete('conversations', id);
-    // Also delete metadata
-    await db.delete('conversationMetadata', id).catch(() => {});
+    await db.delete('conversationMetadata', id).catch(err => {
+      logger.error({ err, id }, 'Failed to delete conversation metadata');
+    });
   }
 
   // ========================================================================

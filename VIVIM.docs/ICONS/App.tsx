@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import RealIconViewer from './RealIconViewer';
+import './App.css';
 
 const App = () => {
   return (

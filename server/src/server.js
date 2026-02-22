@@ -57,6 +57,7 @@ import memorySearchRouter from './routes/memory-search.js';
 import { debugRouter } from './routes/debug.js';
 import { collectionsRouter } from './routes/collections.js';
 import socialRouter from './routes/social.js';
+import moderationRouter from './routes/moderation.js';
 import adminNetworkRouter from './routes/admin/network.js';
 import adminDatabaseRouter from './routes/admin/database.js';
 import adminSystemRouter from './routes/admin/system.js';
@@ -114,24 +115,72 @@ app.use(
 );
 
 // CORS - Cross-Origin Resource Sharing (Enhanced Security)
-// Use standard cors package for proper preflight handling
-app.use(
-  cors({
-    origin: true, // Allow any origin
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'X-Request-ID',
-      'X-Requested-With',
-      'X-API-Key',
-      'Accept',
-      'Cache-Control',
-      'x-user-id',
-    ],
-  })
-);
+// Use configured origins only - never allow all origins in production
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    // But in production, require proper CORS headers
+    if (!origin) {
+      return callback(null, true);
+    }
+    
+    const allowedOrigins = config.isDevelopment
+      ? [
+          'http://localhost:5173',
+          'http://localhost:3000',
+          'http://127.0.0.1:5173',
+          'http://127.0.0.1:3000',
+          'http://0.0.0.0:5173',
+          'http://192.168.0.173:5173',
+          'http://192.168.0.173:3000',
+        ]
+      : config.corsOrigins || [];
+
+    // In development, also allow local network origins
+    let effectiveAllowedOrigins = [...allowedOrigins];
+    if (config.isDevelopment) {
+      effectiveAllowedOrigins = [
+        ...allowedOrigins,
+        // Dynamically add any local network origin
+      ];
+    }
+
+    if (effectiveAllowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else if (config.isDevelopment) {
+      // In development, allow localhost and private network patterns
+      const isLocalNetwork =
+        origin.startsWith('http://localhost:') ||
+        origin.startsWith('http://127.0.0.1:') ||
+        origin.startsWith('http://192.168.') ||
+        origin.startsWith('http://10.') ||
+        origin.startsWith('http://172.');
+      
+      if (isLocalNetwork) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    } else {
+      // Production: only allow explicitly configured origins
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Request-ID',
+    'X-Requested-With',
+    'X-API-Key',
+    'Accept',
+    'Cache-Control',
+    'x-user-id',
+  ],
+};
+
+app.use(cors(corsOptions));
 
 // Custom CORS middleware for additional logging and headers
 const allowedOrigins = config.isDevelopment
@@ -211,29 +260,27 @@ app.use((req, res, next) => {
 // Compression - Gzip response bodies
 app.use(compression());
 
-// Rate Limiting - Enable in production, disable in development
-if (config.isProduction) {
-  const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: config.rateLimitMax || 100,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: {
-      error: 'Too many requests from this IP, please try again later.',
-    },
-    handler: (req, res) => {
-      logger.warn({ ip: req.ip, path: req.path }, 'Rate limit exceeded');
-      res.status(429).json({
-        error: 'Too many requests',
-        retryAfter: '15m',
-      });
-    },
-  });
-  app.use('/api/', limiter);
-  logger.info('Rate limiting enabled (production mode)');
-} else {
-  logger.info('Rate limiting disabled in development mode');
-}
+// Rate Limiting - Enable in both dev and production with environment-appropriate limits
+const rateLimitConfig = {
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: config.isProduction ? (config.rateLimitMax || 100) : 1000, // Higher limit in dev
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: 'Too many requests from this IP, please try again later.',
+  },
+  handler: (req, res) => {
+    logger.warn({ ip: req.ip, path: req.path }, 'Rate limit exceeded');
+    res.status(429).json({
+      error: 'Too many requests',
+      retryAfter: '15m',
+    });
+  },
+};
+
+const limiter = rateLimit(rateLimitConfig);
+app.use('/api/', limiter);
+logger.info(`Rate limiting enabled (${config.isProduction ? 'production' : 'development'} mode: ${rateLimitConfig.max} req/15min)`);
 
 // ============================================================================
 // PARSING MIDDLEWARE
@@ -261,9 +308,23 @@ app.use(
 import session from 'express-session';
 import passport from './middleware/google-auth.js';
 
+// Session configuration with secure defaults
+const sessionSecret = process.env.SESSION_SECRET;
+
+// Validate session secret - fail fast in production
+if (!sessionSecret) {
+  if (config.isProduction) {
+    logger.error('SESSION_SECRET environment variable is required in production');
+    process.exit(1);
+  } else {
+    // Generate a random secret for development convenience (sessions invalidate on restart)
+    logger.warn('No SESSION_SECRET provided in development - generating random secret');
+  }
+}
+
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || 'dev-secret-change-in-production',
+    secret: sessionSecret || `dev-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -374,6 +435,7 @@ app.use('/api/v2/sharing', sharingRouter);
 app.use('/api/v2/feed', feedV2Router);
 app.use('/api/unified', unifiedApiRouter);
 app.use('/api/v2/portability', portabilityRouter);
+app.use('/api/v2/moderation', moderationRouter);
 app.use('/api/v1/acus', acusRouter);
 app.use('/api/v1/sync', syncRouter);
 app.use('/api/v1/feed', feedRouter);

@@ -187,8 +187,19 @@ export class ConversationSyncService {
    */
   private async fetchConversations(limit = 100) {
     try {
+      // Add timestamp to prevent caching issues where browser returns 304
+      // but local storage is empty
       const response = await apiClient.get('/conversations', {
-        params: { limit, offset: 0 }
+        params: { 
+          limit, 
+          offset: 0,
+          _t: Date.now() 
+        },
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        }
       });
       
       // Check if response and response.data exist before accessing properties

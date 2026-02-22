@@ -61,7 +61,6 @@ export default function RealTimeLogsPanel() {
       clearLogs()
       fetchedLogs.forEach(log => addLog(log))
       
-      // Extract unique sources
       const sources = Array.from(new Set(fetchedLogs.map(log => log.source)))
       setAvailableSources(sources)
     } catch (error) {
@@ -74,15 +73,15 @@ export default function RealTimeLogsPanel() {
   useEffect(() => {
     fetchLogs()
 
-    // Set up real-time log updates
     const handleLog = (log: LogEntry) => {
       if (!isPaused) {
         addLog(log)
-
-        // Update available sources if new source is detected
-        if (!availableSources.includes(log.source)) {
-          setAvailableSources(prev => [...prev, log.source])
-        }
+        setAvailableSources(prev => {
+          if (!prev.includes(log.source)) {
+            return [...prev, log.source]
+          }
+          return prev
+        })
       }
     }
 
@@ -91,7 +90,7 @@ export default function RealTimeLogsPanel() {
     return () => {
       realTimeUpdates.off('log', handleLog)
     }
-  }, [isPaused, availableSources, addLog])
+  }, [isPaused, addLog, clearLogs])
 
   // Filter logs based on search term and selected filters
   useEffect(() => {

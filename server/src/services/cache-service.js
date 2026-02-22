@@ -110,6 +110,36 @@ class CacheService {
       logger.warn({ key, error: error.message }, 'Cache DEL failed');
     }
   }
+
+  /**
+   * Delete keys by pattern
+   * @param {string} pattern
+   */
+  async delPattern(pattern) {
+    try {
+      if (this.isConnected && this.client) {
+        let cursor = '0';
+        do {
+          const res = await this.client.scan(cursor, 'MATCH', pattern, 'COUNT', '100');
+          cursor = res[0];
+          const keys = res[1];
+          if (keys.length > 0) {
+            await this.client.del(...keys);
+          }
+        } while (cursor !== '0');
+      } else {
+        // Fallback logic for memory cache
+        const regex = new RegExp(`^${pattern.replace(/\*/g, '.*')}$`);
+        for (const key of this.memoryCache.keys()) {
+          if (regex.test(key)) {
+            this.memoryCache.delete(key);
+          }
+        }
+      }
+    } catch (error) {
+      logger.warn({ pattern, error: error.message }, 'Cache DEL pattern failed');
+    }
+  }
 }
 
 export const cacheService = new CacheService();

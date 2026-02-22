@@ -34,6 +34,7 @@ export const DataFlowPanel: React.FC<DataFlowPanelProps> = ({ onLoadingChange })
   const getStatusColor = (status: DataFlow['status']) => {
     switch (status) {
       case 'active': return 'text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900/30';
+      case 'syncing': return 'text-blue-600 bg-blue-100 dark:text-blue-400 dark:bg-blue-900/30';
       case 'pending': return 'text-yellow-600 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900/30';
       case 'completed': return 'text-blue-600 bg-blue-100 dark:text-blue-400 dark:bg-blue-900/30';
       case 'failed': return 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900/30';
@@ -125,7 +126,7 @@ export const DataFlowPanel: React.FC<DataFlowPanelProps> = ({ onLoadingChange })
                       {flow.source} → {flow.target}
                     </div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">
-                      {flow.type} • {flow.throughput > 0 ? `${flow.throughput} req/s` : 'N/A'} • {flow.latency > 0 ? `${flow.latency}ms` : 'N/A'}
+                      {flow.type} • {flow.messagesPerSecond > 0 ? `${flow.messagesPerSecond.toFixed(1)} msg/s` : 'N/A'} • {flow.bytesPerSecond > 0 ? `${(flow.bytesPerSecond / 1024).toFixed(1)} KB/s` : 'N/A'}
                     </div>
                   </div>
                 </div>
@@ -135,7 +136,7 @@ export const DataFlowPanel: React.FC<DataFlowPanelProps> = ({ onLoadingChange })
                     {flow.status}
                   </span>
                   <div className="text-xs text-gray-500 dark:text-gray-400">
-                    {new Date(flow.lastUpdated).toLocaleString()}
+                    {new Date(flow.lastActivity).toLocaleString()}
                   </div>
                 </div>
               </div>

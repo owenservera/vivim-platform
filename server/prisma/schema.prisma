@@ -48,6 +48,7 @@ model Conversation {
   conversationCompactions ConversationCompaction[]
   owner                   User?                    @relation(fields: [ownerId], references: [id])
   messages                Message[]
+  captureAttempts        CaptureAttempt[]
   topicConversations      TopicConversation[]
 
   @@index([provider])
@@ -99,6 +100,7 @@ model CaptureAttempt {
   ipAddress      String?
   userAgent      String?
   conversationId String?
+  conversation   Conversation? @relation(fields: [conversationId], references: [id])
   retryCount     Int       @default(0)
   retryOf        String?
   createdAt      DateTime  @default(now()) @db.Timestamptz(6)
@@ -159,6 +161,11 @@ model User {
   bannedAt            DateTime?            @db.Timestamptz(6)
   banReason           String?
   
+  // Security & MFA
+  mfaEnabled          Boolean              @default(false)
+  mfaSecret           String?
+  backupCodes         String[]             @default([])
+  
   // Federated hosting (Bluesky-style)
   pdsUrl              String?
   
@@ -180,6 +187,7 @@ model User {
   customInstructions  CustomInstruction[]
   devices             Device[]
   entityProfiles      EntityProfile[]
+  apiKeys             ApiKey[]             @relation("UserApiKeys")
   memories            Memory[]
   notebooks           Notebook[]
   syncCursors         SyncCursor[]
@@ -198,10 +206,45 @@ model User {
   groupMemberships  GroupMember[]
   teamsOwned        Team[]          @relation("TeamOwner")
   teamMemberships   TeamMember[]
+  
+  // Blocking relations
+  userBlocks        UserBlock[]     @relation("UserBlocks")
+  userBlockedBy     UserBlock[]     @relation("UserBlockedBy")
 
   @@index([did])
   @@index([email])
   @@map("users")
+}
+
+model UserBlock {
+  id          String   @id @default(uuid())
+  blockerId   String
+  blockedId   String
+  reason      String?
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  
+  blocker     User     @relation("UserBlocks", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked     User     @relation("UserBlockedBy", fields: [blockedId], references: [id], onDelete: Cascade)
+  
+  @@unique([blockerId, blockedId])
+  @@index([blockerId])
+  @@index([blockedId])
+  @@map("user_blocks")
+}
+
+model ApiKey {
+  id        String    @id @default(uuid())
+  userId    String
+  keyHash   String    @unique
+  name      String
+  lastUsed  DateTime? @db.Timestamptz(6)
+  expiresAt DateTime? @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
+  
+  user      User      @relation("UserApiKeys", fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@map("api_keys")
 }
 
 model Device {
@@ -1234,6 +1277,10 @@ model Memory {
   @@index([userId, lastAccessedAt])
   @@index([userId, tags])
   @@index([userId, occurredAt])
+  // Composite indexes for common query patterns
+  @@index([userId, memoryType, importance(sort: Desc)])
+  @@index([userId, consolidationStatus, createdAt(sort: Desc)])
+  @@index([userId, isPinned, importance(sort: Desc)])
   // Provenance indexes
   @@index([userId, provider])
   @@index([userId, sourceType])
@@ -1732,4 +1779,217 @@ model Insight {
   @@index([userDid, isRead])
   @@index([userDid, generatedAt])
   @@map("insights")
+}
+
+
+// ============================================================================
+// CONTENT MODERATION SYSTEM
+// ============================================================================
+
+// Reason for content flag/report
+enum ModerationReason {
+  SPAM               // Spam or promotional content
+  HARASSMENT        // Harassment or bullying
+  HATE_SPEECH       // Hate speech or discriminatory content
+  VIOLENCE          // Violent or graphic content
+  SEXUAL            // Sexually explicit content
+  DANGEROUS         // Dangerous or harmful content
+  MISINFORMATION    // False or misleading information
+  PRIVACY           // Privacy violation
+  COPYRIGHT         // Copyright infringement
+  IMPERSONATION    // Impersonation
+  SELF_HARM         // Self-harm content
+  UNDERAGE           // Underage user
+  OTHER             // Other reason
+}
+
+// Status of moderation review
+enum ModerationStatus {
+  PENDING       // Awaiting review
+  REVIEWING     // Currently being reviewed
+  APPROVED      // Approved - no violation
+  FLAGGED       // Flagged for review
+  REMOVED       // Content removed
+  WARNED        // User warned
+  BANNED        // User/content banned
+  APPEALED      // User appealed decision
+}
+
+// Priority of moderation case
+enum ModerationPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+// Content that has been flagged/moderated
+model ContentFlag {
+  id              String           @id @default(uuid())
+  
+  // Content being flagged
+  contentId       String
+  contentType     String           // conversation, acu, memory, group_post, etc.
+  contentOwnerId  String?          // Owner of the content
+  contentText    String?           // Snapshot of text content
+  
+  // Who flagged it
+  reporterId      String
+  
+  // Reason for flagging
+  reason          ModerationReason
+  description     String?          // Additional details from reporter
+  
+  // Moderation status
+  status          ModerationStatus @default(PENDING)
+  priority        ModerationPriority @default(MEDIUM)
+  
+  // AI/automod detection
+  aiDetected      Boolean          @default(false)
+  aiConfidence    Float?           // Confidence score from AI moderation
+  aiFlags         Json?             // Specific flags from AI (toxicity, hate, etc.)
+  
+  // Review details
+  reviewerId      String?          // Who reviewed
+  reviewedAt      DateTime?        @db.Timestamptz(6)
+  resolution      String?          // Resolution notes
+  
+  // Appeals
+  appealReason    String?
+  appealedAt      DateTime?         @db.Timestamptz(6)
+  appealReviewerId String?
+  appealResolvedAt DateTime?       @db.Timestamptz(6)
+  
+  // Actions taken
+  actionTaken     String?           // What action was taken
+  userNotified    Boolean           @default(false)
+  
+  // Metadata
+  metadata        Json             @default("{}")
+  
+  // Timestamps
+  createdAt       DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime         @updatedAt @db.Timestamptz(6)
+  
+  @@index([contentType, contentId])
+  @@index([reporterId])
+  @@index([contentOwnerId])
+  @@index([status])
+  @@index([reason])
+  @@index([priority])
+  @@index([createdAt(sort: Desc)])
+  @@index([aiDetected, status])
+  @@map("content_flags")
+}
+
+// Moderator notes on users/content
+model ModeratorNote {
+  id              String           @id @default(uuid())
+  
+  // Target
+  targetType      String           // user, content
+  targetId        String
+  
+  // Note content
+  content         String
+  
+  // Author
+  moderatorId     String
+  
+  // Visibility
+  isInternal      Boolean          @default(true)  // Internal only vs visible to user
+  isPublic        Boolean          @default(false)  // Visible to the user
+  
+  // Status
+  isResolved      Boolean          @default(false)
+  resolvedAt      DateTime?        @db.Timestamptz(6)
+  resolvedBy      String?
+  
+  createdAt       DateTime         @default(now()) @db.Timestamptz(6)
+  
+  @@index([targetType, targetId])
+  @@index([moderatorId])
+  @@index([isResolved])
+  @@map("moderator_notes")
+}
+
+// Automatic moderation rules
+model ModerationRule {
+  id              String           @id @default(uuid())
+  
+  // Rule definition
+  name            String
+  description     String?
+  
+  // Conditions
+  conditionType   String           // keyword, pattern, threshold, ai_score
+  condition       Json             // The actual condition config
+  
+  // Action to take
+  action          String           // flag, remove, warn, ban
+  actionConfig    Json?            // Additional config for action
+  
+  // Scope
+  contentTypes    String[]         // Which content types to apply to
+  appliesTo       String           @default("all")  // all, public, private
+  
+  // Status
+  isEnabled       Boolean          @default(true)
+  priority        Int              @default(0)  // Higher = evaluated first
+  
+  // Limits
+  maxStrikes      Int?             // After this many flags, take action
+  timeWindow      Int?             // Time window in seconds
+  
+  // Metadata
+  createdBy       String?
+  metadata        Json             @default("{}")
+  
+  createdAt       DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime         @updatedAt @db.Timestamptz(6)
+  
+  @@index([isEnabled, priority])
+  @@index([conditionType])
+  @@map("moderation_rules")
+}
+
+// Moderation stats per user (strike system)
+model UserModerationRecord {
+  id              String           @id @default(uuid())
+  userId          String           @unique
+  
+  // Strike counts by reason
+  spamCount       Int              @default(0)
+  harassmentCount Int              @default(0)
+  hateSpeechCount Int             @default(0)
+  violenceCount   Int              @default(0)
+  sexualCount     Int              @default(0)
+  misinformationCount Int         @default(0)
+  otherCount      Int              @default(0)
+  
+  // Overall
+  totalStrikes    Int              @default(0)
+  warningsIssued  Int              @default(0)
+  contentRemoved  Int              @default(0)
+  
+  // Current status
+  isWarningActive Boolean          @default(false)
+  warningExpiresAt DateTime?       @db.Timestamptz(6)
+  isBanned        Boolean          @default(false)
+  banReason       String?
+  banExpiresAt    DateTime?        @db.Timestamptz(6)
+  
+  // Appeal
+  banAppealReason String?
+  appealDeniedAt  DateTime?        @db.Timestamptz(6)
+  
+  lastStrikedAt   DateTime?        @db.Timestamptz(6)
+  
+  createdAt       DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime         @updatedAt @db.Timestamptz(6)
+  
+  @@index([totalStrikes(sort: Desc)])
+  @@index([isBanned])
+  @@index([warningExpiresAt])
+  @@map("user_moderation_records")
 }

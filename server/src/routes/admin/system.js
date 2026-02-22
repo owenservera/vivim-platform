@@ -5,6 +5,7 @@
  */
 
 import { Router } from 'express';
+import { requireAdminAuth } from '../../middleware/admin-auth.js';
 import { createRequestLogger } from '../../lib/logger.js';
 import { getPrismaClient } from '../../lib/database.js';
 import os from 'os';

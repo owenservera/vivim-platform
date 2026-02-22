@@ -1,0 +1,16 @@
+[2026-02-22 20:08:50.454 +0100] [32mINFO[39m: [36mPrisma client initialized with enhanced observability[39m
+[2026-02-22 20:08:50.458 +0100] [33mWARN[39m: [36mRedis URL not configured. Using in-memory fallback.[39m
+[2026-02-22 20:08:50.529 +0100] [32mINFO[39m: [36mUsing Z.AI embedding service with glm-4.7-flash[39m
+[2026-02-22 20:08:50.529 +0100] [32mINFO[39m: [36mLibrarian Worker initialized[39m
+    [35menabled[39m: true
+    [35mbatchSize[39m: 20
+    [35mcooldownMinutes[39m: 30
+[2026-02-22 20:08:50.538 +0100] [32mINFO[39m: [36mUsing Z.AI embedding service with glm-4.7-flash[39m
+[2026-02-22 20:08:50.538 +0100] [32mINFO[39m: [36mUsing Z.AI LLM service with glm-4.7-flash[39m
+[2026-02-22 20:08:50.539 +0100] [32mINFO[39m: [36mLibrarian Worker initialized[39m
+    [35menabled[39m: true
+    [35mbatchSize[39m: 20
+    [35mcooldownMinutes[39m: 30
+[2026-02-22 20:08:50.539 +0100] [32mINFO[39m: [36mUnifiedContextService initialized with Z.AI GLM-4.7[39m
+    [35mengine[39m: "dynamic"
+    [35mzaiEnabled[39m: true

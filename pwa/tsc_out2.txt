@@ -1,0 +1,921 @@
+$ tsc -b --pretty false
+../common/error-reporting.ts(436,24): error TS2503: Cannot find namespace 'NodeJS'.
+../common/error-reporting.ts(440,11): error TS6133: 'alertThresholds' is declared but its value is never read.
+../common/error-reporting.ts(774,16): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+../common/error-reporting.ts(775,7): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+../common/error-reporting.ts(775,40): error TS7006: Parameter 'error' implicitly has an 'any' type.
+../common/error-reporting.ts(784,26): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+../common/error-reporting.ts(785,23): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+../common/error-reporting.ts(785,42): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+../common/error-reporting.ts(791,7): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+../common/error-reporting.ts(791,41): error TS7006: Parameter 'reason' implicitly has an 'any' type.
+../common/error-reporting.ts(800,26): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+../common/error-reporting.ts(819,49): error TS18046: 'memInfo' is of type 'unknown'.
+../common/error-reporting.ts(822,15): error TS18046: 'memInfo' is of type 'unknown'.
+../common/error-reporting.ts(822,40): error TS18046: 'memInfo' is of type 'unknown'.
+../common/error-reporting.ts(830,30): error TS18046: 'memInfo' is of type 'unknown'.
+../common/error-reporting.ts(831,30): error TS18046: 'memInfo' is of type 'unknown'.
+../common/error-reporting.ts(832,33): error TS18046: 'memInfo' is of type 'unknown'.
+../common/error-reporting.ts(832,58): error TS18046: 'memInfo' is of type 'unknown'.
+../common/error-reporting.ts(898,35): error TS6133: 'metadata' is declared but its value is never read.
+src/components/admin/CRDTManagementPanel.tsx(215,23): error TS2322: Type '"outline"' is not assignable to type '"primary" | "secondary" | "tertiary" | "ghost" | "destructive" | undefined'.
+src/components/admin/CRDTManagementPanel.tsx(218,33): error TS2367: This comparison appears to be unintentional because the types '"offline" | "conflict"' and '"syncing"' have no overlap.
+src/components/admin/CRDTManagementPanel.tsx(220,61): error TS2367: This comparison appears to be unintentional because the types '"offline" | "conflict"' and '"syncing"' have no overlap.
+src/components/admin/DatabasePanel.tsx(105,15): error TS2322: Type '"outline"' is not assignable to type '"primary" | "secondary" | "tertiary" | "ghost" | "destructive" | undefined'.
+src/components/admin/DatabasePanel.tsx(201,15): error TS2322: Type '"outline"' is not assignable to type '"primary" | "secondary" | "tertiary" | "ghost" | "destructive" | undefined'.
+src/components/admin/DatabasePanel.tsx(221,15): error TS2322: Type '"outline"' is not assignable to type '"primary" | "secondary" | "tertiary" | "ghost" | "destructive" | undefined'.
+src/components/admin/DatabasePanel.tsx(228,15): error TS2322: Type '"outline"' is not assignable to type '"primary" | "secondary" | "tertiary" | "ghost" | "destructive" | undefined'.
+src/components/admin/DatabasePanel.tsx(235,15): error TS2322: Type '"outline"' is not assignable to type '"primary" | "secondary" | "tertiary" | "ghost" | "destructive" | undefined'.
+src/components/admin/LogsPanel.tsx(2,28): error TS6133: 'Filter' is declared but its value is never read.
+src/components/admin/LogsPanel.tsx(2,76): error TS6133: 'CheckCircle' is declared but its value is never read.
+src/components/admin/LogsPanel.tsx(42,9): error TS6133: 'filterLogs' is declared but its value is never read.
+src/components/admin/LogsPanel.tsx(134,17): error TS2322: Type '"outline"' is not assignable to type '"primary" | "secondary" | "tertiary" | "ghost" | "destructive" | undefined'.
+src/components/admin/RealTimeLogsPanel.tsx(6,3): error TS6133: 'CheckCircle' is declared but its value is never read.
+src/components/admin/RealTimeLogsPanel.tsx(13,3): error TS6133: 'RefreshCw' is declared but its value is never read.
+src/components/admin/RealTimeLogsPanel.tsx(39,69): error TS6133: 'onLoadingChange' is declared but its value is never read.
+src/components/admin/RealTimeLogsPanel.tsx(156,17): error TS2322: Type '"outline"' is not assignable to type '"primary" | "secondary" | "tertiary" | "ghost" | "destructive" | undefined'.
+src/components/admin/RealTimeLogsPanel.tsx(164,17): error TS2322: Type '"outline"' is not assignable to type '"primary" | "secondary" | "tertiary" | "ghost" | "destructive" | undefined'.
+src/components/admin/RealTimeLogsPanel.tsx(172,17): error TS2322: Type '"outline"' is not assignable to type '"primary" | "secondary" | "tertiary" | "ghost" | "destructive" | undefined'.
+src/components/admin/SystemOverviewPanel.tsx(11,3): error TS6133: 'Clock' is declared but its value is never read.
+src/components/auth/index.ts(10,3): error TS2724: '"./AuthLoadingScreen"' has no exported member named 'AuthLoadingScreenProps'. Did you mean 'AuthLoadingScreen'?
+src/components/auth/index.ts(11,3): error TS2724: '"./AuthLoadingScreen"' has no exported member named 'AccountLoadingScreenProps'. Did you mean 'AccountLoadingScreen'?
+src/components/auth/index.ts(12,3): error TS2724: '"./AuthLoadingScreen"' has no exported member named 'LoadingButtonProps'. Did you mean 'LoadingButton'?
+src/components/ConversationChatView.tsx(4,3): error TS6133: 'ArrowLeft' is declared but its value is never read.
+src/components/ConversationChatView.tsx(9,3): error TS6133: 'MessageSquare' is declared but its value is never read.
+src/components/ConversationChatView.tsx(10,3): error TS6133: 'Wrench' is declared but its value is never read.
+src/components/ConversationChatView.tsx(11,3): error TS6133: 'Copy' is declared but its value is never read.
+src/components/ConversationChatView.tsx(12,3): error TS6133: 'Check' is declared but its value is never read.
+src/components/ConversationChatView.tsx(13,3): error TS6133: 'MoreVertical' is declared but its value is never read.
+src/components/ConversationChatView.tsx(15,3): error TS6133: 'Info' is declared but its value is never read.
+src/components/ConversationChatView.tsx(17,29): error TS6196: 'Message' is declared but never used.
+src/components/ConversationChatView.tsx(18,1): error TS6133: 'ContentRenderer' is declared but its value is never read.
+src/components/ConversationChatView.tsx(23,3): error TS6133: 'IOSTypingIndicator' is declared but its value is never read.
+src/components/ConversationChatView.tsx(24,3): error TS6133: 'IOSAvatar' is declared but its value is never read.
+src/components/ConversationChatView.tsx(43,10): error TS6133: 'copiedId' is declared but its value is never read.
+src/components/ConversationChatView.tsx(118,41): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/components/ConversationChatView.tsx(127,41): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/components/ConversationChatView.tsx(143,19): error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.
+src/components/ConversationChatView.tsx(146,53): error TS2339: Property 'totalTokens' does not exist on type '{}'.
+src/components/ErrorBoundary.tsx(2,31): error TS2307: Cannot find module '@common/error-reporting.ts' or its corresponding type declarations.
+src/components/ErrorBoundary.tsx(72,51): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/components/ErrorBoundary.tsx(98,46): error TS2345: Argument of type 'Error | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/components/FeedCard.tsx(8,1): error TS6133: 'feedAPI' is declared but its value is never read.
+src/components/FeedCard.tsx(11,27): error TS6133: 'Calendar' is declared but its value is never read.
+src/components/FeedCard.tsx(11,37): error TS6133: 'Archive' is declared but its value is never read.
+src/components/FeedCard.tsx(12,3): error TS6133: 'Code' is declared but its value is never read.
+src/components/FeedCard.tsx(12,19): error TS6133: 'Activity' is declared but its value is never read.
+src/components/ios/AIActionsPanel.tsx(35,3): error TS6133: 'conversationId' is declared but its value is never read.
+src/components/ios/AIActionsPanel.tsx(37,3): error TS6133: 'conversationContent' is declared but its value is never read.
+src/components/ios/AIActionsPanel.tsx(169,9): error TS6133: 'handleCopy' is declared but its value is never read.
+src/components/ios/BottomNav.tsx(3,61): error TS6133: 'Bug' is declared but its value is never read.
+src/components/ios/CircleManager.tsx(5,3): error TS6133: 'Settings' is declared but its value is never read.
+src/components/ios/CircleManager.tsx(8,3): error TS6133: 'UserPlus' is declared but its value is never read.
+src/components/ios/CircleManager.tsx(9,3): error TS6133: 'ChevronRight' is declared but its value is never read.
+src/components/ios/CircleManager.tsx(11,3): error TS6133: 'Check' is declared but its value is never read.
+src/components/ios/CircleManager.tsx(14,30): error TS6133: 'IOSInput' is declared but its value is never read.
+src/components/ios/CircleManager.tsx(14,51): error TS6133: 'IOSEmptyState' is declared but its value is never read.
+src/components/ios/CircleManager.tsx(40,3): error TS6133: 'conversationId' is declared but its value is never read.
+src/components/ios/CircleManager.tsx(82,51): error TS2339: Property 'isMember' does not exist on type 'Circle'.
+src/components/ios/CircleManager.tsx(83,58): error TS2339: Property 'isMember' does not exist on type 'Circle'.
+src/components/ios/CircleManager.tsx(185,35): error TS2339: Property 'memberCount' does not exist on type 'Circle'.
+src/components/ios/CircleManager.tsx(258,37): error TS2339: Property 'memberCount' does not exist on type 'Circle'.
+src/components/ios/ConversationCard.tsx(16,3): error TS6133: 'AlertCircle' is declared but its value is never read.
+src/components/ios/ConversationCard.tsx(18,3): error TS6133: 'Check' is declared but its value is never read.
+src/components/ios/ConversationCard.tsx(20,19): error TS6133: 'IOSButton' is declared but its value is never read.
+src/components/ios/ConversationCard.tsx(20,41): error TS6133: 'IOSSkeletonCard' is declared but its value is never read.
+src/components/ios/ConversationCard.tsx(31,1): error TS6133: 'logger' is declared but its value is never read.
+src/components/ios/ConversationCard.tsx(68,3): error TS6133: 'onRefresh' is declared but its value is never read.
+src/components/ios/ConversationCard.tsx(69,3): error TS6133: 'onShare' is declared but its value is never read.
+src/components/ios/ConversationCard.tsx(81,20): error TS6133: 'executeAI' is declared but its value is never read.
+src/components/ios/FullScreenConversation.tsx(42,9): error TS6133: 'capabilities' is declared but its value is never read.
+src/components/ios/FullScreenConversation.tsx(48,10): error TS6133: 'isArchived' is declared but its value is never read.
+src/components/ios/ShareDialog.tsx(198,31): error TS2339: Property 'memberCount' does not exist on type 'Circle'.
+src/components/RemuxDialog.tsx(2,10): error TS6133: 'X' is declared but its value is never read.
+src/components/RemuxDialog.tsx(2,51): error TS6133: 'MessageSquare' is declared but its value is never read.
+src/components/RemuxDialog.tsx(2,66): error TS6133: 'Clock' is declared but its value is never read.
+src/components/RemuxDialog.tsx(4,31): error TS6133: 'IOSCard' is declared but its value is never read.
+src/components/RemuxDialog.tsx(140,37): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number | Date'.
+      Type 'undefined' is not assignable to type 'string | number | Date'.
+  Overload 2 of 4, '(value: string | number): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number'.
+      Type 'undefined' is not assignable to type 'string | number'.
+src/components/responsive/index.ts(2,15): error TS2724: '"./ResponsiveLayout"' has no exported member named 'ResponsiveLayoutProps'. Did you mean 'ResponsiveLayout'?
+src/components/unified/ResponsiveLayout.tsx(130,3): error TS6133: 'breakpoint' is declared but its value is never read.
+src/hooks/index.ts(1,10): error TS2305: Module '"./useAI"' has no exported member 'useAI'.
+src/hooks/use-error-reporting.tsx(2,71): error TS2307: Cannot find module '../../../../common/error-reporting' or its corresponding type declarations.
+src/hooks/use-error-reporting.tsx(114,13): error TS6133: 'errorHandler' is declared but its value is never read.
+src/hooks/use-sync.ts(1,21): error TS6133: 'useState' is declared but its value is never read.
+src/hooks/useAI.ts(395,11): error TS2322: Type 'undefined' is not assignable to type 'string'.
+src/hooks/useFeed.ts(9,29): error TS6196: 'FeedItem' is declared but never used.
+src/lib/admin-api.ts(81,38): error TS2339: Property 'connectedNodes' does not exist on type '{ isSyncing: boolean; lastSyncTime: number; timeSinceLastSync: number; cooldownRemaining: number; }'.
+src/lib/admin-api.ts(84,13): error TS6133: 'dbStatus' is declared but its value is never read.
+src/lib/admin-api.ts(99,66): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Error | undefined'.
+src/lib/admin-api.ts(111,23): error TS2551: Property 'ready' does not exist on type '{ isReady: boolean; isOnline: boolean; pendingOperations: number; localConversationCount: number; }'. Did you mean 'isReady'?
+src/lib/admin-api.ts(112,25): error TS2339: Property 'message' does not exist on type '{ isReady: boolean; isOnline: boolean; pendingOperations: number; localConversationCount: number; }'.
+src/lib/admin-api.ts(125,67): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Error | undefined'.
+src/lib/admin-api.ts(134,32): error TS2339: Property 'nodes' does not exist on type '{ isSyncing: boolean; lastSyncTime: number; timeSinceLastSync: number; cooldownRemaining: number; }'.
+src/lib/admin-api.ts(145,65): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Error | undefined'.
+src/lib/admin-api.ts(154,38): error TS2339: Property 'activeFlows' does not exist on type '{ isSyncing: boolean; lastSyncTime: number; timeSinceLastSync: number; cooldownRemaining: number; }'.
+src/lib/admin-api.ts(167,62): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Error | undefined'.
+src/lib/admin-api.ts(188,66): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Error | undefined'.
+src/lib/admin-api.ts(224,63): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Error | undefined'.
+src/lib/admin-api.ts(237,41): error TS2339: Property 'syncAll' does not exist on type 'ConversationSyncService'.
+src/lib/admin-api.ts(249,72): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Error | undefined'.
+src/lib/admin-api.ts(257,37): error TS2551: Property 'syncConversation' does not exist on type 'ConversationSyncService'. Did you mean 'syncConversations'?
+src/lib/admin-api.ts(259,80): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Error | undefined'.
+src/lib/admin-api.ts(266,37): error TS2339: Property 'resolveConflict' does not exist on type 'ConversationSyncService'.
+src/lib/admin-api.ts(268,83): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Error | undefined'.
+src/lib/ai-stream-manager.ts(49,24): error TS1361: 'DEFAULT_CONNECTION_CONFIG' cannot be used as a value because it was imported using 'import type'.
+src/lib/ai-stream-manager.ts(63,11): error TS6133: 'previous' is declared but its value is never read.
+src/lib/ai-stream-manager.ts(70,11): error TS6133: 'previous' is declared but its value is never read.
+src/lib/ai-stream-manager.ts(79,5): error TS6133: 'conversationId' is declared but its value is never read.
+src/lib/byok/api-key-manager.ts(7,61): error TS6196: 'BYOKError' is declared but never used.
+src/lib/byok/api-key-manager.ts(8,10): error TS6133: 'PROVIDER_CONFIGS' is declared but its value is never read.
+src/lib/byok/api-key-manager.ts(9,1): error TS6133: 'BYOK_ERROR_CODES' is declared but its value is never read.
+src/lib/byok/api-key-manager.ts(42,7): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(algorithm: AlgorithmIdentifier | EcdhKeyDeriveParams | HkdfParams | Pbkdf2Params, baseKey: CryptoKey, derivedKeyType: AlgorithmIdentifier | ... 3 more ... | AesDerivedKeyParams, extractable: boolean, keyUsages: KeyUsage[]): Promise<...>', gave the following error.
+    Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BufferSource'.
+      Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+        Types of property 'buffer' are incompatible.
+          Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+            Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+              Types of property '[Symbol.toStringTag]' are incompatible.
+                Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+  Overload 2 of 3, '(algorithm: AlgorithmIdentifier | EcdhKeyDeriveParams | HkdfParams | Pbkdf2Params, baseKey: CryptoKey, derivedKeyType: AlgorithmIdentifier | ... 3 more ... | AesDerivedKeyParams, extractable: boolean, keyUsages: Iterable<...>): Promise<...>', gave the following error.
+    Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BufferSource'.
+      Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+        Types of property 'buffer' are incompatible.
+          Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+            Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+              Types of property '[Symbol.toStringTag]' are incompatible.
+                Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+  Overload 3 of 3, '(algorithm: AlgorithmIdentifier | EcdhKeyDeriveParams | HkdfParams | Pbkdf2Params, baseKey: CryptoKey, derivedKeyType: AlgorithmIdentifier | ... 3 more ... | AesDerivedKeyParams, extractable: boolean, keyUsages: KeyUsage[]): Promise<...>', gave the following error.
+    Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'BufferSource'.
+      Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+        Types of property 'buffer' are incompatible.
+          Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+            Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+              Types of property '[Symbol.toStringTag]' are incompatible.
+                Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+src/lib/byok/api-key-manager.ts(62,21): error TS6133: 'encryptedKey' is declared but its value is never read.
+src/lib/byok/streaming-client.ts(50,40): error TS2345: Argument of type 'string' is not assignable to parameter of type 'BYOKProvider'.
+src/lib/byok/streaming-client.ts(166,40): error TS2345: Argument of type 'string' is not assignable to parameter of type 'BYOKProvider'.
+src/lib/content-renderer/ContentRenderer.config.ts(15,14): error TS2323: Cannot redeclare exported variable 'DEFAULT_CONTENT_RENDERER_CONFIG'.
+src/lib/content-renderer/ContentRenderer.config.ts(106,11): error TS2339: Property 'theme' does not exist on type 'ContentRendererConfig'.
+src/lib/content-renderer/ContentRenderer.config.ts(205,7): error TS18048: 'customRenderers' is possibly 'undefined'.
+src/lib/content-renderer/ContentRenderer.config.ts(243,9): error TS6133: 'systemTheme' is declared but its value is never read.
+src/lib/content-renderer/ContentRenderer.config.ts(244,21): error TS2339: Property 'theme' does not exist on type 'ContentRendererConfig'.
+src/lib/content-renderer/ContentRenderer.config.ts(273,3): error TS2323: Cannot redeclare exported variable 'DEFAULT_CONTENT_RENDERER_CONFIG'.
+src/lib/content-renderer/ContentRenderer.config.ts(273,3): error TS2484: Export declaration conflicts with exported declaration of 'DEFAULT_CONTENT_RENDERER_CONFIG'.
+src/lib/content-renderer/ContentRenderer.plugins.ts(6,1): error TS6133: 'React' is declared but its value is never read.
+src/lib/content-renderer/ContentRenderer.plugins.ts(9,3): error TS6196: 'ContentBlockRendererProps' is declared but never used.
+src/lib/content-renderer/ContentRenderer.plugins.ts(37,50): error TS6133: 'init' is declared but its value is never read.
+src/lib/content-renderer/ContentRenderer.plugins.ts(37,56): error TS6133: 'transform' is declared but its value is never read.
+src/lib/content-renderer/ContentRenderer.plugins.ts(37,67): error TS6133: 'validate' is declared but its value is never read.
+src/lib/content-renderer/ContentRenderer.plugins.ts(190,3): error TS6133: 'config' is declared but its value is never read.
+src/lib/content-renderer/ContentRenderer.registry.ts(9,3): error TS6196: 'ContentBlock' is declared but never used.
+src/lib/content-renderer/ContentRenderer.registry.ts(125,3): error TS2322: Type '() => ComponentType<ContentBlockRendererProps> | null' is not assignable to type '() => ComponentType<ContentBlockRendererProps>'.
+  Type 'ComponentType<ContentBlockRendererProps> | null' is not assignable to type 'ComponentType<ContentBlockRendererProps>'.
+    Type 'null' is not assignable to type 'ComponentType<ContentBlockRendererProps>'.
+src/lib/content-renderer/ContentRenderer.tsx(9,3): error TS6196: 'ContentCollection' is declared but never used.
+src/lib/content-renderer/ContentRenderer.tsx(24,3): error TS6133: 'isStringContent' is declared but its value is never read.
+src/lib/content-renderer/ContentRenderer.tsx(25,3): error TS6133: 'isArrayContent' is declared but its value is never read.
+src/lib/content-renderer/ContentRenderer.tsx(26,3): error TS6133: 'isObjectContent' is declared but its value is never read.
+src/lib/content-renderer/ContentRenderer.tsx(109,3): error TS6133: 'enableExpand' is declared but its value is never read.
+src/lib/content-renderer/ContentRenderer.tsx(113,3): error TS6133: 'virtualScroll' is declared but its value is never read.
+src/lib/content-renderer/ContentRenderer.tsx(223,9): error TS6133: 'handleBlockClick' is declared but its value is never read.
+src/lib/content-renderer/ContentRenderer.tsx(230,9): error TS6133: 'handleBlockRender' is declared but its value is never read.
+src/lib/content-renderer/ContentRenderer.tsx(258,11): error TS2322: Type '"dark" | "light" | "auto"' is not assignable to type '"dark" | "light"'.
+  Type '"auto"' is not assignable to type '"dark" | "light"'.
+src/lib/content-renderer/ContentRenderer.types.ts(397,18): error TS2430: Interface 'MermaidRendererProps' incorrectly extends interface 'ContentBlockRendererProps'.
+  Types of property 'theme' are incompatible.
+    Type '"dark" | "light" | "neutral" | undefined' is not assignable to type '"dark" | "light"'.
+      Type 'undefined' is not assignable to type '"dark" | "light"'.
+src/lib/content-renderer/index.ts(137,3): error TS2460: Module '"./ContentRenderer.plugins"' declares 'plugins' locally, but it is exported as 'pluginRegistry'.
+src/lib/content-renderer/index.ts(167,41): error TS2591: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/lib/content-renderer/index.ts(171,33): error TS2591: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/lib/content-renderer/index.ts(172,40): error TS2591: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/lib/content-renderer/index.ts(184,33): error TS2591: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/lib/content-renderer/renderers/CodeRenderer.tsx(6,46): error TS6133: 'useEffect' is declared but its value is never read.
+src/lib/content-renderer/renderers/CodeRenderer.tsx(17,3): error TS6133: 'theme' is declared but its value is never read.
+src/lib/content-renderer/renderers/CodeRenderer.tsx(33,9): error TS6133: 'showLanguage' is declared but its value is never read.
+src/lib/content-renderer/renderers/TextRenderer.tsx(18,3): error TS6133: 'theme' is declared but its value is never read.
+src/lib/content-renderer/renderers/TextRenderer.tsx(88,30): error TS2339: Property 'inline' does not exist on type 'ClassAttributes<HTMLElement> & HTMLAttributes<HTMLElement> & ExtraProps'.
+src/lib/content-renderer/renderers/UnknownRenderer.tsx(16,3): error TS6133: 'theme' is declared but its value is never read.
+src/lib/content-renderer/utils/content-parser.ts(20,17): error TS2323: Cannot redeclare exported variable 'generateContentId'.
+src/lib/content-renderer/utils/content-parser.ts(27,17): error TS2323: Cannot redeclare exported variable 'isStringContent'.
+src/lib/content-renderer/utils/content-parser.ts(34,17): error TS2323: Cannot redeclare exported variable 'isArrayContent'.
+src/lib/content-renderer/utils/content-parser.ts(41,17): error TS2323: Cannot redeclare exported variable 'isObjectContent'.
+src/lib/content-renderer/utils/content-parser.ts(52,17): error TS2323: Cannot redeclare exported variable 'detectContentType'.
+src/lib/content-renderer/utils/content-parser.ts(270,17): error TS2323: Cannot redeclare exported variable 'parseContent'.
+src/lib/content-renderer/utils/content-parser.ts(479,17): error TS2323: Cannot redeclare exported variable 'normalizeContentBlocks'.
+src/lib/content-renderer/utils/content-parser.ts(490,17): error TS2323: Cannot redeclare exported variable 'filterValidBlocks'.
+src/lib/content-renderer/utils/content-parser.ts(514,17): error TS2323: Cannot redeclare exported variable 'mergeTextBlocks'.
+src/lib/content-renderer/utils/content-parser.ts(550,3): error TS2323: Cannot redeclare exported variable 'generateContentId'.
+src/lib/content-renderer/utils/content-parser.ts(550,3): error TS2484: Export declaration conflicts with exported declaration of 'generateContentId'.
+src/lib/content-renderer/utils/content-parser.ts(551,3): error TS2323: Cannot redeclare exported variable 'isStringContent'.
+src/lib/content-renderer/utils/content-parser.ts(551,3): error TS2484: Export declaration conflicts with exported declaration of 'isStringContent'.
+src/lib/content-renderer/utils/content-parser.ts(552,3): error TS2323: Cannot redeclare exported variable 'isArrayContent'.
+src/lib/content-renderer/utils/content-parser.ts(552,3): error TS2484: Export declaration conflicts with exported declaration of 'isArrayContent'.
+src/lib/content-renderer/utils/content-parser.ts(553,3): error TS2323: Cannot redeclare exported variable 'isObjectContent'.
+src/lib/content-renderer/utils/content-parser.ts(553,3): error TS2484: Export declaration conflicts with exported declaration of 'isObjectContent'.
+src/lib/content-renderer/utils/content-parser.ts(554,3): error TS2323: Cannot redeclare exported variable 'detectContentType'.
+src/lib/content-renderer/utils/content-parser.ts(554,3): error TS2484: Export declaration conflicts with exported declaration of 'detectContentType'.
+src/lib/content-renderer/utils/content-parser.ts(555,3): error TS2323: Cannot redeclare exported variable 'parseContent'.
+src/lib/content-renderer/utils/content-parser.ts(555,3): error TS2484: Export declaration conflicts with exported declaration of 'parseContent'.
+src/lib/content-renderer/utils/content-parser.ts(556,3): error TS2323: Cannot redeclare exported variable 'normalizeContentBlocks'.
+src/lib/content-renderer/utils/content-parser.ts(556,3): error TS2484: Export declaration conflicts with exported declaration of 'normalizeContentBlocks'.
+src/lib/content-renderer/utils/content-parser.ts(557,3): error TS2323: Cannot redeclare exported variable 'filterValidBlocks'.
+src/lib/content-renderer/utils/content-parser.ts(557,3): error TS2484: Export declaration conflicts with exported declaration of 'filterValidBlocks'.
+src/lib/content-renderer/utils/content-parser.ts(558,3): error TS2323: Cannot redeclare exported variable 'mergeTextBlocks'.
+src/lib/content-renderer/utils/content-parser.ts(558,3): error TS2484: Export declaration conflicts with exported declaration of 'mergeTextBlocks'.
+src/lib/conversation-sync-service.ts(69,14): error TS2339: Property 'sync' does not exist on type 'Logger'.
+src/lib/conversation-sync-service.ts(85,16): error TS2339: Property 'sync' does not exist on type 'Logger'.
+src/lib/conversation-sync-service.ts(88,18): error TS2339: Property 'sync' does not exist on type 'Logger'.
+src/lib/conversation-sync-service.ts(93,18): error TS2339: Property 'sync' does not exist on type 'Logger'.
+src/lib/conversation-sync-service.ts(97,18): error TS2339: Property 'sync' does not exist on type 'Logger'.
+src/lib/conversation-sync-service.ts(151,18): error TS2339: Property 'sync' does not exist on type 'Logger'.
+src/lib/conversation-sync-service.ts(156,18): error TS2339: Property 'sync' does not exist on type 'Logger'.
+src/lib/conversation-sync-service.ts(170,14): error TS2339: Property 'sync' does not exist on type 'Logger'.
+src/lib/conversation-sync-service.ts(176,14): error TS2339: Property 'sync' does not exist on type 'Logger'.
+src/lib/data-sync-service.ts(11,1): error TS6133: 'Conversation' is declared but its value is never read.
+src/lib/db-sync.ts(228,5): error TS2353: Object literal may only specify known properties, and 'id' does not exist in type '{ title: string; provider: string; sourceUrl: string; messages: any[]; metadata: Record<string, any>; stats?: any; createdAt?: string | undefined; exportedAt?: string | undefined; }'.
+src/lib/db/unified-repository.ts(5,7): error TS6133: 'DB_NAME' is declared but its value is never read.
+src/lib/db/unified-repository.ts(22,37): error TS6133: 'sortBy' is declared but its value is never read.
+src/lib/db/unified-repository.ts(22,63): error TS6133: 'sortOrder' is declared but its value is never read.
+src/lib/db/unified-repository.ts(138,31): error TS6133: 'root' is declared but its value is never read.
+src/lib/db/vivim-db.ts(126,19): error TS6133: 'oldVersion' is declared but its value is never read.
+src/lib/db/vivim-db.ts(170,15): error TS2339: Property 'close' does not exist on type 'number'.
+src/lib/db/vivim-db.ts(226,20): error TS2345: Argument of type '{ err: any; id: string; }' is not assignable to parameter of type 'string'.
+src/lib/db/vivim-db.ts(445,15): error TS2484: Export declaration conflicts with exported declaration of 'Conversation'.
+src/lib/db/vivim-db.ts(445,29): error TS2484: Export declaration conflicts with exported declaration of 'ConversationMetadata'.
+src/lib/db/vivim-db.ts(445,51): error TS2484: Export declaration conflicts with exported declaration of 'SyncOperation'.
+src/lib/debug/health-check.ts(16,37): error TS2307: Cannot find module './service/conversation-service' or its corresponding type declarations.
+src/lib/debug/health-check.ts(17,27): error TS2307: Cannot find module './api' or its corresponding type declarations.
+src/lib/debug/health-check.ts(18,10): error TS6133: 'logger' is declared but its value is never read.
+src/lib/debug/health-check.ts(78,22): error TS2339: Property 'onsuccess' does not exist on type 'Promise<IDBDatabaseInfo[]>'.
+src/lib/debug/health-check.ts(78,61): error TS2339: Property 'result' does not exist on type 'Promise<IDBDatabaseInfo[]>'.
+src/lib/debug/health-check.ts(79,22): error TS2339: Property 'onerror' does not exist on type 'Promise<IDBDatabaseInfo[]>'.
+src/lib/debug/health-check.ts(79,58): error TS2339: Property 'error' does not exist on type 'Promise<IDBDatabaseInfo[]>'.
+src/lib/debug/health-check.ts(210,15): error TS2339: Property 'clearLogs' does not exist on type '{ debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }'.
+src/lib/feature-hooks.ts(4,92): error TS2305: Module '"../types/features"' has no exported member 'FeatureCapabilities'.
+src/lib/feature-hooks.ts(36,53): error TS2345: Argument of type '{ conversationId: string; error: unknown; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(4,28): error TS6196: 'ACUTag' is declared but never used.
+src/lib/feature-service.ts(38,49): error TS2345: Argument of type '{ capabilities: FeatureCapabilities; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(40,59): error TS2345: Argument of type '{ error: unknown; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(72,14): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/feature-service.ts(90,12): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/feature-service.ts(96,61): error TS2345: Argument of type '{ error: unknown; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(116,57): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Hash'.
+  Type 'string' is not assignable to type '{ readonly __hash: unique symbol; }'.
+src/lib/feature-service.ts(126,46): error TS2345: Argument of type '{ conversationId: string; error: unknown; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(142,45): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Hash'.
+  Type 'string' is not assignable to type '{ readonly __hash: unique symbol; }'.
+src/lib/feature-service.ts(147,40): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Hash'.
+  Type 'string' is not assignable to type '{ readonly __hash: unique symbol; }'.
+src/lib/feature-service.ts(148,39): error TS2345: Argument of type '{ conversationId: string; metadata: Partial<ACUMetadata>; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(151,49): error TS2345: Argument of type '{ conversationId: string; error: unknown; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(159,42): error TS2345: Argument of type '{ conversationId: string; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(167,44): error TS2345: Argument of type '{ conversationId: string; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(175,44): error TS2345: Argument of type '{ conversationId: string; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(183,46): error TS2345: Argument of type '{ conversationId: string; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(190,14): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/feature-service.ts(200,46): error TS2345: Argument of type '{ conversationId: string; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(203,42): error TS2345: Argument of type '{ conversationId: string; error: unknown; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(216,39): error TS2345: Argument of type '{ conversationId: string; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(219,49): error TS2345: Argument of type '{ conversationId: string; error: unknown; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(235,14): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/feature-service.ts(240,66): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Hash'.
+  Type 'string' is not assignable to type '{ readonly __hash: unique symbol; }'.
+src/lib/feature-service.ts(251,46): error TS2345: Argument of type '{ id: `${string}-${string}-${string}-${string}-${string}`; title: string; createdAt: string; parentId: string; type: "root"; conversationId: Hash; metadata: ConversationMetadata; ... 4 more ...; signature: Signature; }' is not assignable to parameter of type 'ConversationRoot'.
+  Types of property 'id' are incompatible.
+    Type '`${string}-${string}-${string}-${string}-${string}`' is not assignable to type 'Hash'.
+      Type '`${string}-${string}-${string}-${string}-${string}`' is not assignable to type '{ readonly __hash: unique symbol; }'.
+src/lib/feature-service.ts(255,42): error TS2345: Argument of type '{ originalId: string; forkId: `${string}-${string}-${string}-${string}-${string}`; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(258,51): error TS2345: Argument of type '{ conversationId: string; error: unknown; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(288,47): error TS2345: Argument of type '{ parentId: string; childId: string; error: unknown; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(294,14): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/feature-service.ts(315,43): error TS2345: Argument of type '{ conversationId: string; shareLink: ShareLink; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(318,53): error TS2345: Argument of type '{ conversationId: string; error: unknown; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(339,14): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/feature-service.ts(355,41): error TS2345: Argument of type '{ action: AIAction; conversationId: string; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(358,40): error TS2345: Argument of type '{ action: AIAction; conversationId: string; error: unknown; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(395,14): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/feature-service.ts(406,60): error TS2345: Argument of type '{ conversationId: string; error: unknown; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(413,14): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/feature-service.ts(418,26): error TS2341: Property 'state' is private and only accessible within class 'IdentityService'.
+src/lib/feature-service.ts(422,14): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/feature-service.ts(435,45): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(456,37): error TS2345: Argument of type '{ circleId: string; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(459,47): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(479,39): error TS2345: Argument of type '{ conversationId: string; circleId: string; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(482,49): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(498,66): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Hash'.
+  Type 'string' is not assignable to type '{ readonly __hash: unique symbol; }'.
+src/lib/feature-service.ts(508,46): error TS2345: Argument of type '{ id: `${string}-${string}-${string}-${string}-${string}`; title: string; createdAt: string; type: "root"; conversationId: Hash; metadata: ConversationMetadata; ... 4 more ...; signature: Signature; }' is not assignable to parameter of type 'ConversationRoot'.
+  Types of property 'id' are incompatible.
+    Type '`${string}-${string}-${string}-${string}-${string}`' is not assignable to type 'Hash'.
+      Type '`${string}-${string}-${string}-${string}-${string}`' is not assignable to type '{ readonly __hash: unique symbol; }'.
+src/lib/feature-service.ts(509,46): error TS2345: Argument of type '{ originalId: string; newId: `${string}-${string}-${string}-${string}-${string}`; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(512,43): error TS2345: Argument of type '{ conversationId: string; error: unknown; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(519,48): error TS2345: Argument of type 'string' is not assignable to parameter of type 'Hash'.
+  Type 'string' is not assignable to type '{ readonly __hash: unique symbol; }'.
+src/lib/feature-service.ts(520,43): error TS2345: Argument of type '{ conversationId: string; }' is not assignable to parameter of type 'string'.
+src/lib/feature-service.ts(523,40): error TS2345: Argument of type '{ conversationId: string; error: unknown; }' is not assignable to parameter of type 'string'.
+src/lib/identity/device-manager.ts(15,1): error TS6192: All imports in import declaration are unused.
+src/lib/identity/device-manager.ts(16,20): error TS6196: 'Hash' is declared but never used.
+src/lib/identity/device-manager.ts(17,10): error TS6133: 'asHash' is declared but its value is never read.
+src/lib/identity/device-manager.ts(19,57): error TS6133: 'DeviceCapabilities' is declared but its value is never read.
+src/lib/identity/device-manager.ts(88,9): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/device-manager.ts(170,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/device-manager.ts(173,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/device-manager.ts(232,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/device-manager.ts(235,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/device-manager.ts(257,15): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/device-manager.ts(277,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/device-manager.ts(342,9): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/device-manager.ts(364,9): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/device-manager.ts(369,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/device-manager.ts(380,9): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/device-manager.ts(385,9): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/device-manager.ts(426,19): error TS6133: 'localData' is declared but its value is never read.
+src/lib/identity/device-manager.ts(426,39): error TS6133: 'remoteData' is declared but its value is never read.
+src/lib/identity/device-manager.ts(506,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/device-manager.ts(509,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/identity-service.ts(17,17): error TS6133: 'asHash' is declared but its value is never read.
+src/lib/identity/identity-service.ts(129,15): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/identity-service.ts(134,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/identity-service.ts(137,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/identity-service.ts(244,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/identity-service.ts(247,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/identity-service.ts(370,9): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/identity-service.ts(385,13): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/identity-service.ts(397,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/identity-service.ts(400,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/identity-service.ts(414,9): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/identity-service.ts(562,24): error TS6133: 'password' is declared but its value is never read.
+src/lib/identity/identity-service.ts(601,9): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/kyc-manager.ts(20,10): error TS6133: 'asDID' is declared but its value is never read.
+src/lib/identity/kyc-manager.ts(20,17): error TS6133: 'asHash' is declared but its value is never read.
+src/lib/identity/kyc-manager.ts(239,9): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/kyc-manager.ts(287,9): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/kyc-manager.ts(343,13): error TS6133: 'nullifier' is declared but its value is never read.
+src/lib/identity/kyc-manager.ts(347,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/kyc-manager.ts(407,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/kyc-manager.ts(426,11): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/kyc-manager.ts(547,9): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/kyc-manager.ts(568,9): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/kyc-manager.ts(584,9): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/kyc-manager.ts(614,9): error TS2339: Property 'identity' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/identity/server-api.ts(8,1): error TS6133: 'useSettingsStore' is declared but its value is never read.
+src/lib/identity/server-api.ts(44,46): error TS2345: Argument of type '{ did: DID; }' is not assignable to parameter of type 'string'.
+src/lib/identity/server-api.ts(47,47): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/identity/server-api.ts(77,48): error TS2345: Argument of type '{ deviceId: string; }' is not assignable to parameter of type 'string'.
+src/lib/identity/server-api.ts(80,47): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/identity/server-api.ts(105,44): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/identity/server-api.ts(145,57): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/identity/server-api.ts(184,57): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/identity/server-api.ts(220,42): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/identity/server-api.ts(267,42): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/identity/server-api.ts(306,41): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/omni-api.ts(3,28): error TS6196: 'SuggestionItem' is declared but never used.
+src/lib/recommendation/analytics.ts(140,9): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/lib/recommendation/api.ts(220,25): error TS2339: Property 'action' does not exist on type 'FeedbackRequest'.
+src/lib/recommendation/api.ts(221,27): error TS2339: Property 'duration' does not exist on type 'FeedbackRequest'.
+src/lib/recommendation/api.ts(222,33): error TS2339: Property 'completionRate' does not exist on type 'FeedbackRequest'.
+src/lib/recommendation/api.ts(279,13): error TS2739: Type '{}' is missing the following properties from type '{ rediscovery: number; semantic: number; graph: number; }': rediscovery, semantic, graph
+src/lib/recommendation/api.ts(280,13): error TS2739: Type '{}' is missing the following properties from type '{ topicSpread: number; timeSpread: number; providerSpread: number; }': topicSpread, timeSpread, providerSpread
+src/lib/recommendation/mixer/KnowledgeMixer.ts(39,5): error TS6133: 'conversations' is declared but its value is never read.
+src/lib/recommendation/mixer/KnowledgeMixer.ts(72,54): error TS2345: Argument of type 'RankingFeatures' is not assignable to parameter of type 'Record<string, number>'.
+  Index signature for type 'string' is missing in type 'RankingFeatures'.
+src/lib/recommendation/sources/RediscoverySource.ts(51,11): error TS2353: Object literal may only specify known properties, and 'filter' does not exist in type '{ limit?: number | undefined; offset?: number | undefined; }'.
+src/lib/recommendation/sources/RediscoverySource.ts(60,49): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(predicate: (value: { root: ConversationRoot; messageCount: number; lastMessageAt: string | null; }, index: number, array: { root: ConversationRoot; messageCount: number; lastMessageAt: string | null; }[]) => value is { ...; }, thisArg?: any): { ...; }[]', gave the following error.
+    Argument of type '(c: Conversation) => boolean' is not assignable to parameter of type '(value: { root: ConversationRoot; messageCount: number; lastMessageAt: string | null; }, index: number, array: { root: ConversationRoot; messageCount: number; lastMessageAt: string | null; }[]) => value is { ...; }'.
+      Types of parameters 'c' and 'value' are incompatible.
+        Type '{ root: ConversationRoot; messageCount: number; lastMessageAt: string | null; }' is missing the following properties from type 'Conversation': id, title, provider, sourceUrl, and 6 more.
+  Overload 2 of 2, '(predicate: (value: { root: ConversationRoot; messageCount: number; lastMessageAt: string | null; }, index: number, array: { root: ConversationRoot; messageCount: number; lastMessageAt: string | null; }[]) => unknown, thisArg?: any): { ...; }[]', gave the following error.
+    Argument of type '(c: Conversation) => boolean' is not assignable to parameter of type '(value: { root: ConversationRoot; messageCount: number; lastMessageAt: string | null; }, index: number, array: { root: ConversationRoot; messageCount: number; lastMessageAt: string | null; }[]) => unknown'.
+      Types of parameters 'c' and 'value' are incompatible.
+        Type '{ root: ConversationRoot; messageCount: number; lastMessageAt: string | null; }' is missing the following properties from type 'Conversation': id, title, provider, sourceUrl, and 6 more.
+src/lib/recommendation/sources/RediscoverySource.ts(69,13): error TS2740: Type '{ root: ConversationRoot; messageCount: number; lastMessageAt: string | null; }' is missing the following properties from type 'Conversation': id, title, provider, sourceUrl, and 6 more.
+src/lib/recommendation/sources/RediscoverySource.ts(71,51): error TS2345: Argument of type '{ root: ConversationRoot; messageCount: number; lastMessageAt: string | null; }' is not assignable to parameter of type 'Conversation'.
+  Type '{ root: ConversationRoot; messageCount: number; lastMessageAt: string | null; }' is missing the following properties from type 'Conversation': id, title, provider, sourceUrl, and 6 more.
+src/lib/recommendation/sources/RediscoverySource.ts(72,13): error TS2740: Type '{}' is missing the following properties from type 'RankingFeatures': quality, recency, topicMatch, interaction, and 2 more.
+src/lib/recommendation/storage-adapter.ts(22,9): error TS2322: Type '{ id: Hash; title: string; provider: "chatgpt" | "claude" | "gemini" | "grok" | "qwen" | "deepseek" | "kimi"; sourceUrl: string; createdAt: ISO8601; exportedAt: ISO8601; messages: never[]; metadata: { ...; }; stats: { ...; }; privacy: { ...; }; }[]' is not assignable to type 'Conversation[]'.
+  Type '{ id: Hash; title: string; provider: "chatgpt" | "claude" | "gemini" | "grok" | "qwen" | "deepseek" | "kimi"; sourceUrl: string; createdAt: ISO8601; exportedAt: ISO8601; messages: never[]; metadata: { ...; }; stats: { ...; }; privacy: { ...; }; }' is not assignable to type 'Conversation'.
+    The types of 'stats.timesViewed' are incompatible between these types.
+      Type '{}' is not assignable to type 'number'.
+src/lib/recommendation/storage-adapter.ts(106,19): error TS2322: Type '"other"' is not assignable to type '"chatgpt" | "claude" | "gemini" | "grok" | "qwen" | "deepseek" | "kimi"'.
+src/lib/recommendation/storage-adapter.ts(124,3): error TS2322: Type '"other"' is not assignable to type '"chatgpt" | "claude" | "gemini" | "grok" | "qwen" | "deepseek" | "kimi"'.
+src/lib/recommendation/storage-adapter.ts(130,5): error TS2322: Type '{}' is not assignable to type 'number'.
+src/lib/recommendation/storage-adapter.ts(139,5): error TS2322: Type '{}' is not assignable to type 'number'.
+src/lib/recommendation/storage-adapter.ts(147,5): error TS2322: Type '{}' is not assignable to type 'number'.
+src/lib/recommendation/storage-adapter.ts(155,5): error TS2322: Type '{}' is not assignable to type 'number'.
+src/lib/recommendation/storage-adapter.ts(163,5): error TS2322: Type '{}' is not assignable to type 'number'.
+src/lib/service/conversation-service.ts(11,25): error TS2591: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/lib/service/conversation-service.ts(106,30): error TS18047: 'unifiedDB' is possibly 'null'.
+src/lib/service/conversation-service.ts(125,7): error TS2322: Type '{ id: string; title: string; provider: "chatgpt" | "claude" | "gemini" | "other" | "grok" | "qwen" | "deepseek" | "perplexity" | "zai" | "kimi"; sourceUrl: string; state: "ACTIVE" | "ARCHIVED" | "DELETED"; ... 10 more ...; metadata: { ...; }; }[]' is not assignable to type 'Conversation[]'.
+  Type '{ id: string; title: string; provider: "chatgpt" | "claude" | "gemini" | "other" | "grok" | "qwen" | "deepseek" | "perplexity" | "zai" | "kimi"; sourceUrl: string; state: "ACTIVE" | "ARCHIVED" | "DELETED"; ... 10 more ...; metadata: { ...; }; }' is not assignable to type 'Conversation'.
+    The types of 'stats.totalWords' are incompatible between these types.
+      Type '{}' is not assignable to type 'number'.
+src/lib/service/conversation-service.ts(191,26): error TS18047: 'unifiedDB' is possibly 'null'.
+src/lib/service/conversation-service.ts(221,13): error TS18047: 'unifiedDB' is possibly 'null'.
+src/lib/service/conversation-service.ts(230,20): error TS18047: 'unifiedDB' is possibly 'null'.
+src/lib/service/conversation-service.ts(232,42): error TS2353: Object literal may only specify known properties, and 'error' does not exist in type 'Error'.
+src/lib/service/conversation-service.ts(245,28): error TS18047: 'unifiedDB' is possibly 'null'.
+src/lib/service/conversation-service.ts(295,7): error TS2322: Type 'ContentBlock[]' is not assignable to type 'ContentPart[]'.
+  Type 'ContentBlock' is not assignable to type 'ContentPart'.
+    Type 'ImageBlock' is not assignable to type 'ContentPart'.
+      Property 'content' is missing in type 'ImageBlock' but required in type 'ImagePart'.
+src/lib/service/conversation-service.ts(398,18): error TS2678: Type '"math"' is not comparable to type '"text" | "code" | "image" | "mermaid" | "table" | "tool_call" | "tool_result" | "latex"'.
+src/lib/service/conversation-service.ts(428,7): error TS2322: Type '{}' is not assignable to type 'string'.
+src/lib/service/conversation-service.ts(429,7): error TS2322: Type '{}' is not assignable to type 'string'.
+src/lib/service/conversation-service.ts(431,20): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type 'string | number | Date'.
+  Overload 2 of 4, '(value: string | number): Date', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type 'string | number'.
+src/lib/service/conversation-service.ts(431,58): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type 'string | number | Date'.
+  Overload 2 of 4, '(value: string | number): Date', gave the following error.
+    Argument of type '{}' is not assignable to parameter of type 'string | number'.
+src/lib/social-hooks.ts(279,46): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+src/lib/social-hooks.ts(310,40): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+src/lib/social-hooks.ts(379,40): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+src/lib/social-hooks.ts(436,39): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+src/lib/social-hooks.ts(508,38): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+src/lib/social-hooks.ts(562,38): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+src/lib/social-hooks.ts(612,37): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+src/lib/social-hooks.ts(659,40): error TS2554: Expected 2-4 arguments, but got 1.
+src/lib/social-hooks.ts(663,48): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+src/lib/social-hooks.ts(674,41): error TS2554: Expected 3 arguments, but got 2.
+src/lib/storage-v2/crypto.ts(15,27): error TS7016: Could not find a declaration file for module 'ed2curve'. 'C:/0-BlackBoxProject-0/vivim-app/pwa/node_modules/ed2curve/ed2curve.js' implicitly has an 'any' type.
+  Try `npm i --save-dev @types/ed2curve` if it exists or add a new declaration (.d.ts) file containing `declare module 'ed2curve';`
+src/lib/storage-v2/crypto.ts(72,69): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(algorithm: AlgorithmIdentifier, data: BufferSource): Promise<ArrayBuffer>', gave the following error.
+    Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+      Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+        Types of property 'buffer' are incompatible.
+          Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+            Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+              Types of property '[Symbol.toStringTag]' are incompatible.
+                Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+  Overload 2 of 2, '(algorithm: AlgorithmIdentifier, data: BufferSource): Promise<ArrayBuffer>', gave the following error.
+    Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+      Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+        Types of property 'buffer' are incompatible.
+          Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+            Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+              Types of property '[Symbol.toStringTag]' are incompatible.
+                Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+src/lib/storage-v2/db-manager/data-validator.ts(1,1): error TS6133: 'log' is declared but its value is never read.
+src/lib/storage-v2/db-manager/data-validator.ts(160,54): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+src/lib/storage-v2/db-manager/database-manager.ts(1,42): error TS6133: 'DBSchema' is declared but its value is never read.
+src/lib/storage-v2/db-manager/database-manager.ts(5,26): error TS6133: 'QueuedOperation' is declared but its value is never read.
+src/lib/storage-v2/db-manager/database-manager.ts(48,11): error TS6133: 'conflictResolver' is declared but its value is never read.
+src/lib/storage-v2/db-manager/database-manager.ts(103,44): error TS2345: Argument of type 'number | null' is not assignable to parameter of type 'number'.
+  Type 'null' is not assignable to type 'number'.
+src/lib/storage-v2/db-manager/database-manager.ts(109,15): error TS2339: Property 'oldVersion' does not exist on type 'number'.
+src/lib/storage-v2/db-manager/database-manager.ts(111,15): error TS2339: Property 'close' does not exist on type 'number'.
+src/lib/storage-v2/db-manager/database-manager.ts(118,5): error TS6133: 'oldVersion' is declared but its value is never read.
+src/lib/storage-v2/db-manager/database-manager.ts(120,5): error TS6133: 'transaction' is declared but its value is never read.
+src/lib/storage-v2/db-manager/database-manager.ts(233,17): error TS6133: 'T' is declared but its value is never read.
+src/lib/storage-v2/db-manager/database-manager.ts(236,5): error TS2322: Type 'IDBPObjectStore<unknown, [string], string, "readonly" | "readwrite" | "versionchange">' is not assignable to type 'IDBObjectStore'.
+  The types returned by 'transaction.db.createObjectStore(...).add(...)' are incompatible between these types.
+    Type 'Promise<IDBValidKey>' is missing the following properties from type 'IDBRequest<IDBValidKey>': error, onerror, onsuccess, readyState, and 6 more.
+src/lib/storage-v2/db-manager/database-manager.ts(241,5): error TS2740: Type 'IDBRequest<any[]>' is missing the following properties from type 'T[]': length, pop, push, concat, and 29 more.
+src/lib/storage-v2/db-manager/database-manager.ts(246,5): error TS2322: Type 'IDBRequest<any>' is not assignable to type 'T'.
+  'T' could be instantiated with an arbitrary type which could be unrelated to 'IDBRequest<any>'.
+src/lib/storage-v2/db-manager/database-manager.ts(298,5): error TS2740: Type 'IDBRequest<any[]>' is missing the following properties from type 'T[]': length, pop, push, concat, and 29 more.
+src/lib/storage-v2/db-manager/database-manager.ts(303,5): error TS2322: Type 'IDBRequest<number>' is not assignable to type 'number'.
+src/lib/storage-v2/db-manager/database-manager.ts(324,64): error TS2353: Object literal may only specify known properties, and 'error' does not exist in type 'Error'.
+src/lib/storage-v2/db-manager/index.ts(12,3): error TS2459: Module '"./unified-db"' declares 'UnifiedDatabase' locally, but it is not exported.
+src/lib/storage-v2/db-manager/index.ts(16,3): error TS2305: Module '"./unified-db"' has no exported member 'runDBTests'.
+src/lib/storage-v2/db-manager/index.ts(17,3): error TS2305: Module '"./unified-db"' has no exported member 'verifySyncWorking'.
+src/lib/storage-v2/db-manager/index.ts(18,3): error TS2305: Module '"./unified-db"' has no exported member 'testOfflineQueue'.
+src/lib/storage-v2/db-manager/integrity-checker.ts(1,29): error TS2724: '"idb"' has no exported member named 'IDBObjectStore'. Did you mean 'IDBPObjectStore'?
+src/lib/storage-v2/db-manager/integrity-checker.ts(2,1): error TS6133: 'log' is declared but its value is never read.
+src/lib/storage-v2/db-manager/integrity-checker.ts(27,11): error TS6133: 'checksumCache' is declared but its value is never read.
+src/lib/storage-v2/db-manager/integrity-checker.ts(120,28): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/lib/storage-v2/db-manager/integrity-checker.ts(264,5): error TS6133: 'db' is declared but its value is never read.
+src/lib/storage-v2/db-manager/sync-queue.ts(1,29): error TS2724: '"idb"' has no exported member named 'IDBTransactionMode'. Did you mean 'IDBPTransaction'?
+src/lib/storage-v2/db-manager/sync-queue.ts(1,29): error TS6196: 'IDBTransactionMode' is declared but never used.
+src/lib/storage-v2/db-manager/sync-queue.ts(97,5): error TS2322: Type 'Promise<{ success: boolean; synced: number; failed: number; }>' is not assignable to type 'Promise<void>'.
+  Type '{ success: boolean; synced: number; failed: number; }' is not assignable to type 'void'.
+src/lib/storage-v2/db-manager/sync-queue.ts(100,7): error TS2322: Type 'void | null' is not assignable to type '{ success: boolean; synced: number; failed: number; }'.
+  Type 'null' is not assignable to type '{ success: boolean; synced: number; failed: number; }'.
+src/lib/storage-v2/db-manager/sync-queue.ts(134,72): error TS2353: Object literal may only specify known properties, and 'error' does not exist in type 'Error'.
+src/lib/storage-v2/db-manager/test-utils.ts(1,45): error TS2307: Cannot find module './db-manager/unified-db' or its corresponding type declarations.
+src/lib/storage-v2/db-manager/test-utils.ts(17,7): error TS2339: Property 'test' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/storage-v2/db-manager/test-utils.ts(33,7): error TS2339: Property 'test' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/storage-v2/db-manager/test-utils.ts(64,84): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/lib/storage-v2/db-manager/test-utils.ts(105,9): error TS2339: Property 'test' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/storage-v2/db-manager/test-utils.ts(114,7): error TS2339: Property 'test' does not exist on type '{ api: { debug: (msg: string, data?: unknown) => void; info: (msg: string, data?: unknown) => void; warn: (msg: string, data?: unknown) => void; error: (msg: string, error?: Error | undefined, data?: unknown) => void; getLogs: () => LogEntry[]; }; ... 4 more ...; sync: { ...; }; }'.
+src/lib/storage-v2/db-manager/unified-db.ts(2,10): error TS6133: 'SyncQueue' is declared but its value is never read.
+src/lib/storage-v2/db-manager/unified-db.ts(2,26): error TS6133: 'QueuedOperation' is declared but its value is never read.
+src/lib/storage-v2/fallback-00.ts(52,61): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/lib/storage-v2/index.ts(58,15): error TS2300: Duplicate identifier 'ConversationMetadata'.
+src/lib/storage-v2/index.ts(94,3): error TS2300: Duplicate identifier 'ConversationMetadata'.
+src/lib/storage-v2/merkle.ts(88,9): error TS2322: Type 'Promise<Hash>' is not assignable to type 'Hash'.
+  Type 'Promise<Hash>' is not assignable to type 'string'.
+src/lib/storage-v2/merkle.ts(139,11): error TS7022: 'parent' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+src/lib/storage-v2/merkle.ts(250,5): error TS2322: Type 'string' is not assignable to type 'Hash'.
+  Type 'string' is not assignable to type '{ readonly __hash: unique symbol; }'.
+src/lib/storage-v2/merkle.ts(365,21): error TS6133: 'key' is declared but its value is never read.
+src/lib/storage-v2/object-store.ts(18,25): error TS2591: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/lib/storage-v2/privacy-manager.ts(29,10): error TS2459: Module '"./object-store"' declares 'ObjectStore' locally, but it is not exported.
+src/lib/storage-v2/privacy-manager.ts(74,32): error TS2322: Type 'string' is not assignable to type 'ISO8601'.
+  Type 'string' is not assignable to type '{ readonly __timestamp: unique symbol; }'.
+src/lib/storage-v2/privacy-manager.ts(77,5): error TS2322: Type 'PrivacyState | { level: "local"; updatedAt: string; }' is not assignable to type 'PrivacyState'.
+  Type '{ level: "local"; updatedAt: string; }' is not assignable to type 'PrivacyState'.
+    Types of property 'updatedAt' are incompatible.
+      Type 'string' is not assignable to type 'ISO8601'.
+        Type 'string' is not assignable to type '{ readonly __timestamp: unique symbol; }'.
+src/lib/storage-v2/privacy-manager.ts(105,7): error TS2322: Type 'string' is not assignable to type 'ISO8601'.
+  Type 'string' is not assignable to type '{ readonly __timestamp: unique symbol; }'.
+src/lib/storage-v2/privacy-manager.ts(108,7): error TS2322: Type 'string | undefined' is not assignable to type 'ISO8601 | undefined'.
+  Type 'string' is not assignable to type 'ISO8601'.
+    Type 'string' is not assignable to type '{ readonly __timestamp: unique symbol; }'.
+src/lib/storage-v2/privacy-manager.ts(171,7): error TS2322: Type 'string' is not assignable to type 'Signature'.
+  Type 'string' is not assignable to type '{ readonly __signature: unique symbol; }'.
+src/lib/storage-v2/privacy-manager.ts(172,7): error TS2322: Type 'string' is not assignable to type 'ISO8601'.
+  Type 'string' is not assignable to type '{ readonly __timestamp: unique symbol; }'.
+src/lib/storage-v2/privacy-manager.ts(174,7): error TS2322: Type 'string | undefined' is not assignable to type 'ISO8601 | undefined'.
+  Type 'string' is not assignable to type 'ISO8601'.
+    Type 'string' is not assignable to type '{ readonly __timestamp: unique symbol; }'.
+src/lib/storage-v2/privacy-manager.ts(421,9): error TS2322: Type 'string | undefined' is not assignable to type 'IPFS_CID | undefined'.
+  Type 'string' is not assignable to type 'IPFS_CID'.
+    Type 'string' is not assignable to type '{ readonly __cid: unique symbol; }'.
+src/lib/storage-v2/privacy-manager.ts(552,9): error TS2322: Type 'string' is not assignable to type 'DID'.
+  Type 'string' is not assignable to type '{ readonly __did: unique symbol; }'.
+src/lib/storage-v2/secure-crypto.ts(84,5): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(algorithm: AlgorithmIdentifier | RsaOaepParams | AesCtrParams | AesCbcParams | AesGcmParams, key: CryptoKey, data: BufferSource): Promise<...>', gave the following error.
+    Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+      Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+        Types of property 'buffer' are incompatible.
+          Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+            Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+              Types of property '[Symbol.toStringTag]' are incompatible.
+                Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+  Overload 2 of 2, '(algorithm: AlgorithmIdentifier | RsaOaepParams | AesCtrParams | AesCbcParams | AesGcmParams, key: CryptoKey, data: BufferSource): Promise<...>', gave the following error.
+    Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+      Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+        Types of property 'buffer' are incompatible.
+          Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+            Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+              Types of property '[Symbol.toStringTag]' are incompatible.
+                Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+src/lib/storage-v2/secure-crypto.ts(112,20): error TS2352: Conversion of type 'IDBRequest<any>' to type 'Promise<SecureKeyRecord | undefined>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'IDBRequest<any>' is missing the following properties from type 'Promise<SecureKeyRecord | undefined>': then, catch, finally, [Symbol.toStringTag]
+src/lib/storage-v2/secure-crypto.ts(133,22): error TS2339: Property 'salt' does not exist on type 'Promise<SecureKeyRecord | undefined>'.
+src/lib/storage-v2/secure-crypto.ts(145,37): error TS2339: Property 'iv' does not exist on type 'Promise<SecureKeyRecord | undefined>'.
+src/lib/storage-v2/secure-crypto.ts(147,14): error TS2339: Property 'encryptedKey' does not exist on type 'Promise<SecureKeyRecord | undefined>'.
+src/lib/storage-v2/secure-crypto.ts(271,11): error TS6133: 'dataView' is declared but its value is never read.
+src/lib/storage-v2/secure-crypto.ts(750,40): error TS6133: 'targetPublicKey' is declared but its value is never read.
+src/lib/storage-v2/secure-crypto.ts(756,11): error TS6133: 'ephemeral' is declared but its value is never read.
+src/lib/storage-v2/secure-storage-complete.ts(18,3): error TS6133: 'publicKeyToDID' is declared but its value is never read.
+src/lib/storage-v2/secure-storage-complete.ts(19,3): error TS2305: Module '"./secure-crypto"' has no exported member 'generateIdentity'.
+src/lib/storage-v2/secure-storage-complete.ts(19,3): error TS6133: 'generateIdentity' is declared but its value is never read.
+src/lib/storage-v2/secure-storage-complete.ts(291,7): error TS2322: Type 'ContentBlock[] | { type: string; content: string; }[]' is not assignable to type 'ContentBlock[]'.
+  Type '{ type: string; content: string; }[]' is not assignable to type 'ContentBlock[]'.
+    Type '{ type: string; content: string; }' is not assignable to type 'ContentBlock'.
+      Property 'tool_call_id' is missing in type '{ type: string; content: string; }' but required in type 'ToolResultBlock'.
+src/lib/storage-v2/secure-storage-complete.ts(338,7): error TS2322: Type 'ContentBlock[] | { type: string; content: string; }[]' is not assignable to type 'ContentBlock[]'.
+  Type '{ type: string; content: string; }[]' is not assignable to type 'ContentBlock[]'.
+    Type '{ type: string; content: string; }' is not assignable to type 'ContentBlock'.
+      Property 'tool_call_id' is missing in type '{ type: string; content: string; }' but required in type 'ToolResultBlock'.
+src/lib/storage-v2/secure-storage.ts(18,8): error TS2459: Module '"./secure-crypto"' declares 'DID' locally, but it is not exported.
+src/lib/storage-v2/secure-storage.ts(291,7): error TS2322: Type 'ContentBlock[] | { type: string; content: string; }[]' is not assignable to type 'ContentBlock[]'.
+  Type '{ type: string; content: string; }[]' is not assignable to type 'ContentBlock[]'.
+    Type '{ type: string; content: string; }' is not assignable to type 'ContentBlock'.
+      Property 'tool_call_id' is missing in type '{ type: string; content: string; }' but required in type 'ToolResultBlock'.
+src/lib/storage-v2/secure-storage.ts(336,7): error TS2322: Type 'ContentBlock[] | { type: string; content: string; }[]' is not assignable to type 'ContentBlock[]'.
+  Type '{ type: string; content: string; }[]' is not assignable to type 'ContentBlock[]'.
+    Type '{ type: string; content: string; }' is not assignable to type 'ContentBlock'.
+      Property 'tool_call_id' is missing in type '{ type: string; content: string; }' but required in type 'ToolResultBlock'.
+src/lib/storage-v2/storage-security-patched.ts(17,3): error TS6133: 'publicKeyToDID' is declared but its value is never read.
+src/lib/storage-v2/storage-security-patched.ts(18,3): error TS2724: '"./crypto"' has no exported member named 'generateSecureIdentity'. Did you mean 'generateIdentity'?
+src/lib/storage-v2/storage-security-patched.ts(18,3): error TS6133: 'generateSecureIdentity' is declared but its value is never read.
+src/lib/storage-v2/storage-security-patched.ts(19,3): error TS2305: Module '"./crypto"' has no exported member 'secureRetrievePrivateKey'.
+src/lib/storage-v2/storage-security-patched.ts(205,9): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(algorithm: AlgorithmIdentifier | RsaOaepParams | AesCtrParams | AesCbcParams | AesGcmParams, key: CryptoKey, data: BufferSource): Promise<...>', gave the following error.
+    Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+      Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+        Types of property 'buffer' are incompatible.
+          Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+            Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+              Types of property '[Symbol.toStringTag]' are incompatible.
+                Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+  Overload 2 of 2, '(algorithm: AlgorithmIdentifier | RsaOaepParams | AesCtrParams | AesCbcParams | AesGcmParams, key: CryptoKey, data: BufferSource): Promise<...>', gave the following error.
+    Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+      Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+        Types of property 'buffer' are incompatible.
+          Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+            Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+              Types of property '[Symbol.toStringTag]' are incompatible.
+                Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+src/lib/storage-v2/storage-security-patched.ts(436,7): error TS2322: Type 'ContentBlock[] | { type: string; content: string; }[]' is not assignable to type 'ContentBlock[]'.
+  Type '{ type: string; content: string; }[]' is not assignable to type 'ContentBlock[]'.
+    Type '{ type: string; content: string; }' is not assignable to type 'ContentBlock'.
+      Property 'tool_call_id' is missing in type '{ type: string; content: string; }' but required in type 'ToolResultBlock'.
+src/lib/storage-v2/storage-security-patched.ts(483,7): error TS2322: Type 'ContentBlock[] | { type: string; content: string; }[]' is not assignable to type 'ContentBlock[]'.
+  Type '{ type: string; content: string; }[]' is not assignable to type 'ContentBlock[]'.
+    Type '{ type: string; content: string; }' is not assignable to type 'ContentBlock'.
+      Property 'tool_call_id' is missing in type '{ type: string; content: string; }' but required in type 'ToolResultBlock'.
+src/lib/storage-v2/storage.ts(23,25): error TS2591: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/lib/storage-v2/storage.ts(331,7): error TS2322: Type 'ContentBlock[] | { type: string; content: string; }[]' is not assignable to type 'ContentBlock[]'.
+  Type '{ type: string; content: string; }[]' is not assignable to type 'ContentBlock[]'.
+    Type '{ type: string; content: string; }' is not assignable to type 'ContentBlock'.
+      Property 'tool_call_id' is missing in type '{ type: string; content: string; }' but required in type 'ToolResultBlock'.
+src/lib/storage-v2/storage.ts(390,7): error TS2322: Type 'ContentBlock[] | { type: string; content: string; }[]' is not assignable to type 'ContentBlock[]'.
+  Type '{ type: string; content: string; }[]' is not assignable to type 'ContentBlock[]'.
+    Type '{ type: string; content: string; }' is not assignable to type 'ContentBlock'.
+      Property 'tool_call_id' is missing in type '{ type: string; content: string; }' but required in type 'ToolResultBlock'.
+src/lib/storage-v2/storage.ts(790,7): error TS2304: Cannot find name 'logger'.
+src/lib/storage-v2/storage.ts(884,54): error TS2353: Object literal may only specify known properties, and 'conversationId' does not exist in type 'Error'.
+src/lib/storage-v2/storage.ts(916,65): error TS2345: Argument of type '"conversation"' is not assignable to parameter of type '"message" | "edit" | "fork" | "merge" | "annotation" | "root"'.
+src/lib/storage-v2/storage.ts(924,40): error TS2304: Cannot find name 'ConversationMetadata'.
+src/lib/storage-v2/sync/sync-engine.ts(14,31): error TS2307: Cannot find module '../../../../common/error-reporting' or its corresponding type declarations.
+src/lib/storage-v2/sync/sync-engine.ts(34,11): error TS2564: Property 'db' has no initializer and is not definitely assigned in the constructor.
+src/lib/storage-v2/sync/sync-engine.ts(138,11): error TS6133: 'result' is declared but its value is never read.
+src/lib/storage.ts(91,16): error TS2531: Object is possibly 'null'.
+src/lib/storage.ts(97,16): error TS2531: Object is possibly 'null'.
+src/lib/storage.ts(98,12): error TS2352: Conversion of type 'IDBRequest<any>' to type 'Conversation' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'IDBRequest<any>' is missing the following properties from type 'Conversation': id, title, createdAt, exportedAt, and 4 more.
+src/lib/storage.ts(103,16): error TS2531: Object is possibly 'null'.
+src/lib/storage.ts(104,12): error TS2352: Conversion of type 'IDBRequest<any[]>' to type 'Conversation[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'IDBRequest<any[]>' is missing the following properties from type 'Conversation[]': length, pop, push, concat, and 29 more.
+src/lib/storage.ts(109,16): error TS2531: Object is possibly 'null'.
+src/lib/sync-manager.ts(21,25): error TS2591: Cannot find name 'require'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/lib/sync-manager.ts(197,24): error TS2345: Argument of type '"close"' is not assignable to parameter of type '"status" | "sync" | "connection-close" | "connection-error"'.
+src/lib/sync-manager.ts(222,24): error TS2345: Argument of type '"error"' is not assignable to parameter of type '"status" | "sync" | "connection-close" | "connection-error"'.
+src/lib/sync-service.ts(238,13): error TS6133: 'response' is declared but its value is never read.
+src/lib/sync/sync-engine.test.ts(55,29): error TS2532: Object is possibly 'undefined'.
+src/lib/sync/sync-engine.test.ts(68,32): error TS2532: Object is possibly 'undefined'.
+src/lib/sync/sync-engine.ts(4,1): error TS6133: 'useIdentityStore' is declared but its value is never read.
+src/lib/sync/sync-engine.ts(106,25): error TS6133: 'type' is declared but its value is never read.
+src/lib/unified-debug-service.ts(7,46): error TS6133: 'ErrorContext' is declared but its value is never read.
+src/lib/unified-debug-service.ts(7,75): error TS6133: 'ErrorLevel' is declared but its value is never read.
+src/lib/unified-debug-service.ts(429,29): error TS2353: Object literal may only specify known properties, and 'step' does not exist in type 'EnhancedErrorContext'.
+src/lib/unified-debug-service.ts(579,17): error TS2339: Property 'onsuccess' does not exist on type 'Promise<IDBDatabaseInfo[]>'.
+src/lib/unified-debug-service.ts(590,17): error TS2339: Property 'onerror' does not exist on type 'Promise<IDBDatabaseInfo[]>'.
+src/lib/unified-debug-service.ts(669,98): error TS2345: Argument of type 'null' is not assignable to parameter of type 'Error | undefined'.
+src/lib/unified-debug-service.ts(769,9): error TS2353: Object literal may only specify known properties, and 'module' does not exist in type 'EnhancedErrorContext'.
+src/lib/user-conversation-db.ts(8,1): error TS6133: 'getStorage' is declared but its value is never read.
+src/lib/user-conversation-db.ts(11,1): error TS6133: 'Hash' is declared but its value is never read.
+src/lib/user-conversation-db.ts(100,11): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/user-conversation-db.ts(106,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/user-conversation-db.ts(112,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/user-conversation-db.ts(130,18): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/user-conversation-db.ts(137,18): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/user-conversation-db.ts(174,13): error TS6133: 'conversationRequest' is declared but its value is never read.
+src/lib/user-conversation-db.ts(191,13): error TS6133: 'metadataRequest' is declared but its value is never read.
+src/lib/user-conversation-db.ts(194,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/user-conversation-db.ts(200,11): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/user-conversation-db.ts(235,18): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/user-conversation-db.ts(241,13): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/user-conversation-db.ts(248,11): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/user-conversation-db.ts(271,11): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/user-conversation-db.ts(343,11): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/user-conversation-db.ts(360,13): error TS6133: 'conversationRequest' is declared but its value is never read.
+src/lib/user-conversation-db.ts(364,13): error TS6133: 'metadataRequest' is declared but its value is never read.
+src/lib/user-conversation-db.ts(367,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/user-conversation-db.ts(373,11): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/user-conversation-db.ts(408,18): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/user-conversation-db.ts(414,13): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/user-conversation-db.ts(421,11): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/user-conversation-db.ts(444,11): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/user-conversation-db.ts(476,17): error TS2345: Argument of type '{ total: number; pinned: number; archived: number; lastSync: number | undefined; }' is not assignable to parameter of type '{ total: number; pinned: number; archived: number; lastSync?: string | undefined; } | PromiseLike<{ total: number; pinned: number; archived: number; lastSync?: string | undefined; }>'.
+  Type '{ total: number; pinned: number; archived: number; lastSync: number | undefined; }' is not assignable to type '{ total: number; pinned: number; archived: number; lastSync?: string | undefined; }'.
+    Types of property 'lastSync' are incompatible.
+      Type 'number | undefined' is not assignable to type 'string | undefined'.
+        Type 'number' is not assignable to type 'string'.
+src/lib/user-conversation-db.ts(481,11): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/user-conversation-db.ts(503,16): error TS2554: Expected 2-3 arguments, but got 1.
+src/lib/user-conversation-db.ts(509,11): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/user-conversation-db.ts(537,11): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/user-conversation-db.ts(597,11): error TS2345: Argument of type 'Error' is not assignable to parameter of type 'string'.
+src/lib/user-feed-service.ts(29,7): error TS6133: 'tab' is declared but its value is never read.
+src/lib/user-feed-service.ts(32,7): error TS6133: 'topic' is declared but its value is never read.
+src/lib/user-feed-service.ts(80,26): error TS2339: Property 'metadata' does not exist on type 'Conversation'.
+src/lib/user-feed-service.ts(88,48): error TS2345: Argument of type 'import("C:/0-BlackBoxProject-0/vivim-app/pwa/src/lib/storage").Conversation' is not assignable to parameter of type 'import("C:/0-BlackBoxProject-0/vivim-app/pwa/src/types/conversation").Conversation'.
+  Type 'Conversation' is missing the following properties from type 'Conversation': updatedAt, capturedAt
+src/lib/webrtc-manager.ts(14,1): error TS6133: 'useSettingsStore' is declared but its value is never read.
+src/lib/webrtc-manager.ts(27,11): error TS6196: 'SignalingMessage' is declared but never used.
+src/lib/webrtc-manager.ts(40,11): error TS6133: 'localPeerId' is declared but its value is never read.
+src/lib/webrtc-manager.ts(41,11): error TS6133: 'room' is declared but its value is never read.
+src/lib/webrtc-manager.ts(195,17): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'ArrayBufferView<ArrayBuffer>'.
+      Types of property 'buffer' are incompatible.
+        Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+          Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+            Types of property '[Symbol.toStringTag]' are incompatible.
+              Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+src/lib/webrtc-manager.ts(221,19): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'ArrayBufferView<ArrayBuffer>'.
+      Types of property 'buffer' are incompatible.
+        Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+          Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+            Types of property '[Symbol.toStringTag]' are incompatible.
+              Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.
+src/pages/Account.tsx(111,20): error TS2339: Property 'avatarUrl' does not exist on type 'AccountInfo'.
+src/pages/Account.tsx(113,28): error TS2339: Property 'avatarUrl' does not exist on type 'AccountInfo'.
+src/pages/Account.tsx(139,10): error TS2741: Property 'items' is missing in type '{ children: Element[]; }' but required in type 'IOSSettingsGroupProps'.
+src/pages/Account.tsx(173,44): error TS2322: Type '{ label: string; value: string; }' is not assignable to type 'IntrinsicAttributes & IOSSettingsActionProps'.
+  Property 'value' does not exist on type 'IntrinsicAttributes & IOSSettingsActionProps'.
+src/pages/Account.tsx(174,53): error TS2322: Type '{ label: string; value: string; }' is not assignable to type 'IntrinsicAttributes & IOSSettingsActionProps'.
+  Property 'value' does not exist on type 'IntrinsicAttributes & IOSSettingsActionProps'.
+src/pages/Account.tsx(175,52): error TS2322: Type '{ label: string; value: string; }' is not assignable to type 'IntrinsicAttributes & IOSSettingsActionProps'.
+  Property 'value' does not exist on type 'IntrinsicAttributes & IOSSettingsActionProps'.
+src/pages/Account.tsx(179,10): error TS2322: Type '{ children: Element; className: string; }' is not assignable to type 'IntrinsicAttributes & IOSSettingsGroupProps'.
+  Property 'children' does not exist on type 'IntrinsicAttributes & IOSSettingsGroupProps'.
+src/pages/AdminPanel.tsx(1,17): error TS6133: 'useEffect' is declared but its value is never read.
+src/pages/AdminPanel.tsx(4,3): error TS6133: 'Settings' is declared but its value is never read.
+src/pages/AdminPanel.tsx(17,1): error TS6192: All imports in import declaration are unused.
+src/pages/AdminPanel.tsx(22,39): error TS2322: Type 'Promise<typeof import("C:/0-BlackBoxProject-0/vivim-app/pwa/src/components/admin/NetworkPanel")>' is not assignable to type 'Promise<{ default: ComponentType<any>; }>'.
+  Property 'default' is missing in type 'typeof import("C:/0-BlackBoxProject-0/vivim-app/pwa/src/components/admin/NetworkPanel")' but required in type '{ default: ComponentType<any>; }'.
+src/pages/AdminPanel.tsx(23,40): error TS2322: Type 'Promise<typeof import("C:/0-BlackBoxProject-0/vivim-app/pwa/src/components/admin/DataFlowPanel")>' is not assignable to type 'Promise<{ default: ComponentType<any>; }>'.
+  Property 'default' is missing in type 'typeof import("C:/0-BlackBoxProject-0/vivim-app/pwa/src/components/admin/DataFlowPanel")' but required in type '{ default: ComponentType<any>; }'.
+src/pages/AdminPanel.tsx(24,39): error TS2322: Type 'Promise<typeof import("C:/0-BlackBoxProject-0/vivim-app/pwa/src/components/admin/ActionsPanel")>' is not assignable to type 'Promise<{ default: ComponentType<any>; }>'.
+  Property 'default' is missing in type 'typeof import("C:/0-BlackBoxProject-0/vivim-app/pwa/src/components/admin/ActionsPanel")' but required in type '{ default: ComponentType<any>; }'.
+src/pages/AdminPanel.tsx(25,36): error TS2322: Type 'Promise<typeof import("C:/0-BlackBoxProject-0/vivim-app/pwa/src/components/admin/LogsPanel")>' is not assignable to type 'Promise<{ default: ComponentType<any>; }>'.
+  Property 'default' is missing in type 'typeof import("C:/0-BlackBoxProject-0/vivim-app/pwa/src/components/admin/LogsPanel")' but required in type '{ default: ComponentType<any>; }'.
+src/pages/AdminPanel.tsx(27,46): error TS2322: Type 'Promise<typeof import("C:/0-BlackBoxProject-0/vivim-app/pwa/src/components/admin/CRDTManagementPanel")>' is not assignable to type 'Promise<{ default: ComponentType<any>; }>'.
+  Property 'default' is missing in type 'typeof import("C:/0-BlackBoxProject-0/vivim-app/pwa/src/components/admin/CRDTManagementPanel")' but required in type '{ default: ComponentType<any>; }'.
+src/pages/AIConversationsPage.tsx(8,3): error TS6133: 'Clock' is declared but its value is never read.
+src/pages/AIConversationsPage.tsx(12,3): error TS6133: 'X' is declared but its value is never read.
+src/pages/AIConversationsPage.tsx(13,3): error TS6133: 'ChevronRight' is declared but its value is never read.
+src/pages/AIConversationsPage.tsx(24,3): error TS6133: 'IOSTopBar' is declared but its value is never read.
+src/pages/AIConversationsPage.tsx(25,3): error TS6133: 'IOSCard' is declared but its value is never read.
+src/pages/AIConversationsPage.tsx(27,3): error TS6133: 'IOSAvatar' is declared but its value is never read.
+src/pages/AIConversationsPage.tsx(30,3): error TS6133: 'toast' is declared but its value is never read.
+src/pages/AIConversationsPage.tsx(52,5): error TS6133: 'setSortBy' is declared but its value is never read.
+src/pages/AIConversationsPage.tsx(58,9): error TS6133: 'showToast' is declared but its value is never read.
+src/pages/AIConversationsPage.tsx(321,12): error TS2304: Cannot find name 'Bot'.
+src/pages/AIConversationsPage.tsx(332,13): error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.
+src/pages/AIConversationsPage.tsx(416,7): error TS6133: 'ConversationListItemGrid' is declared but its value is never read.
+src/pages/AIConversationsPage.tsx(445,13): error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.
+src/pages/AIConversationsPage.tsx(518,7): error TS6133: 'EmptyState' is declared but its value is never read.
+src/pages/Analytics.tsx(6,23): error TS6133: 'MousePointer' is declared but its value is never read.
+src/pages/Analytics.tsx(7,3): error TS6133: 'Trash2' is declared but its value is never read.
+src/pages/Analytics.tsx(12,3): error TS6133: 'IOSButton' is declared but its value is never read.
+src/pages/Analytics.tsx(13,3): error TS6133: 'IOSEmptyState' is declared but its value is never read.
+src/pages/Analytics.tsx(17,1): error TS6133: 'cn' is declared but its value is never read.
+src/pages/Bookmarks.tsx(7,3): error TS6133: 'IOSButton' is declared but its value is never read.
+src/pages/Bookmarks.tsx(17,1): error TS6133: 'Trash2' is declared but its value is never read.
+src/pages/Bookmarks.tsx(103,17): error TS2739: Type 'BookmarkedConversation' is missing the following properties from type 'Conversation': updatedAt, capturedAt
+src/pages/BYOKChat.tsx(5,3): error TS6133: 'Settings' is declared but its value is never read.
+src/pages/BYOKChat.tsx(6,3): error TS6133: 'Trash2' is declared but its value is never read.
+src/pages/BYOKChat.tsx(8,3): error TS6133: 'ChevronDown' is declared but its value is never read.
+src/pages/BYOKChat.tsx(9,3): error TS6133: 'Sparkles' is declared but its value is never read.
+src/pages/BYOKChat.tsx(10,3): error TS6133: 'X' is declared but its value is never read.
+src/pages/BYOKChat.tsx(11,3): error TS6133: 'Loader2' is declared but its value is never read.
+src/pages/BYOKChat.tsx(29,3): error TS6133: 'getStoredKeys' is declared but its value is never read.
+src/pages/BYOKChat.tsx(31,3): error TS6133: 'removeKey' is declared but its value is never read.
+src/pages/BYOKChat.tsx(32,3): error TS6133: 'hasValidKey' is declared but its value is never read.
+src/pages/BYOKChat.tsx(39,3): error TS6133: 'getProviderModels' is declared but its value is never read.
+src/pages/BYOKChat.tsx(42,10): error TS6133: 'streamChat' is declared but its value is never read.
+src/pages/BYOKChat.tsx(55,10): error TS6133: 'conversations' is declared but its value is never read.
+src/pages/BYOKChat.tsx(64,20): error TS6133: 'setSettings' is declared but its value is never read.
+src/pages/Capture.tsx(12,3): error TS6133: 'IOSSkeletonCard' is declared but its value is never read.
+src/pages/Capture.tsx(13,3): error TS6133: 'ErrorNetwork' is declared but its value is never read.
+src/pages/Capture.tsx(16,3): error TS6133: 'toast' is declared but its value is never read.
+src/pages/Capture.tsx(18,70): error TS6133: 'Lock' is declared but its value is never read.
+src/pages/Capture.tsx(45,9): error TS6133: 'showToast' is declared but its value is never read.
+src/pages/Capture.tsx(432,38): error TS2304: Cannot find name 'cn'.
+src/pages/CaptureSimple.tsx(6,3): error TS6133: 'AlertCircle' is declared but its value is never read.
+src/pages/CaptureSimple.tsx(11,3): error TS6133: 'Fingerprint' is declared but its value is never read.
+src/pages/CaptureSimple.tsx(12,3): error TS6133: 'Lock' is declared but its value is never read.
+src/pages/CaptureSimple.tsx(13,3): error TS6133: 'Cpu' is declared but its value is never read.
+src/pages/CaptureSimple.tsx(14,3): error TS6133: 'RefreshCw' is declared but its value is never read.
+src/pages/CaptureSimple.tsx(24,1): error TS6133: 'cn' is declared but its value is never read.
+src/pages/Collections.tsx(6,3): error TS6133: 'Settings' is declared but its value is never read.
+src/pages/Collections.tsx(7,3): error TS6133: 'MoreVertical' is declared but its value is never read.
+src/pages/Collections.tsx(8,3): error TS6133: 'Plus' is declared but its value is never read.
+src/pages/Collections.tsx(9,3): error TS6133: 'Trash2' is declared but its value is never read.
+src/pages/Collections.tsx(10,3): error TS6133: 'Edit2' is declared but its value is never read.
+src/pages/Collections.tsx(12,3): error TS6133: 'X' is declared but its value is never read.
+src/pages/Collections.tsx(13,3): error TS6133: 'Loader2' is declared but its value is never read.
+src/pages/Collections.tsx(15,3): error TS6133: 'ChevronLeft' is declared but its value is never read.
+src/pages/Collections.tsx(40,11): error TS6196: 'Conversation' is declared but never used.
+src/pages/ConversationView.tsx(29,53): error TS2345: Argument of type '{ error: unknown; }' is not assignable to parameter of type 'string'.
+src/pages/ConversationView.tsx(63,46): error TS2345: Argument of type '{ error: unknown; }' is not assignable to parameter of type 'string'.
+src/pages/ConversationView.tsx(76,12): error TS2678: Type '"share"' is not comparable to type 'AIAction'.
+src/pages/ConversationView.tsx(79,12): error TS2678: Type '"fork"' is not comparable to type 'AIAction'.
+src/pages/ConversationView.tsx(82,12): error TS2678: Type '"export"' is not comparable to type 'AIAction'.
+src/pages/ErrorDashboard.tsx(1,27): error TS6133: 'useEffect' is declared but its value is never read.
+src/pages/ErrorDashboard.tsx(84,9): error TS6133: 'getLevelIcon' is declared but its value is never read.
+src/pages/ErrorDashboard.tsx(104,9): error TS6133: 'getSeverityColor' is declared but its value is never read.
+src/pages/ErrorDashboard.tsx(127,35): error TS2304: Cannot find name 'cn'.
+src/pages/ErrorDashboard.tsx(135,12): error TS2304: Cannot find name 'IOSCard'.
+src/pages/ErrorDashboard.tsx(165,13): error TS2304: Cannot find name 'IOSCard'.
+src/pages/ErrorDashboard.tsx(199,16): error TS2304: Cannot find name 'IOSSkeletonList'.
+src/pages/ErrorDashboard.tsx(202,18): error TS2304: Cannot find name 'IOSCard'.
+src/pages/ErrorDashboard.tsx(206,42): error TS2304: Cannot find name 'cn'.
+src/pages/ErrorDashboard.tsx(222,68): error TS2304: Cannot find name 'Clock'.
+src/pages/ErrorDashboard.tsx(223,85): error TS2304: Cannot find name 'User'.
+src/pages/ErrorDashboard.tsx(229,30): error TS2304: Cannot find name 'ChevronRight'.
+src/pages/ErrorDashboard.tsx(239,37): error TS2304: Cannot find name 'cn'.
+src/pages/ErrorDashboard.tsx(245,19): error TS2304: Cannot find name 'IOSCard'.
+src/pages/ErrorDashboard.tsx(249,18): error TS2304: Cannot find name 'Shield'.
+src/pages/ForYou.tsx(20,3): error TS6133: 'AlertCircle' is declared but its value is never read.
+src/pages/ForYou.tsx(21,3): error TS6133: 'Inbox' is declared but its value is never read.
+src/pages/ForYou.tsx(22,3): error TS6133: 'PlayCircle' is declared but its value is never read.
+src/pages/ForYou.tsx(23,3): error TS6133: 'FlaskConical' is declared but its value is never read.
+src/pages/ForYou.tsx(31,3): error TS6133: 'IOSCard' is declared but its value is never read.
+src/pages/ForYou.tsx(150,9): error TS6133: 'handleBack' is declared but its value is never read.
+src/pages/Home.tsx(4,21): error TS6133: 'Sparkles' is declared but its value is never read.
+src/pages/Home.tsx(4,42): error TS6133: 'Wifi' is declared but its value is never read.
+src/pages/Home.tsx(37,10): error TS6133: 'isOnline' is declared but its value is never read.
+src/pages/Home.tsx(57,9): error TS6133: 'capabilities' is declared but its value is never read.
+src/pages/Home.tsx(58,9): error TS6133: 'isBookmarked' is declared but its value is never read.
+src/pages/Home.tsx(59,29): error TS6133: 'refreshCircles' is declared but its value is never read.
+src/pages/Home.tsx(201,9): error TS2741: Property 'ready' is missing in type '{ isReady: boolean; isOnline: boolean; pendingOperations: number; localConversationCount: number; }' but required in type '{ ready: boolean; message?: string | undefined; totalConversations?: number | undefined; }'.
+src/pages/Home.tsx(203,14): error TS2339: Property 'storageError' does not exist on type '{ timestamp: string; online: boolean; conversations: { count: number; loading: boolean; error: string | null; }; storage: { ready: boolean; message?: string | undefined; totalConversations?: number | undefined; }; userAgent: string; url: string; }'.
+src/pages/Home.tsx(277,40): error TS2345: Argument of type '{ originalId: string; forkId: string; }' is not assignable to parameter of type 'string'.
+src/pages/Home.tsx(330,40): error TS2345: Argument of type '{ action: AIAction; }' is not assignable to parameter of type 'string'.
+src/pages/Home.tsx(457,17): error TS2322: Type '{ children: Element; key: string; onError: (error: any) => void; }' is not assignable to type 'IntrinsicAttributes & IntrinsicClassAttributes<ErrorBoundary> & Readonly<Props>'.
+  Property 'onError' does not exist on type 'IntrinsicAttributes & IntrinsicClassAttributes<ErrorBoundary> & Readonly<Props>'.
+src/pages/Home.tsx(457,27): error TS7006: Parameter 'error' implicitly has an 'any' type.
+src/pages/Receive.tsx(6,3): error TS6133: 'AlertCircle' is declared but its value is never read.
+src/pages/Receive.tsx(10,3): error TS6133: 'User' is declared but its value is never read.
+src/pages/Receive.tsx(11,3): error TS6133: 'XCircle' is declared but its value is never read.
+src/pages/Receive.tsx(22,1): error TS6133: 'cn' is declared but its value is never read.
+src/pages/Search.tsx(4,3): error TS6133: 'IOSCard' is declared but its value is never read.
+src/pages/Search.tsx(10,3): error TS6133: 'IOSToastProvider' is declared but its value is never read.
+src/pages/Search.tsx(56,20): error TS2345: Argument of type 'CoreSearchResult[]' is not assignable to parameter of type 'SetStateAction<Conversation[]>'.
+  Type 'CoreSearchResult[]' is not assignable to type 'Conversation[]'.
+    Type 'CoreSearchResult' is missing the following properties from type 'Conversation': updatedAt, capturedAt, messages, stats
+src/pages/Search.tsx(79,11): error TS2322: Type 'Dispatch<SetStateAction<string>>' is not assignable to type 'ChangeEventHandler<HTMLInputElement, HTMLInputElement>'.
+  Types of parameters 'value' and 'event' are incompatible.
+    Type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to type 'SetStateAction<string>'.
+src/pages/Settings.tsx(12,80): error TS6133: 'AuthUser' is declared but its value is never read.
+src/pages/Settings.tsx(146,30): error TS2339: Property 'displayName' does not exist on type 'never'.
+src/pages/Share.tsx(9,3): error TS6133: 'AlertCircle' is declared but its value is never read.
+src/pages/Share.tsx(10,3): error TS6133: 'Share2' is declared but its value is never read.
+src/pages/Share.tsx(13,3): error TS6133: 'QrCode' is declared but its value is never read.
+src/pages/Share.tsx(15,3): error TS6133: 'Clock' is declared but its value is never read.
+src/pages/Share.tsx(17,3): error TS6133: 'Zap' is declared but its value is never read.
+src/pages/Share.tsx(18,3): error TS6133: 'Info' is declared but its value is never read.
+src/pages/Share.tsx(82,15): error TS7022: 'ms' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer.
+src/pages/Share.tsx(82,20): error TS7053: Element implicitly has an 'any' type because expression of type 'string | number | symbol' can't be used to index type '{ '1h': number; '24h': number; '7d': number; '30d': number; }'.
+src/pages/Share.tsx(315,18): error TS2774: This condition will always return true since this function is always defined. Did you mean to call it instead?
+src/router/routes.tsx(22,28): error TS2322: Type 'Promise<typeof import("C:/0-BlackBoxProject-0/vivim-app/pwa/src/pages/Capture")>' is not assignable to type 'Promise<{ default: ComponentType<any>; }>'.
+  Property 'default' is missing in type 'typeof import("C:/0-BlackBoxProject-0/vivim-app/pwa/src/pages/Capture")' but required in type '{ default: ComponentType<any>; }'.
+src/router/routes.tsx(25,29): error TS2322: Type 'Promise<typeof import("C:/0-BlackBoxProject-0/vivim-app/pwa/src/pages/Settings")>' is not assignable to type 'Promise<{ default: ComponentType<any>; }>'.
+  Property 'default' is missing in type 'typeof import("C:/0-BlackBoxProject-0/vivim-app/pwa/src/pages/Settings")' but required in type '{ default: ComponentType<any>; }'.
+src/router/routes.tsx(112,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(121,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(132,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(143,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(154,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(165,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(176,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(187,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(196,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(207,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(218,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(229,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(240,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(251,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(262,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(273,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(284,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(293,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(304,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(315,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/router/routes.tsx(333,20): error TS2741: Property 'children' is missing in type '{}' but required in type 'Readonly<Props>'.
+src/service-worker.ts(40,7): error TS2345: Argument of type 'Promise<Response | undefined>' is not assignable to parameter of type 'Response | PromiseLike<Response>'.
+  Type 'Promise<Response | undefined>' is not assignable to type 'PromiseLike<Response>'.
+    Types of property 'then' are incompatible.
+      Type '<TResult1 = Response | undefined, TResult2 = never>(onfulfilled?: ((value: Response | undefined) => TResult1 | PromiseLike<TResult1>) | null | undefined, onrejected?: ((reason: any) => TResult2 | PromiseLike<...>) | ... 1 more ... | undefined) => Promise<...>' is not assignable to type '<TResult1 = Response, TResult2 = never>(onfulfilled?: ((value: Response) => TResult1 | PromiseLike<TResult1>) | null | undefined, onrejected?: ((reason: any) => TResult2 | PromiseLike<...>) | null | undefined) => PromiseLike<...>'.
+        Types of parameters 'onfulfilled' and 'onfulfilled' are incompatible.
+          Types of parameters 'value' and 'value' are incompatible.
+            Type 'Response | undefined' is not assignable to type 'Response'.
+              Type 'undefined' is not assignable to type 'Response'.
+src/service-worker.ts(54,5): error TS2345: Argument of type 'Promise<Response | undefined>' is not assignable to parameter of type 'Response | PromiseLike<Response>'.
+  Type 'Promise<Response | undefined>' is not assignable to type 'PromiseLike<Response>'.
+    Types of property 'then' are incompatible.
+      Type '<TResult1 = Response | undefined, TResult2 = never>(onfulfilled?: ((value: Response | undefined) => TResult1 | PromiseLike<TResult1>) | null | undefined, onrejected?: ((reason: any) => TResult2 | PromiseLike<...>) | ... 1 more ... | undefined) => Promise<...>' is not assignable to type '<TResult1 = Response, TResult2 = never>(onfulfilled?: ((value: Response) => TResult1 | PromiseLike<TResult1>) | null | undefined, onrejected?: ((reason: any) => TResult2 | PromiseLike<...>) | null | undefined) => PromiseLike<...>'.
+        Types of parameters 'onfulfilled' and 'onfulfilled' are incompatible.
+          Types of parameters 'value' and 'value' are incompatible.
+            Type 'Response | undefined' is not assignable to type 'Response'.
+              Type 'undefined' is not assignable to type 'Response'.
+src/types/ai-chat.ts(24,3): error TS6196: 'AIUsage' is declared but never used.
+src/types/ai-chat.ts(208,7): error TS2353: Object literal may only specify known properties, and 'id' does not exist in type 'AIMessage'.
+src/types/conversation.ts(132,21): error TS2304: Cannot find name 'ContentBlock'.
+src/types/index.ts(10,1): error TS2308: Module './conversation' has already exported a member named 'Conversation'. Consider explicitly re-exporting to resolve the ambiguity.
+src/types/index.ts(11,1): error TS2308: Module './conversation' has already exported a member named 'Attachment'. Consider explicitly re-exporting to resolve the ambiguity.

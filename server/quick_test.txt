@@ -1,0 +1,47 @@
+--- Starting Integration Tests ---
+
+[1] Creating a test user...
+[2026-02-22 21:02:31.284 +0100] [32mINFO[39m: [36mPrisma client initialized with enhanced observability[39m
+prisma:query INSERT INTO "public"."users" ("id","did","email","emailVerified","phoneVerified","verificationLevel","verificationBadges","trustScore","publicKey","keyType","status","mfaEnabled","backupCodes","createdAt","updatedAt","lastSeenAt","settings","privacyPreferences") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,CAST($11::text AS "public"."AccountStatus"),$12,$13,$14,$15,$16,$17,$18) ON CONFLICT ("email") DO UPDATE SET "mfaEnabled" = $19, "mfaSecret" = $20, "backupCodes" = $21, "updatedAt" = $22 WHERE ("public"."users"."email" = $23 AND 1=1) RETURNING "public"."users"."id", "public"."users"."did", "public"."users"."handle", "public"."users"."displayName", "public"."users"."email", "public"."users"."emailVerified", "public"."users"."phoneNumber", "public"."users"."phoneVerified", "public"."users"."avatarUrl", "public"."users"."verificationLevel", "public"."users"."verificationBadges", "public"."users"."trustScore", "public"."users"."publicKey", "public"."users"."keyType", "public"."users"."status"::text, "public"."users"."deletedAt", "public"."users"."deletionRequestedAt", "public"."users"."suspendedAt", "public"."users"."suspensionReason", "public"."users"."bannedAt", "public"."users"."banReason", "public"."users"."mfaEnabled", "public"."users"."mfaSecret", "public"."users"."backupCodes", "public"."users"."pdsUrl", "public"."users"."createdAt", "public"."users"."updatedAt", "public"."users"."lastSeenAt", "public"."users"."settings", "public"."users"."privacyPreferences"
+User created. ID: f45a2baf-62bb-4ef9-9acc-2d5a917655ad
+
+[2] Generating API key for user...
+[2026-02-22 21:02:31.756 +0100] [33mWARN[39m: [36mSLOW_QUERY: upsert on User took 462ms[39m
+    [35mmodel[39m: "User"
+    [35maction[39m: "upsert"
+    [35mduration[39m: 462
+[2026-02-22 21:02:31.757 +0100] [33mWARN[39m: [36mPerformance issue reported[39m
+    [35mmessage[39m: "Performance Issue: database_query_time"
+    [35mvalue[39m: 462
+    [35mthreshold[39m: 100
+    [35mcontext[39m: {
+      "model": "User",
+      "operation": "upsert",
+      "query": {
+        "where": {
+          "email": "testmfa@example.com"
+        },
+        "update": {
+          "mfaEnabled": false,
+          "mfaSecret": null,
+          "backupCodes": []
+        },
+        "create": {
+          "email": "testmfa@example.com",
+          "did": "did:key:zTest1771790551287",
+          "publicKey": "mock-public-key",
+          "trustScore": 100
+        }
+      }
+    }
+    [35mseverity[39m: "low"
+prisma:query INSERT INTO "public"."api_keys" ("id","userId","keyHash","name","expiresAt","createdAt") VALUES ($1,$2,$3,$4,$5,$6) RETURNING "public"."api_keys"."id", "public"."api_keys"."userId", "public"."api_keys"."keyHash", "public"."api_keys"."name", "public"."api_keys"."lastUsed", "public"."api_keys"."expiresAt", "public"."api_keys"."createdAt"
+Generated Key: vk_live_eSyUFo-0HWNQq-igItg483Gegb17sv_wEFY1LuwOdwA
+
+[3] Testing GET /me/api-keys with generated key...
+error: Unable to connect. Is the computer able to access the url?
+  path: "http://localhost:3000/api/v1/account/me/api-keys",
+ errno: 0,
+  code: "ConnectionRefused"
+
+

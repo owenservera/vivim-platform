@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface IdentityState {
   did: string | null;
+  userId: string | null; // Server UUID (used for ownerId comparison)
   publicKey: string | null;
   tier: 0 | 1 | 2 | 3;
   isUnlocked: boolean;
@@ -11,7 +12,7 @@ interface IdentityState {
     avatar?: string;
   } | null;
 
-  setIdentity: (did: string, publicKey: string, tier?: 0 | 1 | 2 | 3) => void;
+  setIdentity: (did: string, publicKey: string, tier?: 0 | 1 | 2 | 3, userId?: string) => void;
   setTier: (tier: 0 | 1 | 2 | 3) => void;
   setProfile: (profile: { displayName?: string; avatar?: string }) => void;
   unlock: () => void;
@@ -23,13 +24,14 @@ export const useIdentityStore = create<IdentityState>()(
   persist(
     (set) => ({
       did: null,
+      userId: null,
       publicKey: null,
       tier: 0,
       isUnlocked: false,
       profile: null,
 
-      setIdentity: (did, publicKey, tier = 0) =>
-        set({ did, publicKey, tier }),
+      setIdentity: (did, publicKey, tier = 0, userId) =>
+        set({ did, publicKey, tier, ...(userId !== undefined && { userId }) }),
 
       setTier: (tier) =>
         set({ tier }),
@@ -44,13 +46,14 @@ export const useIdentityStore = create<IdentityState>()(
         set({ isUnlocked: false }),
 
       clear: () =>
-        set({ did: null, publicKey: null, tier: 0, isUnlocked: false, profile: null }),
+        set({ did: null, userId: null, publicKey: null, tier: 0, isUnlocked: false, profile: null }),
     }),
     {
       name: 'openscroll-identity',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         did: state.did,
+        userId: state.userId,
         publicKey: state.publicKey,
         tier: state.tier,
         profile: state.profile,

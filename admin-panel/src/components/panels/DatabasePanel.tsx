@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { clsx } from 'clsx'
 import { useAppStore } from '../../store/appStore'
+import { databaseApi } from '../../lib/api'
 import {
   Search,
   Play,
@@ -14,19 +15,27 @@ import {
   Clock,
   AlertCircle
 } from 'lucide-react'
-import { mockQueryResult } from '../../lib/mockData'
 
 export default function DatabasePanel() {
   const { tables, queryResult, setQueryResult, isLoading, setIsLoading } = useAppStore()
   const [selectedTable, setSelectedTable] = useState<string | null>(null)
   const [query, setQuery] = useState('')
   const [showTables, setShowTables] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const handleRunQuery = async () => {
     setIsLoading(true)
-    await new Promise(resolve => setTimeout(resolve, 500))
-    setQueryResult(mockQueryResult)
-    setIsLoading(false)
+    setError(null)
+    try {
+      const result = await databaseApi.executeQuery(query)
+      setQueryResult(result)
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Query execution failed'
+      setError(errorMessage)
+      console.error('Query error:', err)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleTableClick = (tableName: string) => {
@@ -111,6 +120,15 @@ export default function DatabasePanel() {
           </div>
 
           <div className="flex-1 overflow-auto">
+            {error && (
+              <div className="m-4 p-4 bg-red-900/20 border border-red-700 rounded-lg">
+                <div className="flex items-center gap-2 text-red-400 mb-2">
+                  <AlertCircle size={16} />
+                  <span className="font-medium">Query Error</span>
+                </div>
+                <p className="text-red-300 text-sm font-mono">{error}</p>
+              </div>
+            )}
             {queryResult ? (
               <div className="h-full flex flex-col">
                 <div className="flex items-center justify-between px-4 py-2 bg-dark-800/50 border-b border-dark-700">

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { useAppStore } from './store/appStore'
 import { networkApi, databaseApi, systemApi, crdtApi, dataflowApi, realTimeUpdates } from './lib/api'
 import Sidebar from './components/Sidebar'
@@ -10,6 +10,7 @@ import LogsPanel from './components/panels/LogsPanel'
 import SystemOverviewPanel from './components/panels/SystemOverviewPanel'
 import RealTimeLogsPanel from './components/panels/RealTimeLogsPanel'
 import CRDTManagementPanel from './components/panels/CRDTManagementPanel'
+import type { NetworkMetric, LogEntry } from './types'
 
 export default function App() {
   const {
@@ -23,6 +24,15 @@ export default function App() {
     addLog,
     setIsLoading
   } = useAppStore()
+
+  // Wrap callbacks to maintain stable references
+  const handleNetworkMetric = useCallback((metric: NetworkMetric) => {
+    addMetric(metric)
+  }, [addMetric])
+
+  const handleSystemLog = useCallback((log: LogEntry) => {
+    addLog(log)
+  }, [addLog])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,14 +66,10 @@ export default function App() {
         realTimeUpdates.connect()
 
         // Listen for network metrics updates
-        realTimeUpdates.on('network:metric', (metric: any) => {
-          addMetric(metric)
-        })
+        realTimeUpdates.on('network:metric', handleNetworkMetric)
 
         // Listen for system logs
-        realTimeUpdates.on('system:log', (log: any) => {
-          addLog(log)
-        })
+        realTimeUpdates.on('system:log', handleSystemLog)
 
       } catch (err) {
         console.error('Failed to load admin data:', err)
@@ -74,11 +80,13 @@ export default function App() {
 
     fetchData()
 
-    // Cleanup
+    // Cleanup: Properly remove all listeners before disconnecting
     return () => {
+      realTimeUpdates.off('network:metric', handleNetworkMetric)
+      realTimeUpdates.off('system:log', handleSystemLog)
       realTimeUpdates.disconnect()
     }
-  }, [])
+  }, [setNetworkNodes, setConnections, setTables, setDataFlows, setCrdtDocuments, addLog, setIsLoading, handleNetworkMetric, handleSystemLog])
 
   const renderPanel = () => {
     switch (activePanel) {
