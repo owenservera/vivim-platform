@@ -443,7 +443,20 @@ router.post('/fork', async (req, res) => {
       const conv = conversations.get(forkedId);
       conv.messages.push({ role: 'user', content: prompt, timestamp: new Date().toISOString() });
 
-      const systemPrompt = systemPromptManager.buildPrompt({
+      let contextResult = null;
+      if (userId) {
+        try {
+          contextResult = await unifiedContextService.generateContextForChat(forkedId, {
+            userId,
+            userMessage: prompt,
+            personaId: conv.personaId
+          });
+        } catch (ctxError) {
+          logger.warn({ error: ctxError.message }, 'Context assembly failed for fork');
+        }
+      }
+
+      const systemPrompt = contextResult?.systemPrompt || systemPromptManager.buildPrompt({
         mode: 'fresh',
         personaId: conv.personaId,
         userId,

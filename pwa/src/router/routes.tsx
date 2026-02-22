@@ -33,6 +33,7 @@ const AIConversationsPage = lazy(() => import('../pages/AIConversationsPage'));
 const AdminPanel = lazy(() => import('../pages/AdminPanel'));
 const ForYou = lazy(() => import('../pages/ForYou'));
 const BYOKChat = lazy(() => import('../pages/BYOKChat'));
+const ContextComponents = lazy(() => import('../pages/ContextComponents'));
 
 // Loading component
 const PageLoading = () => (
@@ -194,6 +195,17 @@ const router = createBrowserRouter([
       <AppLayout>
         <Settings />
       </AppLayout>
+    ),
+    errorElement: <ErrorBoundary />
+  },
+  {
+    path: "/context-components",
+    element: (
+      <AuthGuard>
+        <AppLayout>
+          <ContextComponents />
+        </AppLayout>
+      </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
   },

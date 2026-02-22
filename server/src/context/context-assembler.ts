@@ -115,19 +115,20 @@ export class DynamicContextAssembler {
       params.conversationId
     );
 
-    const bundles = await this.gatherBundles(
-      params.userId,
-      detectedContext,
-      params.conversationId,
-      params.personaId
-    );
-
-    const jitKnowledge = await this.justInTimeRetrieval(
-      params.userId,
-      params.userMessage,
-      messageEmbedding,
-      detectedContext
-    );
+    const [bundles, jitKnowledge] = await Promise.all([
+      this.gatherBundles(
+        params.userId,
+        detectedContext,
+        params.conversationId,
+        params.personaId
+      ),
+      this.justInTimeRetrieval(
+        params.userId,
+        params.userMessage,
+        messageEmbedding,
+        detectedContext
+      )
+    ]);
 
     const budget = this.computeBudget(
       bundles,
@@ -166,25 +167,47 @@ export class DynamicContextAssembler {
     embedding: number[],
     conversationId: string
   ): Promise<DetectedContext> {
-    // Find topic profiles with embeddings using Prisma (not raw SQL to avoid pgvector dependency)
-    const matchedTopics = await this.prisma.topicProfile.findMany({
-      where: {
-        userId,
-        embedding: { isEmpty: false }
-      },
-      take: 3,
-      select: { id: true, slug: true, label: true }
-    });
+    let matchedTopics: any[] = [];
+    try {
+      matchedTopics = await this.prisma.$queryRaw<any[]>`
+        SELECT id, slug, label, 1 - (embedding <=> ${embedding}::vector) as similarity
+        FROM topic_profiles
+        WHERE "userId" = ${userId}
+          AND embedding IS NOT NULL
+          AND array_length(embedding, 1) > 0
+        ORDER BY embedding <=> ${embedding}::vector
+        LIMIT 3
+      `;
+    } catch (e) {
+      logger.warn({ error: e }, 'Topic semantic search failed, using fallback');
+      const fallback = await this.prisma.topicProfile.findMany({
+        where: { userId, embedding: { isEmpty: false } },
+        take: 3,
+        select: { id: true, slug: true, label: true }
+      });
+      matchedTopics = fallback.map(t => ({ ...t, similarity: 0.5 }));
+    }
 
-    // Find entity profiles with embeddings using Prisma
-    const matchedEntities = await this.prisma.entityProfile.findMany({
-      where: {
-        userId,
-        embedding: { isEmpty: false }
-      },
-      take: 3,
-      select: { id: true, name: true, type: true }
-    });
+    let matchedEntities: any[] = [];
+    try {
+      matchedEntities = await this.prisma.$queryRaw<any[]>`
+        SELECT id, name, type, 1 - (embedding <=> ${embedding}::vector) as similarity
+        FROM entity_profiles
+        WHERE "userId" = ${userId}
+          AND embedding IS NOT NULL
+          AND array_length(embedding, 1) > 0
+        ORDER BY embedding <=> ${embedding}::vector
+        LIMIT 3
+      `;
+    } catch (e) {
+      logger.warn({ error: e }, 'Entity semantic search failed, using fallback');
+      const fallback = await this.prisma.entityProfile.findMany({
+        where: { userId, embedding: { isEmpty: false } },
+        take: 3,
+        select: { id: true, name: true, type: true }
+      });
+      matchedEntities = fallback.map(e => ({ ...e, similarity: 0.5 }));
+    }
 
     const allEntities = await this.prisma.entityProfile.findMany({
       where: { userId },
@@ -269,109 +292,63 @@ export class DynamicContextAssembler {
     conversationId: string,
     personaId?: string
   ): Promise<CompiledBundle[]> {
-    const bundles: CompiledBundle[] = [];
-
     const normalizedPersonaId = personaId === undefined ? null : personaId;
+    const tasks: Promise<CompiledBundle | null>[] = [];
 
-    // L0: Identity core - compile on-demand if not cached
-    let identity = await this.getBundle(userId, 'identity_core', null, null, null, normalizedPersonaId);
-    if (!identity) {
-      try {
-        identity = await this.bundleCompiler.compileIdentityCore(userId);
-      } catch (e) {
-        // User might not have identity memories yet
-        identity = null;
-      }
-    }
-    if (identity) bundles.push(identity);
-
-    // L1: Global preferences - compile on-demand if not cached
-    let prefs = await this.getBundle(userId, 'global_prefs', null, null, null, normalizedPersonaId);
-    if (!prefs) {
-      try {
-        prefs = await this.bundleCompiler.compileGlobalPrefs(userId);
-      } catch (e) {
-        // User might not have preferences yet
-        prefs = null;
-      }
-    }
-    if (prefs) bundles.push(prefs);
-
-    // L2: Topic context - compile on-demand if not cached
-    if (context.topics.length > 0) {
-      const primaryTopic = context.topics
-        .sort((a, b) => b.confidence - a.confidence)[0];
-
-      let topicBundle = await this.getBundle(userId, 'topic', primaryTopic.profileId, null, null, normalizedPersonaId);
-
-      if (!topicBundle) {
+    const fetchBundle = async (
+      type: string,
+      topicId: string | null,
+      entityId: string | null,
+      convId: string | null,
+      compileFn: () => Promise<any>
+    ) => {
+      let bundle = await this.getBundle(userId, type, topicId, entityId, convId, normalizedPersonaId);
+      if (!bundle) {
         try {
-          topicBundle = await this.bundleCompiler.compileTopicContext(
-            userId, primaryTopic.slug
-          );
+          const dbBundle = await compileFn();
+          if (dbBundle) return this.mapDbBundleToCompiled(dbBundle);
         } catch (e) {
-          // Topic might not exist
-          topicBundle = null;
+          logger.debug({ type, error: e }, `Failed to compile ${type} bundle`);
         }
       }
+      return bundle;
+    };
 
-      if (topicBundle) {
-        bundles.push(this.mapDbBundleToCompiled(topicBundle));
-      }
+    // L0: Identity core
+    tasks.push(fetchBundle('identity_core', null, null, null, () => this.bundleCompiler.compileIdentityCore(userId)));
 
-      // Secondary topic (no fallback - it's optional)
+    // L1: Global preferences
+    tasks.push(fetchBundle('global_prefs', null, null, null, () => this.bundleCompiler.compileGlobalPrefs(userId)));
+
+    // L2: Topic context
+    if (context.topics.length > 0) {
+      const primaryTopic = context.topics.sort((a, b) => b.confidence - a.confidence)[0];
+      tasks.push(fetchBundle('topic', primaryTopic.profileId, null, null, () => this.bundleCompiler.compileTopicContext(userId, primaryTopic.slug)));
+
+      // Secondary topic (no fallback compilation, just fetch if cached)
       if (context.topics.length > 1) {
         const secondaryTopic = context.topics[1];
-        const secondaryBundle = await this.getBundle(userId, 'topic', secondaryTopic.profileId, null, null, normalizedPersonaId);
-        if (secondaryBundle) bundles.push(this.mapDbBundleToCompiled(secondaryBundle));
+        tasks.push(this.getBundle(userId, 'topic', secondaryTopic.profileId, null, null, normalizedPersonaId));
       }
     }
 
-    // L3: Entity context - compile on-demand if not cached
+    // L3: Entity context
     for (const entity of context.entities.slice(0, 2)) {
-      let entityBundle = await this.getBundle(userId, 'entity', null, entity.id, null, normalizedPersonaId);
-
-      if (!entityBundle) {
-        try {
-          entityBundle = await this.bundleCompiler.compileEntityContext(userId, entity.id);
-        } catch (e) {
-          // Entity might not exist
-          entityBundle = null;
-        }
-      }
-
-      if (entityBundle) bundles.push(this.mapDbBundleToCompiled(entityBundle));
+      tasks.push(fetchBundle('entity', null, entity.id, null, () => this.bundleCompiler.compileEntityContext(userId, entity.id)));
     }
 
-    // L4: Conversation context - compile on-demand if not cached
-    // Always attempt for continuing conversations
+    // L4: Conversation context
     if (context.isContinuation && conversationId && conversationId !== 'new-chat') {
-      let convBundle = await this.getBundle(userId, 'conversation', null, null, conversationId, normalizedPersonaId);
-
-      if (!convBundle) {
-        try {
-          convBundle = await this.bundleCompiler.compileConversationContext(
-            userId, conversationId
-          );
-        } catch (e) {
-          // Conversation might not exist in DB yet
-          convBundle = null;
-        }
-      }
-
-      if (convBundle) bundles.push(this.mapDbBundleToCompiled(convBundle));
+      tasks.push(fetchBundle('conversation', null, null, conversationId, () => this.bundleCompiler.compileConversationContext(userId, conversationId)));
     }
 
-    // L5: Persona-specific context - compile on-demand if personaId provided
+    // L5: Persona-specific context
     if (personaId) {
-      let personaBundle = await this.getBundle(userId, 'persona', null, null, null, normalizedPersonaId);
-
-      if (personaBundle) {
-        bundles.push(this.mapDbBundleToCompiled(personaBundle));
-      }
+      tasks.push(this.getBundle(userId, 'persona', null, null, null, normalizedPersonaId));
     }
 
-    return bundles;
+    const results = await Promise.all(tasks);
+    return results.filter((b): b is CompiledBundle => b !== null);
   }
 
   private async getBundle(

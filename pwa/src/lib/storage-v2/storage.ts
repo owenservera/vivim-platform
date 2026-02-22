@@ -10,6 +10,7 @@
  */
 
 import { IndexedDBObjectStore, ConversationStore, SnapshotStore } from './object-store';
+import type { ConversationMetadata } from './object-store';
 import { DAGEngine, ConversationBuilder } from './dag-engine';
 import {
   generateIdentity
@@ -65,6 +66,8 @@ export class Storage {
   private dagEngine: DAGEngine;
   private identity!: { did: DID; keyPair: { publicKey: string; secretKey: string } };
   private ready: Promise<void>;
+  /** Prevents concurrent rebuild attempts from stacking up */
+  private rebuildInProgress: Promise<void> | null = null;
 
   constructor(_config?: StorageConfig) {
     this.objectStore = new IndexedDBObjectStore();
@@ -230,12 +233,18 @@ export class Storage {
       let metadataList = await this.conversationStore.list();
       log.storage.info(`[${listId}] Found ${metadataList.length} conversations in index`);
       
-      // If the index is empty, try to rebuild it
+      // If the index is empty, try to rebuild it (only once at a time)
       if (metadataList.length === 0) {
         log.storage.warn(`[${listId}] Conversation index is empty, attempting to rebuild...`);
         
         try {
-          await this.rebuildConversationIndex();
+          // Share a single rebuild promise to prevent concurrent rebuild storms
+          if (!this.rebuildInProgress) {
+            this.rebuildInProgress = this.rebuildConversationIndex().finally(() => {
+              this.rebuildInProgress = null;
+            });
+          }
+          await this.rebuildInProgress;
           
           // Try to get the list again after rebuilding
           metadataList = await this.conversationStore.list();
@@ -787,7 +796,7 @@ export class Storage {
         return estimate.usage || 0;
       }
     } catch (e) {
-      logger.warn('Storage', 'Failed to calculate storage size', e);
+      log.storage.warn('Failed to calculate storage size', { error: e });
     }
     return 0;
   }
@@ -881,7 +890,8 @@ export class Storage {
       };
       localStorage.setItem(this.getMetadataKey(conversationId), JSON.stringify(updated));
     } catch (error) {
-      log.storage.error('Failed to save metadata', { conversationId, error });
+      log.storage.error('Failed to save metadata', new Error(String(error)));
+      // conversationId and error context: conversationId = ${conversationId}
       throw error;
     }
   }
@@ -912,8 +922,9 @@ export class Storage {
     try {
       await this.ensureReady();
       
-      // Get all conversation roots from the object store
-      const allConversations = await this.objectStore.getByType('conversation');
+      // Get all conversation roots from the object store.
+      // Note: conversation root nodes are stored with type === 'root', NOT 'conversation'.
+      const allConversations = await this.objectStore.getByType('root');
       log.storage.info(`[${rebuildId}] Found ${allConversations.length} conversation roots in object store`);
       
       // Get current conversation index

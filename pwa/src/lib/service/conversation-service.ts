@@ -2,7 +2,7 @@ import { getStorage } from '../storage-v2';
 import { initUnifiedDB } from '../storage-v2/db-manager/unified-db';
 import { log } from '../logger';
 import { asHash } from '../storage-v2/types';
-import type { Conversation, Message, ContentBlock, ConversationStats } from '../../types/conversation';
+import type { Conversation, Message, ContentBlock, ContentPart, ConversationStats } from '../../types/conversation';
 import type { MessageNode, ConversationRoot } from '../storage-v2/types';
 
 // Try to import UnifiedDebugService for centralized error reporting
@@ -72,14 +72,14 @@ export class ConversationService {
           messages: [], // We'll load messages individually when needed
           stats: {
             totalMessages: messageCount || 0,
-            totalWords: root.metadata?.totalWords || 0,
-            totalCharacters: root.metadata?.totalCharacters || 0,
-            totalCodeBlocks: root.metadata?.totalCodeBlocks || 0,
-            totalMermaidDiagrams: root.metadata?.totalMermaidDiagrams || 0,
-            totalImages: root.metadata?.totalImages || 0,
-            totalTables: root.metadata?.totalTables || 0,
-            totalLatexBlocks: root.metadata?.totalLatexBlocks || 0,
-            totalToolCalls: root.metadata?.totalToolCalls || 0,
+            totalWords: Number(root.metadata?.totalWords) || 0,
+            totalCharacters: Number(root.metadata?.totalCharacters) || 0,
+            totalCodeBlocks: Number(root.metadata?.totalCodeBlocks) || 0,
+            totalMermaidDiagrams: Number(root.metadata?.totalMermaidDiagrams) || 0,
+            totalImages: Number(root.metadata?.totalImages) || 0,
+            totalTables: Number(root.metadata?.totalTables) || 0,
+            totalLatexBlocks: Number(root.metadata?.totalLatexBlocks) || 0,
+            totalToolCalls: Number(root.metadata?.totalToolCalls) || 0,
             firstMessageAt: (root.metadata?.createdAt as string) || root.timestamp || new Date().toISOString(),
             lastMessageAt: lastMessageAt || root.timestamp || new Date().toISOString()
           },
@@ -91,28 +91,10 @@ export class ConversationService {
         };
       });
 
-      log.storage.debug(`[${requestId}] Validating ${conversations.length} conversations...`);
-      
-      // Validate conversations before returning
-      let validationErrors = 0;
-      try {
-        const unifiedDB = await getUnifiedDBWithInit();
-        for (const convo of conversations) {
-          const validation = unifiedDB.validate(convo, 'conversation');
-          if (!validation.valid) {
-            validationErrors++;
-            log.storage.warn(`[${requestId}] Conversation ${convo.id?.slice(0,10)} failed validation`, { errors: validation.errors });
-          }
-        }
-      } catch (e) {
-        log.storage.warn(`[${requestId}] Validation skipped - DB not ready`, { error: e });
-      }
-
       const duration = Date.now() - startTime;
       log.storage.info(`[${requestId}] ========== CONVERSATION SERVICE: getAllConversations COMPLETE ==========`,
         { 
           conversationCount: conversations.length, 
-          validationErrors,
           duration: `${duration}ms`
         }
       );
@@ -224,7 +206,7 @@ export class ConversationService {
       const unifiedDB = await getUnifiedDBWithInit();
       return await unifiedDB.sync();
     } catch (e) {
-      log.storage.error('Sync failed', { error: e });
+      log.storage.error('Sync failed', e instanceof Error ? e : new Error(String(e)));
       return { success: false, synced: 0, failed: 0 };
     }
   }
@@ -287,7 +269,7 @@ export class ConversationService {
       content: this.adaptContent(node.content),
       timestamp: node.timestamp,
       metadata: node.metadata || {},
-      parts: Array.isArray(node.content) ? node.content : []
+      parts: Array.isArray(node.content) ? node.content as ContentPart[] : []
     };
   }
 
@@ -301,9 +283,9 @@ export class ConversationService {
       }
       // Convert string array to text content blocks
       return content.map(item => ({
-        type: 'text',
+        type: 'text' as const,
         content: typeof item === 'string' ? item : JSON.stringify(item)
-      }));
+      })) as unknown as ContentBlock[];
     }
     return String(content);
   }
@@ -377,7 +359,7 @@ export class ConversationService {
           words += blockContent.split(/\s+/).length;
           chars += blockContent.length;
 
-          switch (block.type) {
+          switch ((block as { type: string }).type) {
             case 'code':
               codeBlocks++;
               break;
@@ -390,7 +372,7 @@ export class ConversationService {
             case 'table':
               tables++;
               break;
-            case 'math':
+            case 'math': // legacy alias for latex
             case 'latex':
               latexBlocks++;
               break;
@@ -402,13 +384,13 @@ export class ConversationService {
       }
     });
 
-    const firstMessageTime = messages.length > 0
-      ? messages[0].timestamp || root.metadata?.createdAt || root.timestamp
-      : root.metadata?.createdAt || root.timestamp;
+    const firstMessageTime: string | null = messages.length > 0
+      ? (messages[0].timestamp as string) || (root.metadata?.createdAt as string) || root.timestamp || null
+      : (root.metadata?.createdAt as string) || root.timestamp || null;
       
-    const lastMessageTime = messages.length > 0
-      ? messages[messages.length - 1].timestamp || root.metadata?.createdAt || root.timestamp
-      : root.metadata?.createdAt || root.timestamp;
+    const lastMessageTime: string | null = messages.length > 0
+      ? (messages[messages.length - 1].timestamp as string) || (root.metadata?.createdAt as string) || root.timestamp || null
+      : (root.metadata?.createdAt as string) || root.timestamp || null;
 
     return {
       totalMessages: messages.length,
@@ -420,10 +402,10 @@ export class ConversationService {
       totalTables: tables,
       totalLatexBlocks: latexBlocks,
       totalToolCalls: toolCalls,
-      firstMessageAt: firstMessageTime || new Date().toISOString(),
-      lastMessageAt: lastMessageTime || new Date().toISOString(),
+      firstMessageAt: firstMessageTime ?? new Date().toISOString(),
+      lastMessageAt: lastMessageTime ?? new Date().toISOString(),
       durationMs: firstMessageTime && lastMessageTime
-        ? new Date(lastMessageTime).getTime() - new Date(firstMessageTime).getTime()
+        ? new Date(firstMessageTime).getTime() - new Date(lastMessageTime).getTime()
         : undefined
     };
   }

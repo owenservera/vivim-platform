@@ -14,7 +14,7 @@ import { useAuth } from '../lib/auth-context';
 import { useDeviceContext } from '../lib/device-context';
 import { DeviceType } from '../lib/device-detection';
 import { Smartphone, Monitor, Tablet, RotateCcw } from 'lucide-react';
-import { User, Bell, Shield, Database, Palette, Info, LogOut, Trash2, ChevronRight } from 'lucide-react';
+import { User, Bell, Shield, Database, Palette, Info, LogOut, Trash2, ChevronRight, Terminal } from 'lucide-react';
 
 export const Settings: React.FC = () => {
   const [did, setDid] = useState<string>('');
@@ -251,6 +251,27 @@ export const Settings: React.FC = () => {
           label: 'Privacy Policy',
           icon: <Info className="w-5 h-5" />,
           type: 'navigation' as const,
+        },
+      ],
+    },
+    {
+      title: 'Developer',
+      items: [
+        {
+          id: 'admin-panel',
+          label: 'Admin Panel',
+          value: 'System debug & diagnostics',
+          icon: <Terminal className="w-5 h-5" />,
+          type: 'action' as const,
+          onClick: () => navigate('/admin'),
+        },
+        {
+          id: 'context-components',
+          label: 'Context Components',
+          value: 'Manage dynamic context bundles',
+          icon: <Database className="w-5 h-5" />,
+          type: 'action' as const,
+          onClick: () => navigate('/context-components'),
         },
       ],
     },
