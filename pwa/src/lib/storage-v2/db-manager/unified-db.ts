@@ -1,5 +1,5 @@
 import { DatabaseManager, type DBManagerConfig, type StoreDefinition, type Migration } from './database-manager';
-import { SyncQueue, type QueuedOperation, type SyncQueueConfig } from './sync-queue';
+import { type SyncQueueConfig } from './sync-queue';
 import { DataValidator, type ValidationResult, type SchemaDefinition } from './data-validator';
 import { IntegrityChecker, type IntegrityReport } from './integrity-checker';
 import { ConflictResolver, type ConflictResolution, type ConflictStrategy, type ConflictRecord } from './conflict-resolver';
@@ -90,13 +90,16 @@ class UnifiedDatabase {
 
   constructor(config: UnifiedDBConfig = {}) {
     this.config = {
-      dbName: 'VivimDB',
-      version: 1,
+      // Use 'VivimSync' — NOT 'VivimDB'. The main object-store.ts opens
+      // 'VivimDB' at version 3. Opening the same DB at version 1 causes
+      // IDB to permanently block the request, leading to the 15s timeout.
+      dbName: 'VivimSync',
+      version: 2,
       stores: DEFAULT_STORES,
       migrations: DEFAULT_MIGRATIONS,
       enableValidation: true,
-      enableIntegrityCheck: true,
-      enableSync: true,
+      enableIntegrityCheck: false, // integrity check is expensive; keep disabled by default
+      enableSync: false, // sync enabled per-call when needed
       ...config,
     };
 
@@ -135,6 +138,7 @@ class UnifiedDatabase {
     await this.ready();
     return this.manager!.put(storeName, value);
   }
+
 
   async get<T>(storeName: string, key: IDBValidKey): Promise<T | undefined> {
     await this.ready();
@@ -257,9 +261,11 @@ class UnifiedDatabase {
 }
 
 let dbInstance: UnifiedDatabase | null = null;
+let dbInitializing: Promise<UnifiedDatabase> | null = null;
 
 export function createUnifiedDB(config?: UnifiedDBConfig): UnifiedDatabase {
   dbInstance = new UnifiedDatabase(config);
+  dbInitializing = null; // reset init promise when creating fresh instance
   return dbInstance;
 }
 
@@ -268,9 +274,23 @@ export function getUnifiedDB(): UnifiedDatabase | null {
 }
 
 export async function initUnifiedDB(config?: UnifiedDBConfig): Promise<UnifiedDatabase> {
-  const db = createUnifiedDB(config);
-  await db.init();
-  return db;
+  // Reuse existing promise if already initializing
+  if (dbInitializing) return dbInitializing;
+  
+  // Reuse existing instance if already initialized
+  if (dbInstance && dbInstance.isReady()) return dbInstance;
+
+  dbInitializing = (async () => {
+    const db = dbInstance ?? createUnifiedDB(config);
+    await db.init();
+    return db;
+  })();
+
+  try {
+    return await dbInitializing;
+  } finally {
+    dbInitializing = null;
+  }
 }
 
 export type { ValidationResult, SchemaDefinition, IntegrityReport, ConflictResolution, ConflictRecord };

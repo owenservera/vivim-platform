@@ -4,31 +4,10 @@ import './styles/design-system.css'
 import './index.css'
 import App from './App.tsx'
 
-// Register service worker for PWA functionality
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then((registration) => {
-        console.log('[SW] Service Worker registered:', registration.scope)
-        
-        // Handle updates
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing
-          if (newWorker) {
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                console.log('[SW] New version available')
-                // Could show update notification here
-              }
-            })
-          }
-        })
-      })
-      .catch((error) => {
-        console.error('[SW] Service Worker registration failed:', error)
-      })
-  })
-}
+// Service Worker is auto-registered by VitePWA plugin (vite.config.ts).
+// Do NOT manually register /service-worker.js here — the file doesn't exist
+// as a static asset in dev mode; Vite serves index.html as a fallback which
+// causes a SecurityError: "unsupported MIME type (text/html)".
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

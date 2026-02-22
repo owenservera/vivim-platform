@@ -1,5 +1,5 @@
 import { getStorage } from '../storage-v2';
-import { getUnifiedDB, initUnifiedDB } from '../storage-v2/db-manager/unified-db';
+import { initUnifiedDB } from '../storage-v2/db-manager/unified-db';
 import { log } from '../logger';
 import { asHash } from '../storage-v2/types';
 import type { Conversation, Message, ContentBlock, ConversationStats } from '../../types/conversation';
@@ -13,20 +13,15 @@ try {
   // UnifiedDebugService not available yet - that's okay
 }
 
-let unifiedDBInitialized = false;
-
 async function getUnifiedDBWithInit() {
-  if (!unifiedDBInitialized) {
-    await initUnifiedDB({
-      dbName: 'VivimDB',
-      version: 1,
-      enableValidation: true,
-      enableIntegrityCheck: true,
-      enableSync: true,
-    });
-    unifiedDBInitialized = true;
-  }
-  return getUnifiedDB();
+  // initUnifiedDB is idempotent - it reuses the existing instance if ready,
+  // and retries on failure (unlike the old manual flag guard).
+  // Uses 'VivimSync' db (default) — NOT 'VivimDB' which is claimed by object-store.ts at v3.
+  return initUnifiedDB({
+    enableValidation: true,
+    enableIntegrityCheck: false,
+    enableSync: false,
+  });
 }
 
 export class ConversationService {

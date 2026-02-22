@@ -67,18 +67,11 @@ export class DatabaseManager {
     try {
       this.setState('initializing');
 
-      const currentVersion = await this.getStoredVersion();
-      
-      if (currentVersion === 0) {
-        this.setState('migrating');
-        await this.runMigrations(1, this.config.version);
-      } else if (currentVersion < this.config.version) {
-        this.setState('migrating');
-        await this.runMigrations(currentVersion + 1, this.config.version);
-      }
-
+      // Open the database once. The `upgrade` callback handles all schema creation
+      // and migrations via IDB's built-in versioning mechanism.
       this.db = await this.openDatabase();
-      
+      await this.setStoredVersion(this.config.version);
+
       if (this.config.enableSync) {
         await this.initSyncQueue();
       }
@@ -157,23 +150,33 @@ export class DatabaseManager {
   }
 
   private async runMigrations(fromVersion: number, toVersion: number): Promise<void> {
+    // NOTE: Migrations are now handled via the IDB `upgrade` callback in openDatabase().
+    // This method is kept for potential future use but is no longer called during init.
     const migrationsToRun = this.config.migrations
       .filter(m => m.version >= fromVersion && m.version <= toVersion)
       .sort((a, b) => a.version - b.version);
 
+    if (!this.db) {
+      log.storage.warn('runMigrations called before DB is open - skipping');
+      return;
+    }
+
     for (const migration of migrationsToRun) {
       log.storage.info(`Running migration v${migration.version}`);
-      
-      const db = await this.openDatabase();
-      await migration.up(db);
+      await migration.up(this.db);
       await this.setStoredVersion(migration.version);
-      
       log.storage.info(`Migration v${migration.version} completed`);
     }
   }
 
   private async initSyncQueue(): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
+
+    // Verify sync_queue store exists (it must have been created in the upgrade handler)
+    if (!this.db.objectStoreNames.contains('sync_queue')) {
+      log.storage.warn('sync_queue store not found - sync disabled for this session');
+      return;
+    }
     
     this.syncQueue = new SyncQueue(this.db, {
       storeName: 'sync_queue',
@@ -182,7 +185,19 @@ export class DatabaseManager {
       batchSize: 10,
     });
     
-    await this.syncQueue.initialize();
+    // Don't call initialize() - it tries to createObjectStore outside upgrade transaction
+    this.setupSyncQueueListeners();
+    log.storage.info('SyncQueue ready');
+  }
+
+  private setupSyncQueueListeners(): void {
+    if (!this.syncQueue) return;
+    // Online sync trigger
+    window.addEventListener('online', () => {
+      if (this.syncQueue && navigator.onLine) {
+        this.syncQueue.processQueue().catch(err => log.storage.error('Online sync failed', err));
+      }
+    });
   }
 
   private async runIntegrityCheck(): Promise<void> {
@@ -230,20 +245,20 @@ export class DatabaseManager {
     return this.db;
   }
 
-  async getStore<T>(storeName: string, mode: IDBTransactionMode = 'readonly'): Promise<IDBObjectStore> {
+  async getStore(storeName: string, mode: IDBTransactionMode = 'readonly') {
     const db = this.getDatabase();
     const tx = db.transaction(storeName, mode);
     return tx.objectStore(storeName);
   }
 
   async getAll<T>(storeName: string): Promise<T[]> {
-    const store = await this.getStore<T>(storeName);
-    return store.getAll();
+    const store = await this.getStore(storeName);
+    return store.getAll() as unknown as T[];
   }
 
   async getByKey<T>(storeName: string, key: IDBValidKey): Promise<T | undefined> {
-    const store = await this.getStore<T>(storeName);
-    return store.get(key);
+    const store = await this.getStore(storeName);
+    return store.get(key) as unknown as T | undefined;
   }
 
   async put<T>(storeName: string, value: T): Promise<IDBValidKey> {
@@ -293,9 +308,9 @@ export class DatabaseManager {
     indexName: string,
     value: IDBValidKey
   ): Promise<T[]> {
-    const store = await this.getStore<T>(storeName);
+    const store = await this.getStore(storeName);
     const index = store.index(indexName);
-    return index.getAll(value);
+    return index.getAll(value) as unknown as T[];
   }
 
   async count(storeName: string): Promise<number> {

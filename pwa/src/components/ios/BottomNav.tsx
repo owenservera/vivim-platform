@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Search, PlusCircle, MessageSquare, Settings, Bug, Shield } from 'lucide-react';
+import { Home, Search, PlusCircle, MessageSquare, Settings } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 export interface IOSNavItem {
@@ -31,7 +31,6 @@ const defaultNavItems: IOSNavItem[] = [
     label: 'AI',
   },
   { to: '/settings', icon: <Settings className="w-5 h-5" strokeWidth={2.5} />, label: 'Settings' },
-  { to: '/admin', icon: <Shield className="w-5 h-5" strokeWidth={2.5} />, label: 'Admin' },
 ];
 
 export const IOSBottomNav: React.FC<IOSBottomNavProps> = ({

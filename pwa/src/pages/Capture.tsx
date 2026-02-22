@@ -1,4 +1,5 @@
 import './Capture.css';
+import { cn } from '../lib/utils';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { captureUrlStream } from '../lib/api';
@@ -9,13 +10,10 @@ import {
   IOSCard,
   IOSButton,
   IOSInput,
-  IOSSkeletonCard,
-  ErrorNetwork,
   IOSToastProvider,
   useIOSToast,
-  toast,
 } from '../components/ios';
-import { Loader2, CheckCircle, Download, Globe, Shield, Fingerprint, Lock, Activity, Clock, Zap, AlertCircle } from 'lucide-react';
+import { Loader2, CheckCircle, Download, Shield, Fingerprint, Activity, Clock, Zap, AlertCircle } from 'lucide-react';
 
 type CaptureStatus = 'idle' | 'extracting' | 'signing' | 'saving' | 'success' | 'error';
 
@@ -42,7 +40,7 @@ export const Capture: React.FC = () => {
 
   // Connect to global logger for "In-Page" console
   const [sessionLogs, setSessionLogs] = useState<LogEntry[]>([]);
-  const { toast: showToast } = useIOSToast();
+  useIOSToast();
 
   useEffect(() => {
     const handleLog = (entry: LogEntry) => {
@@ -213,6 +211,18 @@ export const Capture: React.FC = () => {
     }
   };
 
+  // 8 supported providers
+  const PROVIDERS = [
+    { name: 'ChatGPT',  color: '#10a37f', domain: 'chatgpt.com'      },
+    { name: 'Claude',   color: '#d97706', domain: 'claude.ai'         },
+    { name: 'Gemini',   color: '#4285f4', domain: 'gemini.google.com' },
+    { name: 'Grok',     color: '#1d1d1f', domain: 'x.com/grok'        },
+    { name: 'DeepSeek', color: '#6366f1', domain: 'deepseek.com'      },
+    { name: 'Kimi',     color: '#0ea5e9', domain: 'kimi.ai'           },
+    { name: 'Qwen',     color: '#f59e0b', domain: 'qwen.ai'           },
+    { name: 'Zai',      color: '#8b5cf6', domain: 'zai.chat'          },
+  ];
+
   // Render states
   if (status === 'idle') {
     return (
@@ -220,74 +230,71 @@ export const Capture: React.FC = () => {
         <div className="flex-1 flex items-center justify-center p-4">
           <IOSCard variant="elevated" padding="lg" className="max-w-md w-full">
             <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+
+              {/* Icon */}
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-5 shadow-lg">
                 <Download className="w-8 h-8 text-white" />
               </div>
 
+              {/* Heading */}
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                Add Conversation
+                Save a Conversation
               </h2>
-              <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-xs">
-                Capture, verify, and persist AI knowledge graphs.
+              <p className="text-gray-500 dark:text-gray-400 mb-7 max-w-xs text-sm">
+                Paste a shared link from any supported AI app and we'll save it to your library — signed and searchable.
               </p>
 
-              {/* Capabilities */}
-              <div className="grid grid-cols-2 gap-4 w-full mb-8">
-                <div className="flex flex-col items-center gap-2 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
-                  <Globe className="w-6 h-6 text-blue-500" />
-                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">Capabilities</span>
-                  <code className="text-xs text-gray-500 dark:text-gray-500">
-                    ChatGPT, Claude, Gemini
-                  </code>
-                </div>
-                <div className="flex flex-col items-center gap-2 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
-                  <Shield className="w-6 h-6 text-green-500" />
-                  <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">Security</span>
-                  <code className="text-xs text-gray-500 dark:text-gray-500">
-                    Ed25519 Signing
-                  </code>
+              {/* Supported Providers */}
+              <div className="w-full mb-7">
+                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 text-center">
+                  Supported platforms
+                </p>
+                <div className="grid grid-cols-4 gap-2">
+                  {PROVIDERS.map((p) => (
+                    <div
+                      key={p.name}
+                      className="flex flex-col items-center gap-1.5 p-2.5 bg-gray-50 dark:bg-gray-800/70 rounded-xl border border-gray-100 dark:border-gray-700"
+                    >
+                      {/* Colour dot as a simple brand accent */}
+                      <div
+                        className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-black"
+                        style={{ backgroundColor: p.color }}
+                      >
+                        {p.name[0]}
+                      </div>
+                      <span className="text-[10px] font-semibold text-gray-600 dark:text-gray-400 leading-none">
+                        {p.name}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Action Guide */}
-              <div className="w-full text-left mb-8">
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">
-                  Simple Action Guide
+              {/* How it works */}
+              <div className="w-full text-left mb-7 bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-4 border border-gray-100 dark:border-gray-700">
+                <h3 className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
+                  How to capture
                 </h3>
                 <div className="space-y-3">
-                  <div className="flex gap-3">
-                    <div className="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">
-                      1
+                  {[
+                    { step: 1, text: 'Open a conversation in any supported AI app.' },
+                    { step: 2, text: 'Tap Share → Public Link, then choose VIVIM from the share sheet.' },
+                    { step: 3, text: 'Done — VIVIM saves it instantly to your library.' },
+                  ].map(({ step, text }) => (
+                    <div key={step} className="flex gap-3 items-start">
+                      <div className="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">
+                        {step}
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 leading-snug">{text}</p>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      OPEN YOUR AI APP - Go to ChatGPT, Claude, or Gemini and select a conversation.
-                    </p>
-                  </div>
-                  <div className="flex gap-3">
-                    <div className="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">
-                      2
-                    </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      SHARE THE LINK - Tap 'Share', then 'Public Link', and choose 'OpenScroll' from menu.
-                    </p>
-                  </div>
-                  <div className="flex gap-3">
-                    <div className="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">
-                      3
-                    </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      OBSERVE MATERIALIZATION - The PWA performs a 'Full Sync' with the engine to sign and save your knowledge.
-                    </p>
-                  </div>
+                  ))}
                 </div>
               </div>
 
-              {/* Engine Pulse */}
-              <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-8">
-                <Activity className="w-4 h-4 animate-pulse" />
-                <span>
-                  <strong>Engine Pulse: Active</strong> - Waiting for operating system to send a share intent.
-                </span>
+              {/* Ready indicator */}
+              <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500 mb-7">
+                <Activity className="w-3.5 h-3.5 animate-pulse text-green-500" />
+                <span>Ready — waiting for a shared link</span>
               </div>
 
               {/* Offline Queue */}
@@ -297,7 +304,7 @@ export const Capture: React.FC = () => {
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4 text-orange-500" />
                       <span className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                        Pending Materialization
+                        Queued ({captureQueue.getQueue().length})
                       </span>
                     </div>
                     <button
@@ -334,16 +341,16 @@ export const Capture: React.FC = () => {
                   </div>
                   {captureQueue.getQueue().length > 3 && (
                     <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-2">
-                      +{captureQueue.getQueue().length - 3} more pending...
+                      +{captureQueue.getQueue().length - 3} more pending…
                     </p>
                   )}
                 </div>
               )}
 
-              {/* Manual Input */}
-              <div className="w-full border-t border-gray-200 dark:border-gray-800 pt-6">
+              {/* Manual URL input */}
+              <div className="w-full border-t border-gray-200 dark:border-gray-800 pt-5">
                 <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 text-center">
-                  Manual Injection
+                  Or paste a link
                 </p>
                 <form onSubmit={handleManualSubmit} className="space-y-3">
                   <IOSInput
@@ -353,10 +360,11 @@ export const Capture: React.FC = () => {
                     onChange={(e) => setManualUrl(e.target.value)}
                   />
                   <IOSButton variant="primary" fullWidth disabled={!manualUrl}>
-                    Capture
+                    Save Conversation
                   </IOSButton>
                 </form>
               </div>
+
             </div>
           </IOSCard>
         </div>
@@ -607,3 +615,5 @@ export const CaptureWithProvider: React.FC = () => {
     </IOSToastProvider>
   );
 };
+
+export default CaptureWithProvider;

@@ -13,11 +13,9 @@ import {
   Sparkles,
   Zap,
   Loader2,
-  AlertCircle,
   X,
-  Check
 } from 'lucide-react';
-import { IOSCard, IOSButton, IOSAvatar, IOSSkeletonCard } from './index';
+import { IOSCard, IOSAvatar } from './index';
 import { useIOSToast, toast } from './Toast';
 import { 
   useBookmarks, 
@@ -28,7 +26,6 @@ import {
   useFeatureCapabilities 
 } from '../../lib/feature-hooks';
 import { featureService } from '../../lib/feature-service';
-import { logger } from '../../lib/logger';
 import { cn } from '../../lib/utils';
 import type { Conversation } from '../../types/conversation';
 import type { AIAction } from '../../types/features';
@@ -65,9 +62,10 @@ export const ConversationCard: React.FC<ConversationCardProps> = ({
   onFork,
   onContinue,
   onAIClick,
-  onRefresh,
-  onShare,
+  ...props
 }) => {
+  // onRefresh and onShare are available in props but not used here
+  const { onRefresh: _onRefresh, onShare: _onShare } = props;
   const [showMenu, setShowMenu] = useState(false);
   const [showAISuggestions, setShowAISuggestions] = useState(false);
   const [localPinned, setLocalPinned] = useState(isPinned);
@@ -78,7 +76,7 @@ export const ConversationCard: React.FC<ConversationCardProps> = ({
   const { isBookmarked, toggleBookmark } = useBookmarks();
   const { fork, forking } = useFork();
   const { generateLink, generating: sharing } = useShare();
-  const { execute: executeAI, executing: aiExecuting } = useAIActions();
+  const { executing: aiExecuting } = useAIActions();
   const { duplicate, duplicating, deleteConversation, deleting } = useConversationActions();
 
   const isLocalBookmarked = isBookmarked(conversation.id);
@@ -291,7 +289,7 @@ export const ConversationCard: React.FC<ConversationCardProps> = ({
 
   if (variant === 'compact') {
     return (
-      <Link to={`/conversation/${conversation.id}`} className="block">
+      <Link to={`/ai/conversation/${conversation.id}`} className="block">
         <IOSCard
           variant="outlined"
           padding="sm"
@@ -322,7 +320,7 @@ export const ConversationCard: React.FC<ConversationCardProps> = ({
 
   return (
     <div className={cn('relative', className)}>
-      <Link to={`/conversation/${conversation.id}`}>
+      <Link to={`/ai/conversation/${conversation.id}`}>
         <IOSCard
           variant="default"
           padding="md"

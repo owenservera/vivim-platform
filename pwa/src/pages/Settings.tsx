@@ -9,7 +9,7 @@ import {
   toast as toastHelper,
 } from '../components/ios';
 import { getStorage } from '../lib/storage-v2';
-import { loginWithGoogle, getAccountInfo, requestAccountDeletion, type User as AuthUser, type AccountInfo } from '../lib/auth-api';
+import { loginWithGoogle, getAccountInfo, requestAccountDeletion, type AccountInfo } from '../lib/auth-api';
 import { useAuth } from '../lib/auth-context';
 import { useDeviceContext } from '../lib/device-context';
 import { DeviceType } from '../lib/device-detection';
@@ -143,7 +143,7 @@ export const Settings: React.FC = () => {
         {
           id: 'username',
           label: 'Display Name',
-          value: googleUser?.displayName || did ? `${did.slice(0, 8)}...${did.slice(-4)}` : 'Not set',
+          value: (googleUser as any)?.displayName || (did ? `${did.slice(0, 8)}...${did.slice(-4)}` : 'Not set'),
           icon: <User className="w-5 h-5" />,
           type: 'default' as const,
         },
@@ -313,3 +313,5 @@ export const SettingsWithProvider: React.FC = () => {
     </IOSToastProvider>
   );
 };
+
+export default SettingsWithProvider;

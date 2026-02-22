@@ -87,13 +87,15 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
       <IOSBottomNav />
       <DebugPanel />
-      <button
-        onClick={toggleDebug}
-        className="fixed bottom-20 right-4 z-[1040] p-3 rounded-full bg-gray-900 dark:bg-gray-100 border border-gray-700 dark:border-gray-300 shadow-lg hover:scale-110 transition-transform text-gray-100 dark:text-gray-900"
-        title="Toggle Debug Panel"
-      >
-        <Bug size={20} />
-      </button>
+      {import.meta.env.DEV && (
+        <button
+          onClick={toggleDebug}
+          className="fixed bottom-[4.5rem] right-[4.5rem] z-[1020] p-2.5 rounded-full bg-gray-900 dark:bg-gray-100 border border-gray-700 dark:border-gray-300 shadow-lg hover:scale-110 active:scale-95 transition-transform text-gray-100 dark:text-gray-900"
+          title="Toggle Debug Panel"
+        >
+          <Bug size={18} />
+        </button>
+      )}
     </div>
   );
 };

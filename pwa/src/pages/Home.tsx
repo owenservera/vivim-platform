@@ -1,7 +1,13 @@
-import './Home.css';
-import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
+import React, {
+  useEffect, useState, useRef, useCallback, useMemo
+} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Bot, Sparkles, RefreshCw, Wifi, WifiOff, Database, AlertCircle, CheckCircle, CloudOff } from 'lucide-react';
+import {
+  Plus, Bot, RefreshCw, WifiOff, Database, AlertCircle, CloudOff,
+  Search, Grid2x2, List, Pin, Archive, MessageSquare, LayoutList,
+  BookOpen, Sparkles, X, SlidersHorizontal, Clock, BarChart2,
+  FileCode, ImageIcon
+} from 'lucide-react';
 import { conversationService } from '../lib/service/conversation-service';
 import { unifiedRepository } from '../lib/db/unified-repository';
 import { listConversationsForRecommendation, getForYouFeed } from '../lib/recommendation';
@@ -22,21 +28,281 @@ import {
   toast,
 } from '../components/ios';
 import { ErrorBoundary } from '../components/ErrorBoundary';
-import {
-  useBookmarks,
-  useCircles,
-  useFeatureCapabilities
-} from '../lib/feature-hooks';
+import { useCircles } from '../lib/feature-hooks';
 import { featureService } from '../lib/feature-service';
 import type { RecommendationItem } from '../lib/recommendation/types';
 import type { Conversation } from '../types/conversation';
 import type { AIResult, AIAction } from '../types/features';
+import './Home.css';
 
+type FilterTab = 'all' | 'pinned' | 'archived' | 'recent';
+type ViewMode = 'list' | 'grid';
+type SortBy = 'date' | 'messages' | 'title';
+
+/* ─────────────────────────────────────────────────
+   Helpers
+───────────────────────────────────────────────── */
+const formatDate = (dateString: string | undefined) => {
+  if (!dateString) return '';
+  try {
+    const date = new Date(dateString);
+    const now  = new Date();
+    const diff = now.getTime() - date.getTime();
+    if (diff < 60000)     return 'Just now';
+    if (diff < 3600000)   return `${Math.floor(diff / 60000)}m`;
+    if (diff < 86400000)  return `${Math.floor(diff / 3600000)}h`;
+    if (diff < 604800000) return `${Math.floor(diff / 86400000)}d`;
+    return date.toLocaleDateString('en', { month: 'short', day: 'numeric' });
+  } catch { return ''; }
+};
+
+const isNew = (dateString: string | undefined) => {
+  if (!dateString) return false;
+  const diff = Date.now() - new Date(dateString).getTime();
+  return diff < 86400000 * 2; // last 48h
+};
+
+const getPreviewText = (convo: Conversation): string => {
+  if (!convo.messages?.length) return '';
+  // Try the last user-message content
+  const msgs = [...convo.messages].reverse();
+  for (const msg of msgs) {
+    if (msg.role === 'user' || msg.role === 'assistant') {
+      const parts = (msg as any).parts || msg.content || [];
+      if (Array.isArray(parts)) {
+        for (const p of parts) {
+          if (typeof p === 'string' && p.trim().length > 0) return p.trim();
+          if (p?.type === 'text' && p.text?.trim()) return p.text.trim();
+        }
+      }
+      if (typeof msg.content === 'string' && msg.content.trim()) {
+        return msg.content.trim();
+      }
+    }
+  }
+  return '';
+};
+
+const providerColor: Record<string, string> = {
+  chatgpt:    'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+  claude:     'bg-orange-50  text-orange-700  dark:bg-orange-900/30  dark:text-orange-400',
+  gemini:     'bg-blue-50    text-blue-700    dark:bg-blue-900/30    dark:text-blue-400',
+  grok:       'bg-red-50     text-red-700     dark:bg-red-900/30     dark:text-red-400',
+  perplexity: 'bg-purple-50  text-purple-700  dark:bg-purple-900/30  dark:text-purple-400',
+  deepseek:   'bg-cyan-50    text-cyan-700    dark:bg-cyan-900/30    dark:text-cyan-400',
+  kimi:       'bg-pink-50    text-pink-700    dark:bg-pink-900/30    dark:text-pink-400',
+  qwen:       'bg-indigo-50  text-indigo-700  dark:bg-indigo-900/30  dark:text-indigo-400',
+  other:      'bg-gray-100   text-gray-600    dark:bg-gray-800       dark:text-gray-400',
+  default:    'bg-gray-100   text-gray-600    dark:bg-gray-800       dark:text-gray-400',
+};
+
+const providerEmoji: Record<string, string> = {
+  chatgpt: '🤖', claude: '✨', gemini: '💎', grok: '🚀',
+  perplexity: '🔮', deepseek: '🔍', kimi: '🎯', qwen: '🌐',
+  other: '💬', default: '💬',
+};
+
+/* ─────────────────────────────────────────────────
+   Enhanced feed card (replaces the old ConversationCard for the home feed)
+───────────────────────────────────────────────── */
+interface FeedItemCardProps {
+  conversation: Conversation;
+  isPinned: boolean;
+  isArchived: boolean;
+  gridMode?: boolean;
+  onContinue: (id: string) => void;
+  onShare: (id: string) => void;
+  onPinToggle: (id: string, pinned: boolean) => void;
+  onArchiveToggle: (id: string, archived: boolean) => void;
+  onDelete: (id: string) => void;
+  onFork: (id: string, forkId: string) => void;
+  onDuplicate: (id: string, newId: string) => void;
+  onAIClick: (action: AIAction, id: string) => void;
+}
+
+const FeedItemCard: React.FC<FeedItemCardProps> = ({
+  conversation: convo,
+  isPinned,
+  isArchived,
+  gridMode = false,
+  onContinue,
+  onShare,
+  onPinToggle,
+  onArchiveToggle,
+  onDelete,
+  onFork,
+  onDuplicate,
+  onAIClick,
+}) => {
+  const navigate = useNavigate();
+  const prov = convo.provider || 'default';
+  const previewText = getPreviewText(convo);
+  const tags = Array.isArray(convo.tags) ? convo.tags.slice(0, 3) : [];
+  const msgCount = convo.stats?.totalMessages ?? convo.messages?.length ?? 0;
+  const wordCount = convo.stats?.totalWords ?? 0;
+  const codeBlocks = convo.stats?.totalCodeBlocks ?? 0;
+  const isNewConvo = isNew(convo.createdAt);
+
+  return (
+    <ErrorBoundary
+      fallback={
+        <div className="px-4 py-3 text-xs text-red-500 bg-red-50 dark:bg-red-900/20 rounded-xl">
+          Failed to render
+        </div>
+      }
+    >
+      <div
+        className={`conv-card-enhanced ${isPinned ? 'is-pinned' : ''} ${isArchived ? 'is-archived' : ''}`}
+        onClick={() => navigate(`/ai/conversation/${convo.id}`)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter') navigate(`/ai/conversation/${convo.id}`); }}
+        id={`conv-card-${convo.id}`}
+      >
+        {/* Provider accent strip */}
+        <div className={`conv-card-accent ${prov}`} />
+
+        <div className="conv-card-body">
+          {/* Top row: provider chip + time + new badge */}
+          <div className="flex items-center gap-2 mb-2">
+            <span className={`conv-provider-chip ${providerColor[prov] || providerColor.default}`}>
+              {providerEmoji[prov] || '💬'} {prov}
+            </span>
+            {isNewConvo && (
+              <span className="conv-new-badge">✦ New</span>
+            )}
+            <span className="ml-auto text-[11px] text-gray-400 dark:text-gray-600 flex-shrink-0">
+              {formatDate(convo.createdAt)}
+            </span>
+          </div>
+
+          {/* Title */}
+          <h3 className={`font-semibold text-gray-900 dark:text-white leading-snug ${gridMode ? 'text-[13px] line-clamp-2' : 'text-sm truncate'}`}>
+            {convo.title || 'Untitled Conversation'}
+          </h3>
+
+          {/* Preview snippet */}
+          {!gridMode && previewText && (
+            <p className="conv-preview-text mt-1">{previewText}</p>
+          )}
+
+          {/* Tags */}
+          {tags.length > 0 && (
+            <div className="conv-tags">
+              {tags.map((tag) => (
+                <span key={tag} className="conv-tag">#{tag}</span>
+              ))}
+            </div>
+          )}
+
+          {/* Mini stats */}
+          <div className="conv-mini-stats mt-2">
+            {msgCount > 0 && (
+              <span className="conv-mini-stat">
+                <MessageSquare className="w-[11px] h-[11px]" />
+                {msgCount}
+              </span>
+            )}
+            {wordCount > 0 && (
+              <span className="conv-mini-stat">
+                <LayoutList className="w-[11px] h-[11px]" />
+                {wordCount >= 1000 ? `${(wordCount / 1000).toFixed(1)}k` : wordCount}w
+              </span>
+            )}
+            {codeBlocks > 0 && (
+              <span className="conv-mini-stat">
+                <FileCode className="w-[11px] h-[11px]" />
+                {codeBlocks}
+              </span>
+            )}
+          </div>
+
+          {/* Action strip */}
+          {!gridMode && (
+            <div
+              className="flex items-center gap-1.5 mt-3 pt-3 border-t border-gray-100 dark:border-gray-800"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={(e) => { e.stopPropagation(); onContinue(convo.id); }}
+                className="flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors"
+              >
+                <MessageSquare className="w-3 h-3" />
+                Continue
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); onAIClick('summarize', convo.id); }}
+                className="flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/50 rounded-lg hover:bg-violet-100 dark:hover:bg-violet-900/40 transition-colors"
+              >
+                <Sparkles className="w-3 h-3" />
+                AI
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); onShare(convo.id); }}
+                className="flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+              >
+                <BookOpen className="w-3 h-3" />
+                Share
+              </button>
+              <div className="flex-1" />
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const prev = isPinned;
+                  onPinToggle(convo.id, !prev);
+                }}
+                className={`p-1.5 rounded-lg transition-colors ${isPinned ? 'text-indigo-500 bg-indigo-50 dark:bg-indigo-950/40' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+                title={isPinned ? 'Unpin' : 'Pin'}
+              >
+                <Pin className={`w-3.5 h-3.5 ${isPinned ? 'fill-current' : ''}`} />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const prev = isArchived;
+                  onArchiveToggle(convo.id, !prev);
+                }}
+                className={`p-1.5 rounded-lg transition-colors ${isArchived ? 'text-amber-500 bg-amber-50 dark:bg-amber-950/40' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+                title={isArchived ? 'Unarchive' : 'Archive'}
+              >
+                <Archive className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+
+          {/* Grid mode: just a subtle continue hint */}
+          {gridMode && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onContinue(convo.id); }}
+              className="mt-2 w-full text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 text-center py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors"
+            >
+              Continue →
+            </button>
+          )}
+        </div>
+      </div>
+    </ErrorBoundary>
+  );
+};
+
+/* ─────────────────────────────────────────────────
+   Aggregate stats from conversations
+───────────────────────────────────────────────── */
+const computeStats = (convos: Conversation[]) => {
+  const total = convos.length;
+  const totalMessages = convos.reduce((s, c) => s + (c.stats?.totalMessages ?? c.messages?.length ?? 0), 0);
+  const totalWords = convos.reduce((s, c) => s + (c.stats?.totalWords ?? 0), 0);
+  const totalCode = convos.reduce((s, c) => s + (c.stats?.totalCodeBlocks ?? 0), 0);
+  return { total, totalMessages, totalWords, totalCode };
+};
+
+/* ─────────────────────────────────────────────────
+   Main Home component
+───────────────────────────────────────────────── */
 export const Home: React.FC = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [recommendations, setRecommendations] = useState<RecommendationItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [page, setPage] = useState(1);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [aiPanelOpen, setAiPanelOpen] = useState(false);
@@ -46,24 +312,28 @@ export const Home: React.FC = () => {
   const [archivedIds, setArchivedIds] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
   const [storageStatus, setStorageStatus] = useState<{
-    ready: boolean;
-    message?: string;
-    totalConversations?: number;
+    ready: boolean; message?: string; totalConversations?: number;
   }>({ ready: false });
   const [debugPanelOpen, setDebugPanelOpen] = useState(false);
   const [debugInfo, setDebugInfo] = useState<any>(null);
-  const [apiSource, setApiSource] = useState<'local' | 'api' | null>(null); // Track where data came from
-  
+  const [apiSource, setApiSource] = useState<'local' | 'api' | null>(null);
+
+  // ── New UI state ──
+  const [filterTab, setFilterTab] = useState<FilterTab>('all');
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<SortBy>('date');
+  const [fabExpanded, setFabExpanded] = useState(false);
+  const [fabVisible, _setFabVisible] = useState(true);
+
   const observerTarget = useRef<HTMLDivElement>(null);
   const { toast: showToast } = useIOSToast();
   const navigate = useNavigate();
-  const capabilities = useFeatureCapabilities();
-  const { isBookmarked } = useBookmarks();
-  const { circles, refresh: refreshCircles } = useCircles();
+  const { circles } = useCircles();
 
+  /* ── Load conversations ── */
   const loadConversations = useCallback(async (pageNum = 1) => {
     const loadId = `load_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
-
     logger.info('HOME', `[${loadId}] ========== LOAD CONVERSATIONS START (page ${pageNum}) ==========`);
 
     const timeoutPromise = new Promise<never>((_, reject) => {
@@ -75,19 +345,17 @@ export const Home: React.FC = () => {
       setLoading(pageNum === 1);
 
       let list: Conversation[] = [];
-      
+
       try {
         list = await Promise.race([
           conversationService.getAllConversations(),
           timeoutPromise
         ]);
-        
         logger.info('HOME', `[${loadId}] Retrieved ${list.length} conversations from storage`);
       } catch (serviceError) {
         logger.warn('HOME', `[${loadId}] Storage fetch failed: ${serviceError}`);
       }
 
-      // --- FALLBACK: If local storage is empty, fetch directly from API ---
       if (list.length === 0 && pageNum === 1 && navigator.onLine) {
         logger.info('HOME', `[${loadId}] Local storage empty, falling back to direct API fetch`);
         try {
@@ -104,7 +372,6 @@ export const Home: React.FC = () => {
           logger.info('HOME', `[${loadId}] API fallback returned ${apiBatch.length} conversations`);
 
           if (apiBatch.length > 0) {
-            // Adapt API conversations to local Conversation type for display
             list = apiBatch.map((conv: any): Conversation => ({
               id: conv.id,
               title: conv.title || 'Untitled Conversation',
@@ -145,13 +412,11 @@ export const Home: React.FC = () => {
 
             setApiSource('api');
 
-            // Trigger background sync to populate local storage for next time
             dataSyncService.syncFullDatabase((progress) => {
               logger.info('HOME', `[Background Sync] ${progress.phase}: ${progress.message}`);
             }).then(result => {
               if (result.success) {
                 logger.info('HOME', `[Background Sync] Complete: ${result.syncedConversations} conversations synced`);
-                // Reload from local storage now that sync is done
                 conversationService.getAllConversations().then(localList => {
                   if (localList.length > 0) setConversations(localList.slice(0, 10));
                 }).catch(() => {});
@@ -162,17 +427,14 @@ export const Home: React.FC = () => {
           }
         } catch (apiFallbackError) {
           logger.warn('HOME', `[${loadId}] API fallback failed: ${apiFallbackError}`);
-          // Don't throw – let the empty state show
         }
       } else {
         setApiSource('local');
       }
-      
-      const pageSize = 10;
+
+      const pageSize = 20;
       const start = (pageNum - 1) * pageSize;
       const pagedList = list.slice(start, start + pageSize);
-
-      logger.info('HOME', `[${loadId}] Displaying ${pagedList.length} conversations (page ${pageNum})`);
 
       if (pageNum === 1) {
         setConversations(pagedList);
@@ -182,7 +444,7 @@ export const Home: React.FC = () => {
 
       const newPinnedIds = new Set<string>();
       const newArchivedIds = new Set<string>();
-      
+
       for (const convo of pagedList) {
         try {
           const meta = await unifiedRepository.getConversation(convo.id);
@@ -193,19 +455,15 @@ export const Home: React.FC = () => {
 
       setPinnedIds(newPinnedIds);
       setArchivedIds(newArchivedIds);
-      logger.info('HOME', `[${loadId}] Metadata loaded: ${newPinnedIds.size} pinned, ${newArchivedIds.size} archived`);
-
-      logger.info('HOME', `[${loadId}] ========== LOAD CONVERSATIONS COMPLETE ==========`);
-
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err);
       logger.error('HOME', `[${loadId}] LOAD FAILED: ${errorMsg}`, err instanceof Error ? err : new Error(String(err)));
-      
+
       let userErrorMessage = 'Failed to load conversations';
-      if (errorMsg.includes('Storage not initialized')) userErrorMessage = 'Storage is initializing. Please wait...';
+      if (errorMsg.includes('Storage not initialized')) userErrorMessage = 'Storage is initializing. Please wait…';
       else if (errorMsg.includes('indexedDB') || errorMsg.includes('database')) userErrorMessage = 'Database error. Try refreshing.';
       else if (errorMsg.includes('timed out')) userErrorMessage = 'Loading timed out. Check browser settings.';
-      
+
       setError(`${userErrorMessage}. Pull to retry.`);
       showToast(toast.error(userErrorMessage));
     } finally {
@@ -224,43 +482,23 @@ export const Home: React.FC = () => {
       }
     } catch (err) {
       logger.error('HOME', 'Failed to load recommendations', err instanceof Error ? err : new Error(String(err)));
-      // Don't show error for recommendations as it's not critical
     }
   }, []);
 
   const checkStorageStatus = useCallback(async () => {
-    // Add timeout to prevent infinite hanging
     const timeoutPromise = new Promise<never>((_, reject) => {
       setTimeout(() => reject(new Error('Storage status check timed out after 15 seconds')), 15000);
     });
-
     try {
       const mainStatus = await Promise.race([
         conversationService.getStorageStatus(),
         timeoutPromise
       ]);
-
       const stats = await unifiedRepository.getStats();
-
-      const combinedStatus = {
-        ready: mainStatus.isReady,
-        message: mainStatus.isReady ? 'Storage ready' : 'Storage not ready',
-        totalConversations: stats.total
-      };
-
-      setStorageStatus(combinedStatus);
-      logger.info('HOME', `Storage status updated: ${JSON.stringify(combinedStatus)}`);
+      setStorageStatus({ ready: mainStatus.isReady, message: mainStatus.isReady ? 'Storage ready' : 'Storage not ready', totalConversations: stats.total });
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err);
-      logger.error('HOME', `Failed to check storage status: ${errorMsg}`, err instanceof Error ? err : new Error(String(err)));
-
-      // Set a safe default on error/timerout
-      setStorageStatus({
-        ready: false,
-        message: errorMsg.includes('timed out')
-          ? 'Storage check timed out. This may be due to browser privacy settings.'
-          : `Failed to check storage: ${errorMsg}`
-      });
+      setStorageStatus({ ready: false, message: errorMsg.includes('timed out') ? 'Storage check timed out.' : `Failed to check storage: ${errorMsg}` });
     }
   }, []);
 
@@ -269,42 +507,31 @@ export const Home: React.FC = () => {
       const info: any = {
         timestamp: new Date().toISOString(),
         online: navigator.onLine,
-        conversations: {
-          count: conversations.length,
-          loading,
-          error
-        },
+        conversations: { count: conversations.length, loading, error },
         storage: storageStatus,
         userAgent: navigator.userAgent,
         url: window.location.href
       };
-
-      // Try to get more detailed storage info
       try {
         const detailedStatus = await conversationService.getStorageStatus();
         info.storage = detailedStatus;
       } catch (err) {
         info.storageError = err instanceof Error ? err.message : String(err);
       }
-
       setDebugInfo(info);
-      logger.info('HOME', 'Debug info collected', info);
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err);
-      logger.error('HOME', `Failed to collect debug info: ${errorMsg}`, err instanceof Error ? err : new Error(String(err)));
       setDebugInfo({ error: errorMsg });
     }
   }, [conversations, loading, error, storageStatus]);
 
   useEffect(() => {
-    // Safety timeout to ensure loading is always cleared even if everything else fails
     const safetyTimeout = setTimeout(() => {
       if (loading) {
-        logger.warn('HOME', 'Safety timeout triggered - forcing loading to false');
         setLoading(false);
         setError('Loading timed out. Try refreshing the page or checking browser settings.');
       }
-    }, 35000); // 35 seconds - slightly longer than the 30s timeout in loadConversations
+    }, 35000);
 
     loadConversations(1);
     loadRecommendations();
@@ -312,24 +539,6 @@ export const Home: React.FC = () => {
 
     return () => clearTimeout(safetyTimeout);
   }, [loadConversations, loadRecommendations, checkStorageStatus]);
-
-  useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-    
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-
-  // Removed automatic sync from backend since full sync happens on login
-  // All data should be available locally after login
-
-  // Manual sync removed since full sync happens on login
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -344,29 +553,22 @@ export const Home: React.FC = () => {
     );
 
     const currentTarget = observerTarget.current;
-    if (currentTarget) {
-      observer.observe(currentTarget);
-    }
-
-    return () => {
-      if (currentTarget) observer.unobserve(currentTarget);
-    };
+    if (currentTarget) observer.observe(currentTarget);
+    return () => { if (currentTarget) observer.unobserve(currentTarget); };
   }, [loading, page, loadConversations]);
 
-  const handleContinue = useCallback((id: string) => {
-    navigate(`/ai/conversation/${id}`);
-  }, [navigate]);
+  /* ── Handlers ── */
+  const handleContinue = useCallback((id: string) => { navigate(`/ai/conversation/${id}`); }, [navigate]);
 
   const handleFork = useCallback((id: string, forkId: string) => {
-    logger.info('Conversation forked', { originalId: id, forkId });
+    logger.info('HOME', `Conversation forked from ${id} → ${forkId}`);
     showToast(toast.success('Conversation forked'));
   }, [showToast]);
 
   const handlePinToggle = useCallback((id: string, pinned: boolean) => {
     setPinnedIds(prev => {
       const next = new Set(prev);
-      if (pinned) next.add(id);
-      else next.delete(id);
+      if (pinned) next.add(id); else next.delete(id);
       return next;
     });
   }, []);
@@ -374,24 +576,15 @@ export const Home: React.FC = () => {
   const handleArchiveToggle = useCallback((id: string, archived: boolean) => {
     setArchivedIds(prev => {
       const next = new Set(prev);
-      if (archived) next.add(id);
-      else next.delete(id);
+      if (archived) next.add(id); else next.delete(id);
       return next;
     });
   }, []);
 
   const handleDelete = useCallback((id: string) => {
     setConversations(prev => prev.filter(c => c.id !== id));
-    setPinnedIds(prev => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
-    setArchivedIds(prev => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
+    setPinnedIds(prev => { const n = new Set(prev); n.delete(id); return n; });
+    setArchivedIds(prev => { const n = new Set(prev); n.delete(id); return n; });
   }, []);
 
   const handleDuplicate = useCallback((_id: string, _newId: string) => {
@@ -401,339 +594,476 @@ export const Home: React.FC = () => {
   const handleAIClick = useCallback((action: AIAction, id: string) => {
     const convo = conversations.find((c) => c.id === id);
     if (convo) {
-      if (action === 'continue_chat') {
-        navigate(`/ai/conversation/${id}`);
-      } else {
-        setSelectedConversation(convo);
-        setAiPanelOpen(true);
-      }
+      if (action === 'continue_chat') navigate(`/ai/conversation/${id}`);
+      else { setSelectedConversation(convo); setAiPanelOpen(true); }
     }
   }, [conversations, navigate]);
 
-  const handleAIResult = useCallback((result: AIResult) => {
-    logger.info('AI action completed', { action: result.action });
-  }, []);
+  const handleAIResult = useCallback((_result: AIResult) => {}, []);
 
   const handleShare = useCallback((id: string) => {
     const convo = conversations.find((c) => c.id === id);
-    if (convo) {
-      setSelectedConversation(convo);
-      setShareDialogOpen(true);
-    }
+    if (convo) { setSelectedConversation(convo); setShareDialogOpen(true); }
   }, [conversations]);
 
-  const sortedConversations = useMemo(() => {
-    return [...conversations].sort((a, b) => {
-      const aPinned = pinnedIds.has(a.id);
-      const bPinned = pinnedIds.has(b.id);
-      if (aPinned && !bPinned) return -1;
-      if (!aPinned && bPinned) return 1;
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    });
-  }, [conversations, pinnedIds]);
+  /* ── Derived lists ── */
+  const allSorted = useMemo(() => {
+    let list = [...conversations];
 
+    // sort
+    if (sortBy === 'date') {
+      list.sort((a, b) => {
+        const aPinned = pinnedIds.has(a.id), bPinned = pinnedIds.has(b.id);
+        if (aPinned && !bPinned) return -1;
+        if (!aPinned && bPinned) return 1;
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+    } else if (sortBy === 'messages') {
+      list.sort((a, b) => (b.stats?.totalMessages ?? 0) - (a.stats?.totalMessages ?? 0));
+    } else if (sortBy === 'title') {
+      list.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+    }
+
+    return list;
+  }, [conversations, pinnedIds, sortBy]);
+
+  const filteredConversations = useMemo(() => {
+    let list = allSorted;
+
+    // filter tab
+    if (filterTab === 'pinned')   list = list.filter(c => pinnedIds.has(c.id));
+    if (filterTab === 'archived') list = list.filter(c => archivedIds.has(c.id));
+    if (filterTab === 'recent')   list = list.filter(c => isNew(c.createdAt));
+
+    // search query
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(c =>
+        c.title?.toLowerCase().includes(q) ||
+        c.provider?.toLowerCase().includes(q) ||
+        c.tags?.some(t => t.toLowerCase().includes(q))
+      );
+    }
+
+    return list;
+  }, [allSorted, filterTab, pinnedIds, archivedIds, searchQuery]);
+
+  const stats = useMemo(() => computeStats(conversations), [conversations]);
+
+  const tabCounts = useMemo(() => ({
+    all: conversations.length,
+    pinned: pinnedIds.size,
+    archived: archivedIds.size,
+    recent: conversations.filter(c => isNew(c.createdAt)).length,
+  }), [conversations, pinnedIds, archivedIds]);
+
+  /* ── Render ── */
   return (
-    <div className="flex flex-col min-h-full bg-gray-50 dark:bg-gray-950 pb-20">
+    <div className="home-feed-wrapper flex flex-col min-h-full pb-20">
+
+      {/* ── For You Stories ── */}
       {recommendations.length > 0 && (
-        <div className="py-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-          <div className="px-4 mb-3">
-            <h2 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-              For You
-            </h2>
-          </div>
+        <div className="pt-2 pb-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+          <p className="px-4 mb-2 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+            For You
+          </p>
           <div className="px-4">
             <IOSStories
-              stories={recommendations.slice(0, 5).map((item) => ({
+              stories={recommendations.slice(0, 6).map((item) => ({
                 id: item.conversation.id,
                 name: item.conversation.title.substring(0, 10) || 'AI',
                 initials: (item.conversation.title || 'AI').substring(0, 2).toUpperCase(),
-                onClick: () => {
-                  navigate(`/ai/conversation/${item.conversation.id}`);
-                },
+                onClick: () => navigate(`/ai/conversation/${item.conversation.id}`),
               }))}
             />
           </div>
         </div>
       )}
 
-      {error && (
-        <div className="px-4 py-3 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800">
-          <p className="text-sm text-red-600 dark:text-red-400 text-center">
-            {error}
-          </p>
-        </div>
-      )}
-
-      {/* Storage Status Indicator */}
-      {!storageStatus.ready && (
-        <div className="px-4 py-3 bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800">
-          <div className="flex items-center justify-center">
-            <Database className="w-4 h-4 text-yellow-600 dark:text-yellow-400 mr-2" />
-            <p className="text-sm text-yellow-600 dark:text-yellow-400">
-              {storageStatus.message || 'Storage is initializing...'}
-            </p>
+      {/* ── Stats ticker ── */}
+      {conversations.length > 0 && !loading && (
+        <div className="home-stats-banner">
+          <div className="home-stat-pill primary">
+            <MessageSquare className="stat-icon" />
+            <span className="stat-value">{stats.total}</span>
+            Convos
           </div>
-        </div>
-      )}
-
-      {storageStatus.ready && (
-        <div className="px-4 py-2 bg-green-50 dark:bg-green-900/20 border-b border-green-200 dark:border-green-800">
-          <div className="flex items-center justify-center">
-            <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400 mr-2" />
-            <p className="text-sm text-green-600 dark:text-green-400">
-              Storage ready{storageStatus.totalConversations !== undefined ? ` (${storageStatus.totalConversations} conversations)` : ''}
-            </p>
+          <div className="home-stat-pill emerald">
+            <BarChart2 className="stat-icon" />
+            <span className="stat-value">{stats.totalMessages.toLocaleString()}</span>
+            Msgs
           </div>
-        </div>
-      )}
-
-      {/* API Source Indicator - shows when data is from live API fallback */}
-      {apiSource === 'api' && (
-        <div className="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800">
-          <div className="flex items-center justify-center">
-            <CloudOff className="w-4 h-4 text-blue-600 dark:text-blue-400 mr-2" />
-            <p className="text-sm text-blue-600 dark:text-blue-400">
-              Showing live data · syncing to local storage in background...
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Sync UI removed since full sync happens on login */}
-
-      <div className="flex-1 py-4">
-        {loading && conversations.length === 0 ? (
-          <div className="space-y-4 px-2 sm:px-4">
-            <div className="text-center py-8">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 mb-4">
-                <RefreshCw className="w-6 h-6 text-blue-600 dark:text-blue-400 animate-spin" />
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                Loading Conversations
-              </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Please wait while we fetch your conversations...
-              </p>
+          {stats.totalWords > 0 && (
+            <div className="home-stat-pill amber">
+              <LayoutList className="stat-icon" />
+              <span className="stat-value">{(stats.totalWords / 1000).toFixed(1)}k</span>
+              Words
             </div>
-            <IOSSkeletonList count={5} showAvatar />
+          )}
+          {stats.totalCode > 0 && (
+            <div className="home-stat-pill rose">
+              <FileCode className="stat-icon" />
+              <span className="stat-value">{stats.totalCode}</span>
+              Code
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Status Banners ── */}
+      {!storageStatus.ready && !error && (
+        <div className="mx-4 mt-3 px-3 py-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-200 dark:border-yellow-800">
+          <div className="flex items-center gap-2">
+            <Database className="w-3.5 h-3.5 text-yellow-600 dark:text-yellow-400 shrink-0" />
+            <p className="text-xs text-yellow-700 dark:text-yellow-400">
+              {storageStatus.message || 'Storage is initializing…'}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {apiSource === 'api' && !error && (
+        <div className="mx-4 mt-3 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+          <div className="flex items-center gap-2">
+            <CloudOff className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
+            <p className="text-xs text-blue-700 dark:text-blue-400">
+              Showing live data · syncing locally in background…
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ── Search + View Toggle ── */}
+      {conversations.length > 0 && (
+        <div className="home-search-row">
+          <div className="home-search-input-wrap">
+            <Search className="search-icon" />
+            <input
+              type="search"
+              placeholder="Search conversations…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="home-search-input"
+              id="home-search-input"
+            />
+          </div>
+
+          {/* Sort button */}
+          <div className="relative">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortBy)}
+              className="appearance-none w-9 h-9 opacity-0 absolute inset-0 cursor-pointer z-10"
+              title="Sort by"
+            >
+              <option value="date">Date</option>
+              <option value="messages">Messages</option>
+              <option value="title">Title</option>
+            </select>
+            <button className="home-view-toggle-btn active w-9 h-9 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800" title="Sort">
+              <SlidersHorizontal className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* View mode toggle */}
+          <div className="home-view-toggle">
+            <button
+              className={`home-view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+              onClick={() => setViewMode('list')}
+              title="List view"
+            >
+              <List className="w-4 h-4" />
+            </button>
+            <button
+              className={`home-view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
+              onClick={() => setViewMode('grid')}
+              title="Grid view"
+            >
+              <Grid2x2 className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Filter Tabs ── */}
+      {conversations.length > 0 && (
+        <div className="home-filter-tabs">
+          {([
+            { id: 'all',      label: 'All',      icon: <LayoutList className="w-3 h-3" /> },
+            { id: 'recent',   label: 'Recent',   icon: <Clock className="w-3 h-3" /> },
+            { id: 'pinned',   label: 'Pinned',   icon: <Pin className="w-3 h-3" /> },
+            { id: 'archived', label: 'Archived', icon: <Archive className="w-3 h-3" /> },
+          ] as {id: FilterTab; label: string; icon: React.ReactNode}[]).map((tab) => (
+            <button
+              key={tab.id}
+              className={`home-filter-tab ${filterTab === tab.id ? 'active' : ''}`}
+              onClick={() => setFilterTab(tab.id)}
+              id={`filter-tab-${tab.id}`}
+            >
+              {tab.icon}
+              {tab.label}
+              {tabCounts[tab.id] > 0 && filterTab === tab.id && (
+                <span className="tab-count">{tabCounts[tab.id]}</span>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* ── Main Content ── */}
+      <div className="flex-1">
+        {loading && conversations.length === 0 ? (
+          <div className="space-y-3 px-2 sm:px-4 pt-4">
+            <IOSSkeletonList count={6} showAvatar />
           </div>
         ) : error ? (
-          <div className="text-center py-8">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-900 mb-4">
-              <WifiOff className="w-6 h-6 text-red-600 dark:text-red-400" />
+          <div className="flex flex-col items-center text-center py-12 px-6">
+            <div className="w-14 h-14 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-4">
+              <WifiOff className="w-7 h-7 text-red-500" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-              Failed to Load Conversations
+            <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-1">
+              Could Not Load Conversations
             </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              {error}
-            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-xs">{error}</p>
             <button
-              onClick={() => {
-                setError(null);
-                loadConversations(1);
-              }}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              onClick={() => { setError(null); loadConversations(1); }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 active:scale-95 transition-all"
             >
-              <RefreshCw className="w-4 h-4 mr-2" />
+              <RefreshCw className="w-4 h-4" />
               Retry
             </button>
           </div>
         ) : conversations.length === 0 ? (
-          <EmptyMessages
-            onAction={() => {
-              navigate('/chat');
-            }}
-          />
-        ) : (
-          <div className="space-y-3 px-2 sm:px-4">
-            {sortedConversations.map((convo) => (
-              <ErrorBoundary
-                key={convo.id}
-                onError={(error) => {
-                  logger.error('HOME', `Error rendering conversation card ${convo.id}`, error instanceof Error ? error : new Error(String(error)));
+          /* ── Rich empty state ── */
+          <div className="home-empty-hero">
+            <div className="home-empty-orb">
+              <MessageSquare className="w-10 h-10 text-indigo-500 dark:text-indigo-400" />
+            </div>
+            <h2 className="home-empty-title">Your second brain awaits</h2>
+            <p className="home-empty-sub">
+              Capture AI conversations from ChatGPT, Claude, Gemini and more — then search, fork and share them.
+            </p>
+            <div className="flex flex-col gap-3 w-full max-w-xs">
+              <IOSButton
+                variant="primary"
+                fullWidth
+                icon={<Plus className="w-5 h-5" />}
+                onClick={() => navigate('/capture')}
+              >
+                Capture First Conversation
+              </IOSButton>
+              <IOSButton
+                variant="secondary"
+                fullWidth
+                icon={<Bot className="w-5 h-5" />}
+                onClick={async () => {
+                  setLoading(true);
+                  try {
+                    await import('../lib/recommendation/test-data-generator').then(
+                      (m) => m.loadTestDataIntoStorage()
+                    );
+                    window.location.reload();
+                  } catch {
+                    showToast(toast.error('Failed to load demo data'));
+                    setLoading(false);
+                  }
                 }}
               >
-                <ConversationCard
-                  conversation={convo}
-                  isPinned={pinnedIds.has(convo.id)}
-                  isArchived={archivedIds.has(convo.id)}
-                  onContinue={handleContinue}
-                  onFork={handleFork}
-                  onPinToggle={handlePinToggle}
-                  onArchiveToggle={handleArchiveToggle}
-                  onDelete={handleDelete}
-                  onDuplicate={handleDuplicate}
-                  onAIClick={handleAIClick}
-                  onShare={handleShare}
-                />
-              </ErrorBoundary>
-            ))}
+                Load Demo Data
+              </IOSButton>
+            </div>
           </div>
+        ) : filteredConversations.length === 0 ? (
+          /* ── No results for filter/search ── */
+          <div className="flex flex-col items-center py-16 px-6 text-center">
+            <Search className="w-12 h-12 text-gray-300 dark:text-gray-700 mb-4" />
+            <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-1">No results</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              {searchQuery ? `No conversations match "${searchQuery}"` : `No ${filterTab} conversations yet.`}
+            </p>
+            <button
+              onClick={() => { setSearchQuery(''); setFilterTab('all'); }}
+              className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+            >
+              <X className="w-4 h-4" />
+              Clear filters
+            </button>
+          </div>
+        ) : (
+          /* ── Feed ── */
+          <>
+            {searchQuery && (
+              <div className="px-4 py-2 text-xs text-gray-500 dark:text-gray-400">
+                {filteredConversations.length} result{filteredConversations.length !== 1 ? 's' : ''} for &ldquo;{searchQuery}&rdquo;
+              </div>
+            )}
+            <div className={viewMode === 'grid' ? 'home-feed-grid' : 'home-feed-list'}>
+              {filteredConversations.map((convo, idx) => (
+                <div
+                  key={convo.id}
+                  style={{ animationDelay: `${Math.min(idx * 30, 300)}ms` }}
+                >
+                  <FeedItemCard
+                    conversation={convo}
+                    isPinned={pinnedIds.has(convo.id)}
+                    isArchived={archivedIds.has(convo.id)}
+                    gridMode={viewMode === 'grid'}
+                    onContinue={handleContinue}
+                    onShare={handleShare}
+                    onPinToggle={handlePinToggle}
+                    onArchiveToggle={handleArchiveToggle}
+                    onDelete={handleDelete}
+                    onFork={handleFork}
+                    onDuplicate={handleDuplicate}
+                    onAIClick={handleAIClick}
+                  />
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
 
-      {!loading && conversations.length === 0 && (
-        <div className="px-2 sm:px-4 pb-4">
-          <div className="flex flex-col gap-3">
-            <IOSButton
-              variant="primary"
-              fullWidth
-              icon={<Plus className="w-5 h-5" />}
-              onClick={() => navigate('/chat')}
-            >
-              Start New Chat
-            </IOSButton>
-            <IOSButton
-              variant="secondary"
-              fullWidth
-              icon={<Bot className="w-5 h-5" />}
-              onClick={async () => {
-                setLoading(true);
-                try {
-                  await import('../lib/recommendation/test-data-generator').then(
-                    (m) => m.loadTestDataIntoStorage()
-                  );
-                  window.location.reload();
-                } catch (err) {
-                  showToast(toast.error('Failed to load demo data'));
-                  setLoading(false);
-                }
-              }}
-            >
-              Load Demo Data
-            </IOSButton>
-          </div>
+      {/* Intersection sentinel for infinite scroll */}
+      <div ref={observerTarget} className="h-8 w-full" />
+
+      {/* ── FAB (floating action buttons) ── */}
+      {fabVisible && (
+        <div className="home-fab-area">
+          {/* Mini actions (when expanded) */}
+          {fabExpanded && (
+            <>
+              <button
+                className="home-fab-mini"
+                onClick={() => { setFabExpanded(false); navigate('/capture'); }}
+                id="fab-capture"
+              >
+                <span className="home-fab-mini-label">Capture</span>
+                <span className="home-fab-mini-icon" style={{ background: 'linear-gradient(135deg,#10b981,#059669)' }}>
+                  <Plus className="w-5 h-5" />
+                </span>
+              </button>
+              <button
+                className="home-fab-mini"
+                onClick={() => { setFabExpanded(false); navigate('/ai-conversations'); }}
+                id="fab-ai-chat"
+              >
+                <span className="home-fab-mini-label">AI Chat</span>
+                <span className="home-fab-mini-icon" style={{ background: 'linear-gradient(135deg,#8b5cf6,#6d28d9)' }}>
+                  <Sparkles className="w-5 h-5" />
+                </span>
+              </button>
+              <button
+                className="home-fab-mini"
+                onClick={async () => {
+                  setFabExpanded(false);
+                  setLoading(true);
+                  setError(null);
+                  try {
+                    await loadConversations(1);
+                    await checkStorageStatus();
+                    showToast(toast.success('Refreshed'));
+                  } catch {
+                    showToast(toast.error('Failed to refresh'));
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
+                id="fab-refresh"
+              >
+                <span className="home-fab-mini-label">Refresh</span>
+                <span className="home-fab-mini-icon" style={{ background: 'linear-gradient(135deg,#3b82f6,#1d4ed8)' }}>
+                  <RefreshCw className="w-5 h-5" />
+                </span>
+              </button>
+            </>
+          )}
+
+          {/* Main FAB */}
+          <button
+            className={`home-fab-main ${fabExpanded ? 'is-expanded' : ''}`}
+            onClick={() => setFabExpanded(!fabExpanded)}
+            id="home-fab-main"
+            title="Quick actions"
+          >
+            <Plus className="w-6 h-6" />
+          </button>
         </div>
       )}
 
-      <div ref={observerTarget} className="h-8 w-full" />
-
-      {/* Manual Refresh Button */}
-      <div className="fixed bottom-20 right-4 z-10">
-        <button
-          onClick={async () => {
-            setLoading(true);
-            setError(null);
-            try {
-              await loadConversations(1);
-              await checkStorageStatus();
-              showToast(toast.success('Conversations refreshed'));
-            } catch (err) {
-              const errorMsg = err instanceof Error ? err.message : String(err);
-              showToast(toast.error(`Failed to refresh: ${errorMsg}`));
-            } finally {
-              setLoading(false);
-            }
-          }}
-          disabled={loading}
-          className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-          title="Refresh conversations"
-        >
-          <RefreshCw className={`w-6 h-6 text-white ${loading ? 'animate-spin' : ''}`} />
-        </button>
-      </div>
-
-      {/* Debug Panel Toggle Button - Development only */}
-      {import.meta.env.DEV && (
-      <div className="fixed bottom-20 right-20 z-10">
-        <button
-          onClick={async () => {
-            if (!debugPanelOpen) {
-              await collectDebugInfo();
-            }
-            setDebugPanelOpen(!debugPanelOpen);
-          }}
-          className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 shadow-lg"
-          title="Toggle debug panel"
-        >
-          <AlertCircle className="w-6 h-6 text-white" />
-        </button>
-      </div>
+      {/* Backdrop to close FAB */}
+      {fabExpanded && (
+        <div
+          className="fixed inset-0 z-[1010]"
+          onClick={() => setFabExpanded(false)}
+        />
       )}
 
-      {/* Debug Panel - Development only */}
+      {/* ── Debug Panel (dev only) ── */}
+      {import.meta.env.DEV && (
+        <div className="fixed bottom-[4.5rem] right-[4.5rem] z-[1020]">
+          <button
+            onClick={async () => {
+              if (!debugPanelOpen) await collectDebugInfo();
+              setDebugPanelOpen(!debugPanelOpen);
+            }}
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 dark:bg-gray-700 hover:bg-gray-900 shadow-lg active:scale-95 transition-all"
+            title="Toggle debug panel"
+          >
+            <AlertCircle className="w-5 h-5 text-white" />
+          </button>
+        </div>
+      )}
+
       {import.meta.env.DEV && debugPanelOpen && (
         <div className="fixed bottom-32 right-4 z-20 w-80 max-h-96 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden">
           <div className="p-3 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
             <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Debug Panel</h3>
-            <button
-              onClick={() => setDebugPanelOpen(false)}
-              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-            >
-              ×
-            </button>
+            <button onClick={() => setDebugPanelOpen(false)} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">×</button>
           </div>
           <div className="p-3 overflow-y-auto max-h-80 text-xs">
-            {debugInfo ? (
-              <pre className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-all">
-                {JSON.stringify(debugInfo, null, 2)}
-              </pre>
-            ) : (
-              <p className="text-gray-500 dark:text-gray-400">Loading debug information...</p>
-            )}
+            {debugInfo
+              ? <pre className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-all">{JSON.stringify(debugInfo, null, 2)}</pre>
+              : <p className="text-gray-500 dark:text-gray-400">Loading debug information…</p>
+            }
           </div>
           <div className="p-3 border-t border-gray-200 dark:border-gray-700 flex gap-2">
+            <button onClick={collectDebugInfo} className="flex-1 px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded text-xs hover:bg-blue-200 dark:hover:bg-blue-800">Refresh</button>
             <button
-              onClick={collectDebugInfo}
-              className="flex-1 px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded text-xs hover:bg-blue-200 dark:hover:bg-blue-800"
-            >
-              Refresh
-            </button>
-            <button
-              onClick={() => {
-                if (debugInfo) {
-                  navigator.clipboard.writeText(JSON.stringify(debugInfo, null, 2));
-                  showToast(toast.success('Debug info copied to clipboard'));
-                }
-              }}
+              onClick={() => { if (debugInfo) { navigator.clipboard.writeText(JSON.stringify(debugInfo, null, 2)); showToast(toast.success('Copied')); } }}
               className="flex-1 px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs hover:bg-gray-200 dark:hover:bg-gray-600"
-            >
-              Copy
-            </button>
+            >Copy</button>
           </div>
         </div>
       )}
 
+      {/* ── Dialogs ── */}
       {selectedConversation && (
         <>
           <ShareDialog
             conversationId={selectedConversation.id}
             conversationTitle={selectedConversation.title}
             open={shareDialogOpen}
-            onClose={() => {
-              setShareDialogOpen(false);
-              setSelectedConversation(null);
-            }}
+            onClose={() => { setShareDialogOpen(false); setSelectedConversation(null); }}
           />
           <AIActionsPanel
             conversationId={selectedConversation.id}
             conversationTitle={selectedConversation.title}
             conversationContent={JSON.stringify(selectedConversation.messages)}
             open={aiPanelOpen}
-            onClose={() => {
-              setAiPanelOpen(false);
-              setSelectedConversation(null);
-            }}
+            onClose={() => { setAiPanelOpen(false); setSelectedConversation(null); }}
             onResult={handleAIResult}
           />
           <CircleManager
             circles={circles}
             open={circleManagerOpen}
-            onClose={() => {
-              setCircleManagerOpen(false);
-              setSelectedConversation(null);
-            }}
+            onClose={() => { setCircleManagerOpen(false); setSelectedConversation(null); }}
             mode="share"
             conversationId={selectedConversation.id}
             onShareToCircle={async (circleId) => {
               const success = await featureService.shareToCircle(selectedConversation.id, circleId);
-              if (success) {
-                showToast(toast.success('Shared to circle'));
-                setCircleManagerOpen(false);
-              } else {
-                showToast(toast.error('Failed to share to circle'));
-              }
+              if (success) { showToast(toast.success('Shared to circle')); setCircleManagerOpen(false); }
+              else { showToast(toast.error('Failed to share to circle')); }
             }}
           />
         </>
@@ -742,12 +1072,10 @@ export const Home: React.FC = () => {
   );
 };
 
-export const HomeWithProvider: React.FC = () => {
-  return (
-    <IOSToastProvider>
-      <Home />
-    </IOSToastProvider>
-  );
-};
+export const HomeWithProvider: React.FC = () => (
+  <IOSToastProvider>
+    <Home />
+  </IOSToastProvider>
+);
 
 export default Home;

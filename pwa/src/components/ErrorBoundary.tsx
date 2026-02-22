@@ -1,10 +1,9 @@
 import React, { Component, ReactNode } from 'react';
-import { ErrorReporter } from '@common/error-reporting.ts';
 import { useSettingsStore } from '@/stores';
 import { logger } from '@/lib/logger';
 
 interface Props {
-  children: ReactNode;
+  children?: ReactNode;
   fallback?: ReactNode;
 }
 
@@ -69,33 +68,33 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    logger.error('ErrorBoundary caught an error', error, { componentStack: errorInfo.componentStack });
+    logger.error('ErrorBoundary', `Caught render error: ${error.message}`, error);
     
     this.setState({ errorInfo });
 
     // Report to error tracking service
     try {
       const settings = useSettingsStore.getState();
-      const errorReporter = ErrorReporter.getInstance({
-        endpoint: `${settings.apiBaseUrl}/errors`,
-        bufferSize: 5,
-        flushInterval: 3000
-      });
-
-      errorReporter.report({
-        level: 'error',
-        component: 'ErrorBoundary',
-        category: 'react',
-        message: error.message,
-        stack: error.stack,
-        context: {
-          componentStack: errorInfo.componentStack,
-          timestamp: new Date().toISOString()
-        },
-        severity: 'high'
-      });
+      const endpoint = `${settings.apiBaseUrl}/errors`;
+      // Best-effort fire-and-forget error report
+      fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          level: 'error',
+          component: 'ErrorBoundary',
+          category: 'react',
+          message: error.message,
+          stack: error.stack,
+          context: {
+            componentStack: errorInfo.componentStack,
+            timestamp: new Date().toISOString(),
+          },
+          severity: 'high',
+        }),
+      }).catch(() => { /* silently ignore network failures during error reporting */ });
     } catch (reportError) {
-      logger.error('Failed to report error', reportError instanceof Error ? reportError : undefined);
+      logger.error('ErrorBoundary', 'Failed to report error to tracking service', reportError instanceof Error ? reportError : new Error(String(reportError)));
     }
   }
 
@@ -118,7 +117,7 @@ export class ErrorBoundary extends Component<Props, State> {
       );
     }
 
-    return this.props.children;
+    return this.props.children ?? null;
   }
 }
 

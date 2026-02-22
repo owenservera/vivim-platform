@@ -43,7 +43,9 @@ export class SyncQueue {
   private async ensureStoreExists(): Promise<void> {
     const stores = this.db.objectStoreNames;
     if (!stores.contains(this.config.storeName)) {
-      this.db.createObjectStore(this.config.storeName, { keyPath: 'id' });
+      // Object stores can only be created during a version upgrade transaction.
+      // If the store doesn't exist here, it means the DB schema is out of date.
+      log.storage.warn(`SyncQueue store '${this.config.storeName}' not found. Ensure it is defined in the DB schema stores config.`);
     }
   }
 
