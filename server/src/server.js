@@ -58,6 +58,7 @@ import { debugRouter } from './routes/debug.js';
 import { collectionsRouter } from './routes/collections.js';
 import socialRouter from './routes/social.js';
 import moderationRouter from './routes/moderation.js';
+import integrationsRouter from './routes/integrations.ts';
 import adminNetworkRouter from './routes/admin/network.js';
 import adminDatabaseRouter from './routes/admin/database.js';
 import adminSystemRouter from './routes/admin/system.js';
@@ -453,6 +454,7 @@ app.use('/api/v1/debug', debugRouter);
 app.use('/api/v1/collections', collectionsRouter);
 app.use('/api/v3/social', socialRouter);
 app.use('/api/v1/social', socialRouter);
+app.use('/api/v1/integrations', integrationsRouter);
 
 // Admin routes
 app.use('/api/admin/network', adminNetworkRouter);

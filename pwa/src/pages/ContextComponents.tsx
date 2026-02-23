@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Database, RefreshCw, PenTool, Hash, Info, ChevronRight, X, User as UserIcon, BookOpen, Clock, ArrowLeft } from 'lucide-react';
+import { Database, RefreshCw, PenTool, Hash, Info, ChevronRight, X, User as UserIcon, BookOpen, Clock, ArrowLeft, Link as LinkIcon, Linkedin } from 'lucide-react';
 import { IOSToastProvider, useIOSToast } from '../components/ios';
 import { getStorage } from '../lib/storage-v2';
 
@@ -17,7 +17,42 @@ export const ContextComponentsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedBundle, setSelectedBundle] = useState<ContextBundle | null>(null);
+  const [isPullingLinkedIn, setIsPullingLinkedIn] = useState(false);
   const { toast } = useIOSToast();
+
+  const handlePullLinkedIn = async () => {
+    const profileUrl = prompt("Enter your LinkedIn Profile URL:");
+    if (!profileUrl) return;
+
+    try {
+      setIsPullingLinkedIn(true);
+      const storage = getStorage();
+      const identity = await storage.getIdentity();
+
+      const response = await fetch('/api/v1/integrations/linkedin/pull', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${identity}`,
+          'X-DID': identity || '',
+        },
+        body: JSON.stringify({ profileUrl })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to pull LinkedIn profile');
+      }
+
+      toast('LinkedIn successfully integrated into Context!');
+      // Refresh bundles to see the updated context if applicable
+      fetchBundles();
+    } catch (err: any) {
+      console.error(err);
+      toast('Failed to integrate LinkedIn: ' + err.message);
+    } finally {
+      setIsPullingLinkedIn(false);
+    }
+  };
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -115,6 +150,32 @@ export const ContextComponentsPage: React.FC = () => {
           >
             <RefreshCw className={`w-5 h-5 text-blue-500 ${loading ? 'animate-spin' : ''}`} />
           </button>
+        </div>
+
+        {/* Integrations Section */}
+        <div className="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+          <h3 className="font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+            <LinkIcon className="w-4 h-4 text-blue-500" />
+            Integrations
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button 
+              onClick={handlePullLinkedIn}
+              disabled={isPullingLinkedIn}
+              className="flex items-center gap-3 p-3 bg-[#0a66c2]/10 hover:bg-[#0a66c2]/20 border border-[#0a66c2]/20 rounded-lg transition text-left"
+            >
+              <div className="p-2 bg-[#0a66c2] text-white rounded-md">
+                <Linkedin className="w-5 h-5" />
+              </div>
+              <div className="flex-1">
+                <div className="font-medium text-gray-900 dark:text-white flex items-center justify-between">
+                  Connect LinkedIn
+                  {isPullingLinkedIn && <RefreshCw className="w-4 h-4 animate-spin text-[#0a66c2]" />}
+                </div>
+                <div className="text-xs text-gray-500 mt-0.5">Pull profile to enhance identity context</div>
+              </div>
+            </button>
+          </div>
         </div>
 
         {loading ? (
