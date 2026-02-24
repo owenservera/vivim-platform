@@ -11,7 +11,7 @@ import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 export const zai = createOpenAICompatible({
   name: 'zai',
   apiKey: process.env.ZAI_API_KEY || '',
-  baseURL: process.env.ZAI_BASE_URL || 'https://api.z.ai/api/coding/paas/v4',
+  baseURL: process.env.ZAI_BASE_URL || 'https://api.z.ai/api/paas/v4',
   headers: () => ({
     Accept: 'application/json',
   }),

@@ -58,7 +58,7 @@ export class ZAILLMService implements ILLMService {
   constructor(config: ZAIConfig = {}) {
     this.apiKey = config.apiKey || process.env.ZAI_API_KEY || '';
     this.baseUrl =
-      config.baseUrl || process.env.ZAI_BASE_URL || 'https://api.z.ai/api/coding/paas/v4';
+      config.baseUrl || process.env.ZAI_BASE_URL || 'https://api.z.ai/api/paas/v4';
     this.model = config.model || process.env.ZAI_MODEL || 'glm-4.7-flash';
     this.timeout = config.timeout || 60000; // 60 seconds for chat completions
     this.maxRetries = config.maxRetries || 3;

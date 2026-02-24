@@ -95,6 +95,8 @@ export interface AICompletionResponse {
     duration?: number;
     toolsUsed?: string[];
   };
+  contextAllocation?: Record<string, any>;
+  contextStats?: Record<string, any>;
 }
 
 /**

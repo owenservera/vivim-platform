@@ -638,17 +638,18 @@ export class ConversationStore {
       const store = tx.objectStore(STORES.CONVERSATIONS);
 
       const index: ConversationMetadata = {
-        conversationId: root.conversationId,
+        id: root.conversationId || root.id, // Fallback for old keyPaths
+        conversationId: root.conversationId || root.id,
         rootHash: root.id,
-        title: root.title,
-        createdAt: root.metadata.createdAt as string || root.timestamp,
-        updatedAt: root.timestamp,
-        lastMessageAt: (root.metadata as any).lastMessageAt as string || null,
-        messageCount: (root.metadata as any).totalMessages as number || (root.metadata as any).messageCount as number || 0,
+        title: root.title || 'Untitled',
+        createdAt: root.metadata?.createdAt as string || root.timestamp || new Date().toISOString(),
+        updatedAt: root.timestamp || new Date().toISOString(),
+        lastMessageAt: (root.metadata as any)?.lastMessageAt as string || null,
+        messageCount: (root.metadata as any)?.totalMessages as number || (root.metadata as any)?.messageCount as number || 0,
         snapshotCount: 0,
-        tags: root.metadata.tags as string[] || [],
-        author: root.author
-      };
+        tags: root.metadata?.tags as string[] || [],
+        author: root.author || '' as any
+      } as any;
 
       return new Promise((resolve, reject) => {
         const request = store.put(index);
@@ -756,17 +757,18 @@ export class ConversationStore {
       tx.objectStore(STORES.OBJECTS).put(root);
       
       const index: ConversationMetadata = {
-        conversationId: root.conversationId,
+        id: root.conversationId || root.id, // Fallback for old keyPaths
+        conversationId: root.conversationId || root.id,
         rootHash: root.id,
-        title: root.title,
-        createdAt: root.metadata.createdAt as string || root.timestamp,
-        updatedAt: root.timestamp,
-        lastMessageAt: (root.metadata as any).lastMessageAt as string || null,
-        messageCount: (root.metadata as any).totalMessages as number || (root.metadata as any).messageCount as number || 0,
+        title: root.title || 'Untitled',
+        createdAt: root.metadata?.createdAt as string || root.timestamp || new Date().toISOString(),
+        updatedAt: root.timestamp || new Date().toISOString(),
+        lastMessageAt: (root.metadata as any)?.lastMessageAt as string || null,
+        messageCount: (root.metadata as any)?.totalMessages as number || (root.metadata as any)?.messageCount as number || 0,
         snapshotCount: 0,
-        tags: root.metadata.tags as string[] || [],
-        author: root.author
-      };
+        tags: root.metadata?.tags as string[] || [],
+        author: root.author || '' as any
+      } as any;
       tx.objectStore(STORES.CONVERSATIONS).put(index);
     });
     

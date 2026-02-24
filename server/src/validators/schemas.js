@@ -108,6 +108,13 @@ export const captureRequestSchema = z
   })
   .strict(); // Strict mode to prevent additional properties
 
+export const bulkCaptureRequestSchema = z
+  .object({
+    urls: z.array(urlSchema).min(1, 'At least one URL is required').max(20, 'Maximum of 20 URLs allowed in a single bulk request'),
+    options: captureOptionsSchema.optional(),
+  })
+  .strict();
+
 // Response schemas for validation (optional but recommended)
 export const messageSchema = z.object({
   id: z.string().uuid(),

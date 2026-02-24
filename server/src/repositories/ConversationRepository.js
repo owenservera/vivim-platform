@@ -58,6 +58,7 @@ export async function createConversation(data, userClient = null) {
       provider: data.provider,
       title: data.title,
       model: data.model,
+      ownerId: data.ownerId || null,
       createdAt: new Date(data.createdAt),
       updatedAt: new Date(data.updatedAt || new Date()),
       capturedAt: new Date(data.capturedAt || new Date()),

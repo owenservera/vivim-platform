@@ -14,7 +14,8 @@ import {
   MoreVertical,
   RefreshCw,
   Cpu,
-  Zap
+  Zap,
+  Bot
 } from 'lucide-react';
 import { useAIConversations } from '../hooks/useAIConversations';
 import type { Conversation } from '../types/conversation';

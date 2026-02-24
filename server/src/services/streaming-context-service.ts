@@ -229,7 +229,7 @@ export class ContextUpdateSubscriber {
     };
   }
 
-  private emit(key: string, event: string, data: any) {
+  emit(key: string, event: string, data: any) {
     const operationLog = createOperationLogger('emit', { key, event });
     const subs = this.subscribers.get(key);
 

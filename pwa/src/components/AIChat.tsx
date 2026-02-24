@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useFreshChat } from '../hooks/useAI';
+
 import { AIProviderCapabilities } from '../types/ai';
 import { Bot, User, Sparkles, AlertCircle, Loader2, Trash2, Copy, RefreshCw, Check, ChevronDown, Command, Zap, ZapOff, Settings } from 'lucide-react';
-import { OmniComposer } from './OmniComposer';
+import { ChatInputBox } from './ChatInputBox';
 import { useAIStore } from '../lib/ai-store';
+import { useAIChat } from '../hooks/useAI';
+import { ContextVisualizer } from './ContextVisualizer';
 import './AIChat.css';
 
 interface AIChatProps {
@@ -18,7 +20,8 @@ export const AIChat = ({ initialMessage }: AIChatProps) => {
     sendMessage,
     stop,
     clearMessages,
-  } = useFreshChat();
+    lastResponse,
+  } = useAIChat();
 
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [showModelSelector, setShowModelSelector] = useState(false);
@@ -187,6 +190,16 @@ export const AIChat = ({ initialMessage }: AIChatProps) => {
         )}
       </div>
 
+      {lastResponse?.contextAllocation && (
+        <div className="px-4 pt-2">
+          <ContextVisualizer 
+            contextAllocation={lastResponse.contextAllocation as any} 
+            bundlesInfo={lastResponse.contextStats?.bundlesInfo as any}
+            totalTokensAvailable={12000} 
+          />
+        </div>
+      )}
+
       {/* Messages */}
       <div className="ai-chat-messages">
         {isEmpty ? (
@@ -272,13 +285,15 @@ export const AIChat = ({ initialMessage }: AIChatProps) => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* OmniComposer Input */}
-      <OmniComposer 
-        onSend={handleSend}
-        isLoading={isLoading}
-        onStop={stop}
-        initialValue={initialMessage}
-      />
+      {/* ChatInputBox */}
+      <div className="fixed bottom-0 left-0 right-0 z-50">
+        <ChatInputBox 
+          onSend={handleSend}
+          isLoading={isLoading}
+          onStop={stop}
+          initialValue={initialMessage}
+        />
+      </div>
     </div>
   );
 };

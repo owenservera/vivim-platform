@@ -14,7 +14,7 @@ import { useAuth } from '../lib/auth-context';
 import { useDeviceContext } from '../lib/device-context';
 import { DeviceType } from '../lib/device-detection';
 import { Smartphone, Monitor, Tablet, RotateCcw } from 'lucide-react';
-import { User, Bell, Shield, Database, Palette, Info, LogOut, Trash2, ChevronRight, Terminal } from 'lucide-react';
+import { User, Bell, Shield, Database, Palette, Info, LogOut, Trash2, ChevronRight, Terminal, Brain } from 'lucide-react';
 
 export const Settings: React.FC = () => {
   const [did, setDid] = useState<string>('');
@@ -209,6 +209,27 @@ export const Settings: React.FC = () => {
           label: 'Encryption Keys',
           icon: <Shield className="w-5 h-5" />,
           type: 'navigation' as const,
+        },
+      ],
+    },
+    {
+      title: 'AI & Personalization',
+      items: [
+        {
+          id: 'context-recipes',
+          label: 'Context Recipes & Engines',
+          value: 'Configure L0-L7 Context layers',
+          icon: <Brain className="w-5 h-5" />,
+          type: 'action' as const,
+          onClick: () => navigate('/settings/ai'),
+        },
+        {
+          id: 'ai-chat-input-design',
+          label: 'Chat Input Tools',
+          value: 'Configure triggers and Omni features',
+          icon: <Terminal className="w-5 h-5" />,
+          type: 'action' as const,
+          onClick: () => toastHelper.info('Coming soon: configure generic chat tools.'),
         },
       ],
     },

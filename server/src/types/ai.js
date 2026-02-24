@@ -96,7 +96,7 @@ export const ProviderConfig = {
     displayName: 'Z.AI (智谱AI)',
     models: ['glm-4.7-flash'],
     defaultModel: 'glm-4.7-flash',
-    baseURL: process.env.ZAI_BASE_URL || 'https://api.z.ai/api/coding/paas/v4',
+    baseURL: process.env.ZAI_BASE_URL || 'https://api.z.ai/api/paas/v4',
     priority: -1, // HIGHEST PRIORITY (FREE DEFAULT)
     isFree: true,
     capabilities: ['coding', 'fast_response'],

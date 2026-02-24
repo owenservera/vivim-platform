@@ -13,6 +13,7 @@
         "@prisma/adapter-libsql": "^7.3.0",
         "@prisma/adapter-pg": "^7.3.0",
         "@prisma/client": "^7.3.0",
+        "@rtrvr-ai/sdk": "^0.2.1",
         "@types/jsonwebtoken": "^9.0.10",
         "@types/pg": "^8.16.0",
         "ai": "^6.0.82",
@@ -338,6 +339,10 @@
     "@rollup/rollup-win32-x64-gnu": ["@rollup/rollup-win32-x64-gnu@4.57.1", "", { "os": "win32", "cpu": "x64" }, "sha512-VMBH2eOOaKGtIJYleXsi2B8CPVADrh+TyNxJ4mWPnKfLB/DBUmzW+5m1xUrcwWoMfSLagIRpjUFeW5CO5hyciQ=="],
 
     "@rollup/rollup-win32-x64-msvc": ["@rollup/rollup-win32-x64-msvc@4.57.1", "", { "os": "win32", "cpu": "x64" }, "sha512-mxRFDdHIWRxg3UfIIAwCm6NzvxG0jDX/wBN6KsQFTvKFqqg9vTrWUE68qEjHt19A5wwx5X5aUi2zuZT7YR0jrA=="],
+
+    "@rtrvr-ai/core": ["@rtrvr-ai/core@0.2.1", "", {}, "sha512-OfbKYrAI3ageXjC4sYeRj8jpqyFr94rgn63PiqWa/q8PMpQ2ovNfSTU3jtHlTaYUGLkUzIl213F+jyfBze/iYg=="],
+
+    "@rtrvr-ai/sdk": ["@rtrvr-ai/sdk@0.2.1", "", { "dependencies": { "@rtrvr-ai/core": "0.2.1" } }, "sha512-4gmMB2eBJucYtkmL9ChtxRdhk8h2J95N05b/ljZOSys8JNUXZvNsp4zVWz/sqYXhQQRUETOBOBVDfjtF8KCeoQ=="],
 
     "@scarf/scarf": ["@scarf/scarf@1.4.0", "", {}, "sha512-xxeapPiUXdZAE3che6f3xogoJPeZgig6omHEy1rIY5WVsB3H2BHNnZH+gHG6x91SCWyQCzWGsuL2Hh3ClO5/qQ=="],
 

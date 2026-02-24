@@ -7,6 +7,9 @@ export type { IOSCardProps } from './Card';
 export { IOSInput } from './Input';
 export type { IOSInputProps } from './Input';
 
+export { IOSTextarea } from './Textarea';
+export type { IOSTextareaProps } from './Textarea';
+
 export { IOSModal } from './Modal';
 export type { IOSModalProps } from './Modal';
 

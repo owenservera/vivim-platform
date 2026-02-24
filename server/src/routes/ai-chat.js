@@ -15,6 +15,7 @@ import { logger } from '../lib/logger.js';
 import { ProviderConfig, getDefaultProvider } from '../types/ai.js';
 import { freshChatSchema } from '../validators/ai.js';
 import { executeZAIAction, isMCPConfigured } from '../services/zai-mcp-service.js';
+import { executeRtrvrAction } from '../services/rtrvr-service.js';
 
 const router = Router();
 
@@ -123,6 +124,7 @@ function parseZAIAction(message) {
     github: { action: 'github', params: parseGithubArgs(args) },
     githubtree: { action: 'github', params: { repo: args, structure: true } },
     githubfile: { action: 'github', params: parseGithubFileArgs(args) },
+    rtrvr: { action: 'rtrvr', params: { prompt: args } },
   };
 
   return actionMap[action] || null;
@@ -163,15 +165,27 @@ router.post('/send', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Conversation not found or expired' });
     }
 
-    if (isMCPConfigured()) {
-      const zaiAction = parseZAIAction(message);
-      if (zaiAction) {
-        try {
-          const result = await executeZAIAction(zaiAction.action, zaiAction.params);
+    const zaiAction = parseZAIAction(message);
+    if (zaiAction && (isMCPConfigured() || zaiAction.action === 'rtrvr')) {
+      try {
+          let result = {};
+          if (zaiAction.action !== 'rtrvr') {
+            result = await executeZAIAction(zaiAction.action, zaiAction.params);
+          }
 
           let responseText = `🔍 **${zaiAction.action.toUpperCase()} Result**\n\n`;
 
-          if (zaiAction.action === 'websearch') {
+          if (zaiAction.action === 'rtrvr') {
+            // FIRE AND FORGET - Let it run in the background
+            executeRtrvrAction(zaiAction.params.prompt, userId).catch(err => {
+              logger.error({ error: err.message }, 'Background Rtrvr action failed');
+            });
+            
+            responseText += `🚀 **Rtrvr Background Process Started!**\n\nThe AI agent is extracting the conversation securely in the background. I will notify you as soon as it succeeds or fails. You can continue our chat without waiting!`;
+            
+            // Format result to mimic ZAI
+            Object.assign(result || {}, { count: 1, query: zaiAction.params.prompt });
+          } else if (zaiAction.action === 'websearch') {
             responseText += `Found ${result.count} results for "${result.query}":\n\n`;
             result.results?.slice(0, 5).forEach((r, i) => {
               responseText += `${i + 1}. **${r.title || r.name || 'Result'}**\n`;
@@ -229,7 +243,6 @@ router.post('/send', async (req, res) => {
           });
         }
       }
-    }
 
     // Add user message
     conv.messages.push({ role: 'user', content: message, timestamp: new Date().toISOString() });

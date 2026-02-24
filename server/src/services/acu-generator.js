@@ -29,7 +29,7 @@ export async function generateACUsFromConversation(conversation, userClient = nu
 
     const savedConversation = await db.conversation.findUnique({
       where: { id: conversationId },
-      include: { messages: true },
+      include: { messages: true, owner: true },
     });
 
     if (!savedConversation || !savedConversation.messages) {
@@ -60,9 +60,26 @@ export async function generateACUsFromConversation(conversation, userClient = nu
         continue;
       }
 
-      const authorDid = conversation.ownerId
-        ? `user:${conversation.ownerId}`
-        : 'did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
+      let authorDid = savedConversation.owner?.did;
+      
+      if (!authorDid) {
+        authorDid = 'did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
+        const defaultUser = await db.user.findUnique({ where: { did: authorDid } });
+        if (!defaultUser) {
+          try {
+            await db.user.create({
+              data: {
+                did: authorDid,
+                displayName: 'System User',
+                publicKey: 'placeholder_public_key',
+                settings: {},
+              },
+            });
+          } catch (e) {
+            log.warn('Failed to create default user');
+          }
+        }
+      }
 
       const acu = {
         id: acuId,

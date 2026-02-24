@@ -617,7 +617,7 @@ export class UnifiedDebugService {
         this.localStorageHealth.isAvailable = true;
         
         let usedSpace = 0;
-        for (let key in window.localStorage) {
+        for (const key in window.localStorage) {
           if (window.localStorage.hasOwnProperty(key)) {
             usedSpace += window.localStorage[key].length + key.length;
           }
@@ -650,7 +650,7 @@ export class UnifiedDebugService {
 
     const corruptedKeys: string[] = [];
     
-    for (let key in window.localStorage) {
+    for (const key in window.localStorage) {
       if (window.localStorage.hasOwnProperty(key)) {
         try {
           const value = window.localStorage.getItem(key);

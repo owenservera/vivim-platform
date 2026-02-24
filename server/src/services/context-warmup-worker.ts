@@ -399,4 +399,24 @@ export class ContextWarmupWorker {
   }
 }
 
-export const contextWarmupWorker = new ContextWarmupWorker();
+// Singleton exported - use initContextWarmupWorker() to initialize with bundleCompiler
+// before calling warmupForUser(). Safe to import without initialization.
+let _warmupWorkerInstance: ContextWarmupWorker | null = null;
+
+export function getContextWarmupWorker(): ContextWarmupWorker | null {
+  return _warmupWorkerInstance;
+}
+
+export function initContextWarmupWorker(bundleCompiler: BundleCompiler): ContextWarmupWorker {
+  _warmupWorkerInstance = new ContextWarmupWorker({
+    prisma,
+    bundleCompiler,
+    budgetAlgorithm: new BudgetAlgorithm(),
+    maxPredictions: 8,
+    probabilityThreshold: 0.1,
+  });
+  return _warmupWorkerInstance;
+}
+
+// Legacy compat export - starts as null, initialized by context startup
+export const contextWarmupWorker = { get worker() { return _warmupWorkerInstance; } };

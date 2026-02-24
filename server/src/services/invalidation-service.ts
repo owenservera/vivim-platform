@@ -180,7 +180,7 @@ export class InvalidationService {
     try {
       const queueItems = await prisma.systemAction.findMany({
         where: {
-          trigger: this.INVALIDATION_QUEUE,
+          trigger: InvalidationService.INVALIDATION_QUEUE,
           actionCode: { startsWith: 'invalidate_' },
         },
       });
@@ -189,14 +189,24 @@ export class InvalidationService {
         return 0;
       }
 
-      log.info({ queueLength: queueItems.length }, 'Processing invalidation queue');
+      logger.info({ queueLength: queueItems.length }, 'Processing invalidation queue');
 
       let processed = 0;
       for (const item of queueItems.slice(0, 10)) {
         try {
-          const userId = (item.metadata as any)?.userId;
-          const relatedIds = (item.metadata as any)?.relatedIds || [];
-          const eventType = (item.metadata as any)?.eventType;
+          // Decode event data from label field (encoded as JSON)
+          let userId: string | undefined;
+          let relatedIds: string[] = [];
+          let eventType: string | undefined;
+          try {
+            const decoded = JSON.parse(item.label);
+            userId = decoded.userId;
+            relatedIds = decoded.relatedIds || [];
+            eventType = decoded.eventType;
+          } catch {
+            // Legacy format - skip
+            continue;
+          }
 
           if (userId && eventType && relatedIds.length > 0) {
             await this.invalidate({
@@ -219,7 +229,7 @@ export class InvalidationService {
       if (processed > 0) {
         await prisma.systemAction.deleteMany({
           where: {
-            id: { in: queueItems.slice(0, 10).map((i) => i.id) },
+            id: { in: queueItems.slice(0, 10).map((i: any) => i.id) },
           },
         });
       }
@@ -235,16 +245,19 @@ export class InvalidationService {
    * Add invalidation to queue
    */
   async queueInvalidation(event: InvalidationEvent): Promise<void> {
+    // Encode event data into the trigger field as JSON so we can decode it later
+    // SystemAction schema doesn't have a metadata field, so we encode into label
+    const encodedPayload = JSON.stringify({
+      userId: event.userId,
+      relatedIds: event.relatedIds,
+      eventType: event.eventType,
+    });
     await prisma.systemAction.create({
       data: {
-        trigger: this.INVALIDATION_QUEUE,
-        label: `Invalidate bundles for ${event.eventType}`,
+        trigger: InvalidationService.INVALIDATION_QUEUE,
+        label: encodedPayload,
         actionCode: `invalidate_${event.eventType}`,
-        metadata: {
-          userId: event.userId,
-          relatedIds: event.relatedIds,
-          eventType: event.eventType,
-        },
+        description: `Invalidate bundles for user ${event.userId} due to ${event.eventType}`,
       },
     });
   }
@@ -259,7 +272,7 @@ export class InvalidationService {
     const [queueLength, dirtyBundles] = await Promise.all([
       prisma.systemAction.count({
         where: {
-          trigger: this.INVALIDATION_QUEUE,
+          trigger: InvalidationService.INVALIDATION_QUEUE,
           actionCode: { startsWith: 'invalidate_' },
         },
       }),
@@ -282,7 +295,7 @@ export class InvalidationService {
 
     const result = await prisma.systemAction.deleteMany({
       where: {
-        trigger: this.INVALIDATION_QUEUE,
+        trigger: InvalidationService.INVALIDATION_QUEUE,
         createdAt: { lt: cutoff },
       },
     });

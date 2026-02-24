@@ -76,7 +76,7 @@ export class ConversationSyncService {
         message: 'Fetching conversations from backend...'
       });
 
-      let backendConversations = await this.fetchConversations(options.limit);
+      const backendConversations = await this.fetchConversations(options.limit);
       
       // If fetchConversations returns an empty array, it might be due to a 304 Not Modified.
       // In this case, we should check if we have local data and consider the sync successful

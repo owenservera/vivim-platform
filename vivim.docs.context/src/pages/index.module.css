@@ -1,0 +1,137 @@
+.heroBanner {
+  padding: 6rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse 100% 80% at 50% 0%, rgba(166, 91, 240, 0.2) 0%, transparent 60%);
+}
+
+.heroContent {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.heroTitle {
+  font-size: 5rem !important;
+  font-weight: 800 !important;
+  background: linear-gradient(135deg, #fff 0%, #00d4ff 50%, #a65bf0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem !important;
+  letter-spacing: -0.03em;
+}
+
+.heroSubtitle {
+  font-size: 1.75rem !important;
+  color: #00d4ff !important;
+  font-weight: 500;
+  margin-bottom: 1rem !important;
+}
+
+.heroTagline {
+  font-size: 1.25rem !important;
+  color: #a0a0a0 !important;
+  max-width: 600px;
+  margin: 0 auto 2rem !important;
+  line-height: 1.6;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.section {
+  padding: 4rem 0;
+}
+
+.sectionTitle {
+  text-align: center;
+  margin-bottom: 3rem !important;
+  font-size: 2.5rem !important;
+  color: #fff;
+}
+
+.problemCard, .featureCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 1.5rem;
+  height: 100%;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.problemCard:hover, .featureCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(166, 91, 240, 0.3);
+  box-shadow: 0 10px 30px rgba(166, 91, 240, 0.1);
+}
+
+.problemCard {
+  background: rgba(255, 0, 110, 0.05);
+  border-color: rgba(255, 0, 110, 0.15);
+}
+
+.problemIcon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #ff006e;
+  font-weight: bold;
+}
+
+.featureCard {
+  background: rgba(166, 91, 240, 0.05);
+  border-color: rgba(166, 91, 240, 0.15);
+}
+
+.featureIcon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #00d4ff;
+  font-weight: bold;
+}
+
+.ctaSection {
+  padding: 5rem 0;
+  text-align: center;
+  background: linear-gradient(180deg, transparent 0%, rgba(166, 91, 240, 0.1) 100%);
+}
+
+.ctaSection h2 {
+  font-size: 2.5rem !important;
+  color: #fff;
+  margin-bottom: 1rem !important;
+}
+
+.ctaSection p {
+  font-size: 1.25rem;
+  color: #a0a0a0;
+  margin-bottom: 2rem;
+}
+
+@media screen and (max-width: 966px) {
+  .heroBanner {
+    padding: 3rem 1rem;
+  }
+  
+  .heroTitle {
+    font-size: 3rem !important;
+  }
+  
+  .heroSubtitle {
+    font-size: 1.25rem !important;
+  }
+  
+  .buttons {
+    flex-direction: column;
+  }
+  
+  .section {
+    padding: 2rem 0;
+  }
+}

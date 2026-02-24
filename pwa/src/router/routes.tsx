@@ -12,6 +12,7 @@ import { IOSToastProvider } from '../components/ios';
 import { ResponsiveLayout } from '../components/responsive/ResponsiveLayout';
 import queryClient from '../lib/query-client';
 import { Bug } from 'lucide-react';
+import { GlobalSocketListener } from '../components/GlobalSocketListener';
 
 // Lazy load pages for better performance
 const Home = lazy(() => import('../pages/Home'));
@@ -34,6 +35,7 @@ const AdminPanel = lazy(() => import('../pages/AdminPanel'));
 const ForYou = lazy(() => import('../pages/ForYou'));
 const BYOKChat = lazy(() => import('../pages/BYOKChat'));
 const ContextComponents = lazy(() => import('../pages/ContextComponents'));
+const ContextRecipes = lazy(() => import('../pages/settings/ContextRecipes'));
 
 // Loading component
 const PageLoading = () => (
@@ -71,6 +73,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       <IOSDefaultTopBar />
       
       <BackgroundSync />
+      <GlobalSocketListener />
       
       <ResponsiveLayout
         maxWidth="lg"
@@ -206,6 +209,15 @@ const router = createBrowserRouter([
           <ContextComponents />
         </AppLayout>
       </AuthGuard>
+    ),
+    errorElement: <ErrorBoundary />
+  },
+  {
+    path: "/settings/ai",
+    element: (
+      <AppLayout>
+        <ContextRecipes />
+      </AppLayout>
     ),
     errorElement: <ErrorBoundary />
   },

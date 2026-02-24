@@ -211,6 +211,7 @@ export function useAIChat() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const [lastResponse, setLastResponse] = useState<AICompletionResponse | null>(null);
 
   const completion = useAICompletion();
   const streaming = useAIStream();
@@ -271,6 +272,7 @@ export function useAIChat() {
           };
           const response = await completion.complete(currentMessages, completionOptions);
           setMessages((prev) => [...prev, { role: 'assistant', content: response.content }]);
+          setLastResponse(response);
           setIsLoading(false);
           return response.content;
         }
@@ -316,6 +318,7 @@ export function useAIChat() {
     clearMessages,
     setProvider,
     setMessages,
+    lastResponse,
   };
 }
 
@@ -355,7 +358,7 @@ export function useFreshChat() {
   const [error, setError] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const sendMessage = useCallback(async (content: string): Promise<string> => {
+  const sendMessage = useCallback(async (content: string): Promise<string | void> => {
     const newMessage = { role: 'user', content };
     setMessages((prev) => [...prev, newMessage]);
     setIsLoading(true);

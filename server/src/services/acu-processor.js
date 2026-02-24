@@ -286,8 +286,30 @@ function generateContentHash(content) {
  */
 async function getOrCreateAnonymousDid(userId) {
   if (!userId) {
-    // Return a default anonymous DID
-    return 'did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
+    const defaultDid = 'did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
+    // Ensure default user exists
+    const defaultUser = await getPrismaClient().user.findUnique({
+      where: { did: defaultDid },
+    });
+    
+    if (defaultUser) {
+      return defaultUser.did;
+    }
+
+    try {
+      const newUser = await getPrismaClient().user.create({
+        data: {
+          did: defaultDid,
+          displayName: 'System User',
+          publicKey: 'placeholder_public_key',
+          settings: {},
+        },
+      });
+      return newUser.did;
+    } catch (error) {
+      logger.warn(`Failed to create default user: ${error.message}`);
+      return defaultDid;
+    }
   }
 
   // Check if user exists

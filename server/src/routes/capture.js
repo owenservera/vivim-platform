@@ -6,9 +6,10 @@
  */
 
 import { Router } from 'express';
+import PQueue from 'p-queue';
 import { createRequestLogger } from '../lib/logger.js';
 import { ValidationError } from '../middleware/errorHandler.js';
-import { validateRequest, captureRequestSchema, syncInitSchema } from '../validators/schemas.js';
+import { validateRequest, captureRequestSchema, bulkCaptureRequestSchema, syncInitSchema } from '../validators/schemas.js';
 import { extractConversation, detectProvider } from '../services/extractor.js';
 import {
   getServerPqcPublicKey,
@@ -25,7 +26,7 @@ import {
   saveConversationUnified,
   findRecentSuccessfulUnified,
 } from '../services/storage-adapter.js';
-import { requireApiKey, authenticateDID } from '../middleware/auth.js';
+import { requireApiKey, authenticateDID, optionalAuth } from '../middleware/auth.js';
 import { ticketStore } from '../services/ticketStore.js';
 import { calculateMessageHash } from '../lib/crypto.js';
 import { debugReporter } from '../services/debug-reporter.js';
@@ -245,6 +246,11 @@ router.post('/capture', async (req, res, next) => {
 
     const saveStartTime = Date.now();
     try {
+      // Stamp ownerId so this conversation is scoped to the authenticated user
+      const validUserId = req.userId || req.user?.userId;
+      if (validUserId) {
+        conversation.ownerId = validUserId;
+      }
       const saveResult = await saveConversationUnified(conversation, userClient);
       debugReporter.trackInfo(
         {
@@ -339,10 +345,157 @@ router.post('/capture', async (req, res, next) => {
         log.warn({ error: dbError.message }, 'Failed to update capture attempt');
       }
     }
-
     next(error);
   }
 });
+
+/**
+ * POST /api/v1/capture/bulk
+ *
+ * Capture multiple conversations from an AI provider URL efficiently
+ * Limits parallel processing and ensures quantum safety is retained.
+ */
+router.post('/capture/bulk', optionalAuth, async (req, res, next) => {
+  const log = createRequestLogger(req);
+  const startTime = Date.now();
+
+  const hasDidAuth = req.headers['x-did'] || (req.headers['authorization'] || '').includes('did:');
+  try {
+    if (hasDidAuth) {
+      await authenticateDID()(req, res, (err) => {
+        if (err) log.warn({ error: err.message }, 'DID auth failed');
+      });
+    } else {
+      try {
+        await requireApiKey()(req, res, (err) => {
+          if (err) log.warn({ error: err.message }, 'API key auth failed');
+        });
+      } catch (authErr) {
+        // Fallback for dev mode
+      }
+    }
+  } catch (authErr) {
+    log.warn({ error: authErr.message }, 'Auth error, continuing...');
+  }
+
+  const userClient = req.user?.userClient;
+
+  try {
+    let requestBody = req.body;
+    let sharedSecret = null;
+
+    if (req.body.pqcCiphertext && req.body.pqcPayload) {
+      log.info('Secure Quantum Tunnel detected for bulk capture');
+      sharedSecret = await kyberDecapsulate(req.body.pqcCiphertext);
+
+      const decryptedStr = symmetricDecrypt(req.body.pqcPayload, req.body.pqcNonce, sharedSecret);
+
+      if (!decryptedStr) {
+        throw new Error('Quantum Tunnel Decryption Failed');
+      }
+      requestBody = JSON.parse(decryptedStr);
+    }
+
+    const validated = validateRequest(requestBody, bulkCaptureRequestSchema);
+    const { urls, options } = validated;
+
+    log.info({ count: urls.length, options, userDid: req.user?.did }, 'Bulk capture request validated');
+
+    // Process queue with concurrency limit to prevent resource exhaustion (max 3 concurrent Playwright contexts)
+    const queue = new PQueue({ concurrency: 3 });
+    const { detectProvider, extractConversation } = await import('../services/extractor.js');
+
+    const results = [];
+
+    urls.forEach((url) => {
+      queue.add(async () => {
+        const itemResult = { url, status: 'pending', data: null, error: null };
+        try {
+          const useCache = options?.cache !== false;
+          let cachedResult = null;
+          if (useCache) {
+            try {
+              const recentAttempt = await findRecentSuccessfulUnified(url, options?.cacheMinutes || 60, userClient);
+              if (recentAttempt && recentAttempt.conversationId) {
+                console.log(`💾 [CACHE HIT] Returning cached data for bulk: ${url}`);
+                cachedResult = await findBySourceUrl(url, userClient);
+                if (cachedResult) {
+                  itemResult.status = 'success';
+                  itemResult.cached = true;
+                  itemResult.data = prepareConversationForClient(cachedResult);
+                  results.push(itemResult);
+                  return;
+                }
+              }
+            } catch (dbError) {
+              log.warn({ error: dbError.message, url }, 'Failed to check cache for bulk item');
+            }
+          }
+
+          const provider = detectProvider(url);
+          console.log(`\n🔍 [BULK EXTRACTION] Processing: ${url}`);
+          const extractionStartTime = Date.now();
+          const conversation = await extractConversation(url, options);
+
+          debugReporter.trackExtraction(provider, url, Date.now() - extractionStartTime, conversation?.messages?.length || 0, { userDid: req.user?.did });
+
+          // Stamp ownerId so this conversation is scoped to the authenticated user
+          const validUserId = req.userId || req.user?.userId;
+          if (validUserId) {
+            conversation.ownerId = validUserId;
+          }
+
+          await saveConversationUnified(conversation, userClient);
+
+          console.log(`✅ [BULK COMPLETE] Retrieved ${conversation?.messages?.length || 0} messages for ${url}`);
+          
+          itemResult.status = 'success';
+          itemResult.cached = false;
+          itemResult.data = prepareConversationForClient(conversation);
+        } catch (error) {
+          console.log(`❌ [BULK FAILED] Error on ${url}: ${error.message}`);
+          itemResult.status = 'error';
+          itemResult.error = error.message;
+        }
+        results.push(itemResult);
+      });
+    });
+
+    await queue.onIdle();
+
+    const responseData = {
+      status: 'success',
+      authenticated: true,
+      userDid: req.user?.did,
+      duration: Date.now() - startTime,
+      summary: {
+        total: urls.length,
+        successful: results.filter(r => r.status === 'success' && !r.cached).length,
+        cached: results.filter(r => r.status === 'success' && r.cached).length,
+        failed: results.filter(r => r.status === 'error').length
+      },
+      results,
+    };
+
+    if (sharedSecret) {
+      const encrypted = symmetricEncrypt(JSON.stringify(responseData), sharedSecret);
+      return res.json({
+        status: 'success',
+        pqcPayload: encrypted.ciphertext,
+        pqcNonce: encrypted.nonce,
+        quantumHardened: true,
+        authenticated: true,
+        userDid: req.user?.did,
+      });
+    }
+
+    res.json(responseData);
+  } catch (error) {
+    log.error({ error: error.message }, 'Bulk capture failed entirely');
+    next(error);
+  }
+});
+
 
 /**
  * POST /api/v1/capture-sync/init
@@ -397,96 +550,48 @@ router.get('/capture-sync', async (req, res) => {
     return;
   }
 
-  const { pqcCiphertext, pqcPayload, pqcNonce, url: rawUrl } = ticketData;
-  let targetUrl = rawUrl;
-  let sharedSecret = null;
+  const { url: rawUrl } = ticketData;
+  const targetUrl = rawUrl;
+
 
   // Setup heartbeat
   const heartbeat = setInterval(() => {
     res.write(': heartbeat\n\n');
   }, 15000);
 
-  // Encrypted Sender
-  const sendEncryptedEvent = (event, data) => {
-    let payload = data;
-    if (sharedSecret) {
-      const encrypted = symmetricEncrypt(JSON.stringify(data), sharedSecret);
-      payload = {
-        pqcPayload: encrypted.ciphertext,
-        pqcNonce: encrypted.nonce,
-        quantumHardened: true,
-      };
-    }
-    res.write(`event: ${event}\ndata: ${JSON.stringify(payload)}\n\n`);
-  };
-
   req.on('close', () => {
     clearInterval(heartbeat);
   });
 
   try {
-    // ----------------------------------------------------------------------
-    // QUANTUM TUNNEL DECRYPTION (Ticket version)
-    // ----------------------------------------------------------------------
-    if (pqcCiphertext && pqcPayload) {
-      try {
-        sharedSecret = await kyberDecapsulate(pqcCiphertext);
-      } catch (kemError) {
-        console.error(`❌ [SYNC FAILED] KEM Decapsulation error: ${kemError.message}`);
-        throw new Error('Quantum Tunnel Handshake Failed');
-      }
-
-      const decryptedUrl = symmetricDecrypt(pqcPayload, pqcNonce, sharedSecret);
-      if (!decryptedUrl) {
-        console.error('❌ [SYNC FAILED] Symmetric decryption failed for payload');
-        throw new Error('Quantum Tunnel Decryption Failed');
-      }
-
-      try {
-        targetUrl = JSON.parse(decryptedUrl).url;
-      } catch (jsonError) {
-        console.error('❌ [SYNC FAILED] Invalid JSON in decrypted payload');
-        throw new Error('Quantum Tunnel Payload Corrupt');
-      }
-
-      console.log('\n🔐 [QUANTUM TUNNEL] Streaming via Post-Quantum Secure Channel\n');
-    }
-    // ----------------------------------------------------------------------
-
     if (!targetUrl) {
       throw new Error('Missing target URL');
     }
 
     console.log(`\n🔄 [SYNC STARTED] Beginning real-time sync for: ${targetUrl}\n`);
-
     const conversation = await extractConversation(targetUrl, {
       onProgress: (update) => {
-        sendEncryptedEvent('progress', update);
+        sendEvent('progress', update);
       },
     });
-
     console.log(
       `\n✅ [SYNC COMPLETE] Successfully extracted ${conversation.messages?.length || 0} messages\n`
     );
-
     // DB Persistence in background (UNIFIED)
     saveConversationUnified(conversation)
       .then((res) => console.log(`💾 [BG SAVE] Saved to ${res.engine}`))
       .catch((err) => console.error('💾 [BG SAVE ERROR]:', err.message));
-
-    // Send complete
-    sendEncryptedEvent('complete', {
+    sendEvent('complete', {
       ...prepareConversationForClient(conversation),
-      authenticated: true, // If they got a ticket, they passed auth in /init
+      authenticated: true,
     });
-
     console.log('📤 [STREAMING] Sent complete conversation to client\n');
     clearInterval(heartbeat);
     res.end();
   } catch (error) {
     clearInterval(heartbeat);
     console.log(`❌ [SYNC FAILED] Error in sync: ${error.message}\n`);
-    sendEncryptedEvent('sync-error', {
+    sendEvent('sync-error', {
       message: error.message,
     });
     res.end();

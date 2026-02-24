@@ -6,7 +6,7 @@ import {
   Plus, Bot, RefreshCw, WifiOff, Database, AlertCircle, CloudOff,
   Search, Grid2x2, List, Pin, Archive, MessageSquare, LayoutList,
   BookOpen, Sparkles, X, SlidersHorizontal, Clock, BarChart2,
-  FileCode, ImageIcon
+  FileCode, ImageIcon, ChevronDown, ChevronUp
 } from 'lucide-react';
 import { conversationService } from '../lib/service/conversation-service';
 import { unifiedRepository } from '../lib/db/unified-repository';
@@ -14,6 +14,8 @@ import { listConversationsForRecommendation, getForYouFeed } from '../lib/recomm
 import { logger } from '../lib/logger';
 import { apiClient } from '../lib/api';
 import { dataSyncService } from '../lib/data-sync-service';
+import { useAIChat } from '../hooks/useAI';
+import { ChatInputBox } from '../components/ChatInputBox';
 import {
   IOSStories,
   IOSButton,
@@ -110,7 +112,7 @@ interface FeedItemCardProps {
   isPinned: boolean;
   isArchived: boolean;
   gridMode?: boolean;
-  onContinue: (id: string) => void;
+  onContinue: (id: string, messages?: any[]) => void;
   onShare: (id: string) => void;
   onPinToggle: (id: string, pinned: boolean) => void;
   onArchiveToggle: (id: string, archived: boolean) => void;
@@ -118,6 +120,10 @@ interface FeedItemCardProps {
   onFork: (id: string, forkId: string) => void;
   onDuplicate: (id: string, newId: string) => void;
   onAIClick: (action: AIAction, id: string) => void;
+  isExpanded?: boolean;
+  onExpandToggle?: (id: string) => void;
+  overrideMessages?: any[];
+  isLoadingAI?: boolean;
 }
 
 const FeedItemCard: React.FC<FeedItemCardProps> = ({
@@ -133,6 +139,10 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
   onFork,
   onDuplicate,
   onAIClick,
+  isExpanded,
+  onExpandToggle,
+  overrideMessages,
+  isLoadingAI,
 }) => {
   const navigate = useNavigate();
   const prov = convo.provider || 'default';
@@ -142,6 +152,26 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
   const wordCount = convo.stats?.totalWords ?? 0;
   const codeBlocks = convo.stats?.totalCodeBlocks ?? 0;
   const isNewConvo = isNew(convo.createdAt);
+  
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isExpanded && scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    }
+  }, [overrideMessages, isLoadingAI, isExpanded]);
+
+  useEffect(() => {
+    if (isExpanded && overrideMessages && cardRef.current) {
+       const rect = cardRef.current.getBoundingClientRect();
+       const offset = 140; // Approx height of bottom chat input
+       if (rect.bottom > window.innerHeight - offset) {
+         window.scrollBy({ top: rect.bottom - (window.innerHeight - offset), behavior: 'smooth' });
+       }
+    }
+  }, [overrideMessages, isLoadingAI, isExpanded]);
 
   return (
     <ErrorBoundary
@@ -152,11 +182,26 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
       }
     >
       <div
+        ref={cardRef}
         className={`conv-card-enhanced ${isPinned ? 'is-pinned' : ''} ${isArchived ? 'is-archived' : ''}`}
-        onClick={() => navigate(`/ai/conversation/${convo.id}`)}
+        onClick={() => {
+          if (gridMode || !onExpandToggle) {
+            navigate(`/ai/conversation/${convo.id}`);
+          } else {
+            onExpandToggle(convo.id);
+          }
+        }}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => { if (e.key === 'Enter') navigate(`/ai/conversation/${convo.id}`); }}
+        onKeyDown={(e) => { 
+          if (e.key === 'Enter') {
+            if (gridMode || !onExpandToggle) {
+              navigate(`/ai/conversation/${convo.id}`);
+            } else {
+              onExpandToggle(convo.id);
+            }
+          }
+        }}
         id={`conv-card-${convo.id}`}
       >
         {/* Provider accent strip */}
@@ -224,18 +269,11 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
               onClick={(e) => e.stopPropagation()}
             >
               <button
-                onClick={(e) => { e.stopPropagation(); onContinue(convo.id); }}
-                className="flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors"
-              >
-                <MessageSquare className="w-3 h-3" />
-                Continue
-              </button>
-              <button
-                onClick={(e) => { e.stopPropagation(); onAIClick('summarize', convo.id); }}
-                className="flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/50 rounded-lg hover:bg-violet-100 dark:hover:bg-violet-900/40 transition-colors"
+                onClick={(e) => { e.stopPropagation(); onContinue(convo.id, convo.messages); }}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 active:scale-95 transition-all shadow-sm"
               >
                 <Sparkles className="w-3 h-3" />
-                AI
+                Continue with AI
               </button>
               <button
                 onClick={(e) => { e.stopPropagation(); onShare(convo.id); }}
@@ -279,6 +317,72 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
               Continue →
             </button>
           )}
+
+          {/* Full Conversation Expansion */}
+          {isExpanded && !gridMode && (
+            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 space-y-4" onClick={(e) => e.stopPropagation()}>
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Full Conversation</span>
+              </div>
+              <div 
+                ref={scrollContainerRef}
+                className="max-h-[500px] overflow-y-auto pr-2 space-y-4 ios-scrollbar-hide flex flex-col items-stretch"
+              >
+                {(overrideMessages || convo.messages || []).map((msg: any, i: number) => {
+                  let text = '';
+                  const parts = msg.parts || msg.content;
+                  if (Array.isArray(parts)) {
+                    text = parts.map((p: any) => {
+                      if (typeof p === 'string') return p;
+                      if (p?.type === 'text') return p.text || p.content || '';
+                      if (p?.text) return p.text;
+                      if (p?.content) return p.content;
+                      return '';
+                    }).join('');
+                  } else if (typeof parts === 'string') {
+                    text = parts;
+                  } else if (typeof msg.content === 'string') {
+                    text = msg.content;
+                  }
+                  
+                  if (!text || !text.trim()) return null;
+                  
+                  return (
+                    <div key={msg.id || i} className={`group relative flex flex-col w-full ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                      <div className={`relative max-w-[85%] px-3 py-2 rounded-2xl text-[13px] whitespace-pre-wrap ${msg.role === 'user' ? 'bg-indigo-600 text-white rounded-br-sm' : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-bl-sm'}`}>
+                        {text.trim()}
+                        
+                        {!overrideMessages && (
+                        <div className={`absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 flex ${msg.role === 'user' ? 'right-[calc(100%+0.5rem)]' : 'left-[calc(100%+0.5rem)]'}`}>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onContinue(convo.id, convo.messages.slice(0, i + 1));
+                            }}
+                            className="bg-white dark:bg-gray-800 shadow-md border border-gray-100 dark:border-gray-700 rounded-lg p-1.5 text-indigo-600 dark:text-indigo-400 hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 whitespace-nowrap"
+                            title="Branch conversation from here"
+                          >
+                            <Sparkles className="w-[10px] h-[10px]" />
+                            <span className="text-[10px] font-bold">Branch</span>
+                          </button>
+                        </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+                {isLoadingAI && (
+                  <div className="flex flex-col items-start w-full">
+                    <div className="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-2xl rounded-bl-sm flex items-center gap-2">
+                       <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                       <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                       <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </ErrorBoundary>
@@ -300,7 +404,17 @@ const computeStats = (convos: Conversation[]) => {
    Main Home component
 ───────────────────────────────────────────────── */
 export const Home: React.FC = () => {
+  const {
+    messages: aiMessages,
+    setMessages: setAIMessages,
+    isLoading: aiLoading,
+    sendMessage: sendAIMessage,
+    stop: stopAI,
+    clearMessages: clearAIMessages
+  } = useAIChat();
+
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [recommendations, setRecommendations] = useState<RecommendationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -325,6 +439,7 @@ export const Home: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortBy>('date');
   const [fabExpanded, setFabExpanded] = useState(false);
   const [fabVisible, _setFabVisible] = useState(true);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const observerTarget = useRef<HTMLDivElement>(null);
   const { toast: showToast } = useIOSToast();
@@ -558,7 +673,26 @@ export const Home: React.FC = () => {
   }, [loading, page, loadConversations]);
 
   /* ── Handlers ── */
-  const handleContinue = useCallback((id: string) => { navigate(`/ai/conversation/${id}`); }, [navigate]);
+  const handleContinue = useCallback((id: string, messages?: any[]) => {
+    setActiveChatId(id);
+    setExpandedId(id);
+    if (messages && messages.length > 0) {
+      setAIMessages(messages.map(m => {
+        let text = '';
+        if (Array.isArray(m.parts || m.content)) {
+          text = (m.parts || m.content).map((p: any) => p?.text || p?.content || p).join('');
+        } else {
+          text = m.content;
+        }
+        return { role: m.role, content: text };
+      }));
+    } else {
+      setAIMessages([]);
+    }
+    setTimeout(() => {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }, 100);
+  }, [setAIMessages, setActiveChatId]);
 
   const handleFork = useCallback((id: string, forkId: string) => {
     logger.info('HOME', `Conversation forked from ${id} → ${forkId}`);
@@ -608,7 +742,7 @@ export const Home: React.FC = () => {
 
   /* ── Derived lists ── */
   const allSorted = useMemo(() => {
-    let list = [...conversations];
+    const list = [...conversations];
 
     // sort
     if (sortBy === 'date') {
@@ -916,6 +1050,28 @@ export const Home: React.FC = () => {
                     onFork={handleFork}
                     onDuplicate={handleDuplicate}
                     onAIClick={handleAIClick}
+                    isExpanded={expandedId === convo.id}
+                    overrideMessages={activeChatId === convo.id ? aiMessages : undefined}
+                    isLoadingAI={activeChatId === convo.id ? aiLoading : false}
+                    onExpandToggle={async (id) => {
+                      if (expandedId === id) {
+                        setExpandedId(null);
+                        setActiveChatId(null);
+                      } else {
+                        setExpandedId(id);
+                        const targetConvo = conversations.find(c => c.id === id);
+                        if (targetConvo && (!targetConvo.messages || targetConvo.messages.length === 0)) {
+                          try {
+                            const fullConvo = await unifiedRepository.getConversation(id);
+                            if (fullConvo && fullConvo.messages && fullConvo.messages.length > 0) {
+                              setConversations(prev => prev.map(c => c.id === id ? { ...c, messages: fullConvo.messages } : c));
+                            }
+                          } catch (err) {
+                            logger.warn('HOME', `Failed to load messages for expansion: ${err}`);
+                          }
+                        }
+                      }
+                    }}
                   />
                 </div>
               ))}
@@ -1067,6 +1223,23 @@ export const Home: React.FC = () => {
             }}
           />
         </>
+      )}
+
+      {/* ── Chat Input ── */}
+      {activeChatId && (
+        <div className="fixed bottom-0 left-0 right-0 z-[1040]">
+          <ChatInputBox 
+            onSend={async (message) => {
+              if (activeChatId) {
+                try {
+                  await sendAIMessage(message);
+                } catch(e) { console.error(e); }
+              }
+            }}
+            isLoading={aiLoading}
+            onStop={stopAI}
+          />
+        </div>
       )}
     </div>
   );

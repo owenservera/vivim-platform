@@ -64,7 +64,7 @@ router.get('/', requireAuth, async (req, res, next) => {
       orderDirection,
       startDate,
       endDate,
-      userId: req.user?.userId, // set by unified-auth
+      userId: req.userId ?? req.user?.userId, // unified-auth sets req.userId; session auth sets req.user.userId
       includeMessages: include_messages === 'true',
     };
 

@@ -65,6 +65,8 @@ import adminSystemRouter from './routes/admin/system.js';
 import adminCrdtRouter from './routes/admin/crdt.js';
 import adminPubsubRouter from './routes/admin/pubsub.js';
 import adminDataflowRouter from './routes/admin/dataflow.js';
+import contextEngineRouter from './routes/context-engine.ts';
+import { bootContextSystem } from './services/context-startup.ts';
 
 // Validate configuration on startup
 try {
@@ -466,6 +468,9 @@ app.use('/api/admin/crdt', adminCrdtRouter);
 app.use('/api/admin/pubsub', adminPubsubRouter);
 app.use('/api/admin/dataflow', adminDataflowRouter);
 
+// Enhanced Dynamic Context Engine routes
+app.use('/api/v2/context-engine', contextEngineRouter);
+
 // API Documentation (Swagger)
 if (config.enableSwagger) {
   setupSwagger(app);
@@ -559,6 +564,16 @@ const server = app.listen(config.port, '0.0.0.0', () => {
 import { socketService } from './services/socket.ts';
 socketService.initialize(server);
 logger.info('🔌 Socket service ready for Data Sync & P2P');
+
+// ============================================================================
+// ENHANCED CONTEXT SYSTEM BOOT
+// ============================================================================
+// Boot the enhanced dynamic context engine after HTTP + Socket are ready
+bootContextSystem().then(() => {
+  logger.info('🧠 Context system boot complete');
+}).catch((err) => {
+  logger.error({ error: err.message }, 'Context system boot error');
+});
 
 // ============================================================================
 // ADMIN WEBSOCKET SERVICE

@@ -2,18 +2,20 @@ import './Capture.css';
 import { cn } from '../lib/utils';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { captureUrlStream } from '../lib/api';
+import { bulkCaptureUrl, captureUrlStream } from '../lib/api';
 import { captureQueue } from '../lib/capture-queue';
 import { getStorage, type Hash } from '../lib/storage-v2';
 import { log, logger, type LogEntry } from '../lib/logger';
+import { extractUrls } from '../lib/utils';
 import {
   IOSCard,
   IOSButton,
   IOSInput,
+  IOSTextarea,
   IOSToastProvider,
   useIOSToast,
 } from '../components/ios';
-import { Loader2, CheckCircle, Download, Shield, Fingerprint, Activity, Clock, Zap, AlertCircle } from 'lucide-react';
+import { Loader2, CheckCircle, Download, Shield, Fingerprint, Activity, Clock, Zap, AlertCircle, List, Send } from 'lucide-react';
 
 type CaptureStatus = 'idle' | 'extracting' | 'signing' | 'saving' | 'success' | 'error';
 
@@ -33,10 +35,12 @@ export const Capture: React.FC = () => {
   const [status, setStatus] = useState<CaptureStatus>('idle');
   const [error, setError] = useState<string | null>(null);
   const [captured, setCaptured] = useState<CapturedData | null>(null);
+  const [bulkResults, setBulkResults] = useState<any[] | null>(null);
 
-  const [manualUrl, setManualUrl] = useState('');
+  const [userInput, setUserInput] = useState('');
   const [targetUrl, setTargetUrl] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
+  const [isBulkMode, setIsBulkMode] = useState(false);
 
   // Connect to global logger for "In-Page" console
   const [sessionLogs, setSessionLogs] = useState<LogEntry[]>([]);
@@ -80,26 +84,47 @@ export const Capture: React.FC = () => {
   }, [searchParams]);
 
   const processCapture = useCallback(
-    async (urlOverride?: string) => {
-      const url = urlOverride || getTargetUrl();
+    async (urlOverride?: string | string[]) => {
+      const input = urlOverride || getTargetUrl();
 
-      if (!url) {
+      if (!input) {
         log.capture.info('No target URL, setting idle state');
         setStatus('idle');
         return;
       }
 
+      // Determine if bulk
+      const urls = Array.isArray(input) ? input : extractUrls(input as string);
+      const isBulk = urls.length > 1;
+
       // Connect to server logs for this session
       const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1';
       logger.connectToServer(apiBaseUrl);
 
-      setTargetUrl(url);
+      setTargetUrl(isBulk ? `${urls.length} urls` : urls[0]);
       setProgress(5);
-      log.capture.info(`Initiating Intelligence Sync for: ${url}`);
+      log.capture.info(`Initiating Intelligence Sync for: ${isBulk ? urls.length + ' links' : urls[0]}`);
       setStatus('extracting');
       setError(null);
+      setBulkResults(null);
+      setCaptured(null);
 
       try {
+        if (isBulk) {
+          // STEP: Bulk Extraction (Non-streaming for now but using bulk endpoint)
+          log.capture.info(`🚀 Starting Bulk Quantum Tunnel for ${urls.length} URLs...`);
+          setProgress(20);
+          
+          const results = await bulkCaptureUrl(urls);
+          setBulkResults(results);
+          setProgress(100);
+          setStatus('success');
+          log.capture.info(`✓ Bulk Capture Complete: ${results.filter((r: any) => r.status === 'success').length} succeeded.`);
+          return;
+        }
+
+        // SINGLE CAPTURE FLOW
+        const url = urls[0];
         // Step 1: High-fidelity synchronized extraction (Inside Quantum Tunnel)
         const data = await captureUrlStream(url, (update) => {
           setProgress(15 + update.percent * 0.7); // Stream goes up to 85%
@@ -168,17 +193,18 @@ export const Capture: React.FC = () => {
 
         // OFFLINE FAILSAFE: Save link if server unreachable
         if (
-          errorMsg.toLowerCase().includes('fetch') ||
+          !isBulk &&
+          (errorMsg.toLowerCase().includes('fetch') ||
           errorMsg.toLowerCase().includes('unreachable') ||
-          errorMsg.toLowerCase().includes('disconnected')
+          errorMsg.toLowerCase().includes('disconnected'))
         ) {
-          captureQueue.enqueue(url);
+          captureQueue.enqueue(urls[0]);
           log.capture.warn('SERVER OFFLINE: Link saved to local queue.');
         } else {
           log.capture.error(`CRITICAL FAILURE: ${errorMsg}`);
         }
 
-        setError('Intelligence Link Rejected. Check Server Manifest.');
+        setError(isBulk ? `Bulk Materialization Failed: ${errorMsg}` : 'Intelligence Link Rejected. Check Server Manifest.');
         setStatus('error');
 
         // Disconnect server logs on error
@@ -191,10 +217,16 @@ export const Capture: React.FC = () => {
   // Handle manual submit
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (manualUrl) {
-      processCapture(manualUrl);
+    if (userInput) {
+      processCapture(userInput);
     }
   };
+
+  // Detect mode based on input
+  useEffect(() => {
+    const urls = extractUrls(userInput);
+    setIsBulkMode(urls.length > 1);
+  }, [userInput]);
 
   // Process share/capture on mount if URL exists
   useEffect(() => {
@@ -349,19 +381,53 @@ export const Capture: React.FC = () => {
 
               {/* Manual URL input */}
               <div className="w-full border-t border-gray-200 dark:border-gray-800 pt-5">
-                <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3 text-center">
-                  Or paste a link
-                </p>
-                <form onSubmit={handleManualSubmit} className="space-y-3">
-                  <IOSInput
-                    type="url"
-                    placeholder="https://chatgpt.com/share/..."
-                    value={manualUrl}
-                    onChange={(e) => setManualUrl(e.target.value)}
-                  />
-                  <IOSButton variant="primary" fullWidth disabled={!manualUrl}>
-                    Save Conversation
+                <div className="flex items-center justify-between mb-3 px-1">
+                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    {isBulkMode ? 'Bulk Intelligence Input' : 'Or paste a link'}
+                  </p>
+                  {isBulkMode && (
+                    <div className="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full border border-blue-100 dark:border-blue-800">
+                      <List className="w-3 h-3 text-blue-500" />
+                      <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400">
+                        {extractUrls(userInput).length} LINKS DETECTED
+                      </span>
+                    </div>
+                  )}
+                </div>
+                
+                <form onSubmit={handleManualSubmit} className="space-y-4">
+                  {isBulkMode ? (
+                    <IOSTextarea
+                      rows={4}
+                      placeholder="Paste CSV, list of links, or any text containing shared chat URLs..."
+                      value={userInput}
+                      onChange={(e) => setUserInput(e.target.value)}
+                    />
+                  ) : (
+                    <IOSInput
+                      type="url"
+                      placeholder="https://chatgpt.com/share/..."
+                      value={userInput}
+                      onChange={(e) => setUserInput(e.target.value)}
+                      rightIcon={userInput && <Send className="w-4 h-4" />}
+                      onRightIconClick={() => processCapture(userInput)}
+                    />
+                  )}
+                  
+                  <IOSButton 
+                    variant={isBulkMode ? "primary" : "secondary"} 
+                    fullWidth 
+                    disabled={!userInput}
+                    className={cn(isBulkMode && "bg-gradient-to-r from-blue-600 to-indigo-700 border-none")}
+                  >
+                    {isBulkMode ? 'Save All Conversations' : 'Save Conversation'}
                   </IOSButton>
+
+                  {userInput && !isBulkMode && (
+                    <p className="text-[10px] text-center text-gray-400 dark:text-gray-500 mt-2">
+                      💡 Tip: You can paste multiple links or CSV text for bulk capture.
+                    </p>
+                  )}
                 </form>
               </div>
 
@@ -390,21 +456,23 @@ export const Capture: React.FC = () => {
               </div>
 
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                {status === 'extracting'
+                {bulkResults 
+                  ? 'Bulk Syncing Intelligence'
+                  : status === 'extracting'
                   ? 'Extracting Intelligence'
                   : status === 'signing'
                   ? 'Authenticating Feed'
                   : 'Materializing DAG'}
               </h2>
               <p className="text-gray-500 dark:text-gray-400 mb-6">
-                Processing {targetUrl ? new URL(targetUrl).hostname : 'source'}
+                {bulkResults ? `Processing ${bulkResults.length} conversations...` : `Processing ${targetUrl ? (targetUrl.length > 30 ? targetUrl.substring(0, 30) + '...' : targetUrl) : 'source'}`}
               </p>
 
               {/* Progress Bar */}
               <div className="w-full mb-6">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
-                    Materializing Intelligence
+                    {bulkResults ? 'Syncing Multiple Feeds' : 'Materializing Intelligence'}
                   </span>
                   <span className="text-xs font-bold text-blue-500">
                     {Math.round(progress)}%
@@ -429,7 +497,7 @@ export const Capture: React.FC = () => {
                       </span>
                     </div>
                     <span className="text-[9px] text-white/30 font-mono">
-                      BUF: {sessionLogs.length}/50
+                      LOG_CAP: {sessionLogs.length}/50
                     </span>
                   </div>
                   <div className="space-y-1.5 max-h-40 overflow-y-auto ios-scrollbar-hide font-mono">
@@ -462,65 +530,118 @@ export const Capture: React.FC = () => {
           )}
 
           {/* Success */}
-          {status === 'success' && captured && (
+          {status === 'success' && (captured || bulkResults) && (
             <div className="flex flex-col items-center text-center animate-in zoom-in-95 duration-300">
               <div className="w-20 h-20 bg-green-500/10 dark:bg-green-500/20 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-green-500/10">
                 <CheckCircle className="w-10 h-10 text-green-500" />
               </div>
 
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                Knowledge Captured
+                {bulkResults ? 'Bulk Sync Success' : 'Knowledge Captured'}
               </h2>
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 px-4">
-                Successfully materialized <span className="font-bold text-gray-900 dark:text-white">"{captured.title}"</span>
+                {bulkResults 
+                  ? `Successfully synchronized ${bulkResults.filter(r => r.status === 'success').length} of ${bulkResults.length} conversations.`
+                  : <span>Successfully materialized <span className="font-bold text-gray-900 dark:text-white">"{captured?.title}"</span></span>
+                }
               </p>
 
               {/* Verification Badge */}
               <div className="flex items-center gap-2 mb-8 bg-gray-50 dark:bg-gray-800/50 px-4 py-2 rounded-full border border-gray-100 dark:border-gray-700">
                 <Shield className="w-4 h-4 text-green-500" />
                 <span className="text-xs font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
-                  Verified Local Materialization
+                  {bulkResults ? 'Cryptographic Bulk Verification' : 'Verified Local Materialization'}
                 </span>
               </div>
 
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-3 w-full mb-8">
-                <div className="flex flex-col items-center p-3 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700">
-                  <span className="text-xl font-black text-gray-900 dark:text-white">
-                    {captured.messageCount}
-                  </span>
-                  <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-tighter">Messages</span>
+              {/* Bulk Results List */}
+              {bulkResults && (
+                <div className="w-full max-h-60 overflow-y-auto space-y-2 mb-8 px-1 scrollbar-hide">
+                  {bulkResults.map((res: any, idx: number) => (
+                    <div key={idx} className="flex items-center justify-between p-3 bg-white dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700 text-left">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 mb-0.5">
+                           {res.status === 'success' ? (
+                             <div className="w-2 h-2 bg-green-500 rounded-full" />
+                           ) : (
+                             <div className="w-2 h-2 bg-red-500 rounded-full" />
+                           )}
+                           <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase">
+                             {res.status === 'success' ? 'Synchronized' : 'Failed'}
+                           </span>
+                        </div>
+                        <p className="text-xs font-bold text-gray-700 dark:text-gray-300 truncate">
+                          {res.data?.title || res.url}
+                        </p>
+                      </div>
+                      {res.status === 'success' && (
+                        <button 
+                          onClick={() => navigate(`/ai/conversation/${res.data.id}`)}
+                          className="ml-3 p-2 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                        >
+                          <Activity className="w-3.5 h-3.5 text-blue-500" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
                 </div>
-                <div className="flex flex-col items-center p-3 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700">
-                  <span className="text-xl font-black text-gray-900 dark:text-white">
-                    {(captured.wordCount / 1000).toFixed(1)}k
-                  </span>
-                  <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-tighter">Words</span>
+              )}
+
+              {/* Stats for Single */}
+              {captured && !bulkResults && (
+                <div className="grid grid-cols-3 gap-3 w-full mb-8">
+                  <div className="flex flex-col items-center p-3 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700">
+                    <span className="text-xl font-black text-gray-900 dark:text-white">
+                      {captured.messageCount}
+                    </span>
+                    <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-tighter">Messages</span>
+                  </div>
+                  <div className="flex flex-col items-center p-3 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700">
+                    <span className="text-xl font-black text-gray-900 dark:text-white">
+                      {(captured.wordCount / 1000).toFixed(1)}k
+                    </span>
+                    <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-tighter">Words</span>
+                  </div>
+                  <div className="flex flex-col items-center p-3 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700">
+                    <span className="text-sm font-black text-gray-900 dark:text-white truncate w-full capitalize">
+                      {captured.provider}
+                    </span>
+                    <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-tighter">Engine</span>
+                  </div>
                 </div>
-                <div className="flex flex-col items-center p-3 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700">
-                  <span className="text-sm font-black text-gray-900 dark:text-white truncate w-full capitalize">
-                    {captured.provider}
-                  </span>
-                  <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-tighter">Engine</span>
-                </div>
-              </div>
+              )}
 
               {/* Actions */}
               <div className="flex flex-col gap-3 w-full px-2">
-                <IOSButton
-                  variant="primary"
-                  fullWidth
-                  onClick={handleView}
-                  icon={<Download className="w-5 h-5" />}
-                  className="rounded-2xl h-14 text-lg shadow-xl shadow-blue-500/20"
-                >
-                  Enter Intelligence
-                </IOSButton>
+                {bulkResults ? (
+                  <IOSButton
+                    variant="primary"
+                    fullWidth
+                    onClick={() => navigate('/ai-conversations')}
+                    icon={<List className="w-5 h-5" />}
+                    className="rounded-2xl h-14 text-lg shadow-xl shadow-blue-500/20"
+                  >
+                    View All Knowledge
+                  </IOSButton>
+                ) : (
+                  <IOSButton
+                    variant="primary"
+                    fullWidth
+                    onClick={handleView}
+                    icon={<Download className="w-5 h-5" />}
+                    className="rounded-2xl h-14 text-lg shadow-xl shadow-blue-500/20"
+                  >
+                    Enter Intelligence
+                  </IOSButton>
+                )}
                 <button
-                  onClick={() => navigate('/')}
-                  className="text-sm font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors py-2"
+                  onClick={() => {
+                    setStatus('idle');
+                    setUserInput('');
+                  }}
+                  className="text-sm font-bold text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors py-2 uppercase tracking-widest"
                 >
-                  DISMISS
+                  Dismiss
                 </button>
               </div>
             </div>

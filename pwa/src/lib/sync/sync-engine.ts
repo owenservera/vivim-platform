@@ -98,6 +98,13 @@ export class SyncEngine {
        // TODO: Process bulk changes
        useSyncStore.getState().setLastSync(new Date().toISOString());
     });
+
+    this.socket.on('server:toast', (toastData) => {
+       console.log('🔔 Server Toast:', toastData);
+       if (this.onNotification) {
+         this.onNotification(toastData);
+       }
+    });
   }
 
   private async handleDelta(delta: any) {
@@ -127,6 +134,8 @@ export class SyncEngine {
         useSyncStore.getState().setError('Failed to process update');
     }
   }
+
+  public onNotification?: (toastData: { type: 'success' | 'error' | 'info' | 'warning', message: string }) => void;
 
   public pullChanges() {
      if (!this.socket?.connected) return;

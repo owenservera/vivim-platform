@@ -127,6 +127,13 @@ export class OmniService {
         trigger: 'githubfile',
         icon: 'file-code',
       },
+      {
+        id: 'rtrvr',
+        label: 'Rtrvr Web Extraction',
+        subLabel: 'Pull chat conversations via Rtrvr',
+        trigger: 'rtrvr',
+        icon: 'bot',
+      },
     ];
 
     const filteredZai = zaiActions.filter(
