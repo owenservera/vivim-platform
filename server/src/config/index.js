@@ -29,19 +29,24 @@ function loadConfig() {
     trustProxy: process.env.TRUST_PROXY === 'true',
     logLevel: process.env.LOG_LEVEL,
     logFormat: process.env.LOG_FORMAT,
-    corsOrigins: process.env.CORS_ORIGINS?.split(',').map(s => s.trim()),
+    corsOrigins: process.env.CORS_ORIGINS?.split(',').map((s) => s.trim()),
     rateLimitMax: process.env.RATE_LIMIT_MAX ? parseInt(process.env.RATE_LIMIT_MAX, 10) : undefined,
     databaseUrl: process.env.DATABASE_URL,
-    shutdownTimeout: process.env.SHUTDOWN_TIMEOUT ? parseInt(process.env.SHUTDOWN_TIMEOUT, 10) : undefined,
+    shutdownTimeout: process.env.SHUTDOWN_TIMEOUT
+      ? parseInt(process.env.SHUTDOWN_TIMEOUT, 10)
+      : undefined,
     enableSwagger: process.env.ENABLE_SWAGGER === 'true',
     browserWsEndpoint: process.env.BROWSER_WS_ENDPOINT,
-    skipAuthForDevelopment: process.env.SKIP_AUTH_FOR_DEVELOPMENT === 'true' || process.env.NODE_ENV === 'test',
+    skipAuthForDevelopment:
+      process.env.SKIP_AUTH_FOR_DEVELOPMENT === 'true' || process.env.NODE_ENV === 'test',
     // P2P Configuration
-    p2pListenAddresses: process.env.P2P_LISTEN_ADDRESSES 
-      ? process.env.P2P_LISTEN_ADDRESSES.split(',').map(s => s.trim())
+    p2pListenAddresses: process.env.P2P_LISTEN_ADDRESSES
+      ? process.env.P2P_LISTEN_ADDRESSES.split(',').map((s) => s.trim())
       : undefined,
     p2pBootstrapPeers: process.env.P2P_BOOTSTRAP_PEERS
-      ? process.env.P2P_BOOTSTRAP_PEERS.split(',').map(s => s.trim()).filter(s => s)
+      ? process.env.P2P_BOOTSTRAP_PEERS.split(',')
+          .map((s) => s.trim())
+          .filter((s) => s)
       : undefined,
   };
   return configSchema.parse(rawConfig);
@@ -71,8 +76,10 @@ export function validateConfig() {
           errors.push('DATABASE_URL must use postgresql: or postgres: protocol in production');
         }
         // Check if SSL is enabled for production
-        if (!config.databaseUrl.includes('sslmode=require') &&
-            !config.databaseUrl.includes('ssl=true')) {
+        if (
+          !config.databaseUrl.includes('sslmode=require') &&
+          !config.databaseUrl.includes('ssl=true')
+        ) {
           console.warn('WARNING: SSL is not enabled for database connection in production');
         }
       } catch (e) {
@@ -98,7 +105,9 @@ export function validateConfig() {
 
     // Security validations
     if (config.enableSwagger) {
-      console.warn('WARNING: Swagger UI is enabled in production. This may expose API documentation publicly.');
+      console.warn(
+        'WARNING: Swagger UI is enabled in production. This may expose API documentation publicly.'
+      );
     }
 
     // Session secret validation
@@ -110,12 +119,16 @@ export function validateConfig() {
 
     // Rate limiting should be more restrictive in production
     if (config.rateLimitMax > 1000) {
-      console.warn('WARNING: Rate limit is set very high for production. Consider reducing RATE_LIMIT_MAX.');
+      console.warn(
+        'WARNING: Rate limit is set very high for production. Consider reducing RATE_LIMIT_MAX.'
+      );
     }
 
     // Log level validation
     if (config.logLevel === 'debug') {
-      console.warn('WARNING: Debug logging is enabled in production. This may expose sensitive information.');
+      console.warn(
+        'WARNING: Debug logging is enabled in production. This may expose sensitive information.'
+      );
     }
   }
 

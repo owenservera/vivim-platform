@@ -1,6 +1,6 @@
 /**
  * Memory Consolidation Worker
- * 
+ *
  * Consumes the 'consolidation' queue to:
  * 1. Summarize finished conversations
  * 2. Generate embeddings for Memories
@@ -23,10 +23,12 @@ export const processConsolidationJob = async (conversationId) => {
     // 1. Fetch Conversation
     const conversation = await prisma.conversation.findUnique({
       where: { id: conversationId },
-      include: { messages: true }
+      include: { messages: true },
     });
 
-    if (!conversation) throw new Error('Conversation not found');
+    if (!conversation) {
+      throw new Error('Conversation not found');
+    }
 
     // 2. Generate Summary (Episodic Memory)
     const summary = await aiService.summarizeConversation(conversation);
@@ -34,7 +36,9 @@ export const processConsolidationJob = async (conversationId) => {
 
     // 3. Generate Embedding
     const embeddings = await aiService.generateEmbeddings(summary);
-    if (embeddings.length === 0) throw new Error('Failed to generate embedding');
+    if (embeddings.length === 0) {
+      throw new Error('Failed to generate embedding');
+    }
 
     // 4. Create Memory Record with embedding stored in PostgreSQL
     const memory = await prisma.memory.create({
@@ -49,18 +53,17 @@ export const processConsolidationJob = async (conversationId) => {
         sourceConversationIds: [conversationId],
         isActive: true,
         createdAt: new Date(),
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      },
     });
 
     // 5. Mark Conversation as 'Processed'
     await prisma.conversation.update({
       where: { id: conversationId },
-      data: { state: 'ARCHIVED' }
+      data: { state: 'ARCHIVED' },
     });
 
     logger.info({ memoryId: memory.id }, 'Consolidation complete');
-
   } catch (error) {
     logger.error({ conversationId, error: error.message }, 'Consolidation failed');
     throw error;

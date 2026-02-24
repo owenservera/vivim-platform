@@ -7,10 +7,26 @@
     "description": "VIVIM is a consumer app focused on capturing, owning, evolving, and sharing AI conversations."
   },
   "pillars": [
-    { "name": "Feed", "description": "Social network for AI conversations", "value": "Discovery, inspiration, social proof" },
-    { "name": "Vault", "description": "Personal encrypted knowledge store", "value": "Ownership, privacy, organization" },
-    { "name": "Capture", "description": "Extract from any AI platform", "value": "Liberation from walled gardens" },
-    { "name": "Chat", "description": "Continue with your own AI keys", "value": "Evolve, remix, build on knowledge" }
+    {
+      "name": "Feed",
+      "description": "Social network for AI conversations",
+      "value": "Discovery, inspiration, social proof"
+    },
+    {
+      "name": "Vault",
+      "description": "Personal encrypted knowledge store",
+      "value": "Ownership, privacy, organization"
+    },
+    {
+      "name": "Capture",
+      "description": "Extract from any AI platform",
+      "value": "Liberation from walled gardens"
+    },
+    {
+      "name": "Chat",
+      "description": "Continue with your own AI keys",
+      "value": "Evolve, remix, build on knowledge"
+    }
   ],
   "capabilities": {
     "capture": { "available": true, "description": "Extract conversations from AI platforms" },
@@ -23,7 +39,17 @@
     "export": { "available": true, "description": "Export your data" }
   },
   "providers": {
-    "captureSupported": ["openai", "anthropic", "google", "grok", "deepseek", "kimi", "qwen", "z", "mistral"],
+    "captureSupported": [
+      "openai",
+      "anthropic",
+      "google",
+      "grok",
+      "deepseek",
+      "kimi",
+      "qwen",
+      "z",
+      "mistral"
+    ],
     "byokSupported": ["openai", "anthropic", "google", "mistral"]
   },
   "privacy": {
@@ -34,20 +60,65 @@
     "didIdentity": false
   },
   "layers": [
-    { "id": "L0", "name": "VIVIM Identity", "priority": 100, "description": "Who VIVIM is (this context)" },
+    {
+      "id": "L0",
+      "name": "VIVIM Identity",
+      "priority": 100,
+      "description": "Who VIVIM is (this context)"
+    },
     { "id": "L1", "name": "User Identity", "priority": 95, "description": "Facts about the user" },
     { "id": "L2", "name": "Preferences", "priority": 90, "description": "How to respond to user" },
-    { "id": "L3", "name": "Topic Context", "priority": 80, "description": "Current topic being discussed" },
-    { "id": "L4", "name": "Entity Context", "priority": 70, "description": "People and projects mentioned" },
-    { "id": "L5", "name": "Conversation", "priority": 60, "description": "Current conversation history" },
-    { "id": "L6", "name": "JIT Knowledge", "priority": 50, "description": "Just-in-time retrieved ACUs" }
+    {
+      "id": "L3",
+      "name": "Topic Context",
+      "priority": 80,
+      "description": "Current topic being discussed"
+    },
+    {
+      "id": "L4",
+      "name": "Entity Context",
+      "priority": 70,
+      "description": "People and projects mentioned"
+    },
+    {
+      "id": "L5",
+      "name": "Conversation",
+      "priority": 60,
+      "description": "Current conversation history"
+    },
+    {
+      "id": "L6",
+      "name": "JIT Knowledge",
+      "priority": 50,
+      "description": "Just-in-time retrieved ACUs"
+    }
   ],
   "faq": [
-    { "q": "What is VIVIM?", "a": "VIVIM is your personal AI conversation manager. It lets you capture conversations from any AI chatbot (ChatGPT, Claude, Gemini, etc.), store them in your private encrypted vault, and continue or remix them with your own API keys.", "category": "general" },
-    { "q": "Why should I use VIVIM?", "a": "Because AI conversations are valuable knowledge, but they're trapped in walled gardens. VIVIM liberates your AI conversations, gives you ownership, and lets you evolve them over time.", "category": "general" },
-    { "q": "Is my data safe?", "a": "Yes. VIVIM uses end-to-end encryption meaning only you can read your vault. Your API keys are encrypted with your master key and never touch our servers. We can't read your conversations even if we wanted to.", "category": "privacy" },
-    { "q": "How does BYOK work?", "a": "BYOK (Bring Your Own Key) lets you connect your own AI API keys to VIVIM. Your keys are encrypted in your browser before being stored. When you chat, requests go directly from your device to the AI provider—we never see your keys.", "category": "technical" },
-    { "q": "Can I share my conversations?", "a": "Yes! You can share publicly to the feed, create unlisted links, or share to specific circles. You can also fork other people's public conversations to your vault and continue them privately.", "category": "general" }
+    {
+      "q": "What is VIVIM?",
+      "a": "VIVIM is your personal AI conversation manager. It lets you capture conversations from any AI chatbot (ChatGPT, Claude, Gemini, etc.), store them in your private encrypted vault, and continue or remix them with your own API keys.",
+      "category": "general"
+    },
+    {
+      "q": "Why should I use VIVIM?",
+      "a": "Because AI conversations are valuable knowledge, but they're trapped in walled gardens. VIVIM liberates your AI conversations, gives you ownership, and lets you evolve them over time.",
+      "category": "general"
+    },
+    {
+      "q": "Is my data safe?",
+      "a": "Yes. VIVIM uses end-to-end encryption meaning only you can read your vault. Your API keys are encrypted with your master key and never touch our servers. We can't read your conversations even if we wanted to.",
+      "category": "privacy"
+    },
+    {
+      "q": "How does BYOK work?",
+      "a": "BYOK (Bring Your Own Key) lets you connect your own AI API keys to VIVIM. Your keys are encrypted in your browser before being stored. When you chat, requests go directly from your device to the AI provider—we never see your keys.",
+      "category": "technical"
+    },
+    {
+      "q": "Can I share my conversations?",
+      "a": "Yes! You can share publicly to the feed, create unlisted links, or share to specific circles. You can also fork other people's public conversations to your vault and continue them privately.",
+      "category": "general"
+    }
   ],
   "limitations": [
     "No real-time AI generation (VIVIM is a conversation manager, not an AI provider)",

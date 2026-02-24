@@ -72,30 +72,33 @@ export class BaseAIProvider {
    * Handle provider-specific errors
    */
   handleAPIError(error, response) {
-    logger.error({
-      provider: this.providerType,
-      error: error.message,
-      status: response?.status,
-    }, 'API request failed');
+    logger.error(
+      {
+        provider: this.providerType,
+        error: error.message,
+        status: response?.status,
+      },
+      'API request failed'
+    );
 
     if (response?.status === 401 || response?.status === 403) {
       throw new AuthenticationError(
         `Authentication failed for ${this.providerType}. Check API key.`,
-        { provider: this.providerType },
+        { provider: this.providerType }
       );
     }
 
     if (response?.status === 429) {
-      throw new RateLimitError(
-        `Rate limit exceeded for ${this.providerType}`,
-        { provider: this.providerType, retryAfter: response.headers?.get('retry-after') },
-      );
+      throw new RateLimitError(`Rate limit exceeded for ${this.providerType}`, {
+        provider: this.providerType,
+        retryAfter: response.headers?.get('retry-after'),
+      });
     }
 
-    throw new AIError(
-      `${this.providerType} API error: ${error.message}`,
-      { provider: this.providerType, originalError: error },
-    );
+    throw new AIError(`${this.providerType} API error: ${error.message}`, {
+      provider: this.providerType,
+      originalError: error,
+    });
   }
 
   /**

@@ -50,8 +50,8 @@ export interface AssemblyTelemetry {
 
   // Quality signals
   avgSimilarityScore: number;
-  coverageScore: number;     // How many layers were populated
-  freshnessScore: number;    // How recent the context data is
+  coverageScore: number; // How many layers were populated
+  freshnessScore: number; // How recent the context data is
 
   // Pipeline info
   engineUsed: 'parallel' | 'streaming' | 'legacy';
@@ -143,12 +143,19 @@ export class ContextTelemetry {
     const tokenUsed = metrics.tokensUsed ?? 0;
 
     // Calculate coverage: how many of the 6 possible layers are populated
-    const possibleLayers = ['identity_core', 'global_prefs', 'topic', 'entity', 'conversation', 'jit'];
-    const populatedLayers = Object.keys(stages).filter(s => !stages[s].error);
+    const possibleLayers = [
+      'identity_core',
+      'global_prefs',
+      'topic',
+      'entity',
+      'conversation',
+      'jit',
+    ];
+    const populatedLayers = Object.keys(stages).filter((s) => !stages[s].error);
     const coverageScore = Math.min(1, populatedLayers.length / possibleLayers.length);
 
     // Calculate freshness: average age of bundles (simulated as inverse of duration)
-    const freshnessScore = Math.max(0, 1 - (metrics.totalDurationMs / 5000));
+    const freshnessScore = Math.max(0, 1 - metrics.totalDurationMs / 5000);
 
     // Calculate cache stats
     const cacheHits = Object.values(stages as Record<string, any>).filter(
@@ -196,14 +203,14 @@ export class ContextTelemetry {
    */
   getQualityReport(windowMs: number = 60 * 60 * 1000): QualityReport {
     const cutoff = Date.now() - windowMs;
-    const window = this.entries.filter(e => e.timestamp >= cutoff);
+    const window = this.entries.filter((e) => e.timestamp >= cutoff);
 
     if (window.length === 0) {
       return this.emptyReport(windowMs);
     }
 
-    const durations = window.map(e => e.totalDurationMs).sort((a, b) => a - b);
-    const errorCount = window.filter(e => e.errors.length > 0).length;
+    const durations = window.map((e) => e.totalDurationMs).sort((a, b) => a - b);
+    const errorCount = window.filter((e) => e.errors.length > 0).length;
 
     // Find bottleneck
     const stageAvgs: Record<string, number[]> = {};
@@ -231,15 +238,17 @@ export class ContextTelemetry {
 
     // Generate recommendations
     const recommendations: string[] = [];
-    const avgCacheHitRate = this.average(window.map(e => e.cacheHitRate));
+    const avgCacheHitRate = this.average(window.map((e) => e.cacheHitRate));
     const avgDuration = this.average(durations);
-    const avgTokenEff = this.average(window.map(e => e.tokenEfficiency));
+    const avgTokenEff = this.average(window.map((e) => e.tokenEfficiency));
 
     if (avgCacheHitRate < 0.5) {
       recommendations.push('Cache hit rate below 50% - consider increasing cache TTLs or capacity');
     }
     if (avgDuration > 2000) {
-      recommendations.push(`Average latency ${avgDuration.toFixed(0)}ms - consider parallelizing more stages`);
+      recommendations.push(
+        `Average latency ${avgDuration.toFixed(0)}ms - consider parallelizing more stages`
+      );
     }
     if (avgTokenEff < 0.5) {
       recommendations.push('Token efficiency below 50% - context budget may be over-allocated');
@@ -248,14 +257,17 @@ export class ContextTelemetry {
       recommendations.push('Token usage near 100% - increase maxContextTokens for richer context');
     }
     if (errorCount / window.length > 0.1) {
-      recommendations.push(`Error rate ${(errorCount / window.length * 100).toFixed(1)}% - investigate pipeline failures`);
+      recommendations.push(
+        `Error rate ${((errorCount / window.length) * 100).toFixed(1)}% - investigate pipeline failures`
+      );
     }
 
-    const period = windowMs >= 86400000
-      ? `${(windowMs / 86400000).toFixed(0)}d`
-      : windowMs >= 3600000
-        ? `${(windowMs / 3600000).toFixed(0)}h`
-        : `${(windowMs / 60000).toFixed(0)}m`;
+    const period =
+      windowMs >= 86400000
+        ? `${(windowMs / 86400000).toFixed(0)}d`
+        : windowMs >= 3600000
+          ? `${(windowMs / 3600000).toFixed(0)}h`
+          : `${(windowMs / 60000).toFixed(0)}m`;
 
     return {
       period,
@@ -266,10 +278,10 @@ export class ContextTelemetry {
       p99DurationMs: this.percentile(durations, 99),
       avgTokenEfficiency: avgTokenEff,
       avgCacheHitRate,
-      avgCoverageScore: this.average(window.map(e => e.coverageScore)),
-      avgFreshnessScore: this.average(window.map(e => e.freshnessScore)),
+      avgCoverageScore: this.average(window.map((e) => e.coverageScore)),
+      avgFreshnessScore: this.average(window.map((e) => e.freshnessScore)),
       errorRate: window.length > 0 ? errorCount / window.length : 0,
-      avgParallelFactor: this.average(window.map(e => e.parallelFactor)),
+      avgParallelFactor: this.average(window.map((e) => e.parallelFactor)),
       topBottleneck,
       recommendations,
     };
@@ -278,7 +290,10 @@ export class ContextTelemetry {
   /**
    * Get per-user telemetry summary.
    */
-  getUserSummary(userId: string, windowMs: number = 24 * 60 * 60 * 1000): {
+  getUserSummary(
+    userId: string,
+    windowMs: number = 24 * 60 * 60 * 1000
+  ): {
     assemblies: number;
     avgLatencyMs: number;
     avgCacheHitRate: number;
@@ -287,9 +302,7 @@ export class ContextTelemetry {
     topEntities: string[];
   } {
     const cutoff = Date.now() - windowMs;
-    const userEntries = this.entries.filter(
-      e => e.userId === userId && e.timestamp >= cutoff
-    );
+    const userEntries = this.entries.filter((e) => e.userId === userId && e.timestamp >= cutoff);
 
     if (userEntries.length === 0) {
       return {
@@ -304,9 +317,9 @@ export class ContextTelemetry {
 
     return {
       assemblies: userEntries.length,
-      avgLatencyMs: this.average(userEntries.map(e => e.totalDurationMs)),
-      avgCacheHitRate: this.average(userEntries.map(e => e.cacheHitRate)),
-      avgTokenEfficiency: this.average(userEntries.map(e => e.tokenEfficiency)),
+      avgLatencyMs: this.average(userEntries.map((e) => e.totalDurationMs)),
+      avgCacheHitRate: this.average(userEntries.map((e) => e.cacheHitRate)),
+      avgTokenEfficiency: this.average(userEntries.map((e) => e.tokenEfficiency)),
       topTopics: [], // Would need to cross-reference with detection data
       topEntities: [],
     };
@@ -336,10 +349,7 @@ export class ContextTelemetry {
     }
 
     // Cache degradation (>30% drop from baseline)
-    if (
-      this.baselineCacheHitRate > 0.3 &&
-      entry.cacheHitRate < this.baselineCacheHitRate * 0.7
-    ) {
+    if (this.baselineCacheHitRate > 0.3 && entry.cacheHitRate < this.baselineCacheHitRate * 0.7) {
       this.fireAnomaly({
         type: 'cache_degradation',
         severity: 'warning',
@@ -367,13 +377,15 @@ export class ContextTelemetry {
     this.baselineUpdateCount++;
     const alpha = 0.05; // Exponential moving average factor
 
-    this.baselineLatency = this.baselineLatency === 0
-      ? entry.totalDurationMs
-      : this.baselineLatency * (1 - alpha) + entry.totalDurationMs * alpha;
+    this.baselineLatency =
+      this.baselineLatency === 0
+        ? entry.totalDurationMs
+        : this.baselineLatency * (1 - alpha) + entry.totalDurationMs * alpha;
 
-    this.baselineCacheHitRate = this.baselineCacheHitRate === 0
-      ? entry.cacheHitRate
-      : this.baselineCacheHitRate * (1 - alpha) + entry.cacheHitRate * alpha;
+    this.baselineCacheHitRate =
+      this.baselineCacheHitRate === 0
+        ? entry.cacheHitRate
+        : this.baselineCacheHitRate * (1 - alpha) + entry.cacheHitRate * alpha;
 
     const hasError = entry.errors.length > 0 ? 1 : 0;
     this.baselineErrorRate = this.baselineErrorRate * (1 - alpha) + hasError * alpha;
@@ -434,7 +446,7 @@ export class ContextTelemetry {
   export(windowMs?: number): AssemblyTelemetry[] {
     if (!windowMs) return [...this.entries];
     const cutoff = Date.now() - windowMs;
-    return this.entries.filter(e => e.timestamp >= cutoff);
+    return this.entries.filter((e) => e.timestamp >= cutoff);
   }
 
   get entryCount(): number {

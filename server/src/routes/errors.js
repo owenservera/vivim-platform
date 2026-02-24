@@ -1,7 +1,7 @@
 /**
  * Error Collection API Endpoint
  * Receives error reports from all components (PWA, Network, Server)
- * 
+ *
  * Enhanced with:
  * - Error aggregation and trends
  * - Alert configuration
@@ -40,18 +40,18 @@ const errorReportSchema = z.object({
   userAgent: z.string().optional(),
   url: z.string().optional(),
   version: z.string().optional(),
-  severity: z.string().optional()
+  severity: z.string().optional(),
 });
 
 const bulkErrorReportSchema = z.object({
-  reports: z.array(z.object({})).optional()
+  reports: z.array(z.object({})).optional(),
 });
 
 // In-memory storage for collected errors (in production, use a database)
 const errorStorage = {
   errors: [],
   maxSize: 10000, // Keep only the last 10,000 errors
-  
+
   add(errorReport) {
     this.errors.push(errorReport);
     // Trim if we exceed max size
@@ -59,28 +59,28 @@ const errorStorage = {
       this.errors = this.errors.slice(-this.maxSize);
     }
   },
-  
+
   getAll() {
     return [...this.errors]; // Return a copy
   },
-  
+
   getByComponent(component) {
-    return this.errors.filter(e => e.component === component);
+    return this.errors.filter((e) => e.component === component);
   },
-  
+
   getBySeverity(severity) {
-    return this.errors.filter(e => e.severity === severity);
+    return this.errors.filter((e) => e.severity === severity);
   },
-  
+
   getByCategory(category) {
-    return this.errors.filter(e => e.category === category);
+    return this.errors.filter((e) => e.category === category);
   },
-  
+
   getRecent(hours = 24) {
     const cutoff = new Date(Date.now() - hours * 60 * 60 * 1000);
-    return this.errors.filter(e => new Date(e.timestamp) > cutoff);
+    return this.errors.filter((e) => new Date(e.timestamp) > cutoff);
   },
-  
+
   getStats() {
     const stats = {
       total: this.errors.length,
@@ -88,29 +88,29 @@ const errorStorage = {
       byComponent: {},
       bySeverity: {},
       byCategory: {},
-      recent: this.getRecent(1).length // Errors in last hour
+      recent: this.getRecent(1).length, // Errors in last hour
     };
-    
-    this.errors.forEach(error => {
+
+    this.errors.forEach((error) => {
       // Count by level
       stats.byLevel[error.level] = (stats.byLevel[error.level] || 0) + 1;
-      
+
       // Count by component
       stats.byComponent[error.component] = (stats.byComponent[error.component] || 0) + 1;
-      
+
       // Count by severity
       stats.bySeverity[error.severity] = (stats.bySeverity[error.severity] || 0) + 1;
-      
+
       // Count by category
       stats.byCategory[error.category] = (stats.byCategory[error.category] || 0) + 1;
     });
-    
+
     return stats;
   },
-  
+
   clear() {
     this.errors = [];
-  }
+  },
 };
 
 // Endpoint to receive error reports from clients
@@ -125,24 +125,30 @@ router.post('/', async (req, res) => {
       errorStorage.add(report);
 
       // Log to server logs as well
-      logger.error({
-        component: report?.component,
-        category: report?.category,
-        severity: report?.severity,
-        message: report?.message,
-        userId: report?.userId,
-        url: report?.url,
-        userAgent: report?.userAgent
-      }, 'Error report received from client');
+      logger.error(
+        {
+          component: report?.component,
+          category: report?.category,
+          severity: report?.severity,
+          message: report?.message,
+          userId: report?.userId,
+          url: report?.url,
+          userAgent: report?.userAgent,
+        },
+        'Error report received from client'
+      );
 
       // For critical errors, send immediate notification
       if (report?.severity === 'critical') {
-        logger.error({
-          type: 'CRITICAL_ERROR_ALERT',
-          component: report?.component,
-          message: report?.message,
-          userId: report?.userId
-        }, 'Critical error detected');
+        logger.error(
+          {
+            type: 'CRITICAL_ERROR_ALERT',
+            component: report?.component,
+            message: report?.message,
+            userId: report?.userId,
+          },
+          'Critical error detected'
+        );
       }
     }
 
@@ -151,20 +157,18 @@ router.post('/', async (req, res) => {
     res.status(200).json({
       success: true,
       message: `Processed ${reports.length} error reports`,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
     logger.error({ error: error.message }, 'Failed to process error reports');
-    
-    await serverErrorReporter.reportAPIError(
-      'Failed to process error reports',
-      error,
-      { requestBodySize: req.body?.reports?.length || 0 }
-    );
-    
+
+    await serverErrorReporter.reportAPIError('Failed to process error reports', error, {
+      requestBodySize: req.body?.reports?.length || 0,
+    });
+
     res.status(500).json({
       error: 'Failed to process error reports',
-      message: error.message
+      message: error.message,
     });
   }
 });
@@ -173,16 +177,16 @@ router.post('/', async (req, res) => {
 router.get('/stats', (req, res) => {
   try {
     const stats = errorStorage.getStats();
-    
+
     res.status(200).json({
       success: true,
       data: stats,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
     logger.error({ error: error.message }, 'Failed to get error stats');
     res.status(500).json({
-      error: 'Failed to get error statistics'
+      error: 'Failed to get error statistics',
     });
   }
 });
@@ -192,40 +196,38 @@ router.get('/recent', (req, res) => {
   try {
     const hours = parseInt(req.query.hours) || 24;
     const limit = parseInt(req.query.limit) || 100;
-    const component = req.query.component;
-    const severity = req.query.severity;
-    const category = req.query.category;
-    
+    const { component } = req.query;
+    const { severity } = req.query;
+    const { category } = req.query;
+
     let errors = errorStorage.getRecent(hours);
-    
+
     // Apply filters
     if (component) {
-      errors = errors.filter(e => e.component === component);
+      errors = errors.filter((e) => e.component === component);
     }
-    
+
     if (severity) {
-      errors = errors.filter(e => e.severity === severity);
+      errors = errors.filter((e) => e.severity === severity);
     }
-    
+
     if (category) {
-      errors = errors.filter(e => e.category === category);
+      errors = errors.filter((e) => e.category === category);
     }
-    
+
     // Sort by timestamp (newest first) and limit
-    errors = errors
-      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-      .slice(0, limit);
-    
+    errors = errors.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, limit);
+
     res.status(200).json({
       success: true,
       data: errors,
       count: errors.length,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
     logger.error({ error: error.message }, 'Failed to get recent errors');
     res.status(500).json({
-      error: 'Failed to get recent errors'
+      error: 'Failed to get recent errors',
     });
   }
 });
@@ -236,42 +238,42 @@ router.get('/', (req, res) => {
     // In production, add authentication check here
     if (config.isProduction && !req.user?.isAdmin) {
       return res.status(403).json({
-        error: 'Access denied'
+        error: 'Access denied',
       });
     }
-    
-    const component = req.query.component;
-    const severity = req.query.severity;
-    const category = req.query.category;
-    
+
+    const { component } = req.query;
+    const { severity } = req.query;
+    const { category } = req.query;
+
     let errors = errorStorage.getAll();
-    
+
     // Apply filters
     if (component) {
-      errors = errors.filter(e => e.component === component);
+      errors = errors.filter((e) => e.component === component);
     }
-    
+
     if (severity) {
-      errors = errors.filter(e => e.severity === severity);
+      errors = errors.filter((e) => e.severity === severity);
     }
-    
+
     if (category) {
-      errors = errors.filter(e => e.category === category);
+      errors = errors.filter((e) => e.category === category);
     }
-    
+
     // Sort by timestamp (newest first)
     errors = errors.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-    
+
     res.status(200).json({
       success: true,
       data: errors,
       count: errors.length,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
     logger.error({ error: error.message }, 'Failed to get all errors');
     res.status(500).json({
-      error: 'Failed to get errors'
+      error: 'Failed to get errors',
     });
   }
 });
@@ -282,31 +284,31 @@ router.delete('/clear', (req, res) => {
     // In production, add authentication check here
     if (config.isProduction && !req.user?.isAdmin) {
       return res.status(403).json({
-        error: 'Access denied'
+        error: 'Access denied',
       });
     }
-    
+
     const count = errorStorage.errors.length;
     errorStorage.clear();
-    
+
     logger.info({ count }, 'Error logs cleared by admin');
-    
+
     res.status(200).json({
       success: true,
       message: `Cleared ${count} error reports`,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
     logger.error({ error: error.message }, 'Failed to clear errors');
     res.status(500).json({
-      error: 'Failed to clear errors'
+      error: 'Failed to clear errors',
     });
   }
 });
 
 /**
  * GET /api/v1/errors/system-status
- * 
+ *
  * Get detailed health and debugging status of all server-side components.
  */
 router.get('/system-status', (req, res) => {
@@ -316,24 +318,26 @@ router.get('/system-status', (req, res) => {
       cache: {
         connected: cacheService.isConnected,
         type: cacheService.client ? 'redis' : 'memory',
-        memoryCacheSize: cacheService.memoryCache.size
+        memoryCacheSize: cacheService.memoryCache.size,
       },
       queues: Array.from(queueService.queues.entries()).map(([name, queue]) => ({
         name,
         pending: queue.pending,
         size: queue.size,
-        concurrency: queue.concurrency
+        concurrency: queue.concurrency,
       })),
-      circuitBreakers: Array.from(circuitBreakerService.breakers.entries()).map(([name, breaker]) => ({
-        name,
-        state: breaker.state,
-        stats: breaker.stats,
-        enabled: breaker.enabled
-      })),
+      circuitBreakers: Array.from(circuitBreakerService.breakers.entries()).map(
+        ([name, breaker]) => ({
+          name,
+          state: breaker.state,
+          stats: breaker.stats,
+          enabled: breaker.enabled,
+        })
+      ),
       database: {
-        status: 'connected'
-      }
-    }
+        status: 'connected',
+      },
+    },
   };
 
   res.json(status);
@@ -363,7 +367,7 @@ enhancedRouter.post('/', async (req, res) => {
     res.status(200).json({
       success: true,
       message: `Processed ${reports.length} error reports`,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
     logger.error({ error: error.message }, 'Failed to process error reports');
@@ -396,9 +400,9 @@ enhancedRouter.get('/trends', (req, res) => {
   try {
     const windowMs = parseInt(req.query.windowMs) || 3600000;
     const currentWindow = errorAggregator.getErrorsInTimeWindow(windowMs);
-    const previousWindow = errorAggregator.getErrorsInTimeWindow(windowMs * 2).filter(
-      e => new Date(e.timestamp).getTime() <= Date.now() - windowMs
-    );
+    const previousWindow = errorAggregator
+      .getErrorsInTimeWindow(windowMs * 2)
+      .filter((e) => new Date(e.timestamp).getTime() <= Date.now() - windowMs);
     const trends = errorAggregator.calculateTrends(currentWindow, previousWindow);
     res.json({ success: true, data: trends });
   } catch (error) {
@@ -441,7 +445,7 @@ enhancedRouter.post('/alert-channels', (req, res) => {
 
 enhancedRouter.get('/alert-channels', (req, res) => {
   try {
-    const channels = Array.from(['slack', 'discord', 'webhook', 'email', 'sms']).map(type => 
+    const channels = Array.from(['slack', 'discord', 'webhook', 'email', 'sms']).map((type) =>
       errorAlerter.getChannelConfig(type)
     );
     res.json({ success: true, data: channels });

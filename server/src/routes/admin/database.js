@@ -79,7 +79,7 @@ router.get('/tables/:name', async (req, res, next) => {
     const { name } = req.params;
 
     // TODO: Get actual table schema from Prisma/Postgres
-    const table = mockTables.find(t => t.name === name);
+    const table = mockTables.find((t) => t.name === name);
 
     if (!table) {
       return res.status(404).json({ error: 'Table not found' });

@@ -1,6 +1,6 @@
 /**
  * User Context Settings Types and Validation
- * 
+ *
  * Type definitions and validation schemas for user-configurable
  * dynamic context pipeline boundaries.
  */
@@ -17,7 +17,13 @@ export type FocusMode = 'chat-first' | 'knowledge-first' | 'balanced';
 // TIER 2: ADVANCED SETTINGS
 // ═══════════════════════════════════════════════════════════════════════════
 
-export type CompressionStrategy = 'auto' | 'full' | 'windowed' | 'compacted' | 'multi_level' | 'none';
+export type CompressionStrategy =
+  | 'auto'
+  | 'full'
+  | 'windowed'
+  | 'compacted'
+  | 'multi_level'
+  | 'none';
 export type PredictionAggressiveness = 'conservative' | 'balanced' | 'aggressive';
 
 export interface LayerBudgetOverride {
@@ -114,9 +120,9 @@ export const DEFAULT_SETTINGS: UserContextConfiguration = {
 
   // Tier 3: Expert
   topicSimilarityThreshold: 0.35,
-  entitySimilarityThreshold: 0.40,
+  entitySimilarityThreshold: 0.4,
   acuSimilarityThreshold: 0.35,
-  memorySimilarityThreshold: 0.40,
+  memorySimilarityThreshold: 0.4,
   elasticityOverrides: {},
   customBudgetFormulas: {},
 
@@ -257,9 +263,10 @@ export function clampValue(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
-export function validateSettings(
-  settings: Partial<UserContextConfiguration>
-): { valid: boolean; errors: string[] } {
+export function validateSettings(settings: Partial<UserContextConfiguration>): {
+  valid: boolean;
+  errors: string[];
+} {
   const errors: string[] = [];
 
   // Validate maxContextTokens

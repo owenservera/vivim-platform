@@ -69,11 +69,11 @@ router.get('/documents', async (req, res, next) => {
     let filtered = mockDocuments;
 
     if (type) {
-      filtered = filtered.filter(d => d.type === type);
+      filtered = filtered.filter((d) => d.type === type);
     }
 
     if (status) {
-      filtered = filtered.filter(d => d.status === status);
+      filtered = filtered.filter((d) => d.status === status);
     }
 
     log.info({ count: filtered.length, filters: { type, status } }, 'CRDT documents listed');
@@ -98,7 +98,7 @@ router.get('/documents/:id', async (req, res, next) => {
 
   try {
     const { id } = req.params;
-    const document = mockDocuments.find(d => d.id === id);
+    const document = mockDocuments.find((d) => d.id === id);
 
     if (!document) {
       return res.status(404).json({ error: 'Document not found' });
@@ -126,7 +126,7 @@ router.get('/documents/:id/sync', async (req, res, next) => {
 
   try {
     const { id } = req.params;
-    const document = mockDocuments.find(d => d.id === id);
+    const document = mockDocuments.find((d) => d.id === id);
 
     if (!document) {
       return res.status(404).json({ error: 'Document not found' });

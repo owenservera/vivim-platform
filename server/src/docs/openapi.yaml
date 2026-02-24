@@ -162,9 +162,9 @@ paths:
                       id: 550e8400-e29b-41d4-a716-446655440000
                       provider: claude
                       sourceUrl: https://claude.ai/share/abc123
-                      title: "Conversation about TypeScript"
-                      createdAt: "2025-01-24T10:30:00Z"
-                      exportedAt: "2025-01-24T10:35:00Z"
+                      title: 'Conversation about TypeScript'
+                      createdAt: '2025-01-24T10:30:00Z'
+                      exportedAt: '2025-01-24T10:35:00Z'
                       messageCount: 42
                       messages: [...]
                 cached:
@@ -176,7 +176,7 @@ paths:
                       id: 550e8400-e29b-41d4-a716-446655440000
                       provider: claude
                       sourceUrl: https://claude.ai/share/abc123
-                      title: "Conversation about TypeScript"
+                      title: 'Conversation about TypeScript'
         '400':
           description: Invalid request
           content:

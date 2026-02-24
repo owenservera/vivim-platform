@@ -1,6 +1,6 @@
 /**
  * File System Storage Adapter
- * 
+ *
  * Provides a reliable fallback storage when the main database is offline.
  * Saves conversations and attempts as JSON files in the local filesystem.
  */
@@ -32,12 +32,12 @@ ensureDirs();
 export const fileStorage = {
   /**
    * Save a conversation to disk
-   * @param {Object} conversation 
+   * @param {Object} conversation
    */
   async saveConversation(conversation) {
     if (!conversation || !conversation.id) {
-return;
-}
+      return;
+    }
     try {
       const filePath = path.join(CONVERSATIONS_DIR, `${conversation.id}.json`);
       // Add filesystem metadata
@@ -56,12 +56,12 @@ return;
 
   /**
    * Save a capture attempt to disk
-   * @param {Object} attempt 
+   * @param {Object} attempt
    */
   async saveAttempt(attempt) {
     if (!attempt || !attempt.id) {
-return;
-}
+      return;
+    }
     try {
       // sanitize ID if it was generated as "offline-..."
       const safeId = attempt.id.replace(/[^a-zA-Z0-9-]/g, '_');

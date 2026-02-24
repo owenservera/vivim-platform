@@ -4,15 +4,7 @@
   "title": "OpenScroll Conversation Data Schema v3",
   "description": "Unified schema for AI chat conversation data - reflects prisma/schema.prisma and openscroll-core",
   "type": "object",
-  "required": [
-    "id",
-    "provider",
-    "sourceUrl",
-    "title",
-    "capturedAt",
-    "messageCount",
-    "messages"
-  ],
+  "required": ["id", "provider", "sourceUrl", "title", "capturedAt", "messageCount", "messages"],
   "properties": {
     "id": {
       "type": "string",
@@ -20,7 +12,18 @@
     },
     "provider": {
       "type": "string",
-      "enum": ["claude", "chatgpt", "gemini", "grok", "deepseek", "kimi", "qwen", "zai", "mistral", "other"],
+      "enum": [
+        "claude",
+        "chatgpt",
+        "gemini",
+        "grok",
+        "deepseek",
+        "kimi",
+        "qwen",
+        "zai",
+        "mistral",
+        "other"
+      ],
       "description": "Source AI provider"
     },
     "sourceUrl": {
@@ -170,13 +173,21 @@
       "properties": {
         "type": {
           "type": "string",
-          "enum": ["text", "code", "image", "latex", "table", "mermaid", "tool_call", "tool_result", "thinking", "refusal"]
+          "enum": [
+            "text",
+            "code",
+            "image",
+            "latex",
+            "table",
+            "mermaid",
+            "tool_call",
+            "tool_result",
+            "thinking",
+            "refusal"
+          ]
         },
         "content": {
-          "oneOf": [
-            { "type": "string" },
-            { "type": "object" }
-          ]
+          "oneOf": [{ "type": "string" }, { "type": "object" }]
         },
         "language": { "type": "string" },
         "alt": { "type": "string" },

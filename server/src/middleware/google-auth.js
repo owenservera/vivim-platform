@@ -1,6 +1,6 @@
 /**
  * Google OAuth Authentication Middleware
- * 
+ *
  * Implements passport.js Google OAuth 2.0 strategy for user authentication.
  * Integrates with existing DID-based identity system.
  */
@@ -25,8 +25,8 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (id, done) => {
   try {
     const prisma = getPrismaClient();
-    const user = await prisma.user.findUnique({ 
-      where: { id } 
+    const user = await prisma.user.findUnique({
+      where: { id },
     });
     if (user) {
       user.userId = user.id;
@@ -46,12 +46,12 @@ const googleStrategy = new GoogleStrategy(
   {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.GOOGLE_CALLBACK_URL || '/api/auth/google/callback'
+    callbackURL: process.env.GOOGLE_CALLBACK_URL || '/api/auth/google/callback',
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
       const prisma = getPrismaClient();
-      
+
       const email = profile.emails?.[0]?.value;
       if (!email) {
         return done(new Error('No email provided by Google'), null);
@@ -59,7 +59,7 @@ const googleStrategy = new GoogleStrategy(
 
       // Find existing user by email
       let user = await prisma.user.findUnique({
-        where: { email }
+        where: { email },
       });
 
       if (!user) {
@@ -79,15 +79,18 @@ const googleStrategy = new GoogleStrategy(
             publicKey: `google:${profile.id}`,
             keyType: 'GoogleOAuth',
             // Default trust score for Google users
-            trustScore: 60
-          }
+            trustScore: 60,
+          },
         });
 
-        log.info({ 
-          userId: user.id, 
-          email, 
-          googleId: profile.id 
-        }, 'New user created via Google OAuth');
+        log.info(
+          {
+            userId: user.id,
+            email,
+            googleId: profile.id,
+          },
+          'New user created via Google OAuth'
+        );
       } else {
         // Update existing user with Google info if not already set
         user = await prisma.user.update({
@@ -96,22 +99,28 @@ const googleStrategy = new GoogleStrategy(
             avatarUrl: profile.photos?.[0]?.value || user.avatarUrl,
             emailVerified: true,
             // Increase verification level if not already verified via Google
-            verificationLevel: Math.max(user.verificationLevel, 1)
-          }
+            verificationLevel: Math.max(user.verificationLevel, 1),
+          },
         });
 
-        log.info({ 
-          userId: user.id, 
-          email 
-        }, 'User logged in via Google OAuth');
+        log.info(
+          {
+            userId: user.id,
+            email,
+          },
+          'User logged in via Google OAuth'
+        );
       }
 
       return done(null, user);
     } catch (error) {
-      log.error({ 
-        error: error.message,
-        googleId: profile.id 
-      }, 'Google OAuth authentication failed');
+      log.error(
+        {
+          error: error.message,
+          googleId: profile.id,
+        },
+        'Google OAuth authentication failed'
+      );
       return done(error, null);
     }
   }
@@ -138,12 +147,12 @@ export function getCurrentUser(req) {
   if (req.isAuthenticated()) {
     return req.user;
   }
-  
+
   // Also check for DID-based auth
   if (req.user?.did) {
     return req.user;
   }
-  
+
   return null;
 }
 

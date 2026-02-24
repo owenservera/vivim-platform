@@ -25,20 +25,20 @@ async function extractMistralConversation(url, options = {}) {
     logger.info(`Starting Mistral extraction for ${url} using Playwright...`);
 
     // Capture the live page using Playwright (with stealth mode)
-    tempFilePath = await captureWithPlaywright(url, 'mistral', { 
+    tempFilePath = await captureWithPlaywright(url, 'mistral', {
       timeout,
       headless,
       waitForSelector: '[data-testid="conversation"], .chat-container, .conversation-item',
-      waitForTimeout: waitForTimeout, 
+      waitForTimeout: waitForTimeout,
     });
-    
+
     logger.info(`Reading captured Mistral HTML from: ${tempFilePath}`);
     const html = await fs.readFile(tempFilePath, 'utf8');
     const $ = cheerio.load(html);
 
     // Extract conversation data for Mistral
     const conversation = extractMistralData($, url, html, richFormatting);
-    
+
     if (conversation.messages.length === 0) {
       const debugPath = `debug-mistral-${Date.now()}.html`;
       await fs.writeFile(debugPath, html);
@@ -82,56 +82,70 @@ async function extractMistralConversation(url, options = {}) {
  * Extract Mistral conversation data
  */
 function extractMistralData($, url, html, richFormatting = true) {
-  const title = $('title').text().replace(/[-–]Mistral$/i, '').replace(/[-–]Chat$/i, '').trim() || 'Mistral Conversation';
+  const title =
+    $('title')
+      .text()
+      .replace(/[-–]Mistral$/i, '')
+      .replace(/[-–]Chat$/i, '')
+      .trim() || 'Mistral Conversation';
   const messages = [];
 
   // Method 1: Look for message containers with data attributes
   try {
-    $('[data-testid="conversation-message"], [data-message-id], .message-container').each((i, el) => {
-      const $el = $(el);
-      
-      // Determine role based on class, data attribute, or icon
-      let role = null;
-      let author = 'Mistral';
-      
-      if ($el.find('[data-testid="user-message"], .user-message, .user-content').length > 0) {
-        role = 'user';
-        author = 'User';
-      } else if ($el.find('[data-testid="assistant-message"], .assistant-message, .ai-content').length > 0) {
-        role = 'assistant';
-        author = 'Mistral';
-      }
-      
-      // Fallback: check for user avatar or assistant icon
-      if (!role) {
-        if ($el.find('.user-avatar, [data-testid="user-avatar"]').length > 0) {
+    $('[data-testid="conversation-message"], [data-message-id], .message-container').each(
+      (i, el) => {
+        const $el = $(el);
+
+        // Determine role based on class, data attribute, or icon
+        let role = null;
+        let author = 'Mistral';
+
+        if ($el.find('[data-testid="user-message"], .user-message, .user-content').length > 0) {
           role = 'user';
           author = 'User';
-        } else if ($el.find('.assistant-avatar, [data-testid="assistant-avatar"], .mistral-avatar').length > 0) {
+        } else if (
+          $el.find('[data-testid="assistant-message"], .assistant-message, .ai-content').length > 0
+        ) {
           role = 'assistant';
           author = 'Mistral';
         }
-      }
 
-      if (role) {
-        const $content = $el.find('.message-content, .text-content, [data-testid="message-content"]').first();
-        const $target = $content.length > 0 ? $content : $el;
-        
-        // Extract parts using rich content extractor
-        const parts = extractMistralRichContent($target, $, richFormatting);
+        // Fallback: check for user avatar or assistant icon
+        if (!role) {
+          if ($el.find('.user-avatar, [data-testid="user-avatar"]').length > 0) {
+            role = 'user';
+            author = 'User';
+          } else if (
+            $el.find('.assistant-avatar, [data-testid="assistant-avatar"], .mistral-avatar')
+              .length > 0
+          ) {
+            role = 'assistant';
+            author = 'Mistral';
+          }
+        }
 
-        if (parts.length > 0) {
-          messages.push({
-            id: $el.attr('data-message-id') || uuidv4(),
-            role,
-            author,
-            parts,
-            createdAt: null,
-            status: 'completed',
-          });
+        if (role) {
+          const $content = $el
+            .find('.message-content, .text-content, [data-testid="message-content"]')
+            .first();
+          const $target = $content.length > 0 ? $content : $el;
+
+          // Extract parts using rich content extractor
+          const parts = extractMistralRichContent($target, $, richFormatting);
+
+          if (parts.length > 0) {
+            messages.push({
+              id: $el.attr('data-message-id') || uuidv4(),
+              role,
+              author,
+              parts,
+              createdAt: null,
+              status: 'completed',
+            });
+          }
         }
       }
-    });
+    );
   } catch (e) {
     logger.error(`Error parsing Mistral messages: ${e.message}`);
   }
@@ -140,22 +154,25 @@ function extractMistralData($, url, html, richFormatting = true) {
   if (messages.length === 0) {
     $('section, article, div').each((i, el) => {
       const $el = $(el);
-      
+
       // Skip if too small or no meaningful content
       if ($el.text().trim().length < 20) {
-return;
-}
-      
+        return;
+      }
+
       // Look for user/assistant indicators
       const text = $el.text().toLowerCase();
       let role = null;
       let author = 'Mistral';
-      
+
       // Check for "You" indicator in user messages
       if (text.includes('you') && !text.includes('mistral')) {
         role = 'user';
         author = 'User';
-      } else if (text.includes('mistral') || $el.find('.mistral-logo, .assistant-icon').length > 0) {
+      } else if (
+        text.includes('mistral') ||
+        $el.find('.mistral-logo, .assistant-icon').length > 0
+      ) {
         role = 'assistant';
         author = 'Mistral';
       }
@@ -163,10 +180,13 @@ return;
       if (role) {
         const $content = $el.find('p, .content, .text').first();
         const $target = $content.length > 0 ? $content : $el;
-        
+
         const parts = extractMistralRichContent($target, $, richFormatting);
 
-        if (parts.length > 0 && !messages.some(m => m.role === role && m.parts[0]?.content === parts[0]?.content)) {
+        if (
+          parts.length > 0 &&
+          !messages.some((m) => m.role === role && m.parts[0]?.content === parts[0]?.content)
+        ) {
           messages.push({
             id: uuidv4(),
             role,
@@ -184,20 +204,26 @@ return;
   if (messages.length === 0) {
     $('.markdown, .prose, [class*="markdown"]').each((i, el) => {
       const $el = $(el);
-      
+
       // Determine if this is a user or assistant message
       let role = null;
       let author = 'Mistral';
-      
+
       // Look for parent container that indicates role
-      const $parent = $el.parents('[class*="user"], [class*="assistant"], [class*="human"], [class*="ai"]').first();
-      
+      const $parent = $el
+        .parents('[class*="user"], [class*="assistant"], [class*="human"], [class*="ai"]')
+        .first();
+
       if ($parent.length > 0) {
         const parentClass = $parent.attr('class').toLowerCase();
         if (parentClass.includes('user') || parentClass.includes('human')) {
           role = 'user';
           author = 'User';
-        } else if (parentClass.includes('assistant') || parentClass.includes('ai') || parentClass.includes('mistral')) {
+        } else if (
+          parentClass.includes('assistant') ||
+          parentClass.includes('ai') ||
+          parentClass.includes('mistral')
+        ) {
           role = 'assistant';
           author = 'Mistral';
         }
@@ -261,7 +287,7 @@ function extractMistralRichContent($el, $, richFormatting = true) {
   }
 
   const $clone = $el.clone();
-  
+
   const contentBlocks = [];
 
   // 1. Identify code blocks
@@ -269,11 +295,12 @@ function extractMistralRichContent($el, $, richFormatting = true) {
     const $pre = $(elem);
     const $code = $pre.find('code');
     const text = $code.length > 0 ? $code.text().trim() : $pre.text().trim();
-    
+
     if (text) {
-      const language = $code.attr('class')?.match(/language-(\w+)/)?.[1] || 
-                       $code.attr('class')?.match(/lang-(\w+)/)?.[1] ||
-                       'text';
+      const language =
+        $code.attr('class')?.match(/language-(\w+)/)?.[1] ||
+        $code.attr('class')?.match(/lang-(\w+)/)?.[1] ||
+        'text';
       contentBlocks.push({
         type: 'code',
         content: text,
@@ -287,7 +314,12 @@ function extractMistralRichContent($el, $, richFormatting = true) {
   $clone.find('img').each((index, elem) => {
     const $elem = $(elem);
     const src = $elem.attr('src');
-    if (src && !src.includes('profile') && !src.includes('avatar') && !src.includes('data:image/svg')) {
+    if (
+      src &&
+      !src.includes('profile') &&
+      !src.includes('avatar') &&
+      !src.includes('data:image/svg')
+    ) {
       contentBlocks.push({
         type: 'image',
         content: src,
@@ -304,7 +336,7 @@ function extractMistralRichContent($el, $, richFormatting = true) {
     $list.find('li').each((_, li) => {
       items.push($(li).text().trim());
     });
-    
+
     if (items.length > 0) {
       contentBlocks.push({
         type: 'list',
@@ -323,7 +355,7 @@ function extractMistralRichContent($el, $, richFormatting = true) {
     const $heading = $(elem);
     const level = parseInt(elem.tagName[1], 10);
     const text = $heading.text().trim();
-    
+
     if (text) {
       contentBlocks.push({
         type: 'heading',
@@ -338,7 +370,7 @@ function extractMistralRichContent($el, $, richFormatting = true) {
   $clone.find('blockquote').each((index, elem) => {
     const $blockquote = $(elem);
     const text = $blockquote.text().trim();
-    
+
     if (text) {
       contentBlocks.push({
         type: 'quote',
@@ -351,11 +383,11 @@ function extractMistralRichContent($el, $, richFormatting = true) {
 
   // 6. Handle remaining text
   const remainingText = $clone.text().trim();
-  
+
   if (remainingText) {
     // Split by double newlines to preserve paragraphs
     const paragraphs = remainingText.split(/\n\n+/);
-    paragraphs.forEach(para => {
+    paragraphs.forEach((para) => {
       const trimmed = para.trim();
       if (trimmed) {
         contentBlocks.push({ type: 'text', content: trimmed });
@@ -382,16 +414,16 @@ function calculateStats(messages) {
 
   for (const message of messages) {
     if (message.role === 'user') {
-userMessageCount++;
-}
+      userMessageCount++;
+    }
     if (message.role === 'assistant') {
-aiMessageCount++;
-}
+      aiMessageCount++;
+    }
 
     if (message.parts) {
-      message.parts.forEach(part => {
+      message.parts.forEach((part) => {
         if (part.type === 'text') {
-          totalWords += part.content.split(/\s+/).filter(w => w).length;
+          totalWords += part.content.split(/\s+/).filter((w) => w).length;
           totalCharacters += part.content.length;
         } else if (part.type === 'code') {
           totalCodeBlocks++;

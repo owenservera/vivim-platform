@@ -10,8 +10,9 @@ const prisma = getPrismaClient();
 const socialService = new SocialService(prisma);
 
 function authenticateDIDMiddleware(req: Request, res: Response, next: NextFunction) {
-  const did = req.headers['x-did'] || (req.headers['authorization'] || '').replace('Bearer did:', 'did:');
-  
+  const did =
+    req.headers['x-did'] || (req.headers['authorization'] || '').replace('Bearer did:', 'did:');
+
   if (!did) {
     return res.status(401).json({ success: false, error: 'DID required' });
   }
@@ -19,7 +20,7 @@ function authenticateDIDMiddleware(req: Request, res: Response, next: NextFuncti
   if (!did.startsWith('did:')) {
     return res.status(401).json({ success: false, error: 'Invalid DID format' });
   }
-  
+
   next();
 }
 
@@ -47,16 +48,22 @@ router.get('/summary', async (req: Request, res: Response, next: NextFunction) =
   }
 });
 
-router.get('/relationship/:otherUserId', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const userId = await getUserIdFromDID(req.headers['x-did'] as string);
-    const relationship = await socialService.getRelationshipWithUser(userId, req.params.otherUserId);
-    res.json({ success: true, ...relationship });
-  } catch (error) {
-    log.error({ error }, 'Failed to get relationship');
-    next(error);
+router.get(
+  '/relationship/:otherUserId',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = await getUserIdFromDID(req.headers['x-did'] as string);
+      const relationship = await socialService.getRelationshipWithUser(
+        userId,
+        req.params.otherUserId
+      );
+      res.json({ success: true, ...relationship });
+    } catch (error) {
+      log.error({ error }, 'Failed to get relationship');
+      next(error);
+    }
   }
-});
+);
 
 // Friends
 router.get('/friends', async (req: Request, res: Response, next: NextFunction) => {
@@ -85,11 +92,11 @@ router.post('/friends', async (req: Request, res: Response, next: NextFunction) 
   try {
     const userId = await getUserIdFromDID(req.headers['x-did'] as string);
     const { addresseeId, message } = req.body;
-    
+
     if (!addresseeId) {
       return res.status(400).json({ success: false, error: 'addresseeId required' });
     }
-    
+
     const friend = await socialService.sendFriendRequest(userId, addresseeId, message);
     res.json({ success: true, friend });
   } catch (error) {
@@ -98,22 +105,29 @@ router.post('/friends', async (req: Request, res: Response, next: NextFunction) 
   }
 });
 
-router.put('/friends/:friendId/respond', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const userId = await getUserIdFromDID(req.headers['x-did'] as string);
-    const { response } = req.body;
-    
-    if (!response || !['ACCEPTED', 'REJECTED'].includes(response)) {
-      return res.status(400).json({ success: false, error: 'Invalid response' });
+router.put(
+  '/friends/:friendId/respond',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = await getUserIdFromDID(req.headers['x-did'] as string);
+      const { response } = req.body;
+
+      if (!response || !['ACCEPTED', 'REJECTED'].includes(response)) {
+        return res.status(400).json({ success: false, error: 'Invalid response' });
+      }
+
+      const friend = await socialService.respondToFriendRequest(
+        userId,
+        req.params.friendId,
+        response
+      );
+      res.json({ success: true, friend });
+    } catch (error) {
+      log.error({ error }, 'Failed to respond to friend request');
+      next(error);
     }
-    
-    const friend = await socialService.respondToFriendRequest(userId, req.params.friendId, response);
-    res.json({ success: true, friend });
-  } catch (error) {
-    log.error({ error }, 'Failed to respond to friend request');
-    next(error);
   }
-});
+);
 
 router.delete('/friends/:friendId', async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -164,11 +178,11 @@ router.post('/follow', async (req: Request, res: Response, next: NextFunction) =
   try {
     const userId = await getUserIdFromDID(req.headers['x-did'] as string);
     const { followingId, notifyOnPost } = req.body;
-    
+
     if (!followingId) {
       return res.status(400).json({ success: false, error: 'followingId required' });
     }
-    
+
     const follow = await socialService.followUser(userId, followingId, notifyOnPost);
     res.json({ success: true, follow });
   } catch (error) {
@@ -188,23 +202,26 @@ router.delete('/follow/:followingId', async (req: Request, res: Response, next: 
   }
 });
 
-router.put('/follow/:followId/settings', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const userId = await getUserIdFromDID(req.headers['x-did'] as string);
-    const { notifyOnPost, showInFeed } = req.body;
-    
-    const follow = await socialService.updateFollowSettings(
-      req.params.followId,
-      userId,
-      notifyOnPost,
-      showInFeed
-    );
-    res.json({ success: true, follow });
-  } catch (error) {
-    log.error({ error }, 'Failed to update follow settings');
-    next(error);
+router.put(
+  '/follow/:followId/settings',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = await getUserIdFromDID(req.headers['x-did'] as string);
+      const { notifyOnPost, showInFeed } = req.body;
+
+      const follow = await socialService.updateFollowSettings(
+        req.params.followId,
+        userId,
+        notifyOnPost,
+        showInFeed
+      );
+      res.json({ success: true, follow });
+    } catch (error) {
+      log.error({ error }, 'Failed to update follow settings');
+      next(error);
+    }
   }
-});
+);
 
 // Groups
 router.get('/groups', async (req: Request, res: Response, next: NextFunction) => {
@@ -235,12 +252,21 @@ router.get('/groups/public', async (req: Request, res: Response, next: NextFunct
 router.post('/groups', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = await getUserIdFromDID(req.headers['x-did'] as string);
-    const { name, description, avatarUrl, type, visibility, allowMemberInvite, allowMemberPost, maxMembers } = req.body;
-    
+    const {
+      name,
+      description,
+      avatarUrl,
+      type,
+      visibility,
+      allowMemberInvite,
+      allowMemberPost,
+      maxMembers,
+    } = req.body;
+
     if (!name) {
       return res.status(400).json({ success: false, error: 'name required' });
     }
-    
+
     const group = await socialService.createGroup(userId, {
       name,
       description,
@@ -274,8 +300,16 @@ router.get('/groups/:groupId', async (req: Request, res: Response, next: NextFun
 router.put('/groups/:groupId', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = await getUserIdFromDID(req.headers['x-did'] as string);
-    const { name, description, avatarUrl, visibility, allowMemberInvite, allowMemberPost, maxMembers } = req.body;
-    
+    const {
+      name,
+      description,
+      avatarUrl,
+      visibility,
+      allowMemberInvite,
+      allowMemberPost,
+      maxMembers,
+    } = req.body;
+
     const group = await socialService.updateGroup(req.params.groupId, userId, {
       name,
       description,
@@ -335,23 +369,26 @@ router.get('/groups/:groupId/members', async (req: Request, res: Response, next:
   }
 });
 
-router.put('/groups/:groupId/members/:memberId/role', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const userId = await getUserIdFromDID(req.headers['x-did'] as string);
-    const { role } = req.body;
-    
-    const member = await socialService.updateMemberRole(
-      req.params.groupId,
-      req.params.memberId,
-      userId,
-      role
-    );
-    res.json({ success: true, member });
-  } catch (error) {
-    log.error({ error }, 'Failed to update member role');
-    next(error);
+router.put(
+  '/groups/:groupId/members/:memberId/role',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = await getUserIdFromDID(req.headers['x-did'] as string);
+      const { role } = req.body;
+
+      const member = await socialService.updateMemberRole(
+        req.params.groupId,
+        req.params.memberId,
+        userId,
+        role
+      );
+      res.json({ success: true, member });
+    } catch (error) {
+      log.error({ error }, 'Failed to update member role');
+      next(error);
+    }
   }
-});
+);
 
 router.get('/groups/:groupId/posts', async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -372,11 +409,11 @@ router.post('/groups/:groupId/posts', async (req: Request, res: Response, next: 
   try {
     const userId = await getUserIdFromDID(req.headers['x-did'] as string);
     const { content, contentType, acuId, attachments } = req.body;
-    
+
     if (!content) {
       return res.status(400).json({ success: false, error: 'content required' });
     }
-    
+
     const post = await socialService.createGroupPost(req.params.groupId, userId, {
       content,
       contentType,
@@ -405,12 +442,22 @@ router.get('/teams', async (req: Request, res: Response, next: NextFunction) => 
 router.post('/teams', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = await getUserIdFromDID(req.headers['x-did'] as string);
-    const { name, description, avatarUrl, type, visibility, allowGuestAccess, requireApproval, maxMembers, isPersonal } = req.body;
-    
+    const {
+      name,
+      description,
+      avatarUrl,
+      type,
+      visibility,
+      allowGuestAccess,
+      requireApproval,
+      maxMembers,
+      isPersonal,
+    } = req.body;
+
     if (!name) {
       return res.status(400).json({ success: false, error: 'name required' });
     }
-    
+
     const team = await socialService.createTeam(userId, {
       name,
       description,
@@ -445,8 +492,16 @@ router.get('/teams/:teamId', async (req: Request, res: Response, next: NextFunct
 router.put('/teams/:teamId', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = await getUserIdFromDID(req.headers['x-did'] as string);
-    const { name, description, avatarUrl, visibility, allowGuestAccess, requireApproval, maxMembers } = req.body;
-    
+    const {
+      name,
+      description,
+      avatarUrl,
+      visibility,
+      allowGuestAccess,
+      requireApproval,
+      maxMembers,
+    } = req.body;
+
     const team = await socialService.updateTeam(req.params.teamId, userId, {
       name,
       description,
@@ -478,7 +533,7 @@ router.post('/teams/:teamId/members', async (req: Request, res: Response, next: 
   try {
     const userId = await getUserIdFromDID(req.headers['x-did'] as string);
     const { userId: targetUserId, role, title } = req.body;
-    
+
     const member = await socialService.addTeamMember(req.params.teamId, targetUserId || userId, {
       role,
       title,
@@ -490,26 +545,29 @@ router.post('/teams/:teamId/members', async (req: Request, res: Response, next: 
   }
 });
 
-router.delete('/teams/:teamId/members/:memberId', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const userId = await getUserIdFromDID(req.headers['x-did'] as string);
-    await socialService.removeTeamMember(req.params.teamId, req.params.memberId, userId);
-    res.json({ success: true });
-  } catch (error) {
-    log.error({ error }, 'Failed to remove team member');
-    next(error);
+router.delete(
+  '/teams/:teamId/members/:memberId',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = await getUserIdFromDID(req.headers['x-did'] as string);
+      await socialService.removeTeamMember(req.params.teamId, req.params.memberId, userId);
+      res.json({ success: true });
+    } catch (error) {
+      log.error({ error }, 'Failed to remove team member');
+      next(error);
+    }
   }
-});
+);
 
 router.post('/teams/:teamId/channels', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = await getUserIdFromDID(req.headers['x-did'] as string);
     const { name, description, type } = req.body;
-    
+
     if (!name) {
       return res.status(400).json({ success: false, error: 'name required' });
     }
-    
+
     const channel = await socialService.createChannel(req.params.teamId, userId, {
       name,
       description,
@@ -522,40 +580,46 @@ router.post('/teams/:teamId/channels', async (req: Request, res: Response, next:
   }
 });
 
-router.get('/teams/:teamId/channels/:channelId/messages', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { limit = 50, offset = 0 } = req.query;
-    const messages = await socialService.getChannelMessages(
-      req.params.channelId,
-      parseInt(limit as string),
-      parseInt(offset as string)
-    );
-    res.json({ success: true, messages });
-  } catch (error) {
-    log.error({ error }, 'Failed to get channel messages');
-    next(error);
-  }
-});
-
-router.post('/teams/:teamId/channels/:channelId/messages', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const userId = await getUserIdFromDID(req.headers['x-did'] as string);
-    const { content, contentType, parentId } = req.body;
-    
-    if (!content) {
-      return res.status(400).json({ success: false, error: 'content required' });
+router.get(
+  '/teams/:teamId/channels/:channelId/messages',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { limit = 50, offset = 0 } = req.query;
+      const messages = await socialService.getChannelMessages(
+        req.params.channelId,
+        parseInt(limit as string),
+        parseInt(offset as string)
+      );
+      res.json({ success: true, messages });
+    } catch (error) {
+      log.error({ error }, 'Failed to get channel messages');
+      next(error);
     }
-    
-    const message = await socialService.sendChannelMessage(req.params.channelId, userId, {
-      content,
-      contentType,
-      parentId,
-    });
-    res.json({ success: true, message });
-  } catch (error) {
-    log.error({ error }, 'Failed to send message');
-    next(error);
   }
-});
+);
+
+router.post(
+  '/teams/:teamId/channels/:channelId/messages',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userId = await getUserIdFromDID(req.headers['x-did'] as string);
+      const { content, contentType, parentId } = req.body;
+
+      if (!content) {
+        return res.status(400).json({ success: false, error: 'content required' });
+      }
+
+      const message = await socialService.sendChannelMessage(req.params.channelId, userId, {
+        content,
+        contentType,
+        parentId,
+      });
+      res.json({ success: true, message });
+    } catch (error) {
+      log.error({ error }, 'Failed to send message');
+      next(error);
+    }
+  }
+);
 
 export default router;

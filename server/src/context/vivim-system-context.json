@@ -7,34 +7,12 @@
     "pwa": "pwa/src/lib/*"
   },
   "systemArchitecture": {
-    "apps": [
-      "network",
-      "server",
-      "pwa"
-    ],
+    "apps": ["network", "server", "pwa"],
     "network": {
       "purpose": "P2P and Federation Layer",
-      "technologies": [
-        "libp2p",
-        "Yjs CRDT",
-        "Kademlia DHT",
-        "WebRTC"
-      ],
-      "nodeTypes": [
-        "bootstrap",
-        "relay",
-        "indexer",
-        "storage",
-        "edge",
-        "client",
-        "self-hosted"
-      ],
-      "transports": [
-        "webrtc",
-        "websocket",
-        "tcp",
-        "quic"
-      ],
+      "technologies": ["libp2p", "Yjs CRDT", "Kademlia DHT", "WebRTC"],
+      "nodeTypes": ["bootstrap", "relay", "indexer", "storage", "edge", "client", "self-hosted"],
+      "transports": ["webrtc", "websocket", "tcp", "quic"],
       "database": {
         "models": [
           "NetworkNode",
@@ -74,12 +52,7 @@
     },
     "server": {
       "purpose": "Backend API and Context Engine",
-      "technologies": [
-        "Node.js",
-        "Prisma",
-        "PostgreSQL",
-        "Z.ai embeddings"
-      ],
+      "technologies": ["Node.js", "Prisma", "PostgreSQL", "Z.ai embeddings"],
       "contextLayers": [
         {
           "id": "L0",
@@ -126,11 +99,7 @@
     },
     "pwa": {
       "purpose": "Frontend Client",
-      "technologies": [
-        "React",
-        "IndexedDB",
-        "Web Crypto API"
-      ],
+      "technologies": ["React", "IndexedDB", "Web Crypto API"],
       "keyModules": [
         "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\components\\content\\index",
         "C:\\0-BlackBoxProject-0\\OpenScroll\\apps\\pwa\\src\\components\\index",
@@ -223,28 +192,15 @@
     },
     "byok": {
       "supported": true,
-      "providers": [
-        "openai",
-        "anthropic",
-        "google",
-        "mistral"
-      ]
+      "providers": ["openai", "anthropic", "google", "mistral"]
     },
     "p2p": {
       "supported": true,
-      "technologies": [
-        "libp2p",
-        "WebRTC",
-        "Yjs CRDT"
-      ]
+      "technologies": ["libp2p", "WebRTC", "Yjs CRDT"]
     },
     "federation": {
       "supported": true,
-      "protocols": [
-        "ActivityPub",
-        "ATProtocol",
-        "VIVIM native"
-      ]
+      "protocols": ["ActivityPub", "ATProtocol", "VIVIM native"]
     }
   },
   "privacy": {

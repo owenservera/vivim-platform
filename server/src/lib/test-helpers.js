@@ -225,7 +225,9 @@ export async function cleanupTestData(userId) {
 
   try {
     const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (!user) return;
+    if (!user) {
+      return;
+    }
 
     await prisma.$transaction([
       prisma.message.deleteMany({

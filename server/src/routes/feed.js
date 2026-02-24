@@ -12,17 +12,12 @@ function getUserId(req) {
 
 /**
  * GET /api/v1/feed
- * 
+ *
  * Returns a personalized feed of conversations.
  */
 router.get('/', async (req, res) => {
   try {
-    const {
-      tab = 'for-you',
-      limit = 20,
-      offset = 0,
-      minQuality = 0,
-    } = req.query;
+    const { tab = 'for-you', limit = 20, offset = 0, minQuality = 0 } = req.query;
 
     const userId = getUserId(req);
     const prisma = getPrismaClient();
@@ -46,7 +41,7 @@ router.get('/', async (req, res) => {
     }
 
     // 2. Score and Filter
-    const scored = conversations.map(conv => {
+    const scored = conversations.map((conv) => {
       const score = calculateConversationScore(conv);
       return {
         conversation: conv,
@@ -56,11 +51,11 @@ router.get('/', async (req, res) => {
     });
 
     // 3. Filter by quality if needed
-    const filtered = scored.filter(item => {
+    const filtered = scored.filter((item) => {
       // Use messageCount and wordCount as proxy for quality if no specific score exists
       if (item.conversation.messageCount < 2) {
-return false;
-}
+        return false;
+      }
       return true;
     });
 
@@ -71,8 +66,8 @@ return false;
       const timeA = new Date(a.conversation.capturedAt).getTime();
       const timeB = new Date(b.conversation.capturedAt).getTime();
       if (timeB !== timeA) {
-return timeB - timeA;
-}
+        return timeB - timeA;
+      }
       return b.score - a.score;
     });
 
@@ -103,12 +98,12 @@ return timeB - timeA;
  */
 function calculateConversationScore(conv) {
   let score = 0;
-  
+
   // Quality factors
   score += (conv.messageCount || 0) * 0.5;
   score += (conv.totalWords || 0) * 0.01;
   score += (conv.totalCodeBlocks || 0) * 2;
-  
+
   // Recency bonus (5 days decay)
   const ageHours = (Date.now() - new Date(conv.capturedAt).getTime()) / (1000 * 60 * 60);
   const recencyBonus = Math.max(0, 10 - ageHours / 24);
@@ -122,23 +117,23 @@ function calculateConversationScore(conv) {
  */
 function getRecommendationReason(conv) {
   if (conv.totalCodeBlocks > 0) {
-return 'Contains technical implementation';
-}
+    return 'Contains technical implementation';
+  }
   if (conv.messageCount > 10) {
-return 'In-depth discussion';
-}
+    return 'In-depth discussion';
+  }
   return 'Recent capture';
 }
 
 router.post('/engagement', async (req, res) => {
   const { acuId, action, metadata } = req.body;
-  
+
   if (!acuId || !action) {
     return res.status(400).json({ error: 'Missing acuId or action' });
   }
 
   console.log(`[ENGAGEMENT] ${action} on ${acuId}`);
-  
+
   res.json({ success: true });
 });
 

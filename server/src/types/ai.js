@@ -14,7 +14,7 @@ export const ProviderType = {
   QWEN: 'qwen',
   MOONSHOT: 'moonshot',
   MINIMAX: 'minimax',
-  ZAI: 'zai',  // FREE DEFAULT
+  ZAI: 'zai', // FREE DEFAULT
 };
 
 /**
@@ -126,56 +126,84 @@ export const ProviderModels = {
   [ProviderType.OPENAI]: {
     'gpt-5.2': {
       context: 400_000,
-      capabilities: [ModelCapabilities.CODING, ModelCapabilities.REASONING, ModelCapabilities.FUNCTION_CALLING, ModelCapabilities.STRUCTURED_OUTPUT, ModelCapabilities.AGENT],
-      pricing: { input: 1.75, output: 14.00 },
+      capabilities: [
+        ModelCapabilities.CODING,
+        ModelCapabilities.REASONING,
+        ModelCapabilities.FUNCTION_CALLING,
+        ModelCapabilities.STRUCTURED_OUTPUT,
+        ModelCapabilities.AGENT,
+      ],
+      pricing: { input: 1.75, output: 14.0 },
       recommendedUse: 'Complex coding, agentic tasks, multi-step reasoning',
     },
     'gpt-5-mini': {
       context: 200_000,
-      capabilities: [ModelCapabilities.FAST_RESPONSE, ModelCapabilities.COST_OPTIMIZED, ModelCapabilities.FUNCTION_CALLING],
-      pricing: { input: 0.25, output: 2.00 },
+      capabilities: [
+        ModelCapabilities.FAST_RESPONSE,
+        ModelCapabilities.COST_OPTIMIZED,
+        ModelCapabilities.FUNCTION_CALLING,
+      ],
+      pricing: { input: 0.25, output: 2.0 },
       recommendedUse: 'High-volume, cost-sensitive, quick responses',
     },
   },
   [ProviderType.ANTHROPIC]: {
     'claude-opus-4.6': {
       context: 1_000_000,
-      capabilities: [ModelCapabilities.CODING, ModelCapabilities.LONG_CONTEXT, ModelCapabilities.FUNCTION_CALLING, ModelCapabilities.STRUCTURED_OUTPUT, ModelCapabilities.AGENT],
-      pricing: { input: 15.00, output: 75.00 },
+      capabilities: [
+        ModelCapabilities.CODING,
+        ModelCapabilities.LONG_CONTEXT,
+        ModelCapabilities.FUNCTION_CALLING,
+        ModelCapabilities.STRUCTURED_OUTPUT,
+        ModelCapabilities.AGENT,
+      ],
+      pricing: { input: 15.0, output: 75.0 },
       recommendedUse: 'Complex coding, enterprise workflows, deep analysis',
     },
     'claude-sonnet-4': {
       context: 200_000,
-      capabilities: [ModelCapabilities.FAST_RESPONSE, ModelCapabilities.COST_OPTIMIZED, ModelCapabilities.FUNCTION_CALLING],
-      pricing: { input: 3.00, output: 15.00 },
+      capabilities: [
+        ModelCapabilities.FAST_RESPONSE,
+        ModelCapabilities.COST_OPTIMIZED,
+        ModelCapabilities.FUNCTION_CALLING,
+      ],
+      pricing: { input: 3.0, output: 15.0 },
       recommendedUse: 'Balanced speed/cost, general use',
     },
   },
   [ProviderType.XAI]: {
     'grok-4.1': {
       context: 2_000_000,
-      capabilities: [ModelCapabilities.REASONING, ModelCapabilities.LONG_CONTEXT, ModelCapabilities.FUNCTION_CALLING],
-      pricing: { input: 0.20, output: 1.00 },
+      capabilities: [
+        ModelCapabilities.REASONING,
+        ModelCapabilities.LONG_CONTEXT,
+        ModelCapabilities.FUNCTION_CALLING,
+      ],
+      pricing: { input: 0.2, output: 1.0 },
       recommendedUse: 'Ultra-long context, reasoning tasks',
     },
     'grok-3': {
       context: 200_000,
       capabilities: [ModelCapabilities.FAST_RESPONSE, ModelCapabilities.REASONING],
-      pricing: { input: 0.10, output: 0.50 },
+      pricing: { input: 0.1, output: 0.5 },
       recommendedUse: 'Fast reasoning, general chat',
     },
   },
   [ProviderType.GEMINI]: {
     'gemini-2.0-ultra': {
       context: 2_000_000,
-      capabilities: [ModelCapabilities.MULTIMODAL, ModelCapabilities.LONG_CONTEXT, ModelCapabilities.STRUCTURED_OUTPUT],
-      pricing: { input: 0.10, output: 0.50 },
+      capabilities: [
+        ModelCapabilities.MULTIMODAL,
+        ModelCapabilities.LONG_CONTEXT,
+        ModelCapabilities.STRUCTURED_OUTPUT,
+      ],
+      pricing: { input: 0.1, output: 0.5 },
       recommendedUse: 'Multimodal tasks, document analysis',
     },
     'gemini-2.0-flash-lite': {
       context: 128_000,
       capabilities: [ModelCapabilities.FAST_RESPONSE, ModelCapabilities.COST_OPTIMIZED],
-      pricing: { input: 0.02, output: 0.10 },
+      pricing: { input: 0.02, output: 0.1 },
       recommendedUse: 'Ultra-fast responses, high-volume',
     },
   },
@@ -241,7 +269,9 @@ export function getProviderConfig(providerId) {
  */
 export function getModelInfo(providerId, modelId) {
   const providerModels = ProviderModels[providerId];
-  if (!providerModels) return null;
+  if (!providerModels) {
+    return null;
+  }
   return providerModels[modelId] || null;
 }
 

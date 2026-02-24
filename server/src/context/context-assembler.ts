@@ -19,6 +19,7 @@ import { HybridRetrievalService } from './hybrid-retrieval';
 import { getVIVIMSystemPrompt } from './vivim-identity-service';
 import { getContextCache } from './index';
 import { logger } from '../lib/logger.js';
+import { getModelInfo } from '../types/ai.js';
 
 interface ContextAssemblerConfig {
   prisma: PrismaClient;
@@ -88,14 +89,14 @@ export class DynamicContextAssembler {
     let conversationStats = {
       messageCount: 0,
       totalTokens: 0,
-      hasConversation: params.conversationId && params.conversationId !== 'new-chat'
+      hasConversation: !!(params.conversationId && params.conversationId !== 'new-chat'),
     };
 
     if (conversationStats.hasConversation) {
       try {
         const conv = await this.prisma.conversation.findUnique({
           where: { id: params.conversationId },
-          select: { messageCount: true, totalTokens: true }
+          select: { messageCount: true, totalTokens: true },
         });
         if (conv) {
           conversationStats.messageCount = conv.messageCount;
@@ -116,18 +117,13 @@ export class DynamicContextAssembler {
     );
 
     const [bundles, jitKnowledge] = await Promise.all([
-      this.gatherBundles(
-        params.userId,
-        detectedContext,
-        params.conversationId,
-        params.personaId
-      ),
+      this.gatherBundles(params.userId, detectedContext, params.conversationId, params.personaId),
       this.justInTimeRetrieval(
         params.userId,
         params.userMessage,
         messageEmbedding,
         detectedContext
-      )
+      ),
     ]);
 
     const budget = this.computeBudget(
@@ -146,13 +142,20 @@ export class DynamicContextAssembler {
     const result: AssembledContext = {
       systemPrompt,
       budget,
-      bundlesUsed: bundles.map(b => b.bundleType as any),
+      bundlesUsed: bundles.map((b) => b.bundleType as any),
       metadata: {
         assemblyTimeMs,
         detectedTopics: detectedContext.topics.length,
         detectedEntities: detectedContext.entities.length,
         cacheHitRate: this.calculateCacheHitRate(bundles),
-        conversationStats
+        conversationStats,
+        bundlesInfo: bundles.map(b => ({
+          id: b.id,
+          type: b.bundleType,
+          title: `[${b.bundleType.toUpperCase()}] Layer`,
+          tokenCount: b.tokenCount,
+          snippet: b.compiledPrompt.substring(0, 150) + (b.compiledPrompt.length > 150 ? '...' : '')
+        })),
       },
     };
 
@@ -183,9 +186,9 @@ export class DynamicContextAssembler {
       const fallback = await this.prisma.topicProfile.findMany({
         where: { userId, embedding: { isEmpty: false } },
         take: 3,
-        select: { id: true, slug: true, label: true }
+        select: { id: true, slug: true, label: true },
       });
-      matchedTopics = fallback.map(t => ({ ...t, similarity: 0.5 }));
+      matchedTopics = fallback.map((t) => ({ ...t, similarity: 0.5 }));
     }
 
     let matchedEntities: any[] = [];
@@ -204,27 +207,27 @@ export class DynamicContextAssembler {
       const fallback = await this.prisma.entityProfile.findMany({
         where: { userId, embedding: { isEmpty: false } },
         take: 3,
-        select: { id: true, name: true, type: true }
+        select: { id: true, name: true, type: true },
       });
-      matchedEntities = fallback.map(e => ({ ...e, similarity: 0.5 }));
+      matchedEntities = fallback.map((e) => ({ ...e, similarity: 0.5 }));
     }
 
     const allEntities = await this.prisma.entityProfile.findMany({
       where: { userId },
-      select: { id: true, name: true, aliases: true, type: true }
+      select: { id: true, name: true, aliases: true, type: true },
     });
 
-    const mentionedEntities = allEntities.filter(e => {
-      const names = [e.name.toLowerCase(), ...e.aliases.map(a => a.toLowerCase())];
+    const mentionedEntities = allEntities.filter((e) => {
+      const names = [e.name.toLowerCase(), ...e.aliases.map((a) => a.toLowerCase())];
       const msgLower = message.toLowerCase();
-      return names.some(n => msgLower.includes(n));
+      return names.some((n) => msgLower.includes(n));
     });
 
     const entities = this.mergeEntityMatches(matchedEntities, mentionedEntities);
 
     const convTopics = await this.prisma.topicConversation.findMany({
       where: { conversationId },
-      include: { topic: true }
+      include: { topic: true },
     });
 
     // Check if conversation exists (even without linked topics, it's a continuation)
@@ -232,18 +235,18 @@ export class DynamicContextAssembler {
 
     return {
       topics: [
-        ...convTopics.map(ct => ({
+        ...convTopics.map((ct) => ({
           slug: ct.topic.slug,
           profileId: ct.topic.id,
           source: 'conversation_history' as const,
-          confidence: ct.relevanceScore
+          confidence: ct.relevanceScore,
         })),
-        ...matchedTopics.map(t => ({
+        ...matchedTopics.map((t) => ({
           slug: t.slug,
           profileId: t.id,
           source: 'semantic_match' as const,
-          confidence: t.similarity
-        }))
+          confidence: t.similarity,
+        })),
       ],
       entities,
       isNewTopic: !hasConversation && matchedTopics.length === 0 && convTopics.length === 0,
@@ -263,7 +266,7 @@ export class DynamicContextAssembler {
         name: match.name,
         type: match.type,
         source: 'semantic_match',
-        confidence: match.similarity
+        confidence: match.similarity,
       });
     }
 
@@ -274,7 +277,7 @@ export class DynamicContextAssembler {
           name: match.name,
           type: match.type,
           source: 'explicit_mention',
-          confidence: 1.0
+          confidence: 1.0,
         });
       } else {
         const existing = entityMap.get(match.id)!;
@@ -302,7 +305,14 @@ export class DynamicContextAssembler {
       convId: string | null,
       compileFn: () => Promise<any>
     ) => {
-      let bundle = await this.getBundle(userId, type, topicId, entityId, convId, normalizedPersonaId);
+      let bundle = await this.getBundle(
+        userId,
+        type,
+        topicId,
+        entityId,
+        convId,
+        normalizedPersonaId
+      );
       if (!bundle) {
         try {
           const dbBundle = await compileFn();
@@ -315,31 +325,53 @@ export class DynamicContextAssembler {
     };
 
     // L0: Identity core
-    tasks.push(fetchBundle('identity_core', null, null, null, () => this.bundleCompiler.compileIdentityCore(userId)));
+    tasks.push(
+      fetchBundle('identity_core', null, null, null, () =>
+        this.bundleCompiler.compileIdentityCore(userId)
+      )
+    );
 
     // L1: Global preferences
-    tasks.push(fetchBundle('global_prefs', null, null, null, () => this.bundleCompiler.compileGlobalPrefs(userId)));
+    tasks.push(
+      fetchBundle('global_prefs', null, null, null, () =>
+        this.bundleCompiler.compileGlobalPrefs(userId)
+      )
+    );
 
     // L2: Topic context
     if (context.topics.length > 0) {
       const primaryTopic = context.topics.sort((a, b) => b.confidence - a.confidence)[0];
-      tasks.push(fetchBundle('topic', primaryTopic.profileId, null, null, () => this.bundleCompiler.compileTopicContext(userId, primaryTopic.slug)));
+      tasks.push(
+        fetchBundle('topic', primaryTopic.profileId, null, null, () =>
+          this.bundleCompiler.compileTopicContext(userId, primaryTopic.slug)
+        )
+      );
 
       // Secondary topic (no fallback compilation, just fetch if cached)
       if (context.topics.length > 1) {
         const secondaryTopic = context.topics[1];
-        tasks.push(this.getBundle(userId, 'topic', secondaryTopic.profileId, null, null, normalizedPersonaId));
+        tasks.push(
+          this.getBundle(userId, 'topic', secondaryTopic.profileId, null, null, normalizedPersonaId)
+        );
       }
     }
 
     // L3: Entity context
     for (const entity of context.entities.slice(0, 2)) {
-      tasks.push(fetchBundle('entity', null, entity.id, null, () => this.bundleCompiler.compileEntityContext(userId, entity.id)));
+      tasks.push(
+        fetchBundle('entity', null, entity.id, null, () =>
+          this.bundleCompiler.compileEntityContext(userId, entity.id)
+        )
+      );
     }
 
     // L4: Conversation context
     if (context.isContinuation && conversationId && conversationId !== 'new-chat') {
-      tasks.push(fetchBundle('conversation', null, null, conversationId, () => this.bundleCompiler.compileConversationContext(userId, conversationId)));
+      tasks.push(
+        fetchBundle('conversation', null, null, conversationId, () =>
+          this.bundleCompiler.compileConversationContext(userId, conversationId)
+        )
+      );
     }
 
     // L5: Persona-specific context
@@ -372,9 +404,9 @@ export class DynamicContextAssembler {
         entityProfileId: normalizedEntityProfileId,
         conversationId: normalizedConversationId,
         personaId: normalizedPersonaId,
-        isDirty: false
+        isDirty: false,
       },
-      orderBy: { compiledAt: 'desc' }
+      orderBy: { compiledAt: 'desc' },
     });
 
     return bundle ? this.mapDbBundleToCompiled(bundle) : null;
@@ -390,7 +422,7 @@ export class DynamicContextAssembler {
       composition: dbBundle.composition || {},
       version: dbBundle.version,
       isDirty: dbBundle.isDirty,
-      compiledAt: dbBundle.compiledAt
+      compiledAt: dbBundle.compiledAt,
     };
   }
 
@@ -400,31 +432,26 @@ export class DynamicContextAssembler {
     embedding: number[],
     context: DetectedContext
   ): Promise<JITKnowledge> {
-    const topicSlugs = context.topics.map(t => t.slug);
+    const topicSlugs = context.topics.map((t) => t.slug);
 
-    const result = await this.hybridRetrieval.retrieve(
-      userId,
-      message,
-      embedding,
-      topicSlugs
-    );
+    const result = await this.hybridRetrieval.retrieve(userId, message, embedding, topicSlugs);
 
     return {
-      acus: result.acus.map(acu => ({
+      acus: result.acus.map((acu) => ({
         id: acu.id,
         content: acu.content,
         type: acu.type,
         category: acu.category,
         createdAt: acu.createdAt,
-        similarity: acu.similarity
+        similarity: acu.similarity,
       })),
-      memories: result.memories.map(mem => ({
+      memories: result.memories.map((mem) => ({
         id: mem.id,
         content: mem.content,
         category: mem.category,
         importance: 0.5,
-        similarity: mem.similarity
-      }))
+        similarity: mem.similarity,
+      })),
     };
   }
 
@@ -434,8 +461,21 @@ export class DynamicContextAssembler {
     params: AssemblyParams,
     conversationStats: { messageCount: number; totalTokens: number; hasConversation: boolean },
     detectedContext: DetectedContext
-  ): TokenBudget {
-    const totalAvailable = params.settings?.maxContextTokens || 12000;
+  ): ComputedBudget {
+    let totalAvailable = params.settings?.maxContextTokens || 12000;
+    
+    // Bounds check against actual model max limit if we have it
+    if (params.providerId && params.modelId) {
+      const modelInfo = getModelInfo(params.providerId, params.modelId);
+      if (modelInfo && modelInfo.context) {
+        // Leave a 5% buffer for completions and safety
+        const modelSafeMax = Math.floor(modelInfo.context * 0.95);
+        if (totalAvailable > modelSafeMax) {
+          logger.info({ userSetting: totalAvailable, modelMax: modelSafeMax }, 'Bounding user context setting to model maximum limit');
+          totalAvailable = modelSafeMax;
+        }
+      }
+    }
 
     const availableBundles = new Map<string, number>();
     for (const bundle of bundles) {
@@ -457,63 +497,65 @@ export class DynamicContextAssembler {
       hasActiveConversation: hasConv,
       knowledgeDepth: params.settings?.knowledgeDepth || 'standard',
       prioritizeHistory: params.settings?.prioritizeConversationHistory ?? true,
-      availableBundles
+      availableBundles,
     };
 
     const algorithm = new BudgetAlgorithm();
-    const layers = algorithm.computeBudget(input);
-    const totalUsed = Array.from(layers.values()).reduce((sum, layer) => sum + layer.allocated, 0);
+    const computedLayers = algorithm.computeBudget(input);
+    const totalUsed = Array.from(computedLayers.values()).reduce((sum, layer) => sum + layer.allocated, 0);
+    
+    // Convert Map to Record for JSON serialization
+    const layersRecord: Record<string, LayerBudget> = {};
+    for (const [key, val] of computedLayers.entries()) {
+      layersRecord[key] = val;
+    }
+
     return {
-      layers,
+      layers: layersRecord,
       totalAvailable: input.totalBudget,
-      totalUsed
+      totalUsed,
     };
   }
 
-  private compilePrompt(
-    bundles: CompiledBundle[],
-    jit: JITKnowledge,
-    budget: TokenBudget
-  ): string {
+  private compilePrompt(bundles: CompiledBundle[], jit: JITKnowledge, budget: ComputedBudget): string {
     const sections: Array<{ content: string; priority: number; tokens: number }> = [];
 
     const priorityMap: Record<string, number> = {
-      'identity_core': 100,
-      'global_prefs': 95,
-      'conversation': 90,
-      'topic': 80,
-      'entity': 70,
+      identity_core: 100,
+      global_prefs: 95,
+      conversation: 90,
+      topic: 80,
+      entity: 70,
     };
 
     for (const bundle of bundles) {
       sections.push({
         content: bundle.compiledPrompt,
         priority: priorityMap[bundle.bundleType] ?? 50,
-        tokens: bundle.tokenCount
+        tokens: bundle.tokenCount,
       });
     }
 
     if (jit.memories.length > 0) {
       const memBlock = [
         `## Additionally Relevant Context`,
-        ...jit.memories.map(m => `- [${m.category}] ${m.content}`)
+        ...jit.memories.map((m) => `- [${m.category}] ${m.content}`),
       ].join('\n');
       sections.push({
         content: memBlock,
         priority: 60,
-        tokens: this.tokenEstimator.estimateTokens(memBlock)
+        tokens: this.tokenEstimator.estimateTokens(memBlock),
       });
     }
 
     if (jit.acus.length > 0) {
-      const acuBlock = [
-        `## Related Knowledge`,
-        ...jit.acus.map(a => `- ${a.content}`)
-      ].join('\n');
+      const acuBlock = [`## Related Knowledge`, ...jit.acus.map((a) => `- ${a.content}`)].join(
+        '\n'
+      );
       sections.push({
         content: acuBlock,
         priority: 55,
-        tokens: this.tokenEstimator.estimateTokens(acuBlock)
+        tokens: this.tokenEstimator.estimateTokens(acuBlock),
       });
     }
 
@@ -521,7 +563,7 @@ export class DynamicContextAssembler {
 
     const vivimIdentity = getVIVIMSystemPrompt();
     const vivimTokens = this.tokenEstimator.estimateTokens(vivimIdentity);
-    
+
     let totalTokens = vivimTokens;
     const included: string[] = [vivimIdentity];
 
@@ -551,20 +593,20 @@ export class DynamicContextAssembler {
   }
 
   private async trackUsage(bundles: CompiledBundle[], conversationId: string): Promise<void> {
-    const bundleIds = bundles.map(b => b.id);
+    const bundleIds = bundles.map((b) => b.id);
 
     await this.prisma.contextBundle.updateMany({
       where: { id: { in: bundleIds } },
       data: {
         lastUsedAt: new Date(),
-        useCount: { increment: 1 }
-      }
+        useCount: { increment: 1 },
+      },
     });
   }
 
   private calculateCacheHitRate(bundles: CompiledBundle[]): number {
     if (bundles.length === 0) return 0;
-    return bundles.filter(b => !b.isDirty).length / bundles.length;
+    return bundles.filter((b) => !b.isDirty).length / bundles.length;
   }
 
   private async recordCacheMiss(bundleType: string, referenceId: string): Promise<void> {
@@ -574,12 +616,12 @@ export class DynamicContextAssembler {
         OR: [
           { topicProfileId: referenceId },
           { entityProfileId: referenceId },
-          { conversationId: referenceId }
-        ]
+          { conversationId: referenceId },
+        ],
       },
       data: {
-        missCount: { increment: 1 }
-      }
+        missCount: { increment: 1 },
+      },
     });
   }
 }

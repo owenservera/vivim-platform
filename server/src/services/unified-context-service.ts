@@ -8,7 +8,15 @@
  */
 
 import { getPrismaClient } from '../lib/database.js';
-import { DynamicContextAssembler, createEmbeddingService, createLLMService, LibrarianWorker, BundleCompiler, BudgetAlgorithm, getContextTelemetry } from '../context/index.js';
+import {
+  DynamicContextAssembler,
+  createEmbeddingService,
+  createLLMService,
+  LibrarianWorker,
+  BundleCompiler,
+  BudgetAlgorithm,
+  getContextTelemetry,
+} from '../context/index.js';
 import * as oldContextGenerator from '../services/context-generator.js';
 import { logger } from '../lib/logger.js';
 
@@ -29,8 +37,9 @@ export class UnifiedContextService {
   constructor(config: UnifiedContextServiceConfig = {}) {
     this.config = {
       // Enable by default for VIVIM identity to work - can be disabled via env
-      enableNewContextEngine: config.enableNewContextEngine ?? process.env.USE_DYNAMIC_CONTEXT !== 'false',
-      fallbackOnError: config.fallbackOnError ?? true
+      enableNewContextEngine:
+        config.enableNewContextEngine ?? process.env.USE_DYNAMIC_CONTEXT !== 'false',
+      fallbackOnError: config.fallbackOnError ?? true,
     };
 
     // Only initialize dynamic assembler if enabled
@@ -44,7 +53,7 @@ export class UnifiedContextService {
         this.bundleCompiler = new BundleCompiler({
           prisma,
           embeddingService,
-          llmService
+          llmService,
         });
 
         // Create token estimator
@@ -54,22 +63,28 @@ export class UnifiedContextService {
           prisma,
           embeddingService,
           tokenEstimator,
-          bundleCompiler: this.bundleCompiler
+          bundleCompiler: this.bundleCompiler,
         });
 
         // Initialize Librarian Worker for autonomous learning
         this.librarianWorker = new LibrarianWorker({
           enabled: process.env.LIBRARIAN_ENABLED === 'true',
           llmService,
-          embeddingService
+          embeddingService,
         });
 
-        logger.info({
-          engine: 'dynamic',
-          zaiEnabled: true
-        }, 'UnifiedContextService initialized with Z.AI GLM-4.7');
+        logger.info(
+          {
+            engine: 'dynamic',
+            zaiEnabled: true,
+          },
+          'UnifiedContextService initialized with Z.AI GLM-4.7'
+        );
       } catch (e) {
-        logger.error({ error: (e as Error).message }, 'Failed to initialize DynamicContextAssembler with Z.AI');
+        logger.error(
+          { error: (e as Error).message },
+          'Failed to initialize DynamicContextAssembler with Z.AI'
+        );
         this.dynamicAssembler = null;
         this.librarianWorker = null;
         this.bundleCompiler = null;
@@ -81,12 +96,17 @@ export class UnifiedContextService {
    * Main entry point - generates context for a chat request
    * Uses new engine if available, falls back to old one
    */
-  async generateContextForChat(conversationId: string, options: {
-    userId?: string;
-    userMessage?: string;
-    personaId?: string;
-    deviceId?: string;
-  } = {}): Promise<{
+  async generateContextForChat(
+    conversationId: string,
+    options: {
+      userId?: string;
+      userMessage?: string;
+      personaId?: string;
+      deviceId?: string;
+      providerId?: string;
+      modelId?: string;
+    } = {}
+  ): Promise<{
     systemPrompt: string;
     layers: any;
     stats: any;
@@ -97,7 +117,7 @@ export class UnifiedContextService {
 
     // Use userId from options if provided, otherwise try to derive from conversationId
     let userId = options.userId;
-    
+
     // Try new dynamic context assembler first
     if (this.config.enableNewContextEngine && this.dynamicAssembler) {
       try {
@@ -105,7 +125,7 @@ export class UnifiedContextService {
         if (!userId) {
           userId = await this.getUserIdForConversation(conversationId);
         }
-        
+
         if (!userId) {
           throw new Error('Could not determine user for conversation');
         }
@@ -120,15 +140,20 @@ export class UnifiedContextService {
           userMessage: options.userMessage || '',
           personaId: options.personaId,
           deviceId: options.deviceId,
-          settings: userSettings
+          providerId: options.providerId,
+          modelId: options.modelId,
+          settings: userSettings,
         };
 
         const result = await this.dynamicAssembler.assemble(assemblyParams);
-        log.info({
-          engine: 'dynamic',
-          tokens: result.budget.totalUsed,
-          layers: result.bundlesUsed.length
-        }, 'Context generated with new engine');
+        log.info(
+          {
+            engine: 'dynamic',
+            tokens: result.budget.totalUsed,
+            layers: result.bundlesUsed.length,
+          },
+          'Context generated with new engine'
+        );
 
         telemetry.record({
           timestamp: Date.now(),
@@ -155,7 +180,7 @@ export class UnifiedContextService {
           freshnessScore: 1,
           engineUsed: 'legacy',
           parallelFactor: 1,
-          errors: []
+          errors: [],
         });
 
         return {
@@ -166,9 +191,10 @@ export class UnifiedContextService {
             messageCount: result.metadata.conversationStats?.messageCount || 0,
             detectedTopics: result.metadata.detectedTopics,
             detectedEntities: result.metadata.detectedEntities,
-            cacheHitRate: result.metadata.cacheHitRate
+            cacheHitRate: result.metadata.cacheHitRate,
+            bundlesInfo: result.metadata.bundlesInfo,
           },
-          engineUsed: 'new'
+          engineUsed: 'new',
         };
       } catch (error) {
         log.warn({ error: error.message }, 'New engine failed, attempting fallback');
@@ -184,7 +210,7 @@ export class UnifiedContextService {
     const oldResult = await oldContextGenerator.getContextForChat(conversationId, options);
     return {
       ...oldResult,
-      engineUsed: 'old'
+      engineUsed: 'old',
     };
   }
 
@@ -202,22 +228,25 @@ export class UnifiedContextService {
         conversationId: 'new-chat',
         userMessage: '',
         deviceId: presence.deviceId,
-        settings: await this.getUserContextSettings(userId)
+        settings: await this.getUserContextSettings(userId),
       });
 
-      logger.info({
-        userId,
-        bundleTypes: result.bundlesUsed,
-        totalTokens: result.budget.totalUsed
-      }, 'Bundles warmed up');
+      logger.info(
+        {
+          userId,
+          bundleTypes: result.bundlesUsed,
+          totalTokens: result.budget.totalUsed,
+        },
+        'Bundles warmed up'
+      );
     } catch (error) {
       logger.error({ error: error.message }, 'Failed to warmup bundles');
     }
   }
 
-/**
-    * Invalidate bundles when data changes
-    */
+  /**
+   * Invalidate bundles when data changes
+   */
   async invalidateBundles(userId: string, eventType: string, relatedIds: string[]): Promise<void> {
     // For now, use Prisma directly
     // TODO: Move this to InvalidationService once implemented
@@ -228,41 +257,41 @@ export class UnifiedContextService {
         for (const topicId of relatedIds) {
           await prisma.contextBundle.updateMany({
             where: { userId, bundleType, topicProfileId: topicId },
-            data: { isDirty: true }
+            data: { isDirty: true },
           });
         }
       } else if (bundleType === 'entity' && relatedIds.length > 0) {
         for (const entityId of relatedIds) {
           await prisma.contextBundle.updateMany({
             where: { userId, bundleType, entityProfileId: entityId },
-            data: { isDirty: true }
+            data: { isDirty: true },
           });
         }
       } else if (bundleType === 'conversation' && relatedIds.length > 0) {
         for (const conversationId of relatedIds) {
           await prisma.contextBundle.updateMany({
             where: { userId, bundleType, conversationId },
-            data: { isDirty: true }
+            data: { isDirty: true },
           });
         }
       } else if (bundleType === 'identity_core') {
         await prisma.contextBundle.updateMany({
           where: { userId, bundleType, topicProfileId: null, entityProfileId: null },
-          data: { isDirty: true }
+          data: { isDirty: true },
         });
       } else if (bundleType === 'global_prefs') {
         await prisma.contextBundle.updateMany({
           where: { userId, bundleType, topicProfileId: null, entityProfileId: null },
-          data: { isDirty: true }
+          data: { isDirty: true },
         });
       }
     }
   }
 
   /**
-    * Trigger Librarian Worker for autonomous learning
-    * Called when conversation moves to IDLE state
-    */
+   * Trigger Librarian Worker for autonomous learning
+   * Called when conversation moves to IDLE state
+   */
   async triggerLibrarian(conversationId: string): Promise<void> {
     if (!this.librarianWorker) {
       logger.debug('Librarian Worker not initialized');
@@ -272,7 +301,7 @@ export class UnifiedContextService {
     try {
       const conversation = await prisma.conversation.findUnique({
         where: { id: conversationId },
-        select: { ownerId: true }
+        select: { ownerId: true },
       });
 
       if (conversation?.ownerId) {
@@ -284,8 +313,8 @@ export class UnifiedContextService {
   }
 
   /**
-    * Get Librarian Worker status
-    */
+   * Get Librarian Worker status
+   */
   getLibrarianStatus(): { enabled: boolean; lastRunTime: Date | null } | null {
     if (!this.librarianWorker) {
       return null;
@@ -296,37 +325,39 @@ export class UnifiedContextService {
   private async getUserIdForConversation(conversationId: string): Promise<string | null> {
     const conv = await prisma.conversation.findUnique({
       where: { id: conversationId },
-      select: { ownerId: true }
+      select: { ownerId: true },
     });
     return conv?.ownerId || null;
   }
 
   private async getUserContextSettings(userId: string): Promise<any> {
     const settings = await prisma.userContextSettings.findUnique({
-      where: { userId }
+      where: { userId },
     });
 
-    return settings || {
-      maxContextTokens: 12000,
-      knowledgeDepth: 'standard',
-      prioritizeConversationHistory: true,
-      includeEntityContext: true
-    };
+    return (
+      settings || {
+        maxContextTokens: 12000,
+        knowledgeDepth: 'standard',
+        prioritizeConversationHistory: true,
+        includeEntityContext: true,
+      }
+    );
   }
 
   private getBundleTypesForEvent(eventType: string): string[] {
     const eventToBundles: Record<string, string[]> = {
-      'memory_created': ['identity_core', 'global_prefs'],
-      'memory_updated': ['identity_core', 'global_prefs'],
-      'memory_deleted': ['identity_core', 'global_prefs'],
-      'instruction_changed': ['global_prefs'],
-      'message_created': ['conversation'],
-      'conversation_message': ['conversation'],
-      'acu_created': ['topic', 'entity'],
-      'acu_updated': ['topic', 'entity'],
-      'topic_updated': ['topic'],
-      'entity_updated': ['entity'],
-      'conversation_updated': ['conversation']
+      memory_created: ['identity_core', 'global_prefs'],
+      memory_updated: ['identity_core', 'global_prefs'],
+      memory_deleted: ['identity_core', 'global_prefs'],
+      instruction_changed: ['global_prefs'],
+      message_created: ['conversation'],
+      conversation_message: ['conversation'],
+      acu_created: ['topic', 'entity'],
+      acu_updated: ['topic', 'entity'],
+      topic_updated: ['topic'],
+      entity_updated: ['entity'],
+      conversation_updated: ['conversation'],
     };
 
     return eventToBundles[eventType] || [];
@@ -342,14 +373,14 @@ export class UnifiedContextService {
       topicProfiles: number;
       entityProfiles: number;
       contextBundles: number;
-    }
+    };
   }> {
     const userId = 'system'; // System-wide check
 
     const [topicCount, entityCount, bundleCount] = await Promise.all([
       prisma.topicProfile.count({ where: { userId } }),
       prisma.entityProfile.count({ where: { userId } }),
-      prisma.contextBundle.count({ where: { userId } })
+      prisma.contextBundle.count({ where: { userId } }),
     ]);
 
     return {
@@ -358,8 +389,8 @@ export class UnifiedContextService {
       stats: {
         topicProfiles: topicCount,
         entityProfiles: entityCount,
-        contextBundles: bundleCount
-      }
+        contextBundles: bundleCount,
+      },
     };
   }
 }

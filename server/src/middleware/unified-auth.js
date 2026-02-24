@@ -19,7 +19,7 @@ export async function requireAuth(req, res, next) {
     const apiKeyHeader = req.headers['x-api-key'];
     const authHeader = req.headers['authorization'] || '';
     let apiKey = apiKeyHeader;
-    
+
     if (!apiKey && authHeader.startsWith('Bearer vk_live_')) {
       apiKey = authHeader.replace('Bearer ', '');
     }
@@ -36,7 +36,10 @@ export async function requireAuth(req, res, next) {
       if (did && did.startsWith('did:') && identityService.validateDID(did)) {
         const publicKey = identityService.didToPublicKey(did);
         if (publicKey) {
-          const user = await identityService.getOrCreateUser(did, Buffer.from(publicKey).toString('base64'));
+          const user = await identityService.getOrCreateUser(
+            did,
+            Buffer.from(publicKey).toString('base64')
+          );
           if (user) {
             userId = user.id;
           }
@@ -70,7 +73,7 @@ export async function optionalAuth(req, res, next) {
     const apiKeyHeader = req.headers['x-api-key'];
     const authHeader = req.headers['authorization'] || '';
     let apiKey = apiKeyHeader;
-    
+
     if (!apiKey && authHeader.startsWith('Bearer vk_live_')) {
       apiKey = authHeader.replace('Bearer ', '');
     }
@@ -86,7 +89,10 @@ export async function optionalAuth(req, res, next) {
       if (did && identityService.validateDID(did)) {
         const publicKey = identityService.didToPublicKey(did);
         if (publicKey) {
-          const user = await identityService.getOrCreateUser(did, Buffer.from(publicKey).toString('base64'));
+          const user = await identityService.getOrCreateUser(
+            did,
+            Buffer.from(publicKey).toString('base64')
+          );
           if (user) {
             userId = user.id;
           }

@@ -1,6 +1,6 @@
 /**
  * Circle Service - Phase 2
- * 
+ *
  * Advanced circle management with smart auto-population,
  * granular permissions, and social graph integration
  */
@@ -22,13 +22,13 @@ export const CircleType = {
   EPHEMERAL: 'ephemeral',
   INTEREST: 'interest',
   PROXIMITY: 'proximity',
-  INTERACTION: 'interaction'
+  INTERACTION: 'interaction',
 };
 
 export const CircleVisibility = {
-  SECRET: 'secret',      // No one knows this circle exists
-  PRIVATE: 'private',    // Members know, but not listed
-  VISIBLE: 'visible'     // Listed on profile
+  SECRET: 'secret', // No one knows this circle exists
+  PRIVATE: 'private', // Members know, but not listed
+  VISIBLE: 'visible', // Listed on profile
 };
 
 export const MemberRole = {
@@ -36,14 +36,14 @@ export const MemberRole = {
   ADMIN: 'admin',
   MODERATOR: 'moderator',
   MEMBER: 'member',
-  VIEWER: 'viewer'
+  VIEWER: 'viewer',
 };
 
 export const MemberStatus = {
   ACTIVE: 'active',
   PENDING: 'pending',
   SUSPENDED: 'suspended',
-  LEFT: 'left'
+  LEFT: 'left',
 };
 
 // Default permissions per role
@@ -54,7 +54,7 @@ const DEFAULT_PERMISSIONS = {
     canSeeOthers: true,
     canPost: true,
     canModerate: true,
-    canManageSettings: true
+    canManageSettings: true,
   },
   [MemberRole.ADMIN]: {
     canInvite: true,
@@ -62,7 +62,7 @@ const DEFAULT_PERMISSIONS = {
     canSeeOthers: true,
     canPost: true,
     canModerate: true,
-    canManageSettings: false
+    canManageSettings: false,
   },
   [MemberRole.MODERATOR]: {
     canInvite: false,
@@ -70,7 +70,7 @@ const DEFAULT_PERMISSIONS = {
     canSeeOthers: true,
     canPost: true,
     canModerate: true,
-    canManageSettings: false
+    canManageSettings: false,
   },
   [MemberRole.MEMBER]: {
     canInvite: false,
@@ -78,7 +78,7 @@ const DEFAULT_PERMISSIONS = {
     canSeeOthers: true,
     canPost: true,
     canModerate: false,
-    canManageSettings: false
+    canManageSettings: false,
   },
   [MemberRole.VIEWER]: {
     canInvite: false,
@@ -86,8 +86,8 @@ const DEFAULT_PERMISSIONS = {
     canSeeOthers: false,
     canPost: false,
     canModerate: false,
-    canManageSettings: false
-  }
+    canManageSettings: false,
+  },
 };
 
 // ============================================================================
@@ -109,7 +109,7 @@ export async function createCircle(
     smartRules = null,
     expiresAt = null,
     isShared = false,
-    autoSuggest = true
+    autoSuggest = true,
   }
 ) {
   try {
@@ -128,8 +128,8 @@ export async function createCircle(
         expiresAt,
         isShared,
         autoSuggest,
-        memberCount: 1 // Owner is first member
-      }
+        memberCount: 1, // Owner is first member
+      },
     });
 
     // Add owner as member
@@ -140,8 +140,8 @@ export async function createCircle(
         role: MemberRole.OWNER,
         permissions: DEFAULT_PERMISSIONS[MemberRole.OWNER],
         addedBy: ownerId,
-        status: MemberStatus.ACTIVE
-      }
+        status: MemberStatus.ACTIVE,
+      },
     });
 
     log.info({ circleId: circle.id, ownerId, type }, 'Circle created');
@@ -172,10 +172,10 @@ export async function getCircle(circleId, requesterId = null) {
                 handle: true,
                 displayName: true,
                 avatarUrl: true,
-                verificationLevel: true
-              }
-            }
-          }
+                verificationLevel: true,
+              },
+            },
+          },
         },
         owner: {
           select: {
@@ -183,10 +183,10 @@ export async function getCircle(circleId, requesterId = null) {
             did: true,
             handle: true,
             displayName: true,
-            avatarUrl: true
-          }
-        }
-      }
+            avatarUrl: true,
+          },
+        },
+      },
     });
 
     if (!circle) {
@@ -195,7 +195,7 @@ export async function getCircle(circleId, requesterId = null) {
 
     // Check visibility permissions
     if (circle.visibility === CircleVisibility.SECRET) {
-      const isMember = circle.members.some(m => m.userId === requesterId);
+      const isMember = circle.members.some((m) => m.userId === requesterId);
       if (!isMember && circle.ownerId !== requesterId) {
         return { success: false, error: 'Circle not found' };
       }
@@ -217,10 +217,7 @@ export async function getUserCircles(userId, options = {}) {
     const { includeMemberships = true, type = null } = options;
 
     const where = {
-      OR: [
-        { ownerId: userId },
-        { members: { some: { userId, status: MemberStatus.ACTIVE } } }
-      ]
+      OR: [{ ownerId: userId }, { members: { some: { userId, status: MemberStatus.ACTIVE } } }],
     };
 
     if (type) {
@@ -229,24 +226,26 @@ export async function getUserCircles(userId, options = {}) {
 
     const circles = await prisma.circle.findMany({
       where,
-      include: includeMemberships ? {
-        members: {
-          where: { status: MemberStatus.ACTIVE },
-          select: {
-            userId: true,
-            role: true,
-            user: {
+      include: includeMemberships
+        ? {
+            members: {
+              where: { status: MemberStatus.ACTIVE },
               select: {
-                id: true,
-                handle: true,
-                displayName: true,
-                avatarUrl: true
-              }
-            }
+                userId: true,
+                role: true,
+                user: {
+                  select: {
+                    id: true,
+                    handle: true,
+                    displayName: true,
+                    avatarUrl: true,
+                  },
+                },
+              },
+            },
           }
-        }
-      } : undefined,
-      orderBy: { updatedAt: 'desc' }
+        : undefined,
+      orderBy: { updatedAt: 'desc' },
     });
 
     return { success: true, circles };
@@ -259,11 +258,7 @@ export async function getUserCircles(userId, options = {}) {
 /**
  * Update circle settings
  */
-export async function updateCircle(
-  circleId,
-  userId,
-  updates
-) {
+export async function updateCircle(circleId, userId, updates) {
   try {
     const prisma = getPrismaClient();
 
@@ -276,18 +271,26 @@ export async function updateCircle(
         OR: [
           { role: MemberRole.OWNER },
           { role: MemberRole.ADMIN },
-          { permissions: { path: ['canManageSettings'], equals: true } }
-        ]
-      }
+          { permissions: { path: ['canManageSettings'], equals: true } },
+        ],
+      },
     });
 
     if (!membership) {
       return { success: false, error: 'Insufficient permissions' };
     }
 
-    const allowedUpdates = ['name', 'description', 'icon', 'color', 'visibility', 'autoSuggest', 'smartRules'];
+    const allowedUpdates = [
+      'name',
+      'description',
+      'icon',
+      'color',
+      'visibility',
+      'autoSuggest',
+      'smartRules',
+    ];
     const filteredUpdates = {};
-    
+
     for (const key of allowedUpdates) {
       if (updates[key] !== undefined) {
         filteredUpdates[key] = updates[key];
@@ -298,12 +301,14 @@ export async function updateCircle(
       where: { id: circleId },
       data: {
         ...filteredUpdates,
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      },
     });
 
     // Log activity
-    await logCircleActivity(circleId, userId, 'settings_changed', null, { updates: filteredUpdates });
+    await logCircleActivity(circleId, userId, 'settings_changed', null, {
+      updates: filteredUpdates,
+    });
 
     return { success: true, circle };
   } catch (error) {
@@ -323,8 +328,8 @@ export async function deleteCircle(circleId, userId) {
     const circle = await prisma.circle.findFirst({
       where: {
         id: circleId,
-        ownerId: userId
-      }
+        ownerId: userId,
+      },
     });
 
     if (!circle) {
@@ -332,7 +337,7 @@ export async function deleteCircle(circleId, userId) {
     }
 
     await prisma.circle.delete({
-      where: { id: circleId }
+      where: { id: circleId },
     });
 
     log.info({ circleId, userId }, 'Circle deleted');
@@ -350,12 +355,7 @@ export async function deleteCircle(circleId, userId) {
 /**
  * Add member to circle
  */
-export async function addMember(
-  circleId,
-  inviterId,
-  inviteeId,
-  role = MemberRole.MEMBER
-) {
+export async function addMember(circleId, inviterId, inviteeId, role = MemberRole.MEMBER) {
   try {
     const prisma = getPrismaClient();
 
@@ -367,9 +367,9 @@ export async function addMember(
         status: MemberStatus.ACTIVE,
         OR: [
           { role: { in: [MemberRole.OWNER, MemberRole.ADMIN] } },
-          { permissions: { path: ['canInvite'], equals: true } }
-        ]
-      }
+          { permissions: { path: ['canInvite'], equals: true } },
+        ],
+      },
     });
 
     if (!inviter) {
@@ -381,9 +381,9 @@ export async function addMember(
       where: {
         circleId_userId: {
           circleId,
-          userId: inviteeId
-        }
-      }
+          userId: inviteeId,
+        },
+      },
     });
 
     if (existing) {
@@ -397,8 +397,8 @@ export async function addMember(
           status: MemberStatus.ACTIVE,
           role,
           permissions: DEFAULT_PERMISSIONS[role],
-          addedBy: inviterId
-        }
+          addedBy: inviterId,
+        },
       });
     } else {
       // Create new member
@@ -409,15 +409,15 @@ export async function addMember(
           role,
           permissions: DEFAULT_PERMISSIONS[role],
           addedBy: inviterId,
-          status: MemberStatus.ACTIVE
-        }
+          status: MemberStatus.ACTIVE,
+        },
       });
     }
 
     // Update member count
     await prisma.circle.update({
       where: { id: circleId },
-      data: { memberCount: { increment: 1 } }
+      data: { memberCount: { increment: 1 } },
     });
 
     // Log activity
@@ -434,11 +434,7 @@ export async function addMember(
 /**
  * Remove member from circle
  */
-export async function removeMember(
-  circleId,
-  removerId,
-  memberId
-) {
+export async function removeMember(circleId, removerId, memberId) {
   try {
     const prisma = getPrismaClient();
 
@@ -447,8 +443,8 @@ export async function removeMember(
       where: {
         circleId,
         userId: removerId,
-        status: MemberStatus.ACTIVE
-      }
+        status: MemberStatus.ACTIVE,
+      },
     });
 
     if (!remover) {
@@ -456,7 +452,8 @@ export async function removeMember(
     }
 
     // Can remove self, or if admin/owner
-    const canRemove = removerId === memberId ||
+    const canRemove =
+      removerId === memberId ||
       [MemberRole.OWNER, MemberRole.ADMIN].includes(remover.role) ||
       remover.permissions?.canModerate;
 
@@ -469,8 +466,8 @@ export async function removeMember(
       where: {
         circleId,
         userId: memberId,
-        role: MemberRole.OWNER
-      }
+        role: MemberRole.OWNER,
+      },
     });
 
     if (target) {
@@ -480,18 +477,18 @@ export async function removeMember(
     await prisma.circleMember.updateMany({
       where: {
         circleId,
-        userId: memberId
+        userId: memberId,
       },
       data: {
         status: MemberStatus.LEFT,
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      },
     });
 
     // Update member count
     await prisma.circle.update({
       where: { id: circleId },
-      data: { memberCount: { decrement: 1 } }
+      data: { memberCount: { decrement: 1 } },
     });
 
     // Log activity
@@ -507,12 +504,7 @@ export async function removeMember(
 /**
  * Update member role/permissions
  */
-export async function updateMemberRole(
-  circleId,
-  updaterId,
-  memberId,
-  { role, permissions }
-) {
+export async function updateMemberRole(circleId, updaterId, memberId, { role, permissions }) {
   try {
     const prisma = getPrismaClient();
 
@@ -522,8 +514,8 @@ export async function updateMemberRole(
         circleId,
         userId: updaterId,
         status: MemberStatus.ACTIVE,
-        role: { in: [MemberRole.OWNER, MemberRole.ADMIN] }
-      }
+        role: { in: [MemberRole.OWNER, MemberRole.ADMIN] },
+      },
     });
 
     if (!updater) {
@@ -533,7 +525,7 @@ export async function updateMemberRole(
     // Admin cannot modify owner
     if (updater.role === MemberRole.ADMIN) {
       const target = await prisma.circleMember.findFirst({
-        where: { circleId, userId: memberId, role: MemberRole.OWNER }
+        where: { circleId, userId: memberId, role: MemberRole.OWNER },
       });
       if (target) {
         return { success: false, error: 'Cannot modify owner' };
@@ -541,12 +533,16 @@ export async function updateMemberRole(
     }
 
     const updateData = {};
-    if (role) updateData.role = role;
-    if (permissions) updateData.permissions = permissions;
+    if (role) {
+      updateData.role = role;
+    }
+    if (permissions) {
+      updateData.permissions = permissions;
+    }
 
     await prisma.circleMember.updateMany({
       where: { circleId, userId: memberId },
-      data: updateData
+      data: updateData,
     });
 
     return { success: true };
@@ -570,8 +566,8 @@ export async function evaluateSmartCircle(circleId) {
     const circle = await prisma.circle.findUnique({
       where: { id: circleId },
       include: {
-        members: { select: { userId: true } }
-      }
+        members: { select: { userId: true } },
+      },
     });
 
     if (!circle || circle.type !== CircleType.SMART) {
@@ -579,19 +575,15 @@ export async function evaluateSmartCircle(circleId) {
     }
 
     const rules = circle.smartRules || {};
-    const existingMemberIds = circle.members.map(m => m.userId);
+    const existingMemberIds = circle.members.map((m) => m.userId);
 
     // Build query based on rules
-    const candidates = await findSmartCircleCandidates(
-      circle.ownerId,
-      existingMemberIds,
-      rules
-    );
+    const candidates = await findSmartCircleCandidates(circle.ownerId, existingMemberIds, rules);
 
-    return { 
-      success: true, 
+    return {
+      success: true,
       candidates: candidates.slice(0, 20),
-      totalCandidates: candidates.length
+      totalCandidates: candidates.length,
     };
   } catch (error) {
     log.error({ circleId, error: error.message }, 'Smart circle evaluation failed');
@@ -607,17 +599,16 @@ export async function autoPopulateSmartCircle(circleId, maxAdditions = 10) {
     const prisma = getPrismaClient();
 
     const { success, candidates } = await evaluateSmartCircle(circleId);
-    if (!success) return { success: false, error: 'Evaluation failed' };
+    if (!success) {
+      return { success: false, error: 'Evaluation failed' };
+    }
 
     let added = 0;
     for (const candidate of candidates.slice(0, maxAdditions)) {
-      const result = await addMember(
-        circleId,
-        'system',
-        candidate.userId,
-        MemberRole.MEMBER
-      );
-      if (result.success) added++;
+      const result = await addMember(circleId, 'system', candidate.userId, MemberRole.MEMBER);
+      if (result.success) {
+        added++;
+      }
     }
 
     log.info({ circleId, added }, 'Smart circle auto-populated');
@@ -635,7 +626,7 @@ async function findSmartCircleCandidates(ownerId, excludeIds, rules) {
   const prisma = getPrismaClient();
 
   // Base query: users connected to owner
-  let where = {
+  const where = {
     id: { notIn: excludeIds },
     OR: [
       // Mutual connections
@@ -643,19 +634,19 @@ async function findSmartCircleCandidates(ownerId, excludeIds, rules) {
         following: {
           some: {
             followerId: ownerId,
-            status: 'active'
-          }
-        }
+            status: 'active',
+          },
+        },
       },
       {
         followers: {
           some: {
             followingId: ownerId,
-            status: 'active'
-          }
-        }
-      }
-    ]
+            status: 'active',
+          },
+        },
+      },
+    ],
   };
 
   // Apply interaction filter
@@ -670,9 +661,9 @@ async function findSmartCircleCandidates(ownerId, excludeIds, rules) {
     where.AND.push({
       topicProfiles: {
         some: {
-          topicSlug: { in: rules.sharedInterests }
-        }
-      }
+          topicSlug: { in: rules.sharedInterests },
+        },
+      },
     });
   }
 
@@ -688,24 +679,26 @@ async function findSmartCircleCandidates(ownerId, excludeIds, rules) {
       _count: {
         select: {
           following: true,
-          followers: true
-        }
-      }
+          followers: true,
+        },
+      },
     },
-    take: 50
+    take: 50,
   });
 
   // Score and rank candidates
-  return candidates.map(c => ({
-    userId: c.id,
-    did: c.did,
-    handle: c.handle,
-    displayName: c.displayName,
-    avatarUrl: c.avatarUrl,
-    verificationLevel: c.verificationLevel,
-    mutualConnections: c._count.following + c._count.followers,
-    score: calculateCandidateScore(c, rules)
-  })).sort((a, b) => b.score - a.score);
+  return candidates
+    .map((c) => ({
+      userId: c.id,
+      did: c.did,
+      handle: c.handle,
+      displayName: c.displayName,
+      avatarUrl: c.avatarUrl,
+      verificationLevel: c.verificationLevel,
+      mutualConnections: c._count.following + c._count.followers,
+      score: calculateCandidateScore(c, rules),
+    }))
+    .sort((a, b) => b.score - a.score);
 }
 
 function calculateCandidateScore(candidate, rules) {
@@ -740,14 +733,14 @@ export async function generateCircleSuggestions(userId) {
     const connections = await prisma.socialConnection.findMany({
       where: {
         followerId: userId,
-        status: 'active'
+        status: 'active',
       },
       select: {
-        followingId: true
-      }
+        followingId: true,
+      },
     });
 
-    const connectionIds = connections.map(c => c.followingId);
+    const connectionIds = connections.map((c) => c.followingId);
 
     // Find users with mutual connections
     const suggestions = await prisma.user.findMany({
@@ -755,18 +748,18 @@ export async function generateCircleSuggestions(userId) {
         id: { notIn: [userId, ...connectionIds] },
         followers: {
           some: {
-            followerId: { in: connectionIds }
-          }
-        }
+            followerId: { in: connectionIds },
+          },
+        },
       },
       select: {
         id: true,
         did: true,
         handle: true,
         displayName: true,
-        avatarUrl: true
+        avatarUrl: true,
       },
-      take: 20
+      take: 20,
     });
 
     // Create suggestion records
@@ -775,16 +768,16 @@ export async function generateCircleSuggestions(userId) {
         where: {
           userId_suggestedUserId: {
             userId,
-            suggestedUserId: suggestion.id
-          }
+            suggestedUserId: suggestion.id,
+          },
         },
         update: {},
         create: {
           userId,
           suggestedUserId: suggestion.id,
           reason: 'mutual_friends',
-          confidence: 0.7
-        }
+          confidence: 0.7,
+        },
       });
     }
 
@@ -807,7 +800,7 @@ export async function getCircleSuggestions(userId, options = {}) {
       where: {
         userId,
         ...(includeDismissed ? {} : { dismissedAt: null }),
-        actedAt: null
+        actedAt: null,
       },
       include: {
         suggestedUser: {
@@ -817,12 +810,12 @@ export async function getCircleSuggestions(userId, options = {}) {
             handle: true,
             displayName: true,
             avatarUrl: true,
-            verificationLevel: true
-          }
-        }
+            verificationLevel: true,
+          },
+        },
       },
       orderBy: { confidence: 'desc' },
-      take: limit
+      take: limit,
     });
 
     return { success: true, suggestions };
@@ -846,8 +839,8 @@ async function logCircleActivity(circleId, actorId, action, targetId = null, det
         action,
         actorId,
         targetId,
-        details
-      }
+        details,
+      },
     });
   } catch (error) {
     log.error({ circleId, action, error: error.message }, 'Failed to log activity');
@@ -866,7 +859,7 @@ export async function getCircleActivity(circleId, options = {}) {
       where: { circleId },
       orderBy: { createdAt: 'desc' },
       take: limit,
-      skip: offset
+      skip: offset,
     });
 
     return { success: true, activities };
@@ -909,7 +902,7 @@ export const circleService = {
   CircleVisibility,
   MemberRole,
   MemberStatus,
-  DEFAULT_PERMISSIONS
+  DEFAULT_PERMISSIONS,
 };
 
 export default circleService;

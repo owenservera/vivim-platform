@@ -48,10 +48,18 @@ router.get('/errors', (req, res) => {
   const { category, level, severity, limit = 100 } = req.query;
 
   const filters = {};
-  if (category) filters.category = category;
-  if (level) filters.level = parseInt(level);
-  if (severity) filters.severity = severity;
-  if (limit) filters.limit = parseInt(limit);
+  if (category) {
+    filters.category = category;
+  }
+  if (level) {
+    filters.level = parseInt(level);
+  }
+  if (severity) {
+    filters.severity = severity;
+  }
+  if (limit) {
+    filters.limit = parseInt(limit);
+  }
 
   const errors = debugReporter.getErrors(filters);
 
@@ -74,7 +82,7 @@ router.get('/performance', (req, res) => {
 
 router.get('/queries', (req, res) => {
   const { slowOnly = 'false', limit = 100 } = req.query;
-  let queries = debugReporter.queries;
+  let { queries } = debugReporter;
 
   if (slowOnly === 'true') {
     queries = queries.filter((q) => q.isSlow);
@@ -112,7 +120,7 @@ router.get('/external-calls', (req, res) => {
 
 router.get('/extractions', (req, res) => {
   const { limit = 100 } = req.query;
-  let extractions = debugReporter.extractions;
+  let { extractions } = debugReporter;
 
   if (limit) {
     extractions = extractions.slice(-parseInt(limit));

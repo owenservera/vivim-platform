@@ -1,6 +1,6 @@
 /**
  * Memory Consolidation Service
- * 
+ *
  * Manages memory importance decay, merging similar memories, and cleanup.
  * Runs periodically to keep the memory system healthy and efficient.
  */
@@ -46,7 +46,10 @@ export class MemoryConsolidationService {
   /**
    * Run consolidation process
    */
-  async consolidate(userId: string, options: MemoryConsolidationOptions = {}): Promise<ConsolidationResult> {
+  async consolidate(
+    userId: string,
+    options: MemoryConsolidationOptions = {}
+  ): Promise<ConsolidationResult> {
     const {
       batchSize = 50,
       minImportance = 0.3,
@@ -70,11 +73,7 @@ export class MemoryConsolidationService {
       result.merged += await this.mergeSimilarMemories(userId, similarityThreshold);
 
       // Step 3: Archive low-relevance memories
-      result.archived += await this.archiveLowRelevanceMemories(
-        userId, 
-        minImportance, 
-        maxAge
-      );
+      result.archived += await this.archiveLowRelevanceMemories(userId, minImportance, maxAge);
 
       // Step 4: Clean up expired memories
       result.archived += await this.cleanupExpiredMemories(userId);
@@ -119,14 +118,14 @@ export class MemoryConsolidationService {
         const consolidation = await this.llmService.chat({
           model: this.consolidationModel,
           messages: [
-            { 
-              role: 'system', 
-              content: MEMORY_CONSOLIDATION_PROMPT 
+            {
+              role: 'system',
+              content: MEMORY_CONSOLIDATION_PROMPT,
             },
             {
               role: 'user',
-              content: memories.map(m => `[${m.id}] ${m.content}`).join('\n\n')
-            }
+              content: memories.map((m) => `[${m.id}] ${m.content}`).join('\n\n'),
+            },
           ],
           response_format: { type: 'json_object' },
         });
@@ -143,12 +142,14 @@ export class MemoryConsolidationService {
           summary: memories[0].summary || undefined,
           memoryType: memories[0].memoryType,
           category: memories[0].category,
-          importance: Math.max(...memories.map(m => m.importance)),
-          relevance: Math.max(...memories.map(m => m.relevance)),
+          importance: Math.max(...memories.map((m) => m.importance)),
+          relevance: Math.max(...memories.map((m) => m.relevance)),
           mergedFromIds: sourceMemoryIds,
-          sourceConversationIds: Array.from(new Set(memories.flatMap(m => m.sourceConversationIds))),
-          sourceAcuIds: Array.from(new Set(memories.flatMap(m => m.sourceAcuIds))),
-          tags: Array.from(new Set(memories.flatMap(m => m.tags))),
+          sourceConversationIds: Array.from(
+            new Set(memories.flatMap((m) => m.sourceConversationIds))
+          ),
+          sourceAcuIds: Array.from(new Set(memories.flatMap((m) => m.sourceAcuIds))),
+          tags: Array.from(new Set(memories.flatMap((m) => m.tags))),
           metadata: {
             mergedFrom: sourceMemoryIds,
             mergeDate: new Date().toISOString(),
@@ -178,11 +179,14 @@ export class MemoryConsolidationService {
         });
       }
 
-      logger.info({ 
-        userId, 
-        mergedId: mergedMemory.id, 
-        sourceIds: sourceMemoryIds 
-      }, 'Memories merged successfully');
+      logger.info(
+        {
+          userId,
+          mergedId: mergedMemory.id,
+          sourceIds: sourceMemoryIds,
+        },
+        'Memories merged successfully'
+      );
 
       return mergedMemory.id;
     } catch (error) {
@@ -249,14 +253,14 @@ export class MemoryConsolidationService {
   }> {
     const [total, consolidated, merged, archived, stats] = await Promise.all([
       this.prisma.memory.count({ where: { userId, isActive: true } }),
-      this.prisma.memory.count({ 
-        where: { userId, consolidationStatus: 'CONSOLIDATED' } 
+      this.prisma.memory.count({
+        where: { userId, consolidationStatus: 'CONSOLIDATED' },
       }),
-      this.prisma.memory.count({ 
-        where: { userId, consolidationStatus: 'MERGED' } 
+      this.prisma.memory.count({
+        where: { userId, consolidationStatus: 'MERGED' },
       }),
-      this.prisma.memory.count({ 
-        where: { userId, isArchived: true } 
+      this.prisma.memory.count({
+        where: { userId, isArchived: true },
       }),
       this.prisma.memory.aggregate({
         where: { userId, isActive: true },
@@ -311,10 +315,7 @@ export class MemoryConsolidationService {
     return updated;
   }
 
-  private async mergeSimilarMemories(
-    userId: string,
-    similarityThreshold: number
-  ): Promise<number> {
+  private async mergeSimilarMemories(userId: string, similarityThreshold: number): Promise<number> {
     // Find potentially similar memories using simple content matching
     const memories = await this.prisma.memory.findMany({
       where: {
@@ -335,12 +336,12 @@ export class MemoryConsolidationService {
       if (processed.has(memories[i].id)) continue;
 
       const similar: string[] = [memories[i].id];
-      
+
       for (let j = i + 1; j < memories.length; j++) {
         if (processed.has(memories[j].id)) continue;
 
         const similarity = this.calculateSimilarity(memories[i], memories[j]);
-        
+
         if (similarity >= similarityThreshold) {
           similar.push(memories[j].id);
           processed.add(memories[j].id);
@@ -349,7 +350,7 @@ export class MemoryConsolidationService {
 
       if (similar.length > 1) {
         toMerge.push(similar);
-        similar.forEach(id => processed.add(id));
+        similar.forEach((id) => processed.add(id));
       }
     }
 
@@ -373,14 +374,14 @@ export class MemoryConsolidationService {
     // Tag overlap
     const aTags = new Set(a.tags);
     const bTags = new Set(b.tags);
-    const intersection = Array.from(aTags).filter(x => bTags.has(x)).length;
+    const intersection = Array.from(aTags).filter((x) => bTags.has(x)).length;
     const union = new Set([...Array.from(aTags), ...Array.from(bTags)]).size;
     const tagSimilarity = union > 0 ? (intersection / union) * 0.3 : 0;
 
     // Content similarity (simple word overlap)
     const aWords = new Set(a.content.toLowerCase().split(/\s+/));
     const bWords = new Set(b.content.toLowerCase().split(/\s+/));
-    const wordIntersection = Array.from(aWords).filter(x => bWords.has(x)).length;
+    const wordIntersection = Array.from(aWords).filter((x) => bWords.has(x)).length;
     const wordUnion = new Set([...Array.from(aWords), ...Array.from(bWords)]).size;
     const contentSimilarity = wordUnion > 0 ? (wordIntersection / wordUnion) * 0.3 : 0;
 
@@ -403,10 +404,7 @@ export class MemoryConsolidationService {
         isPinned: false,
         importance: { lt: minImportance },
         relevance: { lt: 0.2 },
-        OR: [
-          { lastAccessedAt: { lt: cutoffDate } },
-          { lastAccessedAt: null },
-        ],
+        OR: [{ lastAccessedAt: { lt: cutoffDate } }, { lastAccessedAt: null }],
       },
       data: {
         isArchived: true,

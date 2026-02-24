@@ -34,7 +34,10 @@ export class EmbeddingService implements IEmbeddingService {
 
     // Skip embedding if no API key is provided, return a mock vector
     if (!this.apiKey || this.apiKey === '') {
-      logger.warn({ textLength: text.length }, 'No OpenAI API key configured, using mock embeddings');
+      logger.warn(
+        { textLength: text.length },
+        'No OpenAI API key configured, using mock embeddings'
+      );
       return this.generateMockVector(text, this.dimensions);
     }
 
@@ -43,29 +46,32 @@ export class EmbeddingService implements IEmbeddingService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`
+          Authorization: `Bearer ${this.apiKey}`,
         },
         body: JSON.stringify({
           input: text,
           model: this.model,
-          dimensions: this.dimensions
+          dimensions: this.dimensions,
         }),
-        signal: AbortSignal.timeout(this.timeout)
+        signal: AbortSignal.timeout(this.timeout),
       });
 
       if (!response.ok) {
         const errorBody = await response.text();
-        logger.error({ 
-          status: response.status, 
-          statusText: response.statusText,
-          error: errorBody 
-        }, 'Embedding API error, falling back to mock');
+        logger.error(
+          {
+            status: response.status,
+            statusText: response.statusText,
+            error: errorBody,
+          },
+          'Embedding API error, falling back to mock'
+        );
         return this.generateMockVector(text, this.dimensions);
       }
 
       const data = await response.json();
       const embedding = data.data?.[0]?.embedding;
-      
+
       if (!embedding || !Array.isArray(embedding)) {
         logger.error({ data }, 'Invalid embedding response from API');
         return this.generateMockVector(text, this.dimensions);
@@ -89,8 +95,11 @@ export class EmbeddingService implements IEmbeddingService {
 
     // Skip embedding if no API key is provided, return mock vectors
     if (!this.apiKey || this.apiKey === '') {
-      logger.warn({ batchSize: texts.length }, 'No OpenAI API key configured, using mock embeddings');
-      return texts.map(text => this.generateMockVector(text, this.dimensions));
+      logger.warn(
+        { batchSize: texts.length },
+        'No OpenAI API key configured, using mock embeddings'
+      );
+      return texts.map((text) => this.generateMockVector(text, this.dimensions));
     }
 
     try {
@@ -98,43 +107,55 @@ export class EmbeddingService implements IEmbeddingService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`
+          Authorization: `Bearer ${this.apiKey}`,
         },
         body: JSON.stringify({
           input: texts,
           model: this.model,
-          dimensions: this.dimensions
+          dimensions: this.dimensions,
         }),
-        signal: AbortSignal.timeout(this.timeout)
+        signal: AbortSignal.timeout(this.timeout),
       });
 
       if (!response.ok) {
         const errorBody = await response.text();
-        logger.error({ 
-          status: response.status, 
-          statusText: response.statusText,
-          batchSize: texts.length,
-          error: errorBody 
-        }, 'Batch embedding API error, falling back to mock');
-        return texts.map(text => this.generateMockVector(text, this.dimensions));
+        logger.error(
+          {
+            status: response.status,
+            statusText: response.statusText,
+            batchSize: texts.length,
+            error: errorBody,
+          },
+          'Batch embedding API error, falling back to mock'
+        );
+        return texts.map((text) => this.generateMockVector(text, this.dimensions));
       }
 
       const data = await response.json();
       const embeddings = data.data?.map((item: any) => item.embedding);
-      
+
       if (!embeddings || !Array.isArray(embeddings) || embeddings.length !== texts.length) {
-        logger.error({ expected: texts.length, got: embeddings?.length }, 'Invalid batch embedding response');
-        return texts.map(text => this.generateMockVector(text, this.dimensions));
+        logger.error(
+          { expected: texts.length, got: embeddings?.length },
+          'Invalid batch embedding response'
+        );
+        return texts.map((text) => this.generateMockVector(text, this.dimensions));
       }
 
       return embeddings;
     } catch (error: any) {
       if (error.name === 'TimeoutError') {
-        logger.error({ timeout: this.timeout, batchSize: texts.length }, 'Batch embedding request timed out');
+        logger.error(
+          { timeout: this.timeout, batchSize: texts.length },
+          'Batch embedding request timed out'
+        );
       } else {
-        logger.error({ error: error.message, batchSize: texts.length }, 'Batch embedding generation failed');
+        logger.error(
+          { error: error.message, batchSize: texts.length },
+          'Batch embedding generation failed'
+        );
       }
-      return texts.map(text => this.generateMockVector(text, this.dimensions));
+      return texts.map((text) => this.generateMockVector(text, this.dimensions));
     }
   }
 
@@ -143,18 +164,18 @@ export class EmbeddingService implements IEmbeddingService {
     // This is for development/testing only - real production should use OpenAI
     const vector: number[] = [];
     let seed = 0;
-    
+
     // Create a seed based on the text content
     for (let i = 0; i < text.length; i++) {
       seed = (seed * 31 + text.charCodeAt(i)) % 1000000;
     }
-    
+
     // Generate pseudo-random values based on the seed
     for (let i = 0; i < dimensions; i++) {
-      const value = (Math.sin(seed + i) * 10000) % 2 - 1; // Values between -1 and 1
+      const value = ((Math.sin(seed + i) * 10000) % 2) - 1; // Values between -1 and 1
       vector.push(parseFloat(value.toFixed(6)));
     }
-    
+
     return vector;
   }
 
@@ -169,7 +190,7 @@ export class EmbeddingService implements IEmbeddingService {
     return {
       model: this.model,
       dimensions: this.dimensions,
-      hasApiKey: !!this.apiKey && this.apiKey !== ''
+      hasApiKey: !!this.apiKey && this.apiKey !== '',
     };
   }
 }
@@ -186,7 +207,7 @@ export class MockEmbeddingService implements IEmbeddingService {
   }
 
   async embedBatch(texts: string[]): Promise<number[][]> {
-    return texts.map(text => this.generatePseudoRandomVector(text));
+    return texts.map((text) => this.generatePseudoRandomVector(text));
   }
 
   private generatePseudoRandomVector(text: string): number[] {
@@ -216,6 +237,6 @@ export class MockEmbeddingService implements IEmbeddingService {
   private normalize(vector: number[]): number[] {
     const magnitude = Math.sqrt(vector.reduce((sum, val) => sum + val * val, 0));
     if (magnitude === 0) return vector;
-    return vector.map(val => val / magnitude);
+    return vector.map((val) => val / magnitude);
   }
 }

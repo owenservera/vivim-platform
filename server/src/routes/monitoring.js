@@ -1,6 +1,6 @@
 /**
  * Monitoring Endpoints
- * 
+ *
  * Exposes internal metrics for Prometheus or external monitoring.
  * Tracks queue sizes, request rates, error counts, and memory usage.
  */
@@ -18,7 +18,7 @@ const router = Router();
 
 router.get('/metrics', requireApiKey(), (req, res) => {
   const memoryUsage = process.memoryUsage();
-  
+
   const queues = ['consolidation', 'extraction', 'capture', 'sync'].reduce((acc, queueName) => {
     acc[queueName] = queueService.getStats(queueName);
     return acc;

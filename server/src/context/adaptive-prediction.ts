@@ -40,8 +40,8 @@ interface TopicMomentum {
   slug: string;
   recentEngagements: number;
   lastEngagedAt: Date;
-  velocity: number;       // Rate of engagement increase
-  acceleration: number;   // Change in velocity
+  velocity: number; // Rate of engagement increase
+  acceleration: number; // Change in velocity
 }
 
 interface PredictionScore {
@@ -90,8 +90,8 @@ export class AdaptivePredictionEngine {
       temporalWindowDays: config.temporalWindowDays ?? 30,
       minPatternFrequency: config.minPatternFrequency ?? 3,
       temporalWeight: config.temporalWeight ?? 0.25,
-      momentumWeight: config.momentumWeight ?? 0.30,
-      presenceWeight: config.presenceWeight ?? 0.30,
+      momentumWeight: config.momentumWeight ?? 0.3,
+      presenceWeight: config.presenceWeight ?? 0.3,
       accuracyWeight: config.accuracyWeight ?? 0.15,
     };
   }
@@ -108,7 +108,8 @@ export class AdaptivePredictionEngine {
     const cached = this.cache.get<PredictedInteraction[]>('prediction', cacheKey);
     if (cached) return cached;
 
-    const predictions: Map<string, PredictedInteraction & { signals: Record<string, number> }> = new Map();
+    const predictions: Map<string, PredictedInteraction & { signals: Record<string, number> }> =
+      new Map();
 
     // 1. Presence-based predictions (current state)
     await this.addPresenceSignals(userId, presence, predictions);
@@ -129,7 +130,7 @@ export class AdaptivePredictionEngine {
 
     // Convert to array and sort
     const result = Array.from(predictions.values())
-      .map(p => {
+      .map((p) => {
         // Combine signals with weights
         const weightedProbability =
           (p.signals.presence ?? 0) * this.config.presenceWeight +
@@ -209,17 +210,20 @@ export class AdaptivePredictionEngine {
     }
 
     const total = this.predictionScores.length;
-    const correct = this.predictionScores.filter(s => s.actuallyUsed).length;
+    const correct = this.predictionScores.filter((s) => s.actuallyUsed).length;
 
     return {
       totalPredictions: total,
       correctPredictions: correct,
       accuracy: total > 0 ? correct / total : 0,
       byType: Object.fromEntries(
-        Object.entries(byType).map(([k, v]) => [k, {
-          ...v,
-          accuracy: v.total > 0 ? v.correct / v.total : 0,
-        }])
+        Object.entries(byType).map(([k, v]) => [
+          k,
+          {
+            ...v,
+            accuracy: v.total > 0 ? v.correct / v.total : 0,
+          },
+        ])
       ),
     };
   }
@@ -297,10 +301,7 @@ export class AdaptivePredictionEngine {
     }
   }
 
-  private async addTemporalSignals(
-    userId: string,
-    predictions: Map<string, any>
-  ): Promise<void> {
+  private async addTemporalSignals(userId: string, predictions: Map<string, any>): Promise<void> {
     const now = new Date();
     const currentHour = now.getHours();
     const currentDay = now.getDay();
@@ -353,10 +354,7 @@ export class AdaptivePredictionEngine {
     }
   }
 
-  private async addMomentumSignals(
-    userId: string,
-    predictions: Map<string, any>
-  ): Promise<void> {
+  private async addMomentumSignals(userId: string, predictions: Map<string, any>): Promise<void> {
     // Find topics with recent high engagement (momentum)
     const recentTopics = await this.prisma.topicProfile.findMany({
       where: {
@@ -379,8 +377,7 @@ export class AdaptivePredictionEngine {
 
     for (const topic of recentTopics) {
       // Calculate momentum: combination of streak and recency
-      const hoursSinceEngagement =
-        (Date.now() - topic.lastEngagedAt.getTime()) / (60 * 60 * 1000);
+      const hoursSinceEngagement = (Date.now() - topic.lastEngagedAt.getTime()) / (60 * 60 * 1000);
 
       const recencyScore = Math.exp(-hoursSinceEngagement / 48); // Decay over 2 days
       const streakScore = Math.min(1, topic.engagementStreak / 10);
@@ -416,11 +413,13 @@ export class AdaptivePredictionEngine {
 
     for (const tc of conversationTopics) {
       // Find related topics (topics that co-occur with this one)
-      const relatedTopics = await this.prisma.$queryRaw<Array<{
-        slug: string;
-        id: string;
-        co_occurrence: number;
-      }>>`
+      const relatedTopics = await this.prisma.$queryRaw<
+        Array<{
+          slug: string;
+          id: string;
+          co_occurrence: number;
+        }>
+      >`
         SELECT tp.slug, tp.id,
           COUNT(DISTINCT tc2."conversationId") as co_occurrence
         FROM topic_conversations tc1

@@ -25,7 +25,7 @@ async function extractGrokConversation(url, options = {}) {
 
     // Capture the live page using SingleFile CLI
     tempFilePath = await captureWithSingleFile(url, 'grok', { timeout, headless });
-    
+
     logger.info(`Reading captured Grok HTML from: ${tempFilePath}`);
     const html = await fs.readFile(tempFilePath, 'utf8');
     const $ = cheerio.load(html);
@@ -71,19 +71,20 @@ async function extractGrokConversation(url, options = {}) {
  * Extract Grok conversation data
  */
 function extractGrokData($, url, richFormatting = true) {
-  const title = $('title').text().replace(' | Shared Grok Conversation', '').trim() || 'Grok Conversation';
+  const title =
+    $('title').text().replace(' | Shared Grok Conversation', '').trim() || 'Grok Conversation';
 
   const messages = [];
-  
+
   // Try multiple selectors for Grok message containers
   const selectors = [
     '.message-bubble',
     '[data-testid="message"]',
     '.message',
     '[class*="message"]',
-    '.prose'
+    '.prose',
   ];
-  
+
   let messageElements = [];
   for (const selector of selectors) {
     messageElements = $(selector).toArray();
@@ -92,37 +93,39 @@ function extractGrokData($, url, richFormatting = true) {
       break;
     }
   }
-  
+
   // If still no messages, try looking for prose sections
   if (messageElements.length === 0) {
     messageElements = $('.prose, article, [class*="prose"]').toArray();
     logger.info(`Grok: Fallback found ${messageElements.length} potential messages`);
   }
-  
+
   messageElements.forEach((el, index) => {
     const $el = $(el);
     const className = $el.attr('class') || '';
     const text = $el.text().trim();
-    
+
     // Multiple heuristics for role detection
     let role = 'assistant';
-    
+
     // Check for user indicators
-    const isUser = 
+    const isUser =
       className.includes('bg-surface-l1') ||
       className.includes('border-border-l1') ||
       $el.find('img[src*="user"], .user-avatar, [data-testid="user"]').length > 0 ||
       text.startsWith('You:') ||
       (index % 2 === 0 && messageElements.length > 1); // Alternating pattern
-    
-    if (isUser) role = 'user';
-    
-    // Skip if too short or too long
-    if (text.length < 3 || text.length > 50000) return;
 
-    const content = richFormatting
-      ? extractGrokRichContent($el, $, richFormatting)
-      : text;
+    if (isUser) {
+      role = 'user';
+    }
+
+    // Skip if too short or too long
+    if (text.length < 3 || text.length > 50000) {
+      return;
+    }
+
+    const content = richFormatting ? extractGrokRichContent($el, $, richFormatting) : text;
 
     if (content && content.length > 0) {
       messages.push({
@@ -135,8 +138,8 @@ function extractGrokData($, url, richFormatting = true) {
   });
 
   // Remove duplicates
-  const uniqueMessages = messages.filter((msg, index, self) => 
-    index === self.findIndex((m) => m.content === msg.content)
+  const uniqueMessages = messages.filter(
+    (msg, index, self) => index === self.findIndex((m) => m.content === msg.content)
   );
 
   return {
@@ -179,11 +182,11 @@ function extractGrokRichContent($el, $, richFormatting = true) {
 
   // 2. Identify Mermaid (if Grok supports/renders it, usually via code blocks)
   // Check remaining text or code blocks for mermaid keywords
-  
+
   // 3. Handle remaining text
   // Grok often puts text in paragraphs
   const remainingText = $clone.text().trim();
-  
+
   // Check for regex-based mermaid if not caught in code blocks
   const mermaidRegex = /(?:^|\n)\s*(graph\s+[LRTDBC]{2}[\s\S]*?(?=---|\n|$|###))/gi;
   let match;
@@ -204,14 +207,14 @@ function extractGrokRichContent($el, $, richFormatting = true) {
     newTextBlocks.push({ type: 'text', content: finalRemainingText });
   }
 
-  const finalBlocks = [...newTextBlocks, ...contentBlocks.filter(b => b.type !== 'text')];
+  const finalBlocks = [...newTextBlocks, ...contentBlocks.filter((b) => b.type !== 'text')];
 
   if (finalBlocks.length === 0) {
-return '';
-}
+    return '';
+  }
   if (finalBlocks.length === 1 && finalBlocks[0].type === 'text') {
-return finalBlocks[0].content;
-}
+    return finalBlocks[0].content;
+  }
   return finalBlocks;
 }
 
@@ -228,12 +231,12 @@ function calculateStats(conversation) {
   for (const message of conversation.messages) {
     const processContent = (content) => {
       if (typeof content === 'string') {
-        totalWords += content.split(/\s+/).filter(w => w).length;
+        totalWords += content.split(/\s+/).filter((w) => w).length;
         totalCharacters += content.length;
       } else if (Array.isArray(content)) {
-        content.forEach(block => {
+        content.forEach((block) => {
           if (block.type === 'text') {
-            totalWords += block.content.split(/\s+/).filter(w => w).length;
+            totalWords += block.content.split(/\s+/).filter((w) => w).length;
             totalCharacters += block.content.length;
           } else if (block.type === 'code') {
             totalCodeBlocks++;
@@ -258,7 +261,9 @@ function calculateStats(conversation) {
     totalMermaidDiagrams,
     totalImages,
     firstMessageAt: conversation.messages[0]?.timestamp || conversation.createdAt,
-    lastMessageAt: conversation.messages[conversation.messages.length - 1]?.timestamp || new Date().toISOString(),
+    lastMessageAt:
+      conversation.messages[conversation.messages.length - 1]?.timestamp ||
+      new Date().toISOString(),
   };
 }
 

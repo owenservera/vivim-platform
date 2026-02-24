@@ -113,13 +113,19 @@ export async function extractConversation(url, options = {}) {
   if (!provider) {
     onProgress({ phase: 'ERROR', percent: 0, message: 'Unknown intelligence source' });
     throw new ValidationError(
-      `Unable to detect provider from URL. Supported providers: ${Object.keys(EXTRACTORS).join(', ')}`,
+      `Unable to detect provider from URL. Supported providers: ${Object.keys(EXTRACTORS).join(', ')}`
     );
   }
 
-  onProgress({ phase: 'DETECTION', percent: 25, message: `Connected to ${provider.toUpperCase()}` });
+  onProgress({
+    phase: 'DETECTION',
+    percent: 25,
+    message: `Connected to ${provider.toUpperCase()}`,
+  });
   log.info({ provider }, 'Provider detected');
-  process.stdout.write(` \x1b[33m[EXTRACT]\x1b[0m Provider: \x1b[1m${provider.toUpperCase()}\x1b[0m\n`);
+  process.stdout.write(
+    ` \x1b[33m[EXTRACT]\x1b[0m Provider: \x1b[1m${provider.toUpperCase()}\x1b[0m\n`
+  );
 
   // Check if provider is supported
   const extractor = EXTRACTORS[provider];
@@ -130,9 +136,13 @@ export async function extractConversation(url, options = {}) {
 
   // Execute extraction
   try {
-    onProgress({ phase: 'FETCHING', percent: 40, message: 'Downloading neural knowledge graph...' });
+    onProgress({
+      phase: 'FETCHING',
+      percent: 40,
+      message: 'Downloading neural knowledge graph...',
+    });
     process.stdout.write(' \x1b[33m[EXTRACT]\x1b[0m Fetching content...\n');
-    
+
     const rawConversation = await extractor(url, {
       timeout,
       richFormatting,
@@ -144,7 +154,7 @@ export async function extractConversation(url, options = {}) {
     // Validate extraction result
     onProgress({ phase: 'VALIDATION', percent: 75, message: 'Validating extraction integrity...' });
     const validation = ExtractionValidator.validate(rawConversation, provider);
-    
+
     if (!validation.valid) {
       log.error({ errors: validation.errors }, 'Extraction validation failed');
       throw new ValidationError(
@@ -153,16 +163,24 @@ export async function extractConversation(url, options = {}) {
     }
 
     // Normalize to standard format
-    onProgress({ phase: 'NORMALIZATION', percent: 80, message: 'Normalizing conversation structure...' });
+    onProgress({
+      phase: 'NORMALIZATION',
+      percent: 80,
+      message: 'Normalizing conversation structure...',
+    });
     const conversation = ExtractionValidator.normalize(rawConversation, provider);
 
     // ----------------------------------------------------------------------
     // QUANTUM HARDENING (Zero-Trust Witness)
     // ----------------------------------------------------------------------
-    onProgress({ phase: 'SIGNING', percent: 90, message: 'Generating Quantum-Resistant signatures...' });
-    
+    onProgress({
+      phase: 'SIGNING',
+      percent: 90,
+      message: 'Generating Quantum-Resistant signatures...',
+    });
+
     if (conversation.messages && Array.isArray(conversation.messages)) {
-      conversation.messages.forEach(msg => {
+      conversation.messages.forEach((msg) => {
         // Ensure timestamp exists for hashing
         if (!msg.timestamp) {
           msg.timestamp = new Date().toISOString();
@@ -170,13 +188,21 @@ export async function extractConversation(url, options = {}) {
         // Calculate SHA-3 hash so PWA can verify integrity
         msg.contentHash = calculateMessageHash(msg.role, msg.content, msg.timestamp, msg.parts);
       });
-      process.stdout.write(' \x1b[33m[EXTRACT]\x1b[0m \x1b[36mQuantum signatures generated (SHA-3)\x1b[0m\n');
+      process.stdout.write(
+        ' \x1b[33m[EXTRACT]\x1b[0m \x1b[36mQuantum signatures generated (SHA-3)\x1b[0m\n'
+      );
     }
     // ----------------------------------------------------------------------
 
     const msgCount = conversation.messages?.length || 0;
-    onProgress({ phase: 'COMPLETED', percent: 100, message: `Captured ${msgCount} blocks successfully` });
-    process.stdout.write(` \x1b[33m[EXTRACT]\x1b[0m Complete: \x1b[32m${msgCount} messages\x1b[0m (\x1b[1m${conversation.title?.slice(0, 30)}...\x1b[0m)\n`);
+    onProgress({
+      phase: 'COMPLETED',
+      percent: 100,
+      message: `Captured ${msgCount} blocks successfully`,
+    });
+    process.stdout.write(
+      ` \x1b[33m[EXTRACT]\x1b[0m Complete: \x1b[32m${msgCount} messages\x1b[0m (\x1b[1m${conversation.title?.slice(0, 30)}...\x1b[0m)\n`
+    );
 
     log.info(
       {
@@ -185,7 +211,7 @@ export async function extractConversation(url, options = {}) {
         messageCount: msgCount,
         warnings: validation.warnings,
       },
-      'Extraction completed successfully',
+      'Extraction completed successfully'
     );
 
     return conversation;

@@ -149,6 +149,7 @@ router.post('/capture', async (req, res, next) => {
   try {
     let requestBody = req.body;
     let sharedSecret = null;
+    let url, options;
 
     // ----------------------------------------------------------------------
     // QUANTUM TUNNEL DECRYPTION
@@ -169,7 +170,9 @@ router.post('/capture', async (req, res, next) => {
     }
     // ----------------------------------------------------------------------
 
-    const { url, options } = validateRequest(requestBody, captureRequestSchema);
+    const validated = validateRequest(requestBody, captureRequestSchema);
+    url = validated.url;
+    options = validated.options;
 
     const { detectProvider } = await import('../services/extractor.js');
 
@@ -210,8 +213,9 @@ router.post('/capture', async (req, res, next) => {
     const provider = detectProvider(url);
 
     const extractionStartTime = Date.now();
+    let conversation;
     try {
-      const conversation = await extractConversation(url, options);
+      conversation = await extractConversation(url, options);
 
       debugReporter.trackExtraction(
         provider,
@@ -230,14 +234,13 @@ router.post('/capture', async (req, res, next) => {
         },
         'Conversation captured successfully'
       );
-      attemptId = attempt.id;
-      console.log(`📋 [ATTEMPT LOGGED] Capture attempt ID: ${attemptId}\n`);
     } catch (dbError) {
-      log.warn({ error: dbError.message }, 'Failed to create capture attempt record');
+      log.warn({ error: dbError.message }, 'Failed during extraction');
+      throw dbError;
     }
 
     console.log(
-      `✅ [EXTRACTION COMPLETE] Retrieved ${conversation.messages?.length || 0} messages`
+      `✅ [EXTRACTION COMPLETE] Retrieved ${conversation?.messages?.length || 0} messages`
     );
 
     const saveStartTime = Date.now();

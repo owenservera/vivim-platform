@@ -1,6 +1,6 @@
 /**
  * Cache Service (Redis)
- * 
+ *
  * Provides a caching layer for high-throughput reads (User Context, Active Conversations).
  * Supports graceful fallback to in-memory caching or DB-direct access if Redis is unavailable.
  */
@@ -26,7 +26,7 @@ class CacheService {
     try {
       this.client = new Redis(config.redisUrl, {
         retryStrategy: (times) => Math.min(times * 50, 2000),
-        maxRetriesPerRequest: 3
+        maxRetriesPerRequest: 3,
       });
 
       this.client.on('connect', () => {
@@ -37,9 +37,13 @@ class CacheService {
       this.client.on('error', (err) => {
         logger.error({ error: err.message }, 'Redis connection error');
         this.isConnected = false;
-        serverErrorReporter.reportServerError('Redis connection failed', err, { url: config.redisUrl }, 'high');
+        serverErrorReporter.reportServerError(
+          'Redis connection failed',
+          err,
+          { url: config.redisUrl },
+          'high'
+        );
       });
-
     } catch (error) {
       logger.error({ error: error.message }, 'Failed to initialize Redis client');
       serverErrorReporter.reportServerError('Redis initialization failed', error, {}, 'high');
@@ -48,7 +52,7 @@ class CacheService {
 
   /**
    * Get value from cache
-   * @param {string} key 
+   * @param {string} key
    * @returns {Promise<any>} Parsed JSON or null
    */
   async get(key) {
@@ -71,23 +75,23 @@ class CacheService {
 
   /**
    * Set value in cache
-   * @param {string} key 
-   * @param {any} value 
-   * @param {number} ttlSeconds 
+   * @param {string} key
+   * @param {any} value
+   * @param {number} ttlSeconds
    */
   async set(key, value, ttlSeconds = 300) {
     try {
       const serialized = JSON.stringify(value);
-      
+
       if (this.isConnected && this.client) {
         await this.client.set(key, serialized, 'EX', ttlSeconds);
       } else {
         // Fallback
         this.memoryCache.set(key, {
           value,
-          expires: Date.now() + (ttlSeconds * 1000)
+          expires: Date.now() + ttlSeconds * 1000,
         });
-        
+
         // Simple cleanup for memory cache
         if (this.memoryCache.size > 1000) {
           const keys = this.memoryCache.keys();
@@ -145,4 +149,4 @@ class CacheService {
 export const cacheService = new CacheService();
 
 // Initialize connection (async)
-cacheService.connect().catch(err => logger.error('Cache Service init failed', err));
+cacheService.connect().catch((err) => logger.error('Cache Service init failed', err));

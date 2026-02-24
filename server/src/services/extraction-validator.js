@@ -38,7 +38,7 @@ export class ExtractionValidator {
         // Check for content or parts
         const hasContent = msg.content !== undefined && msg.content !== null;
         const hasParts = Array.isArray(msg.parts) && msg.parts.length > 0;
-        
+
         if (!hasContent && !hasParts) {
           errors.push(`Message ${idx}: No content or parts`);
         }
@@ -63,7 +63,9 @@ export class ExtractionValidator {
    * Converts various extractor outputs to consistent schema
    */
   static normalize(conversation, provider) {
-    if (!conversation) return null;
+    if (!conversation) {
+      return null;
+    }
 
     const normalized = {
       id: conversation.id || this.generateId(),
@@ -72,7 +74,9 @@ export class ExtractionValidator {
       title: conversation.title || `${provider} Conversation`,
       model: conversation.model || provider,
       createdAt: this.normalizeTimestamp(conversation.createdAt),
-      updatedAt: this.normalizeTimestamp(conversation.updatedAt) || this.normalizeTimestamp(conversation.createdAt),
+      updatedAt:
+        this.normalizeTimestamp(conversation.updatedAt) ||
+        this.normalizeTimestamp(conversation.createdAt),
       capturedAt: this.normalizeTimestamp(conversation.capturedAt) || new Date().toISOString(),
       exportedAt: new Date().toISOString(),
       messages: [],
@@ -86,7 +90,7 @@ export class ExtractionValidator {
 
     // Normalize messages
     if (Array.isArray(conversation.messages)) {
-      normalized.messages = conversation.messages.map((msg, idx) => 
+      normalized.messages = conversation.messages.map((msg, idx) =>
         this.normalizeMessage(msg, idx)
       );
     }
@@ -114,16 +118,18 @@ export class ExtractionValidator {
     // Normalize content to parts array
     if (Array.isArray(msg.parts) && msg.parts.length > 0) {
       // Already in parts format
-      normalized.parts = msg.parts.map(p => this.normalizePart(p));
+      normalized.parts = msg.parts.map((p) => this.normalizePart(p));
     } else if (Array.isArray(msg.content)) {
       // Content is array - convert to parts
-      normalized.parts = msg.content.map(c => this.normalizePart(c));
+      normalized.parts = msg.content.map((c) => this.normalizePart(c));
     } else if (typeof msg.content === 'string') {
       // Content is string - wrap in text part
-      normalized.parts = [{
-        type: 'text',
-        content: msg.content,
-      }];
+      normalized.parts = [
+        {
+          type: 'text',
+          content: msg.content,
+        },
+      ];
     } else {
       // Unknown format - empty parts
       normalized.parts = [];
@@ -162,12 +168,20 @@ export class ExtractionValidator {
    * Detect original format for debugging
    */
   static detectOriginalFormat(conv) {
-    if (!conv.messages || conv.messages.length === 0) return 'empty';
-    
+    if (!conv.messages || conv.messages.length === 0) {
+      return 'empty';
+    }
+
     const firstMsg = conv.messages[0];
-    if (firstMsg.parts) return 'parts-array';
-    if (Array.isArray(firstMsg.content)) return 'content-array';
-    if (typeof firstMsg.content === 'string') return 'content-string';
+    if (firstMsg.parts) {
+      return 'parts-array';
+    }
+    if (Array.isArray(firstMsg.content)) {
+      return 'content-array';
+    }
+    if (typeof firstMsg.content === 'string') {
+      return 'content-string';
+    }
     return 'unknown';
   }
 
@@ -175,11 +189,15 @@ export class ExtractionValidator {
    * Normalize timestamp to ISO string
    */
   static normalizeTimestamp(ts) {
-    if (!ts) return null;
-    
+    if (!ts) {
+      return null;
+    }
+
     try {
       const date = new Date(ts);
-      if (isNaN(date.getTime())) return null;
+      if (isNaN(date.getTime())) {
+        return null;
+      }
       return date.toISOString();
     } catch {
       return null;
@@ -201,14 +219,18 @@ export class ExtractionValidator {
     let totalLatexBlocks = 0;
 
     for (const msg of messages) {
-      if (msg.role === 'user') userMessageCount++;
-      if (msg.role === 'assistant') aiMessageCount++;
+      if (msg.role === 'user') {
+        userMessageCount++;
+      }
+      if (msg.role === 'assistant') {
+        aiMessageCount++;
+      }
 
       // Count from parts
       if (Array.isArray(msg.parts)) {
         for (const part of msg.parts) {
           if (part.type === 'text' && typeof part.content === 'string') {
-            totalWords += part.content.split(/\s+/).filter(w => w).length;
+            totalWords += part.content.split(/\s+/).filter((w) => w).length;
             totalCharacters += part.content.length;
           } else if (part.type === 'code') {
             totalCodeBlocks++;

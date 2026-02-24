@@ -1,6 +1,6 @@
 /**
  * Content Moderation Service
- * 
+ *
  * Handles content flagging, review, and automated moderation
  */
 
@@ -19,23 +19,23 @@ const log = logger.child({ module: 'moderation-service' });
  */
 export async function flagContent(reporterId, options) {
   const prisma = getPrismaClient();
-  
+
   const { contentId, contentType, contentOwnerId, contentText, reason, description } = options;
-  
+
   // Check for duplicate report
   const existing = await prisma.contentFlag.findFirst({
     where: {
       reporterId,
       contentId,
       contentType,
-      status: { in: ['PENDING', 'REVIEWING', 'FLAGGED'] }
-    }
+      status: { in: ['PENDING', 'REVIEWING', 'FLAGGED'] },
+    },
   });
-  
+
   if (existing) {
     return { success: false, error: 'Content already reported' };
   }
-  
+
   const flag = await prisma.contentFlag.create({
     data: {
       contentId,
@@ -45,17 +45,17 @@ export async function flagContent(reporterId, options) {
       reporterId,
       reason,
       description,
-      priority: getPriorityForReason(reason)
-    }
+      priority: getPriorityForReason(reason),
+    },
   });
-  
+
   // Update user moderation record if content owner exists
   if (contentOwnerId) {
     await incrementUserStrike(contentOwnerId, reason);
   }
-  
+
   log.info({ flagId: flag.id, reporterId, contentType, reason }, 'Content flagged');
-  
+
   return { success: true, flagId: flag.id };
 }
 
@@ -64,19 +64,19 @@ export async function flagContent(reporterId, options) {
  */
 function getPriorityForReason(reason) {
   const priorityMap = {
-    'SELF_HARM': 'CRITICAL',
-    'UNDERAGE': 'CRITICAL',
-    'VIOLENCE': 'HIGH',
-    'SEXUAL': 'HIGH',
-    'HATE_SPEECH': 'HIGH',
-    'HARASSMENT': 'MEDIUM',
-    'SPAM': 'LOW',
-    'MISINFORMATION': 'MEDIUM',
-    'PRIVACY': 'MEDIUM',
-    'COPYRIGHT': 'MEDIUM',
-    'IMPERSONATION': 'MEDIUM',
-    'DANGEROUS': 'HIGH',
-    'OTHER': 'LOW'
+    SELF_HARM: 'CRITICAL',
+    UNDERAGE: 'CRITICAL',
+    VIOLENCE: 'HIGH',
+    SEXUAL: 'HIGH',
+    HATE_SPEECH: 'HIGH',
+    HARASSMENT: 'MEDIUM',
+    SPAM: 'LOW',
+    MISINFORMATION: 'MEDIUM',
+    PRIVACY: 'MEDIUM',
+    COPYRIGHT: 'MEDIUM',
+    IMPERSONATION: 'MEDIUM',
+    DANGEROUS: 'HIGH',
+    OTHER: 'LOW',
   };
   return priorityMap[reason] || 'LOW';
 }
@@ -90,9 +90,9 @@ function getPriorityForReason(reason) {
  */
 export async function reviewFlag(flagId, reviewerId, decision) {
   const prisma = getPrismaClient();
-  
+
   const { status, resolution, action, notifyUser } = decision;
-  
+
   const flag = await prisma.contentFlag.update({
     where: { id: flagId },
     data: {
@@ -101,17 +101,17 @@ export async function reviewFlag(flagId, reviewerId, decision) {
       reviewedAt: new Date(),
       resolution,
       actionTaken: action,
-      userNotified: notifyUser === true
-    }
+      userNotified: notifyUser === true,
+    },
   });
-  
+
   // Take action on content if needed
   if (action && flag.contentId && flag.contentType) {
     await takeContentAction(flag.contentId, flag.contentType, action);
   }
-  
+
   log.info({ flagId, reviewerId, status, action }, 'Flag reviewed');
-  
+
   return { success: true, flag };
 }
 
@@ -120,7 +120,7 @@ export async function reviewFlag(flagId, reviewerId, decision) {
  */
 async function takeContentAction(contentId, contentType, action) {
   const prisma = getPrismaClient();
-  
+
   switch (action) {
     case 'remove':
       // Mark content as removed/hidden
@@ -143,30 +143,34 @@ async function takeContentAction(contentId, contentType, action) {
  */
 async function hideContent(contentId, contentType) {
   const prisma = getPrismaClient();
-  
+
   const updateMap = {
-    'conversation': { state: 'REMOVED' },
-    'acu': { state: 'REMOVED' },
-    'memory': { isArchived: true },
-    'group_post': { /* Would need status field */ }
+    conversation: { state: 'REMOVED' },
+    acu: { state: 'REMOVED' },
+    memory: { isArchived: true },
+    group_post: {
+      /* Would need status field */
+    },
   };
-  
+
   const update = updateMap[contentType];
-  if (!update) return;
-  
+  if (!update) {
+    return;
+  }
+
   // Map content type to model
   const modelMap = {
-    'conversation': prisma.conversation,
-    'acu': prisma.atomicChatUnit,
-    'memory': prisma.memory,
-    'group_post': prisma.groupPost
+    conversation: prisma.conversation,
+    acu: prisma.atomicChatUnit,
+    memory: prisma.memory,
+    group_post: prisma.groupPost,
   };
-  
+
   const model = modelMap[contentType];
   if (model) {
     await model.update({
       where: { id: contentId },
-      data: update
+      data: update,
     });
   }
 }
@@ -180,17 +184,17 @@ async function hideContent(contentId, contentType) {
  */
 export async function getUserModerationRecord(userId) {
   const prisma = getPrismaClient();
-  
+
   let record = await prisma.userModerationRecord.findUnique({
-    where: { userId }
+    where: { userId },
   });
-  
+
   if (!record) {
     record = await prisma.userModerationRecord.create({
-      data: { userId }
+      data: { userId },
     });
   }
-  
+
   return record;
 }
 
@@ -199,25 +203,25 @@ export async function getUserModerationRecord(userId) {
  */
 async function incrementUserStrike(userId, reason) {
   const prisma = getPrismaClient();
-  
+
   const reasonFieldMap = {
-    'SPAM': 'spamCount',
-    'HARASSMENT': 'harassmentCount',
-    'HATE_SPEECH': 'hateSpeechCount',
-    'VIOLENCE': 'violenceCount',
-    'SEXUAL': 'sexualCount',
-    'MISINFORMATION': 'misinformationCount',
-    'OTHER': 'otherCount'
+    SPAM: 'spamCount',
+    HARASSMENT: 'harassmentCount',
+    HATE_SPEECH: 'hateSpeechCount',
+    VIOLENCE: 'violenceCount',
+    SEXUAL: 'sexualCount',
+    MISINFORMATION: 'misinformationCount',
+    OTHER: 'otherCount',
   };
-  
+
   const field = reasonFieldMap[reason] || 'otherCount';
-  
+
   // Get current record or create
   let record = await prisma.userModerationRecord.findUnique({ where: { userId } });
-  
+
   if (!record) {
     record = await prisma.userModerationRecord.create({
-      data: { userId, [field]: 1, totalStrikes: 1, lastStrikedAt: new Date() }
+      data: { userId, [field]: 1, totalStrikes: 1, lastStrikedAt: new Date() },
     });
   } else {
     // Increment the specific count
@@ -226,11 +230,11 @@ async function incrementUserStrike(userId, reason) {
       data: {
         [field]: { increment: 1 },
         totalStrikes: { increment: 1 },
-        lastStrikedAt: new Date()
-      }
+        lastStrikedAt: new Date(),
+      },
     });
   }
-  
+
   // Check if action needed based on strike count
   await checkAndApplyStrikes(userId);
 }
@@ -241,33 +245,35 @@ async function incrementUserStrike(userId, reason) {
 async function checkAndApplyStrikes(userId) {
   const prisma = getPrismaClient();
   const record = await prisma.userModerationRecord.findUnique({ where: { userId } });
-  
-  if (!record || record.isBanned) return;
-  
+
+  if (!record || record.isBanned) {
+    return;
+  }
+
   // Auto-warn after 3 strikes
   if (record.totalStrikes >= 3 && !record.isWarningActive) {
     await prisma.userModerationRecord.update({
       where: { userId },
       data: {
         isWarningActive: true,
-        warningExpiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
-      }
+        warningExpiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      },
     });
-    
+
     // Could trigger notification here
     log.info({ userId, strikes: record.totalStrikes }, 'User auto-warned');
   }
-  
+
   // Auto-ban after 10 strikes
   if (record.totalStrikes >= 10) {
     await prisma.userModerationRecord.update({
       where: { userId },
       data: {
         isBanned: true,
-        banReason: 'Automatic ban due to repeated violations'
-      }
+        banReason: 'Automatic ban due to repeated violations',
+      },
     });
-    
+
     log.warn({ userId, strikes: record.totalStrikes }, 'User auto-banned');
   }
 }
@@ -281,7 +287,7 @@ async function checkAndApplyStrikes(userId) {
  */
 export async function createModerationRule(options) {
   const prisma = getPrismaClient();
-  
+
   const rule = await prisma.moderationRule.create({
     data: {
       name: options.name,
@@ -296,10 +302,10 @@ export async function createModerationRule(options) {
       priority: options.priority || 0,
       maxStrikes: options.maxStrikes,
       timeWindow: options.timeWindow,
-      createdBy: options.createdBy
-    }
+      createdBy: options.createdBy,
+    },
   });
-  
+
   return { success: true, rule };
 }
 
@@ -308,10 +314,10 @@ export async function createModerationRule(options) {
  */
 export async function getActiveRules() {
   const prisma = getPrismaClient();
-  
+
   return await prisma.moderationRule.findMany({
     where: { isEnabled: true },
-    orderBy: { priority: 'desc' }
+    orderBy: { priority: 'desc' },
   });
 }
 
@@ -320,15 +326,15 @@ export async function getActiveRules() {
  */
 export async function processAutoModeration(contentId, contentType, text, ownerId) {
   const rules = await getActiveRules();
-  
+
   // Filter rules applicable to this content type
-  const applicableRules = rules.filter(r => 
-    r.contentTypes.includes(contentType) || r.contentTypes.includes('all')
+  const applicableRules = rules.filter(
+    (r) => r.contentTypes.includes(contentType) || r.contentTypes.includes('all')
   );
-  
+
   for (const rule of applicableRules) {
     const shouldFlag = await evaluateRule(rule, text);
-    
+
     if (shouldFlag) {
       await flagContent('system', {
         contentId,
@@ -336,18 +342,18 @@ export async function processAutoModeration(contentId, contentType, text, ownerI
         contentOwnerId: ownerId,
         contentText: text,
         reason: 'OTHER',
-        description: `Auto-flagged by rule: ${rule.name}`
+        description: `Auto-flagged by rule: ${rule.name}`,
       });
-      
+
       // Take automatic action
       if (rule.action === 'remove') {
         await takeContentAction(contentId, contentType, 'remove');
       }
-      
+
       return { flagged: true, rule: rule.name, action: rule.action };
     }
   }
-  
+
   return { flagged: false };
 }
 
@@ -355,31 +361,35 @@ export async function processAutoModeration(contentId, contentType, text, ownerI
  * Evaluate a rule against text
  */
 async function evaluateRule(rule, text) {
-  if (!text) return false;
-  
-  const condition = rule.condition;
-  
+  if (!text) {
+    return false;
+  }
+
+  const { condition } = rule;
+
   switch (rule.conditionType) {
-    case 'keyword':
+    case 'keyword': {
       const keywords = condition.keywords || [];
-      return keywords.some(k => text.toLowerCase().includes(k.toLowerCase()));
-      
-    case 'pattern':
+      return keywords.some((k) => text.toLowerCase().includes(k.toLowerCase()));
+    }
+
+    case 'pattern': {
       try {
         const regex = new RegExp(condition.pattern, 'i');
         return regex.test(text);
       } catch {
         return false;
       }
-      
+    }
+
     case 'threshold':
       // For length/quantity thresholds
       return false; // Would need specific implementation
-      
+
     case 'ai_score':
       // Would integrate with AI moderation API
       return false;
-      
+
     default:
       return false;
   }
@@ -394,30 +404,30 @@ async function evaluateRule(rule, text) {
  */
 export async function appealDecision(flagId, userId, reason) {
   const prisma = getPrismaClient();
-  
+
   const flag = await prisma.contentFlag.findUnique({ where: { id: flagId } });
-  
+
   if (!flag) {
     return { success: false, error: 'Flag not found' };
   }
-  
+
   if (flag.contentOwnerId !== userId) {
     return { success: false, error: 'Not authorized to appeal this decision' };
   }
-  
+
   if (flag.status !== 'REMOVED' && flag.status !== 'WARNED') {
     return { success: false, error: 'This decision cannot be appealed' };
   }
-  
+
   await prisma.contentFlag.update({
     where: { id: flagId },
     data: {
       status: 'APPEALED',
       appealReason: reason,
-      appealedAt: new Date()
-    }
+      appealedAt: new Date(),
+    },
   });
-  
+
   return { success: true };
 }
 
@@ -426,25 +436,30 @@ export async function appealDecision(flagId, userId, reason) {
  */
 export async function resolveAppeal(flagId, reviewerId, sustained, resolution) {
   const prisma = getPrismaClient();
-  
+
+  const flag = await prisma.contentFlag.findUnique({ where: { id: flagId } });
+  if (!flag) {
+    return { success: false, error: 'Flag not found' };
+  }
+
   const newStatus = sustained ? flag.status : 'APPROVED';
-  
+
   await prisma.contentFlag.update({
     where: { id: flagId },
     data: {
       status: newStatus,
       appealReviewerId: reviewerId,
       appealResolvedAt: new Date(),
-      resolution
-    }
+      resolution,
+    },
   });
-  
+
   // If appeal denied, content stays removed
   // If appeal sustained, restore content
   if (!sustained && flag) {
     await restoreContent(flag.contentId, flag.contentType);
   }
-  
+
   return { success: true, sustained };
 }
 
@@ -453,27 +468,29 @@ export async function resolveAppeal(flagId, reviewerId, sustained, resolution) {
  */
 async function restoreContent(contentId, contentType) {
   const prisma = getPrismaClient();
-  
+
   const restoreMap = {
-    'conversation': { state: 'ACTIVE' },
-    'acu': { state: 'ACTIVE' },
-    'memory': { isArchived: false }
+    conversation: { state: 'ACTIVE' },
+    acu: { state: 'ACTIVE' },
+    memory: { isArchived: false },
   };
-  
+
   const restore = restoreMap[contentType];
-  if (!restore) return;
-  
+  if (!restore) {
+    return;
+  }
+
   const modelMap = {
-    'conversation': prisma.conversation,
-    'acu': prisma.atomicChatUnit,
-    'memory': prisma.memory
+    conversation: prisma.conversation,
+    acu: prisma.atomicChatUnit,
+    memory: prisma.memory,
   };
-  
+
   const model = modelMap[contentType];
   if (model) {
     await model.update({
       where: { id: contentId },
-      data: restore
+      data: restore,
     });
   }
 }
@@ -487,7 +504,7 @@ async function restoreContent(contentId, contentType) {
  */
 export async function addModeratorNote(options) {
   const prisma = getPrismaClient();
-  
+
   const note = await prisma.moderatorNote.create({
     data: {
       targetType: options.targetType,
@@ -495,10 +512,10 @@ export async function addModeratorNote(options) {
       content: options.content,
       moderatorId: options.moderatorId,
       isInternal: options.isInternal !== false,
-      isPublic: options.isPublic === true
-    }
+      isPublic: options.isPublic === true,
+    },
   });
-  
+
   return { success: true, note };
 }
 
@@ -507,14 +524,14 @@ export async function addModeratorNote(options) {
  */
 export async function getModeratorNotes(targetType, targetId) {
   const prisma = getPrismaClient();
-  
+
   return await prisma.moderatorNote.findMany({
     where: {
       targetType,
       targetId,
-      isInternal: false // Only return non-internal notes
+      isInternal: false, // Only return non-internal notes
     },
-    orderBy: { createdAt: 'desc' }
+    orderBy: { createdAt: 'desc' },
   });
 }
 
@@ -527,14 +544,8 @@ export async function getModeratorNotes(targetType, targetId) {
  */
 export async function getModerationStats() {
   const prisma = getPrismaClient();
-  
-  const [
-    pendingCount,
-    flaggedCount,
-    removedCount,
-    bannedCount,
-    recentFlags
-  ] = await Promise.all([
+
+  const [pendingCount, flaggedCount, removedCount, bannedCount, recentFlags] = await Promise.all([
     prisma.contentFlag.count({ where: { status: 'PENDING' } }),
     prisma.contentFlag.count({ where: { status: 'FLAGGED' } }),
     prisma.contentFlag.count({ where: { status: 'REMOVED' } }),
@@ -542,16 +553,16 @@ export async function getModerationStats() {
     prisma.contentFlag.findMany({
       where: { createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } },
       take: 10,
-      orderBy: { createdAt: 'desc' }
-    })
+      orderBy: { createdAt: 'desc' },
+    }),
   ]);
-  
+
   return {
     pending: pendingCount,
     flagged: flaggedCount,
     removed: removedCount,
     banned: bannedCount,
-    recentFlags
+    recentFlags,
   };
 }
 
@@ -560,25 +571,33 @@ export async function getModerationStats() {
  */
 export async function listFlags(options = {}) {
   const prisma = getPrismaClient();
-  
+
   const { status, reason, priority, contentType, limit = 50, offset = 0 } = options;
-  
+
   const where = {};
-  if (status) where.status = status;
-  if (reason) where.reason = reason;
-  if (priority) where.priority = priority;
-  if (contentType) where.contentType = contentType;
-  
+  if (status) {
+    where.status = status;
+  }
+  if (reason) {
+    where.reason = reason;
+  }
+  if (priority) {
+    where.priority = priority;
+  }
+  if (contentType) {
+    where.contentType = contentType;
+  }
+
   const [flags, total] = await Promise.all([
     prisma.contentFlag.findMany({
       where,
       orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
       take: limit,
-      skip: offset
+      skip: offset,
     }),
-    prisma.contentFlag.count({ where })
+    prisma.contentFlag.count({ where }),
   ]);
-  
+
   return { flags, total, limit, offset };
 }
 
@@ -589,29 +608,29 @@ export async function listFlags(options = {}) {
 export const moderationService = {
   // Flagging
   flagContent,
-  
+
   // Review
   reviewFlag,
-  
+
   // User records
   getUserModerationRecord,
-  
+
   // Rules
   createModerationRule,
   getActiveRules,
   processAutoModeration,
-  
+
   // Appeals
   appealDecision,
   resolveAppeal,
-  
+
   // Notes
   addModeratorNote,
   getModeratorNotes,
-  
+
   // Dashboard
   getModerationStats,
-  listFlags
+  listFlags,
 };
 
 export default moderationService;

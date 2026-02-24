@@ -63,7 +63,7 @@ export async function generateContextBundles(conversationId, options = {}) {
   try {
     const conv = await prisma.conversation.findUnique({
       where: { id: conversationId },
-      include: { messages: { orderBy: { messageIndex: 'asc' } } }
+      include: { messages: { orderBy: { messageIndex: 'asc' } } },
     });
 
     if (!conv) {
@@ -101,13 +101,13 @@ async function compileConversationBundle(conv) {
       wordCount: conv.totalWords,
       title: conv.title,
       provider: conv.provider,
-      model: conv.model
-    }
+      model: conv.model,
+    },
   };
 }
 
 async function compileUserMessageBundle(conv) {
-  const userMessages = conv.messages.filter(m => m.role === 'user');
+  const userMessages = conv.messages.filter((m) => m.role === 'user');
   const lastUserMessage = userMessages[userMessages.length - 1];
 
   if (!lastUserMessage) {
@@ -115,7 +115,7 @@ async function compileUserMessageBundle(conv) {
   }
 
   const content = Array.isArray(lastUserMessage.parts)
-    ? lastUserMessage.parts.map(p => p.text || p.content || '').join('')
+    ? lastUserMessage.parts.map((p) => p.text || p.content || '').join('')
     : String(lastUserMessage.parts);
 
   return {
@@ -123,22 +123,22 @@ async function compileUserMessageBundle(conv) {
     tokenCount: tokenEstimator.estimateTokens(content),
     composition: {
       messageIndex: lastUserMessage.messageIndex,
-      timestamp: lastUserMessage.createdAt
-    }
+      timestamp: lastUserMessage.createdAt,
+    },
   };
 }
 
 function buildConversationSummary(conv) {
   const lines = [
-    `## Conversation Context`,
+    '## Conversation Context',
     `**Title:** ${conv.title}`,
     `**Provider:** ${conv.provider}`,
     `**Model:** ${conv.model || 'Unknown'}`,
     `**Messages:** ${conv.messageCount}`,
     `**Words:** ${conv.totalWords}`,
-    ``,
-    `### Message History`,
-    ``
+    '',
+    '### Message History',
+    '',
   ];
 
   const recentMessages = conv.messages.slice(-10);
@@ -146,12 +146,15 @@ function buildConversationSummary(conv) {
   for (const msg of recentMessages) {
     const role = msg.role === 'user' ? '👤 User' : '🤖 Assistant';
     const text = Array.isArray(msg.parts)
-      ? msg.parts.map(p => p.text || p.content || '').join('').substring(0, 300)
+      ? msg.parts
+          .map((p) => p.text || p.content || '')
+          .join('')
+          .substring(0, 300)
       : String(msg.parts).substring(0, 300);
 
     lines.push(`**${role}** (${msg.messageIndex + 1})`);
     lines.push(text);
-    lines.push(``);
+    lines.push('');
   }
 
   return lines.join('\n');
@@ -169,8 +172,8 @@ async function storeBundle(userId, bundleType, bundle, conversationId) {
         topicProfileId: null,
         entityProfileId: null,
         conversationId,
-        personaId: null
-      }
+        personaId: null,
+      },
     });
   } catch (e) {
     if (e.code === 'P2002') {
@@ -182,8 +185,8 @@ async function storeBundle(userId, bundleType, bundle, conversationId) {
             topicProfileId: null,
             entityProfileId: null,
             conversationId,
-            personaId: null
-          }
+            personaId: null,
+          },
         },
         data: {
           compiledPrompt: bundle.compiledPrompt,
@@ -191,8 +194,8 @@ async function storeBundle(userId, bundleType, bundle, conversationId) {
           composition: bundle.composition,
           isDirty: false,
           version: { increment: 1 },
-          compiledAt: new Date()
-        }
+          compiledAt: new Date(),
+        },
       });
     } else {
       throw e;
@@ -208,9 +211,9 @@ export async function getContextForChat(conversationId, options = {}) {
     include: {
       messages: {
         orderBy: { messageIndex: 'asc' },
-        take: includeHistory ? 50 : 5
-      }
-    }
+        take: includeHistory ? 50 : 5,
+      },
+    },
   });
 
   if (!conv) {
@@ -227,11 +230,11 @@ export async function getContextForChat(conversationId, options = {}) {
     layers.L4 = bundle.compiledPrompt;
   }
 
-  const userMessages = conv.messages.filter(m => m.role === 'user');
+  const userMessages = conv.messages.filter((m) => m.role === 'user');
   if (userMessages.length > 0) {
     const lastMsg = userMessages[userMessages.length - 1];
     layers.L7 = Array.isArray(lastMsg.parts)
-      ? lastMsg.parts.map(p => p.text || p.content || '').join('')
+      ? lastMsg.parts.map((p) => p.text || p.content || '').join('')
       : String(lastMsg.parts);
   }
 
@@ -242,14 +245,14 @@ export async function getContextForChat(conversationId, options = {}) {
     layers,
     stats: {
       messageCount: conv.messageCount,
-      tokenCount: tokenEstimator.estimateTokens(systemPrompt)
-    }
+      tokenCount: tokenEstimator.estimateTokens(systemPrompt),
+    },
   };
 }
 
 async function getCachedBundle(bundleType, referenceId) {
   return prisma.contextBundle.findFirst({
-    where: { bundleType, conversationId: referenceId, isDirty: false }
+    where: { bundleType, conversationId: referenceId, isDirty: false },
   });
 }
 
@@ -260,15 +263,19 @@ function buildSystemPrompt(layers) {
   parts.push(VIVIM_IDENTITY_PROMPT);
 
   // L4: Conversation context
-  if (layers.L4) parts.push(layers.L4);
-  
+  if (layers.L4) {
+    parts.push(layers.L4);
+  }
+
   // L7: Current user message
-  if (layers.L7) parts.push(`## Current Request\n\n${layers.L7}`);
+  if (layers.L7) {
+    parts.push(`## Current Request\n\n${layers.L7}`);
+  }
 
   return parts.join('\n\n---\n\n');
 }
 
 export const contextGenerator = {
   generateContextBundles,
-  getContextForChat
+  getContextForChat,
 };

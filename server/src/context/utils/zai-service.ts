@@ -1,6 +1,6 @@
 /**
  * Z.AI API Service
- * 
+ *
  * Integration with Z.AI API using glm-4.7-flash model.
  * Replaces OpenAI API for all AI operations.
  */
@@ -57,27 +57,33 @@ export class ZAILLMService implements ILLMService {
 
   constructor(config: ZAIConfig = {}) {
     this.apiKey = config.apiKey || process.env.ZAI_API_KEY || '';
-    this.baseUrl = config.baseUrl || process.env.ZAI_BASE_URL || 'https://api.z.ai/api/coding/paas/v4';
+    this.baseUrl =
+      config.baseUrl || process.env.ZAI_BASE_URL || 'https://api.z.ai/api/coding/paas/v4';
     this.model = config.model || process.env.ZAI_MODEL || 'glm-4.7-flash';
     this.timeout = config.timeout || 60000; // 60 seconds for chat completions
     this.maxRetries = config.maxRetries || 3;
   }
 
-  async chat(params: ChatCompletionParams): Promise<{ content: string; usage: { promptTokens: number; completionTokens: number; totalTokens: number } }> {
+  async chat(
+    params: ChatCompletionParams
+  ): Promise<{
+    content: string;
+    usage: { promptTokens: number; completionTokens: number; totalTokens: number };
+  }> {
     if (!this.apiKey || this.apiKey === '') {
       throw new Error('Z.AI API key not configured. Set ZAI_API_KEY environment variable.');
     }
 
-    const messages = params.messages.map(msg => ({
+    const messages = params.messages.map((msg) => ({
       role: msg.role,
-      content: msg.content
+      content: msg.content,
     }));
 
     const body: any = {
       model: this.model,
       messages,
       temperature: params.temperature ?? 0.7,
-      max_tokens: params.maxTokens ?? 4096
+      max_tokens: params.maxTokens ?? 4096,
     };
 
     let lastError: Error | null = null;
@@ -88,20 +94,23 @@ export class ZAILLMService implements ILLMService {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.apiKey}`
+            Authorization: `Bearer ${this.apiKey}`,
           },
           body: JSON.stringify(body),
-          signal: AbortSignal.timeout(this.timeout)
+          signal: AbortSignal.timeout(this.timeout),
         });
 
         if (!response.ok) {
           const errorBody = await response.text();
-          logger.error({
-            status: response.status,
-            statusText: response.statusText,
-            error: errorBody,
-            attempt: attempt + 1
-          }, 'Z.AI API error');
+          logger.error(
+            {
+              status: response.status,
+              statusText: response.statusText,
+              error: errorBody,
+              attempt: attempt + 1,
+            },
+            'Z.AI API error'
+          );
 
           // Don't retry on client errors (4xx)
           if (response.status >= 400 && response.status < 500) {
@@ -119,26 +128,32 @@ export class ZAILLMService implements ILLMService {
           throw new Error('No completion choice returned from Z.AI API');
         }
 
-        logger.debug({
-          model: this.model,
-          promptTokens: data.usage?.prompt_tokens,
-          completionTokens: data.usage?.completion_tokens,
-          totalTokens: data.usage?.total_tokens
-        }, 'Z.AI chat completion successful');
+        logger.debug(
+          {
+            model: this.model,
+            promptTokens: data.usage?.prompt_tokens,
+            completionTokens: data.usage?.completion_tokens,
+            totalTokens: data.usage?.total_tokens,
+          },
+          'Z.AI chat completion successful'
+        );
 
         return {
           content: choice.message.content,
           usage: {
             promptTokens: data.usage?.prompt_tokens || 0,
             completionTokens: data.usage?.completion_tokens || 0,
-            totalTokens: data.usage?.total_tokens || 0
-          }
+            totalTokens: data.usage?.total_tokens || 0,
+          },
         };
       } catch (error: any) {
         lastError = error;
-        
+
         if (error.name === 'TimeoutError') {
-          logger.warn({ attempt: attempt + 1, maxRetries: this.maxRetries }, 'Z.AI request timeout');
+          logger.warn(
+            { attempt: attempt + 1, maxRetries: this.maxRetries },
+            'Z.AI request timeout'
+          );
         } else {
           logger.error({ error: error.message, attempt: attempt + 1 }, 'Z.AI request failed');
         }
@@ -150,7 +165,7 @@ export class ZAILLMService implements ILLMService {
 
         // Wait before retry (exponential backoff)
         const waitTime = Math.pow(2, attempt) * 1000;
-        await new Promise(resolve => setTimeout(resolve, waitTime));
+        await new Promise((resolve) => setTimeout(resolve, waitTime));
       }
     }
 
@@ -165,9 +180,9 @@ export class ZAILLMService implements ILLMService {
       throw new Error('Z.AI API key not configured. Set ZAI_API_KEY environment variable.');
     }
 
-    const messages = params.messages.map(msg => ({
+    const messages = params.messages.map((msg) => ({
       role: msg.role,
-      content: msg.content
+      content: msg.content,
     }));
 
     const body = {
@@ -175,17 +190,17 @@ export class ZAILLMService implements ILLMService {
       messages,
       temperature: params.temperature ?? 0.7,
       max_tokens: params.maxTokens ?? 4096,
-      stream: true
+      stream: true,
     };
 
     const response = await fetch(`${this.baseUrl}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`
+        Authorization: `Bearer ${this.apiKey}`,
       },
       body: JSON.stringify(body),
-      signal: AbortSignal.timeout(this.timeout)
+      signal: AbortSignal.timeout(this.timeout),
     });
 
     if (!response.ok) {
@@ -235,14 +250,14 @@ export class ZAILLMService implements ILLMService {
     return {
       model: this.model,
       baseUrl: this.baseUrl,
-      hasApiKey: !!this.apiKey && this.apiKey !== ''
+      hasApiKey: !!this.apiKey && this.apiKey !== '',
     };
   }
 }
 
 /**
  * Z.AI Embedding Service using chat model
- * 
+ *
  * Note: Z.AI's glm-4.7-flash is a chat model, not an embedding model.
  * For semantic similarity, we use the chat model with a specialized prompt.
  */
@@ -260,9 +275,10 @@ export class ZAIEmbeddingService implements IEmbeddingService {
       apiKey: config.apiKey,
       baseUrl: config.baseUrl,
       model: config.model,
-      timeout: config.timeout
+      timeout: config.timeout,
     });
-    this.dimensions = config.embeddingDimensions || parseInt(process.env.ZAI_EMBEDDING_DIMENSIONS || '1536', 10);
+    this.dimensions =
+      config.embeddingDimensions || parseInt(process.env.ZAI_EMBEDDING_DIMENSIONS || '1536', 10);
   }
 
   async embed(text: string): Promise<number[]> {
@@ -280,15 +296,15 @@ export class ZAIEmbeddingService implements IEmbeddingService {
             
 Return ONLY a JSON array of ${this.dimensions} numbers between -1 and 1.
 The numbers should represent the semantic meaning of the input text.
-Do not include any explanation or markdown formatting.`
+Do not include any explanation or markdown formatting.`,
           },
           {
             role: 'user',
-            content: text
-          }
+            content: text,
+          },
         ],
         temperature: 0.1,
-        maxTokens: this.dimensions * 2
+        maxTokens: this.dimensions * 2,
       });
 
       // Parse the response as JSON
@@ -311,9 +327,7 @@ Do not include any explanation or markdown formatting.`
 
     for (let i = 0; i < texts.length; i += batchSize) {
       const batch = texts.slice(i, i + batchSize);
-      const batchEmbeddings = await Promise.all(
-        batch.map(text => this.embed(text))
-      );
+      const batchEmbeddings = await Promise.all(batch.map((text) => this.embed(text)));
       embeddings.push(...batchEmbeddings);
     }
 
@@ -324,18 +338,18 @@ Do not include any explanation or markdown formatting.`
     try {
       // Clean up the response - remove markdown code blocks if present
       let cleaned = content.trim();
-      
+
       // Handle various markdown code block formats
       if (cleaned.startsWith('```json')) {
         cleaned = cleaned.slice(7);
       } else if (cleaned.startsWith('```')) {
         cleaned = cleaned.slice(3);
       }
-      
+
       if (cleaned.endsWith('```')) {
         cleaned = cleaned.slice(0, -3);
       }
-      
+
       cleaned = cleaned.trim();
 
       // Try to extract just the array if response contains extra text
@@ -345,7 +359,7 @@ Do not include any explanation or markdown formatting.`
       }
 
       const parsed = JSON.parse(cleaned);
-      
+
       if (Array.isArray(parsed)) {
         // Validate and normalize the embedding
         return parsed.slice(0, this.dimensions).map((val: any) => {
@@ -356,7 +370,10 @@ Do not include any explanation or markdown formatting.`
 
       throw new Error('Parsed response is not an array');
     } catch (error) {
-      logger.warn({ contentPreview: content.slice(0, 150) }, 'Failed to parse embedding response, using mock');
+      logger.warn(
+        { contentPreview: content.slice(0, 150) },
+        'Failed to parse embedding response, using mock'
+      );
       throw error;
     }
   }
@@ -371,7 +388,7 @@ Do not include any explanation or markdown formatting.`
     }
 
     for (let i = 0; i < dimensions; i++) {
-      const value = (Math.sin(seed + i) * 10000) % 2 - 1;
+      const value = ((Math.sin(seed + i) * 10000) % 2) - 1;
       vector.push(parseFloat(value.toFixed(6)));
     }
 
@@ -385,7 +402,7 @@ Do not include any explanation or markdown formatting.`
   getConfig(): { model: string; dimensions: number; hasApiKey: boolean } {
     return {
       ...this.llm.getConfig(),
-      dimensions: this.dimensions
+      dimensions: this.dimensions,
     };
   }
 }
@@ -395,7 +412,7 @@ Do not include any explanation or markdown formatting.`
  */
 export function createEmbeddingService(): IEmbeddingService {
   const zaiApiKey = process.env.ZAI_API_KEY;
-  
+
   if (zaiApiKey && zaiApiKey !== '') {
     logger.info('Using Z.AI embedding service with glm-4.7-flash');
     return new ZAIEmbeddingService();

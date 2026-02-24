@@ -33,7 +33,7 @@ export class ContextWarmupWorker {
     this.config = {
       maxPredictions: 8,
       probabilityThreshold: 0.1,
-      ...config
+      ...config,
     };
   }
 
@@ -54,7 +54,7 @@ export class ContextWarmupWorker {
     try {
       const presence = await prisma.clientPresence.findUnique({
         where: {
-          userId_deviceId: { userId, deviceId }
+          userId_deviceId: { userId, deviceId },
         },
         select: {
           activeConversationId: true,
@@ -62,8 +62,8 @@ export class ContextWarmupWorker {
           activePersonaId: true,
           lastNavigationPath: true,
           navigationHistory: true,
-          localTime: true
-        }
+          localTime: true,
+        },
       });
 
       if (!presence) {
@@ -73,11 +73,14 @@ export class ContextWarmupWorker {
 
       const predictions = this.generatePredictions(userId, presence);
 
-      logger.info({
-        userId,
-        predictions: predictions.length,
-        activeConversation: presence.activeConversationId
-      }, 'Generated predictions');
+      logger.info(
+        {
+          userId,
+          predictions: predictions.length,
+          activeConversation: presence.activeConversationId,
+        },
+        'Generated predictions'
+      );
 
       for (const prediction of predictions) {
         if (prediction.probability < this.config.probabilityThreshold) {
@@ -104,7 +107,7 @@ export class ContextWarmupWorker {
         type: 'continue_conversation',
         conversationId: presence.activeConversationId,
         probability: 0.85,
-        requiredBundles: ['conversation']
+        requiredBundles: ['conversation'],
       });
     }
 
@@ -115,20 +118,22 @@ export class ContextWarmupWorker {
         type: 'continue_conversation',
         conversationId: convId,
         probability: 0.3,
-        requiredBundles: ['conversation']
+        requiredBundles: ['conversation'],
       });
     }
 
-    const localHour = presence.localTime ? new Date(presence.localTime).getHours() : new Date().getHours();
+    const localHour = presence.localTime
+      ? new Date(presence.localTime).getHours()
+      : new Date().getHours();
 
     const timeBasedTopics = await prisma.topicProfile.findMany({
       where: {
         userId,
         peakHour: localHour,
-        importanceScore: { gte: 0.4 }
+        importanceScore: { gte: 0.4 },
       },
       orderBy: { importanceScore: 'desc' },
-      take: 3
+      take: 3,
     });
 
     for (const topic of timeBasedTopics) {
@@ -136,7 +141,7 @@ export class ContextWarmupWorker {
         type: 'new_on_topic',
         topicSlug: topic.slug,
         probability: 0.2 * topic.importanceScore,
-        requiredBundles: ['topic']
+        requiredBundles: ['topic'],
       });
     }
 
@@ -144,21 +149,23 @@ export class ContextWarmupWorker {
       where: {
         userId,
         lastEngagedAt: {
-          gte: new Date(Date.now() - 48 * 60 * 60 * 1000)
-        }
+          gte: new Date(Date.now() - 48 * 60 * 60 * 1000),
+        },
       },
       orderBy: { importanceScore: 'desc' },
-      take: 5
+      take: 5,
     });
 
     for (const topic of recentTopics) {
-      const existing = predictions.find(p => p.type === 'new_on_topic' && p.topicSlug === topic.slug);
+      const existing = predictions.find(
+        (p) => p.type === 'new_on_topic' && p.topicSlug === topic.slug
+      );
       if (!existing) {
         predictions.push({
           type: 'new_on_topic',
           topicSlug: topic.slug,
           probability: 0.15 * topic.importanceScore,
-          requiredBundles: ['topic']
+          requiredBundles: ['topic'],
         });
       }
     }
@@ -167,11 +174,11 @@ export class ContextWarmupWorker {
       where: {
         userId,
         lastMentionedAt: {
-          gte: new Date(Date.now() - 72 * 60 * 60 * 1000)
-        }
+          gte: new Date(Date.now() - 72 * 60 * 60 * 1000),
+        },
       },
       orderBy: { importanceScore: 'desc' },
-      take: 5
+      take: 5,
     });
 
     for (const entity of hotEntities) {
@@ -179,7 +186,7 @@ export class ContextWarmupWorker {
         type: 'entity_related',
         entityId: entity.id,
         probability: 0.1 * entity.importanceScore,
-        requiredBundles: ['entity']
+        requiredBundles: ['entity'],
       });
     }
 
@@ -220,9 +227,9 @@ export class ContextWarmupWorker {
         userId,
         bundleType: 'conversation',
         conversationId,
-        isDirty: false
+        isDirty: false,
       },
-      orderBy: { compiledAt: 'desc' }
+      orderBy: { compiledAt: 'desc' },
     });
 
     if (existing) {
@@ -246,7 +253,7 @@ export class ContextWarmupWorker {
    */
   private async warmupTopicBundle(userId: string, topicSlug: string): Promise<void> {
     const topic = await prisma.topicProfile.findUnique({
-      where: { userId_slug: { userId, slug: topicSlug } }
+      where: { userId_slug: { userId, slug: topicSlug } },
     });
 
     if (!topic) {
@@ -259,9 +266,9 @@ export class ContextWarmupWorker {
         userId,
         bundleType: 'topic',
         topicProfileId: topic.id,
-        isDirty: false
+        isDirty: false,
       },
-      orderBy: { compiledAt: 'desc' }
+      orderBy: { compiledAt: 'desc' },
     });
 
     if (existing) {
@@ -289,9 +296,9 @@ export class ContextWarmupWorker {
         userId,
         bundleType: 'entity',
         entityProfileId: entityId,
-        isDirty: false
+        isDirty: false,
       },
-      orderBy: { compiledAt: 'desc' }
+      orderBy: { compiledAt: 'desc' },
     });
 
     if (existing) {
@@ -314,10 +321,7 @@ export class ContextWarmupWorker {
    * Warmup identity and preferences bundles
    */
   private async warmupIdentityAndPrefs(userId: string): Promise<void> {
-    await Promise.all([
-      this.compileAndStoreIdentity(userId),
-      this.compileAndStorePrefs(userId)
-    ]);
+    await Promise.all([this.compileAndStoreIdentity(userId), this.compileAndStorePrefs(userId)]);
   }
 
   private async compileAndStoreConversation(userId: string, conversationId: string): Promise<void> {
@@ -366,22 +370,18 @@ export class ContextWarmupWorker {
   }
 
   private async updatePresencePredictions(userId: string, predictions: any[]): Promise<void> {
-    const topicSlugs = predictions
-      .filter(p => p.topicSlug)
-      .map(p => p.topicSlug!);
+    const topicSlugs = predictions.filter((p) => p.topicSlug).map((p) => p.topicSlug!);
 
-    const entityIds = predictions
-      .filter(p => p.entityId)
-      .map(p => p.entityId!);
+    const entityIds = predictions.filter((p) => p.entityId).map((p) => p.entityId!);
 
     await prisma.clientPresence.update({
       where: {
-        userId_deviceId: { userId, deviceId: predictions[0]?.deviceId || 'web' }
+        userId_deviceId: { userId, deviceId: predictions[0]?.deviceId || 'web' },
       },
       data: {
         predictedTopics: topicSlugs,
-        predictedEntities: entityIds
-      }
+        predictedEntities: entityIds,
+      },
     });
   }
 
@@ -394,7 +394,7 @@ export class ContextWarmupWorker {
   }> {
     return {
       isProcessing: this.processing.size > 0,
-      processingKeys: Array.from(this.processing)
+      processingKeys: Array.from(this.processing),
     };
   }
 }

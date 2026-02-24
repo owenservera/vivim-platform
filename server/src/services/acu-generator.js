@@ -26,7 +26,7 @@ export async function generateACUsFromConversation(conversation, userClient = nu
 
   try {
     const conversationId = conversation.id;
-    
+
     const savedConversation = await db.conversation.findUnique({
       where: { id: conversationId },
       include: { messages: true },
@@ -60,8 +60,10 @@ export async function generateACUsFromConversation(conversation, userClient = nu
         continue;
       }
 
-      const authorDid = conversation.ownerId ? `user:${conversation.ownerId}` : 'did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
-      
+      const authorDid = conversation.ownerId
+        ? `user:${conversation.ownerId}`
+        : 'did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
+
       const acu = {
         id: acuId,
         authorDid: authorDid,
@@ -124,7 +126,7 @@ export async function saveACUs(acus, userClient = null) {
 
   const db = userClient || getPrismaClient();
   let savedCount = 0;
-  
+
   for (const acu of acus) {
     try {
       await db.atomicChatUnit.create({
@@ -152,9 +154,9 @@ export async function saveACUs(acus, userClient = null) {
  */
 export async function generateAndSaveACUs(conversation, userClient = null) {
   const log = logger.child({ conversationId: conversation.id });
-  
+
   const db = userClient || getPrismaClient();
-  
+
   try {
     await db.atomicChatUnit.deleteMany({
       where: { conversationId: conversation.id },
@@ -162,20 +164,20 @@ export async function generateAndSaveACUs(conversation, userClient = null) {
     log.info('Deleted existing ACUs for conversation update');
 
     const acus = await generateACUsFromConversation(conversation, db);
-    
+
     if (acus.length === 0) {
       log.info('No ACUs generated for conversation');
       return { success: true, count: 0 };
     }
 
     const savedCount = await saveACUs(acus, db);
-    
+
     log.info({ generated: acus.length, saved: savedCount }, 'ACU generation complete');
-    
+
     return {
       success: true,
       count: savedCount,
-      acus: acus.map(a => a.id),
+      acus: acus.map((a) => a.id),
     };
   } catch (error) {
     log.error({ error: error.message }, 'ACU generation failed');
@@ -194,38 +196,40 @@ export async function generateAndSaveACUs(conversation, userClient = null) {
  */
 function extractContent(parts) {
   if (!parts) {
-return '';
-}
-  
+    return '';
+  }
+
   // If parts is a string, return it directly
   if (typeof parts === 'string') {
-return parts;
-}
-  
+    return parts;
+  }
+
   // If parts is an array, process each part
   if (Array.isArray(parts)) {
-    return parts.map(part => {
-      if (typeof part === 'string') {
-return part;
-}
-      if (part.content) {
-return part.content;
-}
-      if (part.text) {
-return part.text;
-}
-      return '';
-    }).join('\n');
+    return parts
+      .map((part) => {
+        if (typeof part === 'string') {
+          return part;
+        }
+        if (part.content) {
+          return part.content;
+        }
+        if (part.text) {
+          return part.text;
+        }
+        return '';
+      })
+      .join('\n');
   }
-  
+
   // If parts is an object
   if (parts.content) {
-return parts.content;
-}
+    return parts.content;
+  }
   if (parts.text) {
-return parts.text;
-}
-  
+    return parts.text;
+  }
+
   return '';
 }
 
@@ -240,40 +244,40 @@ return parts.text;
  */
 function calculateQualityScore(content) {
   let score = 50; // Base score
-  
-  const wordCount = content.split(/\s+/).filter(w => w.length > 0).length;
-  
+
+  const wordCount = content.split(/\s+/).filter((w) => w.length > 0).length;
+
   // Length bonus (up to 20 points)
   score += Math.min(wordCount / 10, 20);
-  
+
   // Code content bonus (up to 15 points)
   if (content.includes('```') || /(function|class|def |const|let|var)\s+\w+/.test(content)) {
     score += 15;
   }
-  
+
   // Question bonus (up to 10 points)
   if (content.includes('?')) {
     score += 10;
   }
-  
+
   // Length quality bonus (up to 10 points)
   if (content.length > 200) {
     score += 10;
   } else if (content.length > 100) {
     score += 5;
   }
-  
+
   // Rich content bonus
   if (content.includes('```')) {
-score += 5;
-}
+    score += 5;
+  }
   if (/\$\$.*?\$\$/.test(content)) {
-score += 5;
-} // LaTeX
+    score += 5;
+  } // LaTeX
   if (/\|.*\|/.test(content) && content.includes('\n')) {
-score += 5;
-} // Tables
-  
+    score += 5;
+  } // Tables
+
   // Cap at 100
   return Math.min(Math.round(score), 100);
 }
@@ -285,34 +289,34 @@ score += 5;
  */
 function calculateContentRichness(content) {
   let score = 30; // Base score
-  
-  const wordCount = content.split(/\s+/).filter(w => w.length > 0).length;
-  
+
+  const wordCount = content.split(/\s+/).filter((w) => w.length > 0).length;
+
   // Length factor
   if (wordCount > 50) {
-score += 20;
-}
+    score += 20;
+  }
   if (wordCount > 100) {
-score += 15;
-}
+    score += 15;
+  }
   if (wordCount > 200) {
-score += 10;
-}
-  
+    score += 10;
+  }
+
   // Format diversity
   if (content.includes('```')) {
-score += 10;
-}
+    score += 10;
+  }
   if (content.includes('**') || content.includes('__')) {
-score += 5;
-}
+    score += 5;
+  }
   if (content.includes('`')) {
-score += 5;
-}
+    score += 5;
+  }
   if (content.includes('[') && content.includes('](')) {
-score += 5;
-}
-  
+    score += 5;
+  }
+
   return Math.min(score, 100);
 }
 
@@ -323,24 +327,24 @@ score += 5;
  */
 function calculateStructuralIntegrity(content) {
   let score = 70; // Base score
-  
+
   // Penalize very short content
   if (content.length < 20) {
-score -= 20;
-}
-  
+    score -= 20;
+  }
+
   // Penalize content with many special characters (might be garbled)
   const specialCharRatio = (content.match(/[^\w\s.,!?;:'"()-]/g) || []).length / content.length;
   if (specialCharRatio > 0.3) {
-score -= 15;
-}
-  
+    score -= 15;
+  }
+
   // Bonus for proper sentence structure
-  const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
+  const sentences = content.split(/[.!?]+/).filter((s) => s.trim().length > 0);
   if (sentences.length > 2) {
-score += 10;
-}
-  
+    score += 10;
+  }
+
   return Math.min(Math.max(score, 0), 100);
 }
 
@@ -355,47 +359,56 @@ score += 10;
  */
 function classifyACUType(content) {
   const lowerContent = content.toLowerCase();
-  
+
   // Code detection
-  if (content.includes('```') || /^(function|class|def |const|let|var|import|from)\s+/m.test(content)) {
+  if (
+    content.includes('```') ||
+    /^(function|class|def |const|let|var|import|from)\s+/m.test(content)
+  ) {
     return 'code_snippet';
   }
-  
+
   // Question detection
-  if (content.includes('?') && (/\b(what|how|why|when|where|who|which|can|could|would|will)\b/i.test(lowerContent))) {
+  if (
+    content.includes('?') &&
+    /\b(what|how|why|when|where|who|which|can|could|would|will)\b/i.test(lowerContent)
+  ) {
     return 'question';
   }
-  
+
   // Answer detection
   if (/\b(the answer|therefore|in conclusion|to summarize|in summary)\b/i.test(lowerContent)) {
     return 'answer';
   }
-  
+
   // Formula detection
   if (/\$\$.*?\$\$/.test(content) || /\\\[.*?\\\]/.test(content)) {
     return 'formula';
   }
-  
+
   // Table detection
   if (/\|.*\|/.test(content) && content.includes('\n')) {
     return 'table';
   }
-  
+
   // Image reference detection
-  if (/!\[.*?\]\(.*?\)/.test(content) || /\b(image|picture|screenshot|diagram)\b/i.test(lowerContent)) {
+  if (
+    /!\[.*?\]\(.*?\)/.test(content) ||
+    /\b(image|picture|screenshot|diagram)\b/i.test(lowerContent)
+  ) {
     return 'image_reference';
   }
-  
+
   // Tool use detection
   if (/\b(tool|function call|api call|execute)\b/i.test(lowerContent) && content.includes('`')) {
     return 'tool_use';
   }
-  
+
   // Short thought (less than 140 chars, no question)
   if (content.length < 140 && !content.includes('?')) {
     return 'thought';
   }
-  
+
   // Default to note for longer content
   return 'statement';
 }
@@ -408,30 +421,38 @@ function classifyACUType(content) {
  */
 function categorizeACU(content, type) {
   const lowerContent = content.toLowerCase();
-  
+
   // Technical content
-  if (type === 'code_snippet' || 
-      /\b(code|programming|developer|software|api|database|server|function|class)\b/i.test(lowerContent)) {
+  if (
+    type === 'code_snippet' ||
+    /\b(code|programming|developer|software|api|database|server|function|class)\b/i.test(
+      lowerContent
+    )
+  ) {
     return 'technical';
   }
-  
+
   // Procedural content
-  if (type === 'question' || 
-      /\b(step|guide|tutorial|how to|instruction|process|procedure)\b/i.test(lowerContent)) {
+  if (
+    type === 'question' ||
+    /\b(step|guide|tutorial|how to|instruction|process|procedure)\b/i.test(lowerContent)
+  ) {
     return 'procedural';
   }
-  
+
   // Personal content
   if (/\b(I think|I feel|my experience|in my opinion|personally)\b/i.test(lowerContent)) {
     return 'personal';
   }
-  
+
   // Creative content (poetry, stories, metaphors)
-  if (type === 'thought' || 
-      /\b(poem|story|metaphor|imagine|dream|create|artistic)\b/i.test(lowerContent)) {
+  if (
+    type === 'thought' ||
+    /\b(poem|story|metaphor|imagine|dream|create|artistic)\b/i.test(lowerContent)
+  ) {
     return 'creative';
   }
-  
+
   return 'conceptual';
 }
 
@@ -442,18 +463,40 @@ function categorizeACU(content, type) {
  */
 function detectLanguage(content) {
   if (!content.includes('```')) {
-return null;
-}
-  
+    return null;
+  }
+
   const codeBlockMatch = content.match(/```(\w+)/);
   if (codeBlockMatch) {
     const lang = codeBlockMatch[1].toLowerCase();
-    const validLangs = ['javascript', 'typescript', 'python', 'java', 'cpp', 'c', 'go', 'rust', 'ruby', 'php', 'swift', 'kotlin', 'sql', 'html', 'css', 'json', 'yaml', 'xml', 'bash', 'shell', 'powershell'];
+    const validLangs = [
+      'javascript',
+      'typescript',
+      'python',
+      'java',
+      'cpp',
+      'c',
+      'go',
+      'rust',
+      'ruby',
+      'php',
+      'swift',
+      'kotlin',
+      'sql',
+      'html',
+      'css',
+      'json',
+      'yaml',
+      'xml',
+      'bash',
+      'shell',
+      'powershell',
+    ];
     if (validLangs.includes(lang)) {
-return lang;
-}
+      return lang;
+    }
   }
-  
+
   return null;
 }
 
@@ -469,7 +512,8 @@ return lang;
  * @returns {string} Unique ACU ID
  */
 function generateACUId(conversationId, messageId, content) {
-  const hash = crypto.createHash('sha256')
+  const hash = crypto
+    .createHash('sha256')
     .update(`${conversationId}:${messageId}:${content.substring(0, 500)}`)
     .digest('hex')
     .substring(0, 32);

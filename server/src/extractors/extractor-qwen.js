@@ -11,11 +11,7 @@ import { captureWithSingleFile, cleanupTempFile } from '../capture.js';
  * @returns {Promise<Object>} The extracted conversation object
  */
 async function extractQwenConversation(url, options = {}) {
-  const {
-    timeout = 120000,
-    richFormatting = true,
-    metadataOnly = false,
-  } = options;
+  const { timeout = 120000, richFormatting = true, metadataOnly = false } = options;
 
   let tempFilePath = null;
 
@@ -24,7 +20,7 @@ async function extractQwenConversation(url, options = {}) {
 
     // Capture the live page using SingleFile CLI
     tempFilePath = await captureWithSingleFile(url, 'qwen', { timeout });
-    
+
     logger.info(`Reading captured Qwen HTML from: ${tempFilePath}`);
     const html = await fs.readFile(tempFilePath, 'utf8');
     const $ = cheerio.load(html);
@@ -79,7 +75,7 @@ function extractQwenData($, url, richFormatting = true) {
   $('div').each((i, el) => {
     const $el = $(el);
     const className = $el.attr('class') || '';
-    
+
     let role = null;
     if (className.includes('qwen-chat-message-user')) {
       role = 'user';
@@ -90,11 +86,15 @@ function extractQwenData($, url, richFormatting = true) {
     if (role) {
       const rawText = $el.text().trim();
       if (!rawText || rawText.length < 2) {
-return;
-}
+        return;
+      }
 
       // Avoid duplicates
-      if (messages.length > 0 && messages[messages.length - 1].content.includes(rawText.substring(0, 50)) && role === messages[messages.length - 1].role) {
+      if (
+        messages.length > 0 &&
+        messages[messages.length - 1].content.includes(rawText.substring(0, 50)) &&
+        role === messages[messages.length - 1].role
+      ) {
         return;
       }
 
@@ -104,8 +104,8 @@ return;
       if (timestampMatch) {
         timestamp = timestampMatch[0];
         if (messages.length === 0) {
-conversationCreatedAt = timestamp;
-}
+          conversationCreatedAt = timestamp;
+        }
       }
 
       const content = richFormatting
@@ -123,7 +123,9 @@ conversationCreatedAt = timestamp;
 
   return {
     title,
-    createdAt: conversationCreatedAt.includes('-') ? new Date(conversationCreatedAt).toISOString() : conversationCreatedAt,
+    createdAt: conversationCreatedAt.includes('-')
+      ? new Date(conversationCreatedAt).toISOString()
+      : conversationCreatedAt,
     messages,
     metadata: {
       provider: 'qwen',
@@ -144,18 +146,26 @@ function extractQwenRichContent($el, $, richFormatting = true) {
   const contentBlocks = [];
 
   // 1. Identify Mermaid diagrams - BE MORE LENIENT
-  $clone.find('.qwen-markdown-mermaid-chart, .qwen-markdown-mermaid-chart-wrapper, [class*="mermaid"], pre, code').each((index, elem) => {
-    const $elem = $(elem);
-    const text = $elem.text().trim();
-    // Match even with leading numbers or whitespace
-    if (text.match(/(?:^|\n)\s*\d*\s*(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram|erDiagram|journey|gantt|pie|quadrantChart|requirementDiagram|gitGraph|C4Context|C4Container|C4Component|C4Dynamic|C4Deployment|mindmap|timeline|zenuml)/i)) {
-      contentBlocks.push({
-        type: 'mermaid',
-        content: text.replace(/^\s*\d*\s*/, ''), // Clean up leading numbers
-      });
-      $elem.remove();
-    }
-  });
+  $clone
+    .find(
+      '.qwen-markdown-mermaid-chart, .qwen-markdown-mermaid-chart-wrapper, [class*="mermaid"], pre, code'
+    )
+    .each((index, elem) => {
+      const $elem = $(elem);
+      const text = $elem.text().trim();
+      // Match even with leading numbers or whitespace
+      if (
+        text.match(
+          /(?:^|\n)\s*\d*\s*(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram|erDiagram|journey|gantt|pie|quadrantChart|requirementDiagram|gitGraph|C4Context|C4Container|C4Component|C4Dynamic|C4Deployment|mindmap|timeline|zenuml)/i
+        )
+      ) {
+        contentBlocks.push({
+          type: 'mermaid',
+          content: text.replace(/^\s*\d*\s*/, ''), // Clean up leading numbers
+        });
+        $elem.remove();
+      }
+    });
 
   // 2. Identify code blocks
   $clone.find('pre, code, .qwen-markdown-code-body').each((index, elem) => {
@@ -210,24 +220,24 @@ function extractQwenRichContent($el, $, richFormatting = true) {
     if (finalRemainingText) {
       newTextBlocks.push({ type: 'text', content: finalRemainingText });
     }
-    
+
     // Combine
-    const finalBlocks = [...newTextBlocks, ...contentBlocks.filter(b => b.type !== 'text')];
+    const finalBlocks = [...newTextBlocks, ...contentBlocks.filter((b) => b.type !== 'text')];
     if (finalBlocks.length === 0) {
-return '';
-}
+      return '';
+    }
     if (finalBlocks.length === 1 && finalBlocks[0].type === 'text') {
-return finalBlocks[0].content;
-}
+      return finalBlocks[0].content;
+    }
     return finalBlocks;
   }
 
   if (contentBlocks.length === 0) {
-return '';
-}
+    return '';
+  }
   if (contentBlocks.length === 1 && contentBlocks[0].type === 'text') {
-return contentBlocks[0].content;
-}
+    return contentBlocks[0].content;
+  }
   return contentBlocks;
 }
 
@@ -244,12 +254,12 @@ function calculateStats(conversation) {
   for (const message of conversation.messages) {
     const processContent = (content) => {
       if (typeof content === 'string') {
-        totalWords += content.split(/\s+/).filter(w => w).length;
+        totalWords += content.split(/\s+/).filter((w) => w).length;
         totalCharacters += content.length;
       } else if (Array.isArray(content)) {
-        content.forEach(block => {
+        content.forEach((block) => {
           if (block.type === 'text') {
-            totalWords += block.content.split(/\s+/).filter(w => w).length;
+            totalWords += block.content.split(/\s+/).filter((w) => w).length;
             totalCharacters += block.content.length;
           } else if (block.type === 'code') {
             totalCodeBlocks++;
@@ -274,7 +284,9 @@ function calculateStats(conversation) {
     totalMermaidDiagrams,
     totalImages,
     firstMessageAt: conversation.messages[0]?.timestamp || conversation.createdAt,
-    lastMessageAt: conversation.messages[conversation.messages.length - 1]?.timestamp || new Date().toISOString(),
+    lastMessageAt:
+      conversation.messages[conversation.messages.length - 1]?.timestamp ||
+      new Date().toISOString(),
   };
 }
 

@@ -51,7 +51,12 @@ app.use(
         styleSrc: ["'self'", "'unsafe-inline'"],
         scriptSrc: ["'self'"],
         imgSrc: ["'self'", 'data:', 'https:'],
-        connectSrc: ["'self'", 'https://*.openai.com', 'https://*.anthropic.com', 'https://*.googleapis.com'],
+        connectSrc: [
+          "'self'",
+          'https://*.openai.com',
+          'https://*.anthropic.com',
+          'https://*.googleapis.com',
+        ],
       },
     },
     hsts: {
@@ -62,12 +67,17 @@ app.use(
     referrerPolicy: {
       policy: 'strict-origin-when-cross-origin',
     },
-  }),
+  })
 );
 
 // Define allowed origins based on environment
-const allowedOrigins = config.isDevelopment 
-  ? ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173', 'http://0.0.0.0:5173']
+const allowedOrigins = config.isDevelopment
+  ? [
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'http://127.0.0.1:5173',
+      'http://0.0.0.0:5173',
+    ]
   : [
       'https://openscroll.yourdomain.com',
       'https://www.openscroll.yourdomain.com',
@@ -75,21 +85,23 @@ const allowedOrigins = config.isDevelopment
     ];
 
 // CORS - Cross-Origin Resource Sharing with restricted origins
-app.use(cors({
-  origin: true, // Allow all origins for POC
-  credentials: true,
-  optionsSuccessStatus: 200,
-  preflightContinue: false,
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: [
-    'Content-Type', 
-    'Authorization', 
-    'X-Requested-With',
-    'X-Request-ID',
-    'Accept',
-    'Origin',
-  ],
-}));
+app.use(
+  cors({
+    origin: true, // Allow all origins for POC
+    credentials: true,
+    optionsSuccessStatus: 200,
+    preflightContinue: false,
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'X-Request-ID',
+      'Accept',
+      'Origin',
+    ],
+  })
+);
 
 // Alternative CORS implementation if the above doesn't work for all routes
 // app.use((req, res, next) => {
@@ -100,7 +112,7 @@ app.use(cors({
 //   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
 //   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Request-ID');
 //   res.header('Access-Control-Allow-Credentials', 'true');
-  
+
 //   if (req.method === 'OPTIONS') {
 //     process.stdout.write(` \x1b[2m[CORS]\x1b[0m ${req.method} ${req.path}\n`);
 //     return res.status(200).end();
@@ -157,7 +169,7 @@ app.use(
       }
       return value;
     },
-  }),
+  })
 );
 
 // Parse URL-encoded bodies
@@ -165,7 +177,7 @@ app.use(
   express.urlencoded({
     extended: false,
     limit: '1mb',
-  }),
+  })
 );
 
 // ============================================================================
@@ -182,18 +194,22 @@ app.use(requestLogger);
 app.use('/api/v1/capture', (req, res, next) => {
   if (req.method === 'POST') {
     const { url, options } = req.body;
-    
+
     // Validate URL format
     if (url && typeof url === 'string') {
       try {
         const parsedUrl = new URL(url);
-        
+
         // Only allow supported domains
         const allowedHosts = [
-          'chat.openai.com', 'claude.ai', 'gemini.google.com',
-          'x.ai', 'cohere.com', 'anthropic.com',
+          'chat.openai.com',
+          'claude.ai',
+          'gemini.google.com',
+          'x.ai',
+          'cohere.com',
+          'anthropic.com',
         ];
-        
+
         if (!allowedHosts.includes(parsedUrl.hostname)) {
           logger.warn({ url, ip: req.ip }, 'Blocked request to unsupported domain');
           return res.status(400).json({
@@ -210,7 +226,7 @@ app.use('/api/v1/capture', (req, res, next) => {
       }
     }
   }
-  
+
   next();
 });
 
@@ -272,28 +288,39 @@ const server = app.listen(config.port, '0.0.0.0', () => {
   const startTime = new Date().toISOString();
 
   console.log('\n\x1b[1m\x1b[44m SECURE SYSTEM MANIFEST \x1b[0m');
-  console.log(`\x1b[34m${  '━'.repeat(60)  }\x1b[0m`);
+  console.log(`\x1b[34m${'━'.repeat(60)}\x1b[0m`);
 
   console.log(' \x1b[1mWHAT IS HAPPENING:\x1b[0m    Initializing Secure OpenScroll Capture Engine');
-  console.log(' \x1b[1mWHAT IT CAN DO:\x1b[0m       Cross-origin content extraction & DAG building');
-  console.log(' \x1b[1mWHAT IS EXPECTED:\x1b[0m    Valid configuration detected & Prisma connected');
+  console.log(
+    ' \x1b[1mWHAT IT CAN DO:\x1b[0m       Cross-origin content extraction & DAG building'
+  );
+  console.log(
+    ' \x1b[1mWHAT IS EXPECTED:\x1b[0m    Valid configuration detected & Prisma connected'
+  );
 
-  console.log(`\x1b[34m${  '─'.repeat(40)  }\x1b[0m`);
+  console.log(`\x1b[34m${'─'.repeat(40)}\x1b[0m`);
 
   console.log(` \x1b[1mWHERE (NETWORK):\x1b[0m     http://${localIp}:${config.port}/api/v1`);
   console.log(` \x1b[1mWHERE (LOCAL):\x1b[0m       http://localhost:${config.port}`);
   console.log(` \x1b[1mWHERE (DOCS):\x1b[0m        http://localhost:${config.port}/api-docs`);
 
-  console.log(`\x1b[34m${  '─'.repeat(40)  }\x1b[0m`);
+  console.log(`\x1b[34m${'─'.repeat(40)}\x1b[0m`);
 
   console.log(` \x1b[1mWHEN:\x1b[0m                ${startTime}`);
-  console.log(` \x1b[1mBY WHO (PROCESS):\x1b[0m    Node ${process.version} (${process.platform}) PID: ${process.pid}`);
-  console.log(` \x1b[1mBY WHO (MODE):\x1b[0m       ${config.isDevelopment ? '\x1b[33mDEVELOPMENT\x1b[0m' : '\x1b[32mPRODUCTION\x1b[0m'}`);
+  console.log(
+    ` \x1b[1mBY WHO (PROCESS):\x1b[0m    Node ${process.version} (${process.platform}) PID: ${process.pid}`
+  );
+  console.log(
+    ` \x1b[1mBY WHO (MODE):\x1b[0m       ${config.isDevelopment ? '\x1b[33mDEVELOPMENT\x1b[0m' : '\x1b[32mPRODUCTION\x1b[0m'}`
+  );
 
-  console.log(`\x1b[34m${  '━'.repeat(60)  }\x1b[0m`);
+  console.log(`\x1b[34m${'━'.repeat(60)}\x1b[0m`);
   console.log(' \x1b[2mListening for incoming intelligence requests...\x1b[0m\n');
 
-  logger.info({ port: config.port, env: config.nodeEnv, localIp }, 'Secure System Manifest Broadcast Complete');
+  logger.info(
+    { port: config.port, env: config.nodeEnv, localIp },
+    'Secure System Manifest Broadcast Complete'
+  );
 });
 
 // ============================================================================

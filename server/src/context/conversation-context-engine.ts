@@ -27,8 +27,8 @@ export class ConversationContextEngine {
       where: { id: conversationId },
       include: {
         messages: { orderBy: { messageIndex: 'asc' } },
-        compactions: { orderBy: { fromMessageIndex: 'asc' } }
-      }
+        compactions: { orderBy: { fromMessageIndex: 'asc' } },
+      },
     });
 
     if (!conv) {
@@ -60,7 +60,7 @@ export class ConversationContextEngine {
     l4Budget: number,
     l6Budget: number
   ): Promise<ConversationWindow> {
-    const l6Content = messages.map(m => this.formatMessage(m)).join('\n\n');
+    const l6Content = messages.map((m) => this.formatMessage(m)).join('\n\n');
 
     return {
       l4Arc: '',
@@ -72,8 +72,8 @@ export class ConversationContextEngine {
         totalMessages: messages.length,
         fullMessages: messages.length,
         summarizedMessages: 0,
-        droppedMessages: 0
-      }
+        droppedMessages: 0,
+      },
     };
   }
 
@@ -100,7 +100,7 @@ export class ConversationContextEngine {
     }
 
     const recentMessages = messages.slice(cutIndex);
-    const recentContent = recentMessages.map(m => this.formatMessage(m)).join('\n\n');
+    const recentContent = recentMessages.map((m) => this.formatMessage(m)).join('\n\n');
 
     const olderMessages = messages.slice(0, cutIndex);
     let olderSummary = '';
@@ -129,7 +129,7 @@ export class ConversationContextEngine {
     const l6Content = [
       olderSummary ? `[Summary of messages 1-${cutIndex}]\n${olderSummary}` : '',
       `\n[Recent messages]\n`,
-      recentContent
+      recentContent,
     ]
       .filter(Boolean)
       .join('\n\n');
@@ -144,8 +144,8 @@ export class ConversationContextEngine {
         totalMessages: messages.length,
         fullMessages: recentMessages.length,
         summarizedMessages: olderMessages.length,
-        droppedMessages: 0
-      }
+        droppedMessages: 0,
+      },
     };
   }
 
@@ -169,7 +169,7 @@ export class ConversationContextEngine {
 
     const [zoneASummary, zoneBContent] = await Promise.all([
       this.compactMessages(zoneA, zoneABudget),
-      this.selectKeyMessages(zoneB, zoneBBudget)
+      this.selectKeyMessages(zoneB, zoneBBudget),
     ]);
 
     const zoneCContent = this.fitMessagesInBudget(zoneC, zoneCBudget);
@@ -178,7 +178,7 @@ export class ConversationContextEngine {
     const l6Content = [
       `[Early conversation summary]\n${zoneASummary}`,
       `\n[Key exchanges from middle of conversation]\n${zoneBContent}`,
-      `\n[Recent messages]\n${zoneCContent}`
+      `\n[Recent messages]\n${zoneCContent}`,
     ].join('\n\n');
 
     return {
@@ -191,8 +191,8 @@ export class ConversationContextEngine {
         totalMessages: totalMsgs,
         fullMessages: zoneC.length,
         summarizedMessages: zoneA.length + zoneB.length,
-        droppedMessages: 0
-      }
+        droppedMessages: 0,
+      },
     };
   }
 
@@ -226,10 +226,14 @@ export class ConversationContextEngine {
     let olderContent = '';
     if (chunks.length >= 5) {
       const olderChunks = chunks.slice(0, chunks.length - 4);
-      const cachedCompactions = await this.getCachedCompactions(conv.id, 0, olderChunks.flat().length - 1);
+      const cachedCompactions = await this.getCachedCompactions(
+        conv.id,
+        0,
+        olderChunks.flat().length - 1
+      );
 
       if (cachedCompactions.length > 0) {
-        const level1Text = cachedCompactions.map(c => c.summary).join('\n\n');
+        const level1Text = cachedCompactions.map((c) => c.summary).join('\n\n');
         if (this.tokenEstimator.estimateTokens(level1Text) <= olderBudget) {
           olderContent = level1Text;
         } else {
@@ -262,7 +266,7 @@ export class ConversationContextEngine {
       ancientContent ? `[Very early conversation — highly compressed]\n${ancientContent}` : '',
       olderContent ? `[Earlier conversation — summarized]\n${olderContent}` : '',
       middleContent ? `[Recent history — summarized]\n${middleContent}` : '',
-      `[Current conversation]\n${recentContent}`
+      `[Current conversation]\n${recentContent}`,
     ]
       .filter(Boolean)
       .join('\n\n---\n\n');
@@ -277,14 +281,14 @@ export class ConversationContextEngine {
         totalMessages: totalMsgs,
         fullMessages: recentChunk.length,
         summarizedMessages: totalMsgs - recentChunk.length,
-        droppedMessages: 0
-      }
+        droppedMessages: 0,
+      },
     };
   }
 
   private async compactMessages(messages: any[], targetTokens: number): Promise<string> {
     const messagesText = messages
-      .map(m => `[${m.role}${m.author ? ` (${m.author})` : ''}]: ${this.extractText(m.parts)}`)
+      .map((m) => `[${m.role}${m.author ? ` (${m.author})` : ''}]: ${this.extractText(m.parts)}`)
       .join('\n\n');
 
     try {
@@ -305,10 +309,10 @@ CONSTRAINTS:
 - Mark any unresolved questions with [OPEN]
 
 FORMAT:
-Start with a 1-sentence overview, then bullet points for key content.`
+Start with a 1-sentence overview, then bullet points for key content.`,
           },
-          { role: 'user', content: messagesText }
-        ]
+          { role: 'user', content: messagesText },
+        ],
       });
 
       return response.content;
@@ -331,10 +335,10 @@ CONSTRAINTS:
 - Maximum ~${targetTokens} tokens
 - Keep only the most critical: decisions, major code artifacts, core questions
 - This is a second-level compression — be ruthlessly concise
-- Preserve anything marked [OPEN] as it's unresolved`
+- Preserve anything marked [OPEN] as it's unresolved`,
           },
-          { role: 'user', content: text }
-        ]
+          { role: 'user', content: text },
+        ],
       });
 
       return response.content;
@@ -347,7 +351,7 @@ CONSTRAINTS:
   private async selectKeyMessages(messages: any[], budget: number): Promise<string> {
     const scored = messages.map((m, i) => ({
       message: m,
-      score: this.scoreMessageImportance(m, i, messages.length)
+      score: this.scoreMessageImportance(m, i, messages.length),
     }));
 
     scored.sort((a, b) => b.score - a.score);
@@ -361,7 +365,7 @@ CONSTRAINTS:
         if (budget - usedTokens > 50) {
           selected.push({
             message: this.truncateMessage(message, budget - usedTokens),
-            originalIndex: messages.indexOf(message)
+            originalIndex: messages.indexOf(message),
           });
         }
         break;
@@ -448,8 +452,8 @@ CONSTRAINTS:
   }
 
   private async generateRichArc(messages: any[], budget: number): Promise<string> {
-    const userMsgs = messages.filter(m => m.role === 'user').length;
-    const assistantMsgs = messages.filter(m => m.role === 'assistant').length;
+    const userMsgs = messages.filter((m) => m.role === 'user').length;
+    const assistantMsgs = messages.filter((m) => m.role === 'assistant').length;
     return `Conversation: ${messages.length} messages (${userMsgs} user, ${assistantMsgs} assistant)`;
   }
 
@@ -471,14 +475,14 @@ CONSTRAINTS:
         conversationId_fromMessageIndex_toMessageIndex: {
           conversationId,
           fromMessageIndex: fromIndex,
-          toMessageIndex: toIndex
-        }
+          toMessageIndex: toIndex,
+        },
       },
       update: {
         summary,
         originalTokenCount: originalTokens,
         compactedTokenCount: compactedTokens,
-        compressionRatio: originalTokens / compactedTokens
+        compressionRatio: originalTokens / compactedTokens,
       },
       create: {
         conversationId,
@@ -487,8 +491,8 @@ CONSTRAINTS:
         originalTokenCount: originalTokens,
         compactedTokenCount: compactedTokens,
         summary,
-        compressionRatio: originalTokens / compactedTokens
-      }
+        compressionRatio: originalTokens / compactedTokens,
+      },
     });
   }
 
@@ -501,9 +505,9 @@ CONSTRAINTS:
       where: {
         conversationId,
         fromMessageIndex: { gte: fromIndex },
-        toMessageIndex: { lte: toIndex }
+        toMessageIndex: { lte: toIndex },
       },
-      orderBy: { fromMessageIndex: 'asc' }
+      orderBy: { fromMessageIndex: 'asc' },
     });
   }
 
@@ -517,7 +521,7 @@ CONSTRAINTS:
     const truncated = text.substring(0, maxTokens * 3);
     return {
       ...message,
-      parts: [{ type: 'text', content: truncated + '...' }]
+      parts: [{ type: 'text', content: truncated + '...' }],
     };
   }
 

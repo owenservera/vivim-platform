@@ -14,7 +14,12 @@ import { unifiedProvider } from '../ai/unified-provider.js';
 import { agentPipeline } from '../ai/agent-pipeline.js';
 import { aiStorageService } from '../services/ai-storage-service.js';
 import { logger } from '../lib/logger.js';
-import { aiCompletionSchema, aiStreamSchema, agentRequestSchema, structuredOutputSchema } from '../validators/ai.js';
+import {
+  aiCompletionSchema,
+  aiStreamSchema,
+  agentRequestSchema,
+  structuredOutputSchema,
+} from '../validators/ai.js';
 import { ProviderType, ProviderConfig, getDefaultProvider } from '../types/ai.js';
 import { ContextSettingsService } from '../context/settings-service.js';
 import { DynamicContextAssembler } from '../context/context-assembler.js';
@@ -52,7 +57,7 @@ function requireUserId(req, res, next) {
   if (!userId) {
     return res.status(401).json({
       success: false,
-      error: 'Authentication required'
+      error: 'Authentication required',
     });
   }
   req.userId = userId;
@@ -69,14 +74,16 @@ async function buildContextBundles(userId, conversationId, options = {}) {
         userId,
         userMessage: options.userMessage || '',
         personaId: options.personaId,
-        deviceId: options.deviceId
+        deviceId: options.deviceId,
+        providerId: options.providerId,
+        modelId: options.modelId,
       });
-      
+
       return {
         systemPrompt: result.systemPrompt,
         layers: result.layers,
         stats: result.stats,
-        engineUsed: result.engineUsed
+        engineUsed: result.engineUsed,
       };
     }
     return null;
@@ -97,9 +104,11 @@ async function getSecondBrainStats(userId) {
     const [topicCount, conversationCount, memoryCount] = await Promise.all([
       prisma.topicProfile.count({ where: { userId } }).catch(() => 0),
       prisma.conversation.count({ where: { ownerId: userId } }).catch(() => 0),
-      prisma.atomicContentUnit.count({
-        where: { conversation: { ownerId: userId } },
-      }).catch(() => 0),
+      prisma.atomicContentUnit
+        .count({
+          where: { conversation: { ownerId: userId } },
+        })
+        .catch(() => 0),
     ]);
 
     return { topicCount, conversationCount, memoryCount, entityCount: 0 };
@@ -119,7 +128,9 @@ router.post('/complete', async (req, res) => {
   try {
     const parsed = aiCompletionSchema.safeParse(req.body);
     if (!parsed.success) {
-      return res.status(400).json({ success: false, error: 'Validation failed', details: parsed.error.errors });
+      return res
+        .status(400)
+        .json({ success: false, error: 'Validation failed', details: parsed.error.errors });
     }
 
     const { messages, provider, model, conversationId, options } = parsed.data;
@@ -129,16 +140,20 @@ router.post('/complete', async (req, res) => {
     // Build context
     const contextResult = await buildContextBundles(userId, conversationId, {
       userMessage: messages?.[messages.length - 1]?.content || '',
-      personaId: options?.personaId
+      personaId: options?.personaId,
+      providerId: provider,
+      modelId: model,
     });
     const secondBrainStats = await getSecondBrainStats(userId);
-    
-    const systemPrompt = contextResult?.systemPrompt || systemPromptManager.buildPrompt({
-      mode: conversationId ? 'continuation' : 'fresh',
-      userId,
-      contextBundles: [],
-      secondBrainStats,
-    });
+
+    const systemPrompt =
+      contextResult?.systemPrompt ||
+      systemPromptManager.buildPrompt({
+        mode: conversationId ? 'continuation' : 'fresh',
+        userId,
+        contextBundles: [],
+        secondBrainStats,
+      });
 
     const result = await unifiedProvider.generateCompletion({
       provider: provider || getDefaultProvider(),
@@ -159,7 +174,7 @@ router.post('/complete', async (req, res) => {
           result.text,
           provider || getDefaultProvider(),
           model || ProviderConfig[provider || getDefaultProvider()]?.defaultModel,
-          result.usage,
+          result.usage
         );
       } catch (storageError) {
         logger.warn({ error: storageError.message }, 'Failed to store response');
@@ -175,10 +190,12 @@ router.post('/complete', async (req, res) => {
         finishReason: result.finishReason,
         provider: provider || getDefaultProvider(),
         conversationId,
-        toolCalls: result.toolCalls?.map(tc => ({
+        toolCalls: result.toolCalls?.map((tc) => ({
           name: tc.toolName,
           result: tc.result,
         })),
+        contextAllocation: contextResult?.layers || null,
+        contextStats: contextResult?.stats || null,
       },
     });
   } catch (error) {
@@ -198,7 +215,9 @@ router.post('/stream', async (req, res) => {
   try {
     const parsed = aiStreamSchema.safeParse(req.body);
     if (!parsed.success) {
-      return res.status(400).json({ success: false, error: 'Validation failed', details: parsed.error.errors });
+      return res
+        .status(400)
+        .json({ success: false, error: 'Validation failed', details: parsed.error.errors });
     }
 
     const { messages, provider, model, conversationId, options } = parsed.data;
@@ -207,16 +226,20 @@ router.post('/stream', async (req, res) => {
     // Build context
     const contextResult = await buildContextBundles(userId, conversationId, {
       userMessage: messages?.[messages.length - 1]?.content || '',
-      personaId: options?.personaId
+      personaId: options?.personaId,
+      providerId: provider,
+      modelId: model,
     });
     const secondBrainStats = await getSecondBrainStats(userId);
-    
-    const systemPrompt = contextResult?.systemPrompt || systemPromptManager.buildPrompt({
-      mode: conversationId ? 'continuation' : 'fresh',
-      userId,
-      contextBundles: [],
-      secondBrainStats,
-    });
+
+    const systemPrompt =
+      contextResult?.systemPrompt ||
+      systemPromptManager.buildPrompt({
+        mode: conversationId ? 'continuation' : 'fresh',
+        userId,
+        contextBundles: [],
+        secondBrainStats,
+      });
 
     // Use unified provider's streaming with pipeDataStreamToResponse
     await unifiedProvider.streamCompletion({
@@ -250,28 +273,37 @@ router.post('/agent', async (req, res) => {
   try {
     const parsed = agentRequestSchema.safeParse(req.body);
     if (!parsed.success) {
-      return res.status(400).json({ success: false, error: 'Validation failed', details: parsed.error.errors });
+      return res
+        .status(400)
+        .json({ success: false, error: 'Validation failed', details: parsed.error.errors });
     }
 
     const {
-      messages, provider, model, conversationId,
-      mode, personaId, toolSet, maxSteps,
-      enableSocial, customInstructions, options,
+      messages,
+      provider,
+      model,
+      conversationId,
+      mode,
+      personaId,
+      toolSet,
+      maxSteps,
+      enableSocial,
+      customInstructions,
+      options,
     } = parsed.data;
     const userId = getUserId(req);
 
     // Build context
     const contextResult = await buildContextBundles(userId, conversationId, {
       userMessage: messages?.[messages.length - 1]?.content || '',
-      personaId
+      personaId,
+      providerId: provider,
+      modelId: model,
     });
     const secondBrainStats = await getSecondBrainStats(userId);
 
     // Resolve model
-    const resolvedModel = unifiedProvider.resolveModel(
-      provider || getDefaultProvider(),
-      model,
-    );
+    const resolvedModel = unifiedProvider.resolveModel(provider || getDefaultProvider(), model);
 
     const result = await agentPipeline.execute({
       model: resolvedModel,
@@ -296,7 +328,7 @@ router.post('/agent', async (req, res) => {
           result.text,
           provider || getDefaultProvider(),
           model || ProviderConfig[provider || getDefaultProvider()]?.defaultModel,
-          result.usage,
+          result.usage
         );
       } catch (storageError) {
         logger.warn({ error: storageError.message }, 'Failed to store agent response');
@@ -313,6 +345,8 @@ router.post('/agent', async (req, res) => {
         metadata: result.metadata,
         provider: provider || getDefaultProvider(),
         conversationId,
+        contextAllocation: contextResult?.layers || null,
+        contextStats: contextResult?.stats || null,
       },
     });
   } catch (error) {
@@ -328,28 +362,34 @@ router.post('/agent/stream', async (req, res) => {
   try {
     const parsed = agentRequestSchema.safeParse(req.body);
     if (!parsed.success) {
-      return res.status(400).json({ success: false, error: 'Validation failed', details: parsed.error.errors });
+      return res
+        .status(400)
+        .json({ success: false, error: 'Validation failed', details: parsed.error.errors });
     }
 
     const {
-      messages, provider, model, conversationId,
-      mode, personaId, toolSet, maxSteps,
-      enableSocial, customInstructions,
+      messages,
+      provider,
+      model,
+      conversationId,
+      mode,
+      personaId,
+      toolSet,
+      maxSteps,
+      enableSocial,
+      customInstructions,
     } = parsed.data;
     const userId = getUserId(req);
 
     // Build context
     const contextResult = await buildContextBundles(userId, conversationId, {
       userMessage: messages?.[messages.length - 1]?.content || '',
-      personaId
+      personaId,
     });
     const secondBrainStats = await getSecondBrainStats(userId);
 
     // Resolve model
-    const resolvedModel = unifiedProvider.resolveModel(
-      provider || getDefaultProvider(),
-      model,
-    );
+    const resolvedModel = unifiedProvider.resolveModel(provider || getDefaultProvider(), model);
 
     await agentPipeline.executeStream({
       model: resolvedModel,
@@ -385,7 +425,9 @@ router.post('/structured', async (req, res) => {
   try {
     const parsed = structuredOutputSchema.safeParse(req.body);
     if (!parsed.success) {
-      return res.status(400).json({ success: false, error: 'Validation failed', details: parsed.error.errors });
+      return res
+        .status(400)
+        .json({ success: false, error: 'Validation failed', details: parsed.error.errors });
     }
 
     const { prompt, messages, provider, model, schema, toolSet, maxSteps } = parsed.data;
@@ -395,7 +437,7 @@ router.post('/structured', async (req, res) => {
     const result = await unifiedProvider.generateStructuredOutput({
       provider: provider || getDefaultProvider(),
       model,
-      schema,  // Note: This is a plain JSON schema; in production, convert to Zod
+      schema, // Note: This is a plain JSON schema; in production, convert to Zod
       prompt,
       messages,
       tools,
@@ -444,7 +486,9 @@ router.post('/chat', async (req, res) => {
     } else if (message) {
       messages = [{ role: 'user', content: message }];
     } else {
-      return res.status(400).json({ success: false, error: 'Either message or messages is required' });
+      return res
+        .status(400)
+        .json({ success: false, error: 'Either message or messages is required' });
     }
 
     const provider = requestedProvider || getDefaultProvider();
@@ -453,10 +497,15 @@ router.post('/chat', async (req, res) => {
     if (conversationId) {
       // Store the user message
       try {
-        await aiStorageService.processIncomingMessage(conversationId, {
-          role: 'user',
-          content: messages[messages.length - 1]?.content || message,
-        }, provider, model);
+        await aiStorageService.processIncomingMessage(
+          conversationId,
+          {
+            role: 'user',
+            content: messages[messages.length - 1]?.content || message,
+          },
+          provider,
+          model
+        );
       } catch (e) {
         logger.warn({ error: e.message }, 'Failed to store user message');
       }
@@ -464,16 +513,18 @@ router.post('/chat', async (req, res) => {
 
     // Build context
     const contextResult = await buildContextBundles(userId, conversationId, {
-      userMessage: messages[messages.length - 1]?.content || message
+      userMessage: messages[messages.length - 1]?.content || message,
     });
     const secondBrainStats = await getSecondBrainStats(userId);
-    
-    const systemPrompt = contextResult?.systemPrompt || systemPromptManager.buildPrompt({
-      mode: conversationId ? 'continuation' : 'fresh',
-      userId,
-      contextBundles: [],
-      secondBrainStats,
-    });
+
+    const systemPrompt =
+      contextResult?.systemPrompt ||
+      systemPromptManager.buildPrompt({
+        mode: conversationId ? 'continuation' : 'fresh',
+        userId,
+        contextBundles: [],
+        secondBrainStats,
+      });
 
     const result = await unifiedProvider.generateCompletion({
       provider,
@@ -491,7 +542,7 @@ router.post('/chat', async (req, res) => {
           result.text,
           provider,
           model,
-          result.usage,
+          result.usage
         );
       } catch (e) {
         logger.warn({ error: e.message }, 'Failed to store assistant response');
@@ -507,6 +558,8 @@ router.post('/chat', async (req, res) => {
         finishReason: result.finishReason,
         provider,
         conversationId,
+        contextAllocation: contextResult?.layers || null,
+        contextStats: contextResult?.stats || null,
       },
     });
   } catch (error) {
@@ -522,7 +575,7 @@ router.post('/chat', async (req, res) => {
 router.post('/actions', async (req, res) => {
   try {
     const { action, conversationId, content } = req.body;
-    
+
     if (!action || !conversationId) {
       return res.status(400).json({ success: false, error: 'Missing action or conversationId' });
     }
@@ -535,7 +588,7 @@ router.post('/actions', async (req, res) => {
         action,
         conversationId,
         result: `Action ${action} executed for conversation ${conversationId}`,
-      }
+      },
     });
   } catch (error) {
     logger.error({ error: error.message }, 'AI actions failed');

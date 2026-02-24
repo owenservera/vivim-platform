@@ -28,7 +28,13 @@ export class BudgetAlgorithm {
     l1.allocated = Math.min(l1.idealTokens, l1.maxTokens);
     remaining -= l1.allocated;
 
-    const elasticLayers = ['L2_topic', 'L3_entity', 'L4_conversation', 'L5_jit', 'L6_message_history'];
+    const elasticLayers = [
+      'L2_topic',
+      'L3_entity',
+      'L4_conversation',
+      'L5_jit',
+      'L6_message_history',
+    ];
 
     for (const key of elasticLayers) {
       const layer = layers.get(key)!;
@@ -65,7 +71,7 @@ export class BudgetAlgorithm {
 
     if (remaining > 0) {
       const sortedByPriority = elasticLayers
-        .map(key => ({ key, layer: layers.get(key)! }))
+        .map((key) => ({ key, layer: layers.get(key)! }))
         .filter(({ layer }) => layer.allocated < layer.maxTokens)
         .sort((a, b) => b.layer.priority - a.layer.priority);
 
@@ -87,7 +93,7 @@ export class BudgetAlgorithm {
     const depthMultiplier = {
       minimal: 0.5,
       standard: 1.0,
-      deep: 1.5
+      deep: 1.5,
     }[input.knowledgeDepth];
 
     const conversationPressure = Math.min(1.0, input.conversationTotalTokens / (B * 0.7));
@@ -102,7 +108,7 @@ export class BudgetAlgorithm {
       maxTokens: l0Override?.max ?? 500,
       priority: 100,
       allocated: 0,
-      elasticity: this.getElasticityOverride('L0_identity', 0.0)
+      elasticity: this.getElasticityOverride('L0_identity', 0.0),
     });
 
     const l1Override = this.getLayerOverride('L1_global_prefs');
@@ -113,7 +119,7 @@ export class BudgetAlgorithm {
       maxTokens: l1Override?.max ?? 800,
       priority: 95,
       allocated: 0,
-      elasticity: this.getElasticityOverride('L1_global_prefs', 0.1)
+      elasticity: this.getElasticityOverride('L1_global_prefs', 0.1),
     });
 
     const topicCountFactor = Math.min(2.0, 1.0 + (input.detectedTopicCount - 1) * 0.3);
@@ -129,7 +135,7 @@ export class BudgetAlgorithm {
       maxTokens: l2Override?.max ?? Math.floor(B * 0.25),
       priority: isKnowledgeHeavy ? 85 : 70,
       allocated: 0,
-      elasticity: this.getElasticityOverride('L2_topic', 0.6)
+      elasticity: this.getElasticityOverride('L2_topic', 0.6),
     });
 
     const entityCountFactor = Math.min(2.0, 1.0 + (input.detectedEntityCount - 1) * 0.4);
@@ -145,7 +151,7 @@ export class BudgetAlgorithm {
       maxTokens: l3Override?.max ?? Math.floor(B * 0.12),
       priority: 65,
       allocated: 0,
-      elasticity: this.getElasticityOverride('L3_entity', 0.7)
+      elasticity: this.getElasticityOverride('L3_entity', 0.7),
     });
 
     const msgCount = input.conversationMessageCount;
@@ -157,15 +163,15 @@ export class BudgetAlgorithm {
       layer: 'L4_conversation',
       minTokens: l4Override?.min ?? (input.hasActiveConversation ? 200 : 0),
       idealTokens: l4Override?.ideal ?? Math.min(convIdeal, Math.floor(B * 0.15)),
-      maxTokens: l4Override?.max ?? Math.floor(B * 0.20),
+      maxTokens: l4Override?.max ?? Math.floor(B * 0.2),
       priority: input.hasActiveConversation ? 88 : 30,
       allocated: 0,
-      elasticity: this.getElasticityOverride('L4_conversation', 0.3)
+      elasticity: this.getElasticityOverride('L4_conversation', 0.3),
     });
 
     const topicBundleTokens = input.availableBundles.get('topic') ?? 0;
     const coverageFactor = 1.0 - Math.min(1.0, topicBundleTokens / (B * 0.15));
-    const jitBase = B * 0.10;
+    const jitBase = B * 0.1;
     const jitAdjusted = jitBase * Math.max(0.3, coverageFactor) * depthMultiplier;
     const l5Override = this.getLayerOverride('L5_jit');
 
@@ -176,7 +182,7 @@ export class BudgetAlgorithm {
       maxTokens: l5Override?.max ?? Math.floor(B * 0.18),
       priority: 75,
       allocated: 0,
-      elasticity: this.getElasticityOverride('L5_jit', 0.5)
+      elasticity: this.getElasticityOverride('L5_jit', 0.5),
     });
 
     const totalConvTokens = input.conversationTotalTokens;
@@ -187,7 +193,7 @@ export class BudgetAlgorithm {
     } else if (totalConvTokens <= 10000) {
       idealRatio = 0.35;
     } else if (totalConvTokens <= 50000) {
-      idealRatio = 0.30;
+      idealRatio = 0.3;
     } else {
       idealRatio = 0.25;
     }
@@ -201,10 +207,10 @@ export class BudgetAlgorithm {
       layer: 'L6_message_history',
       minTokens: l6Override?.min ?? (input.hasActiveConversation ? 500 : 0),
       idealTokens: l6Override?.ideal ?? Math.min(historyIdeal, totalConvTokens),
-      maxTokens: l6Override?.max ?? Math.floor(B * 0.60),
+      maxTokens: l6Override?.max ?? Math.floor(B * 0.6),
       priority: isDialogueHeavy ? 90 : 80,
       allocated: 0,
-      elasticity: this.getElasticityOverride('L6_message_history', 0.4)
+      elasticity: this.getElasticityOverride('L6_message_history', 0.4),
     });
 
     const l7Override = this.getLayerOverride('L7_user_message');
@@ -215,7 +221,7 @@ export class BudgetAlgorithm {
       maxTokens: l7Override?.max ?? input.userMessageTokens,
       priority: 100,
       allocated: 0,
-      elasticity: this.getElasticityOverride('L7_user_message', 0.0)
+      elasticity: this.getElasticityOverride('L7_user_message', 0.0),
     });
 
     return layers;
@@ -231,7 +237,7 @@ export class BudgetAlgorithm {
 
   private cutToFit(layers: Map<string, LayerBudget>, elasticKeys: string[], deficit: number): void {
     const sorted = elasticKeys
-      .map(key => ({ key, layer: layers.get(key)! }))
+      .map((key) => ({ key, layer: layers.get(key)! }))
       .sort((a, b) => a.layer.priority - b.layer.priority);
 
     let remaining = Math.abs(deficit);

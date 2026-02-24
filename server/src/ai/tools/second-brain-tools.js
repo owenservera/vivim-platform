@@ -17,10 +17,14 @@ const prisma = getPrismaClient();
  * Search the user's knowledge base (ACUs, memories, conversations)
  */
 export const searchKnowledge = tool({
-  description: 'Search the user\'s knowledge base for relevant information. Use this when the user asks about something they might have discussed before, or when you need additional context. Returns relevant knowledge units (ACUs) and conversation snippets.',
+  description:
+    "Search the user's knowledge base for relevant information. Use this when the user asks about something they might have discussed before, or when you need additional context. Returns relevant knowledge units (ACUs) and conversation snippets.",
   parameters: z.object({
     query: z.string().describe('The search query — what to look for in the knowledge base'),
-    type: z.enum(['all', 'conversations', 'acus', 'memories']).default('all').describe('Type of knowledge to search'),
+    type: z
+      .enum(['all', 'conversations', 'acus', 'memories'])
+      .default('all')
+      .describe('Type of knowledge to search'),
     limit: z.number().min(1).max(20).default(5).describe('Maximum number of results to return'),
   }),
   execute: async ({ query, type, limit }, { userId }) => {
@@ -40,11 +44,11 @@ export const searchKnowledge = tool({
               {
                 messages: {
                   some: {
-                    parts: { path: [], string_contains: query }
-                  }
-                }
-              }
-            ]
+                    parts: { path: [], string_contains: query },
+                  },
+                },
+              },
+            ],
           },
           select: {
             id: true,
@@ -79,7 +83,7 @@ export const searchKnowledge = tool({
             OR: [
               { content: { contains: query, mode: 'insensitive' } },
               { category: { contains: query, mode: 'insensitive' } },
-            ]
+            ],
           },
           select: {
             id: true,
@@ -112,7 +116,7 @@ export const searchKnowledge = tool({
             OR: [
               { label: { contains: query, mode: 'insensitive' } },
               { slug: { contains: query, mode: 'insensitive' } },
-            ]
+            ],
           },
           select: {
             id: true,
@@ -145,9 +149,10 @@ export const searchKnowledge = tool({
         query,
         resultCount: results.length,
         results,
-        suggestion: results.length === 0
-          ? 'No matching knowledge found. This might be a new topic for the user.'
-          : undefined,
+        suggestion:
+          results.length === 0
+            ? 'No matching knowledge found. This might be a new topic for the user.'
+            : undefined,
       };
     } catch (error) {
       log.error({ error: error.message }, 'Knowledge search failed');
@@ -160,7 +165,8 @@ export const searchKnowledge = tool({
  * Recall full context from a specific conversation
  */
 export const recallConversation = tool({
-  description: 'Recall the full context from a specific past conversation. Use this when you need detailed information from a conversation that was found via search.',
+  description:
+    'Recall the full context from a specific past conversation. Use this when you need detailed information from a conversation that was found via search.',
   parameters: z.object({
     conversationId: z.string().describe('The conversation ID to recall'),
     messageLimit: z.number().min(1).max(50).default(20).describe('Max messages to retrieve'),
@@ -195,10 +201,10 @@ export const recallConversation = tool({
         return { error: 'Access denied' };
       }
 
-      const messages = conversation.messages.map(m => ({
+      const messages = conversation.messages.map((m) => ({
         role: m.role,
         content: Array.isArray(m.parts)
-          ? m.parts.map(p => p.text || p.content || '').join('')
+          ? m.parts.map((p) => p.text || p.content || '').join('')
           : String(m.parts),
         author: m.author,
         index: m.messageIndex,
@@ -223,19 +229,25 @@ export const recallConversation = tool({
  * Create a new memory/note in the user's second brain
  */
 export const createMemory = tool({
-  description: 'Save an important insight, decision, or piece of knowledge to the user\'s second brain. Use this when the conversation produces valuable knowledge that should be remembered.',
+  description:
+    "Save an important insight, decision, or piece of knowledge to the user's second brain. Use this when the conversation produces valuable knowledge that should be remembered.",
   parameters: z.object({
     content: z.string().min(10).max(2000).describe('The knowledge content to save'),
-    category: z.enum([
-      'insight',      // Key realization or understanding
-      'decision',     // A decision that was made
-      'preference',   // User preference discovered
-      'fact',         // Factual information
-      'action_item',  // Something to do
-      'reference',    // Reference material
-    ]).describe('Category of the knowledge unit'),
+    category: z
+      .enum([
+        'insight', // Key realization or understanding
+        'decision', // A decision that was made
+        'preference', // User preference discovered
+        'fact', // Factual information
+        'action_item', // Something to do
+        'reference', // Reference material
+      ])
+      .describe('Category of the knowledge unit'),
     tags: z.array(z.string()).max(5).default([]).describe('Optional tags for organization'),
-    importance: z.enum(['low', 'medium', 'high', 'critical']).default('medium').describe('How important this knowledge is'),
+    importance: z
+      .enum(['low', 'medium', 'high', 'critical'])
+      .default('medium')
+      .describe('How important this knowledge is'),
   }),
   execute: async ({ content, category, tags, importance }, { userId, conversationId }) => {
     const log = logger.child({ tool: 'createMemory', userId, category });
@@ -302,10 +314,14 @@ export const createMemory = tool({
  * Find related topics, entities, and conversations
  */
 export const findRelated = tool({
-  description: 'Find topics, entities, or conversations related to a given concept. Use this to help connect ideas across the user\'s knowledge base.',
+  description:
+    "Find topics, entities, or conversations related to a given concept. Use this to help connect ideas across the user's knowledge base.",
   parameters: z.object({
     concept: z.string().describe('The concept to find relations for'),
-    depth: z.enum(['shallow', 'deep']).default('shallow').describe('How deep to search for connections'),
+    depth: z
+      .enum(['shallow', 'deep'])
+      .default('shallow')
+      .describe('How deep to search for connections'),
   }),
   execute: async ({ concept, depth }, { userId }) => {
     const log = logger.child({ tool: 'findRelated', userId, concept });
@@ -318,12 +334,12 @@ export const findRelated = tool({
           OR: [
             { label: { contains: concept, mode: 'insensitive' } },
             { slug: { contains: concept.toLowerCase(), mode: 'insensitive' } },
-          ]
+          ],
         },
         include: {
           conversations: {
             include: { conversation: { select: { id: true, title: true } } },
-            take: deep === 'deep' ? 5 : 2,
+            take: depth === 'deep' ? 5 : 2,
           },
         },
         take: 5,
@@ -336,7 +352,7 @@ export const findRelated = tool({
           OR: [
             { name: { contains: concept, mode: 'insensitive' } },
             { aliases: { has: concept.toLowerCase() } },
-          ]
+          ],
         },
         select: {
           id: true,
@@ -355,7 +371,7 @@ export const findRelated = tool({
           type: 'topic',
           label: topic.label,
           importance: topic.importanceScore,
-          relatedConversations: topic.conversations.map(tc => ({
+          relatedConversations: topic.conversations.map((tc) => ({
             id: tc.conversation.id,
             title: tc.conversation.title,
           })),
@@ -389,16 +405,20 @@ export const findRelated = tool({
  * Summarize and extract key points from text
  */
 export const extractKeyPoints = tool({
-  description: 'Extract and summarize the key points, decisions, and action items from a piece of text or conversation. Use this to help the user distill important information.',
+  description:
+    'Extract and summarize the key points, decisions, and action items from a piece of text or conversation. Use this to help the user distill important information.',
   parameters: z.object({
     text: z.string().min(20).describe('The text to extract key points from'),
-    focus: z.enum(['general', 'decisions', 'action_items', 'insights', 'technical']).default('general').describe('What aspect to focus the extraction on'),
+    focus: z
+      .enum(['general', 'decisions', 'action_items', 'insights', 'technical'])
+      .default('general')
+      .describe('What aspect to focus the extraction on'),
   }),
   execute: async ({ text, focus }) => {
     // This is a client-side extraction that helps the AI reason about content
     // The AI itself will process these points, but having them structured helps
     const wordCount = text.split(/\s+/).length;
-    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 10);
+    const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 10);
     const hasCode = /```[\s\S]*?```/.test(text) || /`[^`]+`/.test(text);
     const hasQuestions = /\?/.test(text);
     const hasList = /^[\s]*[-*•]\s/m.test(text);
@@ -421,10 +441,14 @@ export const extractKeyPoints = tool({
  * Get the user's active topics and interests
  */
 export const getUserTopics = tool({
-  description: 'Get the user\'s most active topics and interests from their knowledge base. Use this to understand what the user cares about and to personalize responses.',
+  description:
+    "Get the user's most active topics and interests from their knowledge base. Use this to understand what the user cares about and to personalize responses.",
   parameters: z.object({
     limit: z.number().min(1).max(20).default(10).describe('Maximum topics to return'),
-    sortBy: z.enum(['importance', 'recent', 'frequency']).default('recent').describe('How to sort topics'),
+    sortBy: z
+      .enum(['importance', 'recent', 'frequency'])
+      .default('recent')
+      .describe('How to sort topics'),
   }),
   execute: async ({ limit, sortBy }, { userId }) => {
     try {
@@ -452,7 +476,7 @@ export const getUserTopics = tool({
       return {
         userId,
         topicCount: topics.length,
-        topics: topics.map(t => ({
+        topics: topics.map((t) => ({
           label: t.label,
           domain: t.domain,
           importance: t.importanceScore,
@@ -495,11 +519,14 @@ export function buildSecondBrainTools(userId, conversationId = null) {
  */
 export function getToolDescriptions() {
   return [
-    { name: 'searchKnowledge', description: 'Search across conversations, knowledge units, and topics' },
+    {
+      name: 'searchKnowledge',
+      description: 'Search across conversations, knowledge units, and topics',
+    },
     { name: 'recallConversation', description: 'Recall full context from a past conversation' },
     { name: 'createMemory', description: 'Save insights and decisions to the second brain' },
     { name: 'findRelated', description: 'Find related topics and entities' },
     { name: 'extractKeyPoints', description: 'Extract key points from text' },
-    { name: 'getUserTopics', description: 'View the user\'s active topics and interests' },
+    { name: 'getUserTopics', description: "View the user's active topics and interests" },
   ];
 }

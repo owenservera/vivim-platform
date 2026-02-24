@@ -1,6 +1,6 @@
 /**
  * Dynamic Context Pipeline Types
- * 
+ *
  * Type definitions for the layered, pre-generated, bespoke context system.
  * This module provides intelligent context assembly with token budget management.
  */
@@ -12,13 +12,13 @@
 export interface UserContextSettings {
   /** User's max context window (4096 - 50000, default 12000) */
   maxContextTokens: number;
-  
+
   /** Prioritize conversation history over knowledge (default: true for continuing) */
   prioritizeConversationHistory: boolean;
-  
+
   /** Knowledge depth setting (default: 'standard') */
   knowledgeDepth: 'minimal' | 'standard' | 'deep';
-  
+
   /** Include entity context (default: true) */
   includeEntityContext: boolean;
 }
@@ -65,7 +65,7 @@ export interface BudgetInput {
 }
 
 export interface ComputedBudget {
-  layers: Map<string, LayerBudget>;
+  layers: Record<string, LayerBudget>;
   totalUsed: number;
   totalAvailable: number;
 }
@@ -105,13 +105,13 @@ export interface DetectedContext {
 // BUNDLE TYPES
 // ============================================================================
 
-export type BundleType = 
-  | 'identity_core'      // L0
-  | 'global_prefs'       // L1
-  | 'topic'              // L2
-  | 'entity'             // L3
-  | 'conversation'       // L4
-  | 'composite';         // Pre-merged
+export type BundleType =
+  | 'identity_core' // L0
+  | 'global_prefs' // L1
+  | 'topic' // L2
+  | 'entity' // L3
+  | 'conversation' // L4
+  | 'composite'; // Pre-merged
 
 export interface CompiledBundle {
   id: string;
@@ -168,7 +168,7 @@ export interface ConversationArc {
 // PREDICTION TYPES
 // ============================================================================
 
-export type InteractionType = 
+export type InteractionType =
   | 'continue_conversation'
   | 'new_on_topic'
   | 'entity_related'
@@ -203,6 +203,18 @@ export interface AssembledContext {
     detectedTopics: number;
     detectedEntities: number;
     cacheHitRate: number;
+    bundlesInfo?: Array<{
+      id: string;
+      type: string;
+      title: string;
+      tokenCount: number;
+      snippet: string;
+    }>;
+    conversationStats?: {
+      messageCount: number;
+      totalTokens: number;
+      hasConversation: boolean;
+    };
   };
 }
 
@@ -212,6 +224,8 @@ export interface AssemblyParams {
   userMessage: string;
   personaId?: string;
   deviceId?: string;
+  providerId?: string;
+  modelId?: string;
   settings?: Partial<UserContextSettings>;
 }
 

@@ -21,7 +21,7 @@ export const EVENTS = {
   ENTITY_CREATED: 'entity:created',
   ENTITY_UPDATED: 'entity:updated',
   ENTITY_DELETED: 'entity:deleted',
-  
+
   // System Events
   USER_CONNECTED: 'user:connected',
   USER_DISCONNECTED: 'user:disconnected',

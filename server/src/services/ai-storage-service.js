@@ -1,6 +1,10 @@
 // apps/server/src/services/ai-storage-service.js
 
-import { createConversation, addMessageToConversation, findConversationById } from '../repositories/ConversationRepository.js';
+import {
+  createConversation,
+  addMessageToConversation,
+  findConversationById,
+} from '../repositories/ConversationRepository.js';
 import { getPrismaClient } from '../lib/database.js';
 import { logger } from '../lib/logger.js';
 import { v4 as uuidv4 } from 'uuid';
@@ -23,13 +27,7 @@ export class AiStorageService {
    * Start a new AI conversation in the database
    */
   async startConversation(data) {
-    const {
-      provider,
-      model,
-      ownerId,
-      title = 'New AI Chat',
-      initialMessages = [],
-    } = data;
+    const { provider, model, ownerId, title = 'New AI Chat', initialMessages = [] } = data;
 
     const conversationId = uuidv4();
     const sourceUrl = `internal://chat/${conversationId}`;
@@ -63,7 +61,7 @@ export class AiStorageService {
 
     // Link conversation to topics from initial messages
     if (initialMessages.length > 0 && ownerId) {
-      const allContent = initialMessages.map(m => m.content || '').join(' ');
+      const allContent = initialMessages.map((m) => m.content || '').join(' ');
       await this.linkTopicsToConversation(conversationId, ownerId, allContent);
     }
 
@@ -71,14 +69,16 @@ export class AiStorageService {
   }
 
   /**
-    * Append a message to an existing conversation
-    */
+   * Append a message to an existing conversation
+   */
   async appendMessage(conversationId, message) {
     logger.debug({ conversationId, role: message.role }, 'Appending message to AI conversation');
 
     const result = await addMessageToConversation(conversationId, {
       role: message.role,
-      parts: Array.isArray(message.content) ? message.content : [{ type: 'text', text: message.content }],
+      parts: Array.isArray(message.content)
+        ? message.content
+        : [{ type: 'text', text: message.content }],
       status: message.status || 'completed',
       finishReason: message.finishReason,
       tokenCount: message.tokenCount,
@@ -89,7 +89,7 @@ export class AiStorageService {
     try {
       const conversation = await prisma.conversation.findUnique({
         where: { id: conversationId },
-        select: { ownerId: true, updatedAt: true }
+        select: { ownerId: true, updatedAt: true },
       });
 
       if (conversation?.ownerId) {
@@ -112,9 +112,9 @@ export class AiStorageService {
   }
 
   /**
-    * Check if conversation is idle and trigger librarian worker
-    * Conversation is considered idle when no user activity for IDLE_TIMEOUT_MINUTES
-    */
+   * Check if conversation is idle and trigger librarian worker
+   * Conversation is considered idle when no user activity for IDLE_TIMEOUT_MINUTES
+   */
   async checkAndTriggerLibrarian(conversationId, conversation) {
     if (!conversation?.updatedAt) {
       logger.debug({ conversationId }, 'No updatedAt timestamp, skipping librarian trigger');
@@ -126,22 +126,31 @@ export class AiStorageService {
     const minutesSinceActivity = (now.getTime() - lastActivity.getTime()) / (1000 * 60);
 
     if (minutesSinceActivity >= IDLE_TIMEOUT_MINUTES) {
-      logger.info({
-        conversationId,
-        minutesSinceActivity: Math.round(minutesSinceActivity)
-      }, 'Conversation is idle, triggering librarian worker');
+      logger.info(
+        {
+          conversationId,
+          minutesSinceActivity: Math.round(minutesSinceActivity),
+        },
+        'Conversation is idle, triggering librarian worker'
+      );
 
       try {
         await librarianWorker.onConversationIdle(conversationId);
         logger.info({ conversationId }, 'Librarian worker triggered successfully');
       } catch (error) {
-        logger.error({ conversationId, error: error.message }, 'Failed to trigger librarian worker');
+        logger.error(
+          { conversationId, error: error.message },
+          'Failed to trigger librarian worker'
+        );
       }
     } else {
-      logger.debug({
-        conversationId,
-        minutesSinceActivity: Math.round(minutesSinceActivity)
-      }, 'Conversation is still active, skipping librarian trigger');
+      logger.debug(
+        {
+          conversationId,
+          minutesSinceActivity: Math.round(minutesSinceActivity),
+        },
+        'Conversation is still active, skipping librarian trigger'
+      );
     }
   }
 
@@ -149,13 +158,16 @@ export class AiStorageService {
    * Extract keywords from content and link to conversation
    */
   async linkTopicsToConversation(conversationId, userId, content) {
-    if (!content || !userId) return;
+    if (!content || !userId) {
+      return;
+    }
 
     // Simple keyword extraction (can be enhanced with NLP)
-    const words = content.toLowerCase()
+    const words = content
+      .toLowerCase()
       .replace(/[^\w\s]/g, ' ')
       .split(/\s+/)
-      .filter(w => w.length > 4);
+      .filter((w) => w.length > 4);
 
     // Get unique keywords (frequency-based)
     const wordFreq = {};
@@ -172,7 +184,7 @@ export class AiStorageService {
     for (const keyword of topKeywords) {
       // Find or create topic profile
       let topicProfile = await prisma.topicProfile.findUnique({
-        where: { userId_slug: { userId, slug: keyword } }
+        where: { userId_slug: { userId, slug: keyword } },
       });
 
       if (!topicProfile) {
@@ -187,7 +199,7 @@ export class AiStorageService {
             embedding: new Array(768).fill(0), // Placeholder embedding
             firstEngagedAt: new Date(),
             lastEngagedAt: new Date(),
-          }
+          },
         });
       }
 
@@ -196,17 +208,17 @@ export class AiStorageService {
         where: {
           topicId_conversationId: {
             topicId: topicProfile.id,
-            conversationId
-          }
+            conversationId,
+          },
         },
         update: {
-          relevanceScore: { increment: 0.05 }
+          relevanceScore: { increment: 0.05 },
         },
         create: {
           topicId: topicProfile.id,
           conversationId,
-          relevanceScore: 0.3
-        }
+          relevanceScore: 0.3,
+        },
       });
 
       // Update topic engagement stats
@@ -214,8 +226,8 @@ export class AiStorageService {
         where: { id: topicProfile.id },
         data: {
           totalConversations: { increment: 1 },
-          lastEngagedAt: new Date()
-        }
+          lastEngagedAt: new Date(),
+        },
       });
     }
   }
@@ -228,9 +240,9 @@ export class AiStorageService {
       await prisma.contextBundle.updateMany({
         where: {
           conversationId,
-          bundleType: 'conversation'
+          bundleType: 'conversation',
         },
-        data: { isDirty: true }
+        data: { isDirty: true },
       });
       logger.debug({ conversationId }, 'Invalidated conversation context bundle');
     } catch (e) {
@@ -249,9 +261,9 @@ export class AiStorageService {
       include: {
         messages: {
           orderBy: { messageIndex: 'asc' },
-          take: maxMessages || 50
-        }
-      }
+          take: maxMessages || 50,
+        },
+      },
     });
 
     if (!conversation) {
@@ -261,24 +273,21 @@ export class AiStorageService {
     // Get context bundles for this conversation
     const whereClause = conversation.ownerId
       ? {
-          OR: [
-            { conversationId },
-            { userId: conversation.ownerId }
-          ]
+          OR: [{ conversationId }, { userId: conversation.ownerId }],
         }
       : { conversationId };
 
     const bundles = await prisma.contextBundle.findMany({
       where: whereClause,
-      orderBy: { compiledAt: 'desc' }
+      orderBy: { compiledAt: 'desc' },
     });
 
     // Format messages for AI
-    const messages = conversation.messages.map(m => ({
+    const messages = conversation.messages.map((m) => ({
       role: m.role,
       content: Array.isArray(m.parts)
-        ? m.parts.map(p => p.text || p.content || '').join('')
-        : m.parts
+        ? m.parts.map((p) => p.text || p.content || '').join('')
+        : m.parts,
     }));
 
     return {
@@ -287,13 +296,13 @@ export class AiStorageService {
         totalMessages: conversation.messageCount,
         totalTokens: conversation.totalTokens || 0,
         bundlesCount: bundles.length,
-        contextTokens: bundles.reduce((sum, b) => sum + b.tokenCount, 0)
+        contextTokens: bundles.reduce((sum, b) => sum + b.tokenCount, 0),
       },
-      bundles: bundles.map(b => ({
+      bundles: bundles.map((b) => ({
         type: b.bundleType,
         content: b.compiledPrompt,
-        tokens: b.tokenCount
-      }))
+        tokens: b.tokenCount,
+      })),
     };
   }
 
@@ -313,17 +322,17 @@ export class AiStorageService {
       model,
       ownerId,
       title: `Forked: ${sourceConversation.title}`,
-      initialMessages: [
-        ...sourceConversation.messages || [],
-        { role: 'user', content: prompt }
-      ]
+      initialMessages: [...(sourceConversation.messages || []), { role: 'user', content: prompt }],
     });
 
-    logger.info({
-      sourceId,
-      forkedId: forkedConversation.id,
-      messageCount: forkedConversation.messages?.length || 0
-    }, 'Successfully forked conversation');
+    logger.info(
+      {
+        sourceId,
+        forkedId: forkedConversation.id,
+        messageCount: forkedConversation.messages?.length || 0,
+      },
+      'Successfully forked conversation'
+    );
 
     return forkedConversation;
   }

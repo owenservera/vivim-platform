@@ -35,8 +35,8 @@ export interface BundleDelta {
   operations: DiffOperation[];
   addedTokens: number;
   removedTokens: number;
-  deltaSize: number;        // Size of delta in bytes
-  originalSize: number;     // Size of full content in bytes
+  deltaSize: number; // Size of delta in bytes
+  originalSize: number; // Size of full content in bytes
   compressionRatio: number; // delta/original
   createdAt: Date;
 }
@@ -85,11 +85,13 @@ export class BundleDiffer {
     let lcsIdx = 0;
 
     while (oldIdx < oldLines.length || newIdx < newLines.length) {
-      if (lcsIdx < lcs.length &&
-          oldIdx < oldLines.length &&
-          newIdx < newLines.length &&
-          oldLines[oldIdx] === lcs[lcsIdx] &&
-          newLines[newIdx] === lcs[lcsIdx]) {
+      if (
+        lcsIdx < lcs.length &&
+        oldIdx < oldLines.length &&
+        newIdx < newLines.length &&
+        oldLines[oldIdx] === lcs[lcsIdx] &&
+        newLines[newIdx] === lcs[lcsIdx]
+      ) {
         // Lines match - keep
         operations.push({
           type: 'keep',
@@ -136,7 +138,7 @@ export class BundleDiffer {
   applyDiff(originalContent: string, operations: DiffOperation[]): string {
     const oldLines = originalContent.split('\n');
     const newLines: string[] = [];
-    
+
     let oldIdx = 0;
 
     for (const op of operations) {
@@ -203,10 +205,10 @@ export class BundleDiffer {
       toVersion: newVersion,
       operations,
       addedTokens: operations
-        .filter(o => o.type === 'add')
+        .filter((o) => o.type === 'add')
         .reduce((sum, o) => sum + this.tokenEstimator.estimateTokens(o.content ?? ''), 0),
       removedTokens: operations
-        .filter(o => o.type === 'remove')
+        .filter((o) => o.type === 'remove')
         .reduce((sum, o) => sum + this.tokenEstimator.estimateTokens(o.content ?? ''), 0),
       deltaSize,
       originalSize,
@@ -269,8 +271,11 @@ export class BundleDiffer {
       const tokenCount = this.tokenEstimator.estimateTokens(newContent);
 
       await this.computeAndStoreDelta(
-        bundleId, currentContent, newContent,
-        currentVersion, currentVersion + 1
+        bundleId,
+        currentContent,
+        newContent,
+        currentVersion,
+        currentVersion + 1
       );
 
       return { newContent, tokenCount, method: 'delta' };
@@ -293,9 +298,9 @@ export class BundleDiffer {
 
     const operations = this.computeDiff(oldContent, newContent);
     const totalOps = operations.length;
-    const changeOps = operations.filter(o => o.type !== 'keep').length;
+    const changeOps = operations.filter((o) => o.type !== 'keep').length;
 
-    return totalOps > 0 ? (changeOps / totalOps) > threshold : false;
+    return totalOps > 0 ? changeOps / totalOps > threshold : false;
   }
 
   /**
@@ -337,13 +342,17 @@ export class BundleDiffer {
   getStats(): DiffStats {
     return {
       totalDiffs: this.stats.totalDiffs,
-      avgCompressionRatio: this.stats.compressionRatios.length > 0
-        ? this.stats.compressionRatios.reduce((a, b) => a + b, 0) / this.stats.compressionRatios.length
-        : 0,
+      avgCompressionRatio:
+        this.stats.compressionRatios.length > 0
+          ? this.stats.compressionRatios.reduce((a, b) => a + b, 0) /
+            this.stats.compressionRatios.length
+          : 0,
       totalBytesSaved: this.stats.totalBytesSaved,
-      avgDiffOperations: this.stats.operationCounts.length > 0
-        ? this.stats.operationCounts.reduce((a, b) => a + b, 0) / this.stats.operationCounts.length
-        : 0,
+      avgDiffOperations:
+        this.stats.operationCounts.length > 0
+          ? this.stats.operationCounts.reduce((a, b) => a + b, 0) /
+            this.stats.operationCounts.length
+          : 0,
     };
   }
 
@@ -391,7 +400,8 @@ export class BundleDiffer {
     }
 
     const result: string[] = [];
-    let i = m, j = n;
+    let i = m,
+      j = n;
     while (i > 0 && j > 0) {
       if (a[i - 1] === b[j - 1]) {
         result.unshift(a[i - 1]);

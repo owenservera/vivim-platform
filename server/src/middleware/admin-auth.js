@@ -26,12 +26,12 @@ function isValidAdminKey(apiKey) {
   if (!apiKey) {
     return false;
   }
-  
+
   // Check master admin key first
   if (MASTER_ADMIN_KEY && apiKey === MASTER_ADMIN_KEY) {
     return true;
   }
-  
+
   // Check individual admin keys
   return ADMIN_API_KEYS.includes(apiKey);
 }
@@ -68,17 +68,17 @@ function extractAdminKey(req) {
  */
 function isTrustedSource(req) {
   const ip = req.ip || req.connection?.remoteAddress;
-  
+
   // localhost
   if (ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1') {
     return true;
   }
-  
+
   // private networks
   if (ip?.startsWith('192.168.') || ip?.startsWith('10.') || ip?.startsWith('172.')) {
     return true;
   }
-  
+
   return false;
 }
 
@@ -93,10 +93,10 @@ function isTrustedSource(req) {
 export function requireAdminAuth() {
   return async (req, res, next) => {
     const log = req.log || logger;
-    
+
     // Check for API key authentication
     const adminKey = extractAdminKey(req);
-    
+
     if (adminKey) {
       if (isValidAdminKey(adminKey)) {
         req.adminAuth = {
@@ -105,29 +105,35 @@ export function requireAdminAuth() {
           key: `${adminKey.substring(0, 8)}...`,
           permissions: ['*'], // Full admin permissions
         };
-        
-        log.info({ 
-          path: req.path, 
-          authType: 'api_key',
-          ip: req.ip 
-        }, 'Admin API access granted via API key');
-        
+
+        log.info(
+          {
+            path: req.path,
+            authType: 'api_key',
+            ip: req.ip,
+          },
+          'Admin API access granted via API key'
+        );
+
         return next();
       } else {
-        log.warn({ 
-          path: req.path, 
-          hasKey: !!adminKey,
-          ip: req.ip 
-        }, 'Invalid admin API key attempt');
-        
+        log.warn(
+          {
+            path: req.path,
+            hasKey: !!adminKey,
+            ip: req.ip,
+          },
+          'Invalid admin API key attempt'
+        );
+
         return res.status(401).json({
           success: false,
           error: 'Unauthorized: Invalid admin API key',
-          code: 'INVALID_ADMIN_KEY'
+          code: 'INVALID_ADMIN_KEY',
         });
       }
     }
-    
+
     // Check for session-based authentication with admin role
     if (req.user && req.user.role === 'admin') {
       req.adminAuth = {
@@ -136,16 +142,19 @@ export function requireAdminAuth() {
         userId: req.user.userId || req.user.id,
         permissions: ['*'],
       };
-      
-      log.info({ 
-        path: req.path, 
-        authType: 'session',
-        userId: req.user.userId 
-      }, 'Admin access granted via session');
-      
+
+      log.info(
+        {
+          path: req.path,
+          authType: 'session',
+          userId: req.user.userId,
+        },
+        'Admin access granted via session'
+      );
+
       return next();
     }
-    
+
     // Check if request is from trusted source (localhost/development)
     const isDevMode = process.env.NODE_ENV !== 'production';
     if (isDevMode && isTrustedSource(req)) {
@@ -155,28 +164,34 @@ export function requireAdminAuth() {
         authType: 'dev_trusted',
         permissions: ['*'],
       };
-      
-      log.warn({ 
-        path: req.path, 
-        authType: 'dev_trusted',
-        ip: req.ip 
-      }, 'Admin access granted via trusted source (dev mode)');
-      
+
+      log.warn(
+        {
+          path: req.path,
+          authType: 'dev_trusted',
+          ip: req.ip,
+        },
+        'Admin access granted via trusted source (dev mode)'
+      );
+
       return next();
     }
-    
+
     // No valid authentication found
-    log.warn({ 
-      path: req.path, 
-      hasKey: !!adminKey,
-      hasUser: !!req.user,
-      ip: req.ip 
-    }, 'Unauthorized admin access attempt');
-    
+    log.warn(
+      {
+        path: req.path,
+        hasKey: !!adminKey,
+        hasUser: !!req.user,
+        ip: req.ip,
+      },
+      'Unauthorized admin access attempt'
+    );
+
     return res.status(401).json({
       success: false,
       error: 'Unauthorized: Admin authentication required',
-      code: 'ADMIN_AUTH_REQUIRED'
+      code: 'ADMIN_AUTH_REQUIRED',
     });
   };
 }
@@ -188,36 +203,39 @@ export function requireAdminAuth() {
 export function requireAdminPermission(permission) {
   return async (req, res, next) => {
     const log = req.log || logger;
-    
+
     // Ensure admin authentication ran first
     if (!req.adminAuth?.isAuthenticated) {
       return res.status(401).json({
         success: false,
         error: 'Admin authentication required',
-        code: 'ADMIN_AUTH_REQUIRED'
+        code: 'ADMIN_AUTH_REQUIRED',
       });
     }
-    
+
     // Master key has all permissions
     if (req.adminAuth.permissions.includes('*')) {
       return next();
     }
-    
+
     // Check specific permission
     if (!req.adminAuth.permissions.includes(permission)) {
-      log.warn({ 
-        path: req.path, 
-        permission,
-        userId: req.adminAuth.userId 
-      }, 'Insufficient admin permissions');
-      
+      log.warn(
+        {
+          path: req.path,
+          permission,
+          userId: req.adminAuth.userId,
+        },
+        'Insufficient admin permissions'
+      );
+
       return res.status(403).json({
         success: false,
         error: `Admin permission '${permission}' required`,
-        code: 'INSUFFICIENT_ADMIN_PERMISSION'
+        code: 'INSUFFICIENT_ADMIN_PERMISSION',
       });
     }
-    
+
     next();
   };
 }
@@ -232,10 +250,10 @@ export function requireAdminRead() {
       return res.status(403).json({
         success: false,
         error: 'Read-only admin access required',
-        code: 'READONLY_ADMIN_REQUIRED'
+        code: 'READONLY_ADMIN_REQUIRED',
       });
     }
-    
+
     next();
   };
 }
@@ -247,44 +265,50 @@ export function requireAdminRead() {
 export function requireDatabaseQueryPermission() {
   return async (req, res, next) => {
     const log = req.log || logger;
-    
+
     // Ensure admin authentication ran first
     if (!req.adminAuth?.isAuthenticated) {
       return res.status(401).json({
         success: false,
         error: 'Admin authentication required',
-        code: 'ADMIN_AUTH_REQUIRED'
+        code: 'ADMIN_AUTH_REQUIRED',
       });
     }
-    
+
     // Master key required for database queries in production
     if (process.env.NODE_ENV === 'production') {
       const adminKey = extractAdminKey(req);
       const isMasterKey = MASTER_ADMIN_KEY && adminKey === MASTER_ADMIN_KEY;
-      
+
       if (!isMasterKey) {
-        log.warn({ 
-          path: req.path, 
-          userId: req.adminAuth.userId,
-          authType: req.adminAuth.authType
-        }, 'Attempted database query without master key in production');
-        
+        log.warn(
+          {
+            path: req.path,
+            userId: req.adminAuth.userId,
+            authType: req.adminAuth.authType,
+          },
+          'Attempted database query without master key in production'
+        );
+
         return res.status(403).json({
           success: false,
           error: 'Master admin key required for database queries in production',
-          code: 'MASTER_KEY_REQUIRED'
+          code: 'MASTER_KEY_REQUIRED',
         });
       }
     }
-    
+
     // Log database query attempts
-    log.info({ 
-      path: req.path, 
-      method: req.method,
-      userId: req.adminAuth.userId,
-      authType: req.adminAuth.authType
-    }, 'Database query permission granted');
-    
+    log.info(
+      {
+        path: req.path,
+        method: req.method,
+        userId: req.adminAuth.userId,
+        authType: req.adminAuth.authType,
+      },
+      'Database query permission granted'
+    );
+
     next();
   };
 }

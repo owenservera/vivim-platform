@@ -96,8 +96,8 @@ export class AgentPipeline {
     const stepLimits = {
       'single-shot': 2,
       'multi-step': maxSteps,
-      'researcher': 12,
-      'conversational': 1,
+      researcher: 12,
+      conversational: 1,
     };
 
     const effectiveMaxSteps = stepLimits[mode] || maxSteps;
@@ -106,11 +106,14 @@ export class AgentPipeline {
     // Get persona settings for temperature
     const personaSettings = systemPromptManager.getPersonaSettings(personaId);
 
-    log.info({
-      toolCount: Object.keys(tools).length,
-      maxSteps: effectiveMaxSteps,
-      messageCount: messages.length,
-    }, 'Agent pipeline starting');
+    log.info(
+      {
+        toolCount: Object.keys(tools).length,
+        maxSteps: effectiveMaxSteps,
+        messageCount: messages.length,
+      },
+      'Agent pipeline starting'
+    );
 
     try {
       const result = await generateText({
@@ -121,11 +124,14 @@ export class AgentPipeline {
         maxSteps: effectiveMaxSteps,
         temperature: personaSettings.temperature,
         onStepFinish: (step) => {
-          log.debug({
-            stepType: step.stepType,
-            toolCalls: step.toolCalls?.length || 0,
-            tokensUsed: step.usage?.totalTokens || 0,
-          }, 'Agent step complete');
+          log.debug(
+            {
+              stepType: step.stepType,
+              toolCalls: step.toolCalls?.length || 0,
+              tokensUsed: step.usage?.totalTokens || 0,
+            },
+            'Agent step complete'
+          );
 
           if (onStepComplete) {
             onStepComplete(step);
@@ -135,21 +141,24 @@ export class AgentPipeline {
 
       const duration = Date.now() - startTime;
 
-      log.info({
-        duration,
-        totalTokens: result.usage?.totalTokens,
-        steps: result.steps?.length || 1,
-        toolCalls: result.steps?.reduce((sum, s) => sum + (s.toolCalls?.length || 0), 0) || 0,
-        finishReason: result.finishReason,
-      }, 'Agent pipeline complete');
+      log.info(
+        {
+          duration,
+          totalTokens: result.usage?.totalTokens,
+          steps: result.steps?.length || 1,
+          toolCalls: result.steps?.reduce((sum, s) => sum + (s.toolCalls?.length || 0), 0) || 0,
+          finishReason: result.finishReason,
+        },
+        'Agent pipeline complete'
+      );
 
       return {
         text: result.text,
         usage: result.usage,
         finishReason: result.finishReason,
-        steps: result.steps?.map(s => ({
+        steps: result.steps?.map((s) => ({
           type: s.stepType,
-          toolCalls: s.toolCalls?.map(tc => ({
+          toolCalls: s.toolCalls?.map((tc) => ({
             name: tc.toolName,
             args: tc.args,
             result: tc.result,
@@ -162,9 +171,10 @@ export class AgentPipeline {
           personaId,
           duration,
           toolsAvailable: Object.keys(tools),
-          toolsUsed: result.steps
-            ?.flatMap(s => s.toolCalls?.map(tc => tc.toolName) || [])
-            .filter((v, i, a) => a.indexOf(v) === i) || [],
+          toolsUsed:
+            result.steps
+              ?.flatMap((s) => s.toolCalls?.map((tc) => tc.toolName) || [])
+              .filter((v, i, a) => a.indexOf(v) === i) || [],
         },
       };
     } catch (error) {
@@ -211,16 +221,24 @@ export class AgentPipeline {
     });
 
     // Mode config
-    const stepLimits = { 'single-shot': 2, 'multi-step': maxSteps, 'researcher': 12, 'conversational': 1 };
+    const stepLimits = {
+      'single-shot': 2,
+      'multi-step': maxSteps,
+      researcher: 12,
+      conversational: 1,
+    };
     const effectiveMaxSteps = stepLimits[mode] || maxSteps;
     const shouldUseTools = mode !== 'conversational';
     const personaSettings = systemPromptManager.getPersonaSettings(personaId);
 
-    log.info({
-      toolCount: Object.keys(tools).length,
-      maxSteps: effectiveMaxSteps,
-      streaming: true,
-    }, 'Agent stream pipeline starting');
+    log.info(
+      {
+        toolCount: Object.keys(tools).length,
+        maxSteps: effectiveMaxSteps,
+        streaming: true,
+      },
+      'Agent stream pipeline starting'
+    );
 
     const result = streamText({
       model,
@@ -230,16 +248,22 @@ export class AgentPipeline {
       maxSteps: effectiveMaxSteps,
       temperature: personaSettings.temperature,
       onStepFinish: (step) => {
-        log.debug({
-          stepType: step.stepType,
-          toolCalls: step.toolCalls?.length || 0,
-        }, 'Agent stream step complete');
+        log.debug(
+          {
+            stepType: step.stepType,
+            toolCalls: step.toolCalls?.length || 0,
+          },
+          'Agent stream step complete'
+        );
       },
       onFinish: (result) => {
-        log.info({
-          totalTokens: result.usage?.totalTokens,
-          finishReason: result.finishReason,
-        }, 'Agent stream pipeline complete');
+        log.info(
+          {
+            totalTokens: result.usage?.totalTokens,
+            finishReason: result.finishReason,
+          },
+          'Agent stream pipeline complete'
+        );
       },
     });
 

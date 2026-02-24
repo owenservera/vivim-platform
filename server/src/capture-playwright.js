@@ -1,6 +1,6 @@
 /**
  * Playwright-based HTML Capture (Queue Managed)
- * 
+ *
  * Routes capture requests through a concurrency-limited queue to prevent
  * server overload when handling multiple requests (e.g. 1000 links).
  * Spawns isolated Node.js workers for actual browser automation.
@@ -51,11 +51,11 @@ class CaptureQueue {
     const job = this.queue.shift();
     const { url, provider } = job.data;
 
-    const log = logger.child({ 
-        url, 
-        provider, 
-        queueSize: this.queue.length,
-        activeWorkers: this.active, 
+    const log = logger.child({
+      url,
+      provider,
+      queueSize: this.queue.length,
+      activeWorkers: this.active,
     });
 
     log.info('Starting capture job from queue');
@@ -107,9 +107,9 @@ class CaptureQueue {
             reject(new Error(result.message || 'Unknown worker error'));
           }
         } catch (e) {
-            // Check if stdout contains useful error info before failing
-            log.warn({ stdout: stdoutData }, 'Worker stdout parse failed');
-            reject(new Error(`Failed to parse worker output: ${e.message}`));
+          // Check if stdout contains useful error info before failing
+          log.warn({ stdout: stdoutData }, 'Worker stdout parse failed');
+          reject(new Error(`Failed to parse worker output: ${e.message}`));
         }
       });
     });
@@ -139,8 +139,7 @@ export async function cleanupPlaywrightFile(filePath) {
   try {
     const fs = await import('fs/promises');
     await fs.unlink(filePath);
-  } catch (e) { 
-    // ignore 
+  } catch (e) {
+    // ignore
   }
 }
-

@@ -11,11 +11,7 @@ import { captureWithSingleFile, cleanupTempFile } from '../capture.js';
  * @returns {Promise<Object>} The extracted conversation object
  */
 async function extractZaiConversation(url, options = {}) {
-  const {
-    timeout = 120000,
-    richFormatting = true,
-    metadataOnly = false,
-  } = options;
+  const { timeout = 120000, richFormatting = true, metadataOnly = false } = options;
 
   let tempFilePath = null;
 
@@ -24,7 +20,7 @@ async function extractZaiConversation(url, options = {}) {
 
     // Capture the live page using SingleFile CLI
     tempFilePath = await captureWithSingleFile(url, 'zai', { timeout });
-    
+
     logger.info(`Reading captured Z.ai HTML from: ${tempFilePath}`);
     const html = await fs.readFile(tempFilePath, 'utf8');
     const $ = cheerio.load(html);
@@ -70,7 +66,9 @@ async function extractZaiConversation(url, options = {}) {
  * Extract Z.ai conversation data with rich formatting support
  */
 function extractZaiData($, url, richFormatting = true) {
-  const title = $('title').text().replace(' | Z.ai Chat - Free AI powered by GLM-4.7 & GLM-4.6', '').trim() || 'Z.ai Conversation';
+  const title =
+    $('title').text().replace(' | Z.ai Chat - Free AI powered by GLM-4.7 & GLM-4.6', '').trim() ||
+    'Z.ai Conversation';
 
   const messages = [];
   let conversationCreatedAt = new Date().toISOString();
@@ -80,15 +78,15 @@ function extractZaiData($, url, richFormatting = true) {
   $('.user-message, .chat-user, .chat-assistant, .message, [class*="message-"]').each((i, el) => {
     const $el = $(el);
     const className = $el.attr('class') || '';
-    
+
     let role = null;
     if (className.includes('user-message') || className.includes('chat-user')) {
       role = 'user';
     } else if (className.includes('chat-assistant') || className.includes('message')) {
       // Check if it's actually an assistant message
       if ($el.closest('.user-message').length > 0) {
-return;
-}
+        return;
+      }
       role = 'assistant';
     }
 
@@ -96,8 +94,8 @@ return;
       // Get HTML for rich content, but text for metadata
       const rawText = $el.text().trim();
       if (!rawText || rawText.length < 2) {
-return;
-}
+        return;
+      }
 
       // Extract timestamp if present
       let timestamp = null;
@@ -105,22 +103,29 @@ return;
       if (timestampMatch) {
         timestamp = timestampMatch[0];
         if (messages.length === 0) {
-conversationCreatedAt = timestamp;
-}
+          conversationCreatedAt = timestamp;
+        }
       }
 
       // Extract rich content
       const content = richFormatting
         ? extractRichContent($el, $, richFormatting)
-        : rawText.replace(timestamp || '', '').replace(/^GLM-4\.[67]\s*/, '').trim();
+        : rawText
+            .replace(timestamp || '', '')
+            .replace(/^GLM-4\.[67]\s*/, '')
+            .trim();
 
       // Avoid duplicates
       const contentStr = typeof content === 'string' ? content : JSON.stringify(content);
       if (messages.length > 0) {
-        const lastContent = typeof messages[messages.length - 1].content === 'string' 
-          ? messages[messages.length - 1].content 
-          : JSON.stringify(messages[messages.length - 1].content);
-        if (lastContent.includes(contentStr.substring(0, 50)) && role === messages[messages.length - 1].role) {
+        const lastContent =
+          typeof messages[messages.length - 1].content === 'string'
+            ? messages[messages.length - 1].content
+            : JSON.stringify(messages[messages.length - 1].content);
+        if (
+          lastContent.includes(contentStr.substring(0, 50)) &&
+          role === messages[messages.length - 1].role
+        ) {
           return;
         }
       }
@@ -136,7 +141,9 @@ conversationCreatedAt = timestamp;
 
   return {
     title,
-    createdAt: conversationCreatedAt.includes(' at ') ? new Date(conversationCreatedAt.replace(' at ', ' ')).toISOString() : conversationCreatedAt,
+    createdAt: conversationCreatedAt.includes(' at ')
+      ? new Date(conversationCreatedAt.replace(' at ', ' ')).toISOString()
+      : conversationCreatedAt,
     messages,
     metadata: {
       provider: 'zai',
@@ -161,7 +168,11 @@ function extractRichContent($el, $, richFormatting = true) {
   $clone.find('pre, code, div.mermaid, .mermaid').each((index, elem) => {
     const $elem = $(elem);
     const text = $elem.text().trim();
-    if (text.match(/^(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram|erDiagram|journey|gantt|pie|quadrantChart|requirementDiagram|gitGraph|C4Context|C4Container|C4Component|C4Dynamic|C4Deployment|mindmap|timeline|zenuml)/i)) {
+    if (
+      text.match(
+        /^(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram|erDiagram|journey|gantt|pie|quadrantChart|requirementDiagram|gitGraph|C4Context|C4Container|C4Component|C4Dynamic|C4Deployment|mindmap|timeline|zenuml)/i
+      )
+    ) {
       contentBlocks.push({
         type: 'mermaid',
         content: text,
@@ -202,9 +213,12 @@ function extractRichContent($el, $, richFormatting = true) {
 
   // 4. Handle remaining text (split by potential mermaid diagrams that are NOT in pre/code)
   let remainingText = $clone.text().trim();
-  
+
   // Remove GLM header and timestamps from remaining text
-  remainingText = remainingText.replace(/^GLM-4\.[67]\s*/, '').replace(/\d{1,2}\/\d{1,2}\/\d{4} at \d{1,2}:\d{2} (AM|PM)/, '').trim();
+  remainingText = remainingText
+    .replace(/^GLM-4\.[67]\s*/, '')
+    .replace(/\d{1,2}\/\d{1,2}\/\d{4} at \d{1,2}:\d{2} (AM|PM)/, '')
+    .trim();
 
   // Final check for Mermaid diagrams in the text itself
   const mermaidRegex = /(graph\s+[LRTDBC]{2}[\s\S]*?(?=---|$|###|Goal:))/gi;
@@ -227,14 +241,14 @@ function extractRichContent($el, $, richFormatting = true) {
   }
 
   // Combine new text blocks with existing blocks
-  const finalBlocks = [...newTextBlocks, ...contentBlocks.filter(b => b.type !== 'text')];
+  const finalBlocks = [...newTextBlocks, ...contentBlocks.filter((b) => b.type !== 'text')];
 
   if (finalBlocks.length === 0) {
-return '';
-}
+    return '';
+  }
   if (finalBlocks.length === 1 && finalBlocks[0].type === 'text') {
-return finalBlocks[0].content;
-}
+    return finalBlocks[0].content;
+  }
   return finalBlocks;
 }
 
@@ -251,12 +265,12 @@ function calculateStats(conversation) {
   for (const message of conversation.messages) {
     const processContent = (content) => {
       if (typeof content === 'string') {
-        totalWords += content.split(/\s+/).filter(w => w).length;
+        totalWords += content.split(/\s+/).filter((w) => w).length;
         totalCharacters += content.length;
       } else if (Array.isArray(content)) {
-        content.forEach(block => {
+        content.forEach((block) => {
           if (block.type === 'text') {
-            totalWords += block.content.split(/\s+/).filter(w => w).length;
+            totalWords += block.content.split(/\s+/).filter((w) => w).length;
             totalCharacters += block.content.length;
           } else if (block.type === 'code') {
             totalCodeBlocks++;
@@ -281,7 +295,9 @@ function calculateStats(conversation) {
     totalMermaidDiagrams,
     totalImages,
     firstMessageAt: conversation.messages[0]?.timestamp || conversation.createdAt,
-    lastMessageAt: conversation.messages[conversation.messages.length - 1]?.timestamp || new Date().toISOString(),
+    lastMessageAt:
+      conversation.messages[conversation.messages.length - 1]?.timestamp ||
+      new Date().toISOString(),
   };
 }
 

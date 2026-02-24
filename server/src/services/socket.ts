@@ -16,7 +16,7 @@ class SocketService {
       cors: {
         origin: config.corsOrigins || '*',
         methods: ['GET', 'POST'],
-        credentials: true
+        credentials: true,
       },
       pingTimeout: 60000,
       pingInterval: 25000,
@@ -26,16 +26,17 @@ class SocketService {
     this.io.on('connection', this.handleConnection.bind(this));
 
     this.setupEventListeners();
-    
+
     logger.info('✅ Socket Service initialized');
   }
 
   async authenticateSocket(socket, next) {
     try {
-      const token = socket.handshake.auth.token || socket.handshake.headers.authorization?.split(' ')[1];
-      
+      const token =
+        socket.handshake.auth.token || socket.handshake.headers.authorization?.split(' ')[1];
+
       if (!token) {
-        // Allow anonymous connections for signaling/public data if needed, 
+        // Allow anonymous connections for signaling/public data if needed,
         // but for now we enforce auth for data sync.
         // We can mark socket as guest.
         socket.data.isGuest = true;
@@ -46,9 +47,9 @@ class SocketService {
       // NOTE: Using a placeholder verify function or standard jwt.verify depending on how auth is set up.
       // Assuming standard JWT for now.
       const decoded = jwt.decode(token); // In real app, use jwt.verify(token, process.env.JWT_SECRET)
-      
+
       if (!decoded || !decoded.sub) {
-         return next(new Error('Invalid token'));
+        return next(new Error('Invalid token'));
       }
 
       socket.data.user = { id: decoded.sub, ...decoded };
@@ -70,12 +71,12 @@ class SocketService {
     if (!socket.data.isGuest) {
       const userRoom = `user:${userId}`;
       socket.join(userRoom);
-      
+
       if (!this.connectedUsers.has(userId)) {
         this.connectedUsers.set(userId, new Set());
       }
       this.connectedUsers.get(userId).add(socketId);
-      
+
       eventBus.emit(EVENTS.USER_CONNECTED, { userId, socketId });
     }
 
@@ -103,7 +104,7 @@ class SocketService {
 
   setupEventListeners() {
     // Listen for internal app events and broadcast to relevant users
-    
+
     eventBus.on(EVENTS.ENTITY_CREATED, (payload) => {
       this.broadcastEntityChange('create', payload);
     });
@@ -125,78 +126,77 @@ class SocketService {
       action,
       type, // e.g., 'conversation', 'message'
       data,
-      timestamp: timestamp || new Date().toISOString()
+      timestamp: timestamp || new Date().toISOString(),
     });
-    
+
     logger.debug({ userId, action, type }, 'Broadcasted entity change');
   }
 
   async handleSyncPull(socket, { since, types }) {
     if (socket.data.isGuest) {
-        return socket.emit('sync:error', { message: 'Unauthorized' });
+      return socket.emit('sync:error', { message: 'Unauthorized' });
     }
 
     const userId = socket.data.user.id;
     const prisma = getPrismaClient();
     const changes = [];
-    
+
     try {
-        const dateFilter = since ? { gt: new Date(since) } : undefined;
+      const dateFilter = since ? { gt: new Date(since) } : undefined;
 
-        // 1. Fetch Conversations
-        if (!types || types.includes('conversation')) {
-            const conversations = await prisma.conversation.findMany({
-                where: {
-                    ownerId: userId,
-                    updatedAt: dateFilter
-                }
-            });
-            conversations.forEach(c => {
-                changes.push({
-                    action: since ? 'update' : 'create', // If 'since' is null, it's initial load (create)
-                    type: 'conversation',
-                    data: c,
-                    timestamp: c.updatedAt.toISOString()
-                });
-            });
-        }
-
-        // 2. Fetch Messages
-        if (!types || types.includes('message')) {
-            // Note: Efficient message sync might require querying messages of active conversations
-            // For now, we query all messages updated (or created) since date
-            // But Prisma 'message' schema only has createdAt, not updatedAt?
-            // Checking schema... it has createdAt. It doesn't have updatedAt.
-            // So we can only sync NEW messages easily. For edited messages, we'd need updatedAt.
-            // Schema says: createdAt DateTime.
-            // Let's assume immutable messages or we missed updatedAt.
-            // Actually, message edits often create new versions or we just track createdAt.
-            
-            const messages = await prisma.message.findMany({
-                where: {
-                    conversation: { ownerId: userId },
-                    createdAt: dateFilter
-                }
-            });
-            messages.forEach(m => {
-                changes.push({
-                    action: 'create',
-                    type: 'message',
-                    data: m,
-                    timestamp: m.createdAt.toISOString()
-                });
-            });
-        }
-
-        socket.emit('sync:response', {
-            status: 'ok',
-            changes,
-            timestamp: new Date().toISOString()
+      // 1. Fetch Conversations
+      if (!types || types.includes('conversation')) {
+        const conversations = await prisma.conversation.findMany({
+          where: {
+            ownerId: userId,
+            updatedAt: dateFilter,
+          },
         });
+        conversations.forEach((c) => {
+          changes.push({
+            action: since ? 'update' : 'create', // If 'since' is null, it's initial load (create)
+            type: 'conversation',
+            data: c,
+            timestamp: c.updatedAt.toISOString(),
+          });
+        });
+      }
 
+      // 2. Fetch Messages
+      if (!types || types.includes('message')) {
+        // Note: Efficient message sync might require querying messages of active conversations
+        // For now, we query all messages updated (or created) since date
+        // But Prisma 'message' schema only has createdAt, not updatedAt?
+        // Checking schema... it has createdAt. It doesn't have updatedAt.
+        // So we can only sync NEW messages easily. For edited messages, we'd need updatedAt.
+        // Schema says: createdAt DateTime.
+        // Let's assume immutable messages or we missed updatedAt.
+        // Actually, message edits often create new versions or we just track createdAt.
+
+        const messages = await prisma.message.findMany({
+          where: {
+            conversation: { ownerId: userId },
+            createdAt: dateFilter,
+          },
+        });
+        messages.forEach((m) => {
+          changes.push({
+            action: 'create',
+            type: 'message',
+            data: m,
+            timestamp: m.createdAt.toISOString(),
+          });
+        });
+      }
+
+      socket.emit('sync:response', {
+        status: 'ok',
+        changes,
+        timestamp: new Date().toISOString(),
+      });
     } catch (err) {
-        logger.error({ err, userId }, 'Sync pull failed');
-        socket.emit('sync:error', { message: 'Internal Server Error' });
+      logger.error({ err, userId }, 'Sync pull failed');
+      socket.emit('sync:error', { message: 'Internal Server Error' });
     }
   }
 

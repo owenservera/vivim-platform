@@ -20,7 +20,7 @@ export function getPrismaClient() {
   if (!prismaClient) {
     const connectionString = process.env.DATABASE_URL;
     if (!connectionString) {
-        throw new Error('DATABASE_URL environment variable is not set');
+      throw new Error('DATABASE_URL environment variable is not set');
     }
 
     const pool = new pg.Pool({ connectionString });
@@ -31,7 +31,7 @@ export function getPrismaClient() {
       errorFormat: 'minimal',
       adapter,
     });
-    
+
     // Enhanced Prisma Extension for Data Flow Tracking & Performance Monitoring
     prismaClient = baseClient.$extends({
       query: {
@@ -47,37 +47,41 @@ export function getPrismaClient() {
               if (time > 100) {
                 const slowQueryMsg = `SLOW_QUERY: ${operation} on ${model} took ${time}ms`;
                 logger.warn({ model, action: operation, duration: time }, slowQueryMsg);
-                
+
                 // Report performance bottleneck
-                serverErrorReporter.reportPerformanceIssue(
-                  'database_query_time',
-                  time,
-                  100,
-                  { model, operation, query: args },
-                  time > 500 ? 'medium' : 'low'
-                ).catch(() => {});
+                serverErrorReporter
+                  .reportPerformanceIssue(
+                    'database_query_time',
+                    time,
+                    100,
+                    { model, operation, query: args },
+                    time > 500 ? 'medium' : 'low'
+                  )
+                  .catch(() => {});
               }
 
               return result;
             } catch (error) {
               const after = Date.now();
               const time = after - before;
-              
+
               // Comprehensive Error Reporting for Database Failures
-              serverErrorReporter.reportDatabaseError(
-                `Database operation failed: ${operation} on ${model}`,
-                error,
-                { model, operation, args, duration: time },
-                'critical'
-              ).catch(() => {});
-              
+              serverErrorReporter
+                .reportDatabaseError(
+                  `Database operation failed: ${operation} on ${model}`,
+                  error,
+                  { model, operation, args, duration: time },
+                  'critical'
+                )
+                .catch(() => {});
+
               throw error;
             }
           },
         },
       },
     });
-    
+
     logger.info('Prisma client initialized with enhanced observability');
   }
 
@@ -118,11 +122,7 @@ export async function getDatabaseStats() {
   try {
     const client = getPrismaClient();
 
-    const [
-      conversationCount,
-      captureAttemptCount,
-      providerStats,
-    ] = await Promise.all([
+    const [conversationCount, captureAttemptCount, providerStats] = await Promise.all([
       client.conversation.count(),
       client.captureAttempt.count(),
       client.providerStats.findMany(),

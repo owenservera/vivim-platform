@@ -76,11 +76,11 @@ router.get('/flows', async (req, res, next) => {
     let filtered = mockDataFlows;
 
     if (type) {
-      filtered = filtered.filter(f => f.type === type);
+      filtered = filtered.filter((f) => f.type === type);
     }
 
     if (status) {
-      filtered = filtered.filter(f => f.status === status);
+      filtered = filtered.filter((f) => f.status === status);
     }
 
     log.info({ count: filtered.length, filters: { type, status } }, 'Data flows listed');
@@ -104,26 +104,20 @@ router.get('/stats', async (req, res, next) => {
   const log = createRequestLogger(req);
 
   try {
-    const totalMessagesPerSecond = mockDataFlows.reduce(
-      (sum, f) => sum + f.messagesPerSecond,
-      0
-    );
+    const totalMessagesPerSecond = mockDataFlows.reduce((sum, f) => sum + f.messagesPerSecond, 0);
 
-    const totalBytesPerSecond = mockDataFlows.reduce(
-      (sum, f) => sum + f.bytesPerSecond,
-      0
-    );
+    const totalBytesPerSecond = mockDataFlows.reduce((sum, f) => sum + f.bytesPerSecond, 0);
 
     const stats = {
       totalFlows: mockDataFlows.length,
-      activeFlows: mockDataFlows.filter(f => f.status === 'active').length,
+      activeFlows: mockDataFlows.filter((f) => f.status === 'active').length,
       totalMessagesPerSecond: Math.round(totalMessagesPerSecond * 100) / 100,
       totalBytesPerSecond: Math.round(totalBytesPerSecond),
       byType: {
-        DHT: mockDataFlows.filter(f => f.type === 'DHT').length,
-        PubSub: mockDataFlows.filter(f => f.type === 'PubSub').length,
-        CRDT: mockDataFlows.filter(f => f.type === 'CRDT').length,
-        Federation: mockDataFlows.filter(f => f.type === 'Federation').length,
+        DHT: mockDataFlows.filter((f) => f.type === 'DHT').length,
+        PubSub: mockDataFlows.filter((f) => f.type === 'PubSub').length,
+        CRDT: mockDataFlows.filter((f) => f.type === 'CRDT').length,
+        Federation: mockDataFlows.filter((f) => f.type === 'Federation').length,
       },
     };
 

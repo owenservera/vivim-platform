@@ -22,14 +22,17 @@ const router = Router();
 const conversations = new Map();
 
 // Cleanup stale conversations every 30 minutes
-setInterval(() => {
-  const staleThreshold = Date.now() - 60 * 60 * 1000; // 1 hour
-  for (const [id, conv] of conversations) {
-    if (conv.lastActivity < staleThreshold) {
-      conversations.delete(id);
+setInterval(
+  () => {
+    const staleThreshold = Date.now() - 60 * 60 * 1000; // 1 hour
+    for (const [id, conv] of conversations) {
+      if (conv.lastActivity < staleThreshold) {
+        conversations.delete(id);
+      }
     }
-  }
-}, 30 * 60 * 1000);
+  },
+  30 * 60 * 1000
+);
 
 // ============================================================================
 // CONVERSATION LIFECYCLE
@@ -69,7 +72,7 @@ router.post('/start', async (req, res) => {
       provider: resolvedProvider,
       model: model || ProviderConfig[resolvedProvider]?.defaultModel,
       personaId,
-      messages: initialMessages.map(m => ({
+      messages: initialMessages.map((m) => ({
         role: m.role,
         content: m.content,
         timestamp: new Date().toISOString(),
@@ -78,7 +81,10 @@ router.post('/start', async (req, res) => {
       lastActivity: Date.now(),
     });
 
-    logger.info({ conversationId, userId, provider: resolvedProvider, personaId }, 'Fresh conversation started');
+    logger.info(
+      { conversationId, userId, provider: resolvedProvider, personaId },
+      'Fresh conversation started'
+    );
 
     res.json({
       success: true,
@@ -101,8 +107,10 @@ router.post('/start', async (req, res) => {
  */
 function parseZAIAction(message) {
   const trimmed = message.trim();
-  
-  if (!trimmed.startsWith('!')) return null;
+
+  if (!trimmed.startsWith('!')) {
+    return null;
+  }
 
   const parts = trimmed.slice(1).split(/\s+/);
   const action = parts[0]?.toLowerCase();
@@ -121,14 +129,18 @@ function parseZAIAction(message) {
 }
 
 function parseGithubArgs(args) {
-  const match = args.match(/^([^\/]+\/[^\s]+)?\s*(.*)$/);
-  if (!match) return { repo: args, query: '' };
+  const match = args.match(/^([^/]+\/[^\s]+)?\s*(.*)$/);
+  if (!match) {
+    return { repo: args, query: '' };
+  }
   return { repo: match[1] || '', query: match[2] || '' };
 }
 
 function parseGithubFileArgs(args) {
-  const match = args.match(/^([^\/]+\/[^\s]+)\s+(.+)$/);
-  if (!match) return { repo: args, file: '' };
+  const match = args.match(/^([^/]+\/[^\s]+)\s+(.+)$/);
+  if (!match) {
+    return { repo: args, file: '' };
+  }
   return { repo: match[1], file: match[2] };
 }
 
@@ -141,7 +153,9 @@ router.post('/send', async (req, res) => {
     const userId = getUserId(req);
 
     if (!conversationId || !message) {
-      return res.status(400).json({ success: false, error: 'conversationId and message are required' });
+      return res
+        .status(400)
+        .json({ success: false, error: 'conversationId and message are required' });
     }
 
     const conv = conversations.get(conversationId);
@@ -154,9 +168,9 @@ router.post('/send', async (req, res) => {
       if (zaiAction) {
         try {
           const result = await executeZAIAction(zaiAction.action, zaiAction.params);
-          
+
           let responseText = `🔍 **${zaiAction.action.toUpperCase()} Result**\n\n`;
-          
+
           if (zaiAction.action === 'websearch') {
             responseText += `Found ${result.count} results for "${result.query}":\n\n`;
             result.results?.slice(0, 5).forEach((r, i) => {
@@ -170,12 +184,12 @@ router.post('/send', async (req, res) => {
           } else if (zaiAction.action === 'github') {
             if (result.structure) {
               responseText += `📁 **${result.repo}**\n\n`;
-              result.structure?.slice(0, 20).forEach(item => {
+              result.structure?.slice(0, 20).forEach((item) => {
                 responseText += `${item.type === 'tree' ? '📁' : '📄'} ${item.path}\n`;
               });
             } else if (result.content) {
               responseText += `📄 **${result.file}** from ${result.repo}\n\n`;
-              responseText += '```\n' + result.content?.slice(0, 5000) + '\n```';
+              responseText += `\`\`\`\n${result.content?.slice(0, 5000)}\n\`\`\``;
             } else {
               responseText += `Found ${result.count} results in **${result.repo}** for "${result.query}":\n\n`;
               result.results?.slice(0, 5).forEach((r, i) => {
@@ -185,11 +199,11 @@ router.post('/send', async (req, res) => {
             }
           }
 
-          conv.messages.push({ 
-            role: 'assistant', 
-            content: responseText, 
+          conv.messages.push({
+            role: 'assistant',
+            content: responseText,
             timestamp: new Date().toISOString(),
-            metadata: { isZAIAction: true, tool: zaiAction.action }
+            metadata: { isZAIAction: true, tool: zaiAction.action },
           });
 
           return res.json({
@@ -230,21 +244,23 @@ router.post('/send', async (req, res) => {
         contextResult = await unifiedContextService.generateContextForChat(conversationId, {
           userId,
           userMessage: message,
-          personaId: conv.personaId
+          personaId: conv.personaId,
         });
       } catch (ctxError) {
         logger.warn({ error: ctxError.message }, 'Context assembly failed for fresh chat');
       }
     }
 
-    const systemPrompt = contextResult?.systemPrompt || systemPromptManager.buildPrompt({
-      mode: 'fresh',
-      personaId: conv.personaId,
-      userId,
-    });
+    const systemPrompt =
+      contextResult?.systemPrompt ||
+      systemPromptManager.buildPrompt({
+        mode: 'fresh',
+        personaId: conv.personaId,
+        userId,
+      });
 
     // Format messages for API
-    const apiMessages = conv.messages.map(m => ({ role: m.role, content: m.content }));
+    const apiMessages = conv.messages.map((m) => ({ role: m.role, content: m.content }));
 
     const result = await unifiedProvider.generateCompletion({
       provider,
@@ -277,6 +293,8 @@ router.post('/send', async (req, res) => {
         provider,
         conversationId,
         messageCount: conv.messages.length,
+        contextAllocation: contextResult?.layers || null,
+        contextStats: contextResult?.stats || null,
       },
     });
   } catch (error) {
@@ -296,10 +314,18 @@ router.post('/stream', async (req, res) => {
   try {
     const parsed = freshChatSchema.safeParse(req.body);
     if (!parsed.success) {
-      return res.status(400).json({ success: false, error: 'Validation failed', details: parsed.error.errors });
+      return res
+        .status(400)
+        .json({ success: false, error: 'Validation failed', details: parsed.error.errors });
     }
 
-    const { message, provider: requestedProvider, model: requestedModel, personaId, options } = parsed.data;
+    const {
+      message,
+      provider: requestedProvider,
+      model: requestedModel,
+      personaId,
+      options,
+    } = parsed.data;
     const userId = getUserId(req);
 
     const provider = requestedProvider || getDefaultProvider();
@@ -312,18 +338,20 @@ router.post('/stream', async (req, res) => {
         contextResult = await unifiedContextService.generateContextForChat(convId, {
           userId,
           userMessage: message,
-          personaId: personaId || 'default'
+          personaId: personaId || 'default',
         });
       } catch (ctxError) {
         logger.warn({ error: ctxError.message }, 'Context assembly failed for fresh stream');
       }
     }
 
-    const systemPrompt = contextResult?.systemPrompt || systemPromptManager.buildPrompt({
-      mode: 'fresh',
-      personaId: personaId || 'default',
-      userId,
-    });
+    const systemPrompt =
+      contextResult?.systemPrompt ||
+      systemPromptManager.buildPrompt({
+        mode: 'fresh',
+        personaId: personaId || 'default',
+        userId,
+      });
 
     const messages = [{ role: 'user', content: message }];
 
@@ -358,8 +386,8 @@ router.get('/list', async (req, res) => {
     const userId = getUserId(req);
 
     const userConversations = Array.from(conversations.values())
-      .filter(c => c.userId === userId)
-      .map(c => ({
+      .filter((c) => c.userId === userId)
+      .map((c) => ({
         id: c.id,
         title: c.title,
         provider: c.provider,
@@ -449,23 +477,25 @@ router.post('/fork', async (req, res) => {
           contextResult = await unifiedContextService.generateContextForChat(forkedId, {
             userId,
             userMessage: prompt,
-            personaId: conv.personaId
+            personaId: conv.personaId,
           });
         } catch (ctxError) {
           logger.warn({ error: ctxError.message }, 'Context assembly failed for fork');
         }
       }
 
-      const systemPrompt = contextResult?.systemPrompt || systemPromptManager.buildPrompt({
-        mode: 'fresh',
-        personaId: conv.personaId,
-        userId,
-      });
+      const systemPrompt =
+        contextResult?.systemPrompt ||
+        systemPromptManager.buildPrompt({
+          mode: 'fresh',
+          personaId: conv.personaId,
+          userId,
+        });
 
       const result = await unifiedProvider.generateCompletion({
         provider: resolvedProvider,
         model: model || source.model,
-        messages: conv.messages.map(m => ({ role: m.role, content: m.content })),
+        messages: conv.messages.map((m) => ({ role: m.role, content: m.content })),
         system: systemPrompt,
         userId,
       });

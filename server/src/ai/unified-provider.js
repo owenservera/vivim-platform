@@ -103,25 +103,28 @@ class UnifiedAIProvider {
         durationMs: duration,
         success: true,
         mode: tools ? 'agent' : 'chat',
-        toolsUsed: result.steps?.flatMap(s => s.toolCalls?.map(tc => tc.toolName) || []) || [],
+        toolsUsed: result.steps?.flatMap((s) => s.toolCalls?.map((tc) => tc.toolName) || []) || [],
         steps: result.steps?.length || 1,
       });
 
-      this.logger.info({
-        provider,
-        model: modelId,
-        tokens: result.usage?.totalTokens,
-        duration,
-        steps: result.steps?.length || 1,
-      }, 'Completion generated');
+      this.logger.info(
+        {
+          provider,
+          model: modelId,
+          tokens: result.usage?.totalTokens,
+          duration,
+          steps: result.steps?.length || 1,
+        },
+        'Completion generated'
+      );
 
       return {
         text: result.text,
         usage: result.usage,
         finishReason: result.finishReason,
         steps: result.steps,
-        toolCalls: result.steps?.flatMap(s => s.toolCalls || []),
-        toolResults: result.steps?.flatMap(s => s.toolResults || []),
+        toolCalls: result.steps?.flatMap((s) => s.toolCalls || []),
+        toolResults: result.steps?.flatMap((s) => s.toolResults || []),
       };
     } catch (error) {
       const duration = Date.now() - startTime;
@@ -133,7 +136,10 @@ class UnifiedAIProvider {
         success: false,
       });
 
-      this.logger.error({ provider, model: modelId, error: error.message, duration }, 'Completion failed');
+      this.logger.error(
+        { provider, model: modelId, error: error.message, duration },
+        'Completion failed'
+      );
       throw this._normalizeError(error, provider);
     }
   }
@@ -178,16 +184,20 @@ class UnifiedAIProvider {
             durationMs: duration,
             success: true,
             mode: tools ? 'agent-stream' : 'stream',
-            toolsUsed: result.steps?.flatMap(s => s.toolCalls?.map(tc => tc.toolName) || []) || [],
+            toolsUsed:
+              result.steps?.flatMap((s) => s.toolCalls?.map((tc) => tc.toolName) || []) || [],
             steps: result.steps?.length || 1,
           });
 
-          this.logger.info({
-            provider,
-            model: modelId,
-            tokens: result.usage?.totalTokens,
-            duration,
-          }, 'Stream completed');
+          this.logger.info(
+            {
+              provider,
+              model: modelId,
+              tokens: result.usage?.totalTokens,
+              duration,
+            },
+            'Stream completed'
+          );
         },
       };
 
@@ -202,7 +212,7 @@ class UnifiedAIProvider {
       res.writeHead(200, {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
+        Connection: 'keep-alive',
       });
 
       for await (const chunk of result.textStream) {
@@ -291,7 +301,10 @@ class UnifiedAIProvider {
 
       return { output: result.object, usage: result.usage };
     } catch (error) {
-      this.logger.error({ provider, model: modelId, error: error.message }, 'Structured output failed');
+      this.logger.error(
+        { provider, model: modelId, error: error.message },
+        'Structured output failed'
+      );
       throw this._normalizeError(error, provider);
     }
   }
@@ -339,10 +352,14 @@ class UnifiedAIProvider {
     };
 
     const envKey = envKeys[providerId];
-    if (!envKey) return false;
+    if (!envKey) {
+      return false;
+    }
 
     // ZAI always available (free default)
-    if (providerId === 'zai') return true;
+    if (providerId === 'zai') {
+      return true;
+    }
 
     return !!process.env[envKey];
   }
@@ -353,7 +370,11 @@ class UnifiedAIProvider {
   _normalizeError(error, provider) {
     const message = error.message || 'Unknown AI error';
 
-    if (message.includes('401') || message.includes('Unauthorized') || message.includes('Invalid API Key')) {
+    if (
+      message.includes('401') ||
+      message.includes('Unauthorized') ||
+      message.includes('Invalid API Key')
+    ) {
       const err = new Error(`Authentication failed for ${provider}. Check your API key.`);
       err.statusCode = 401;
       err.provider = provider;
@@ -367,7 +388,11 @@ class UnifiedAIProvider {
       return err;
     }
 
-    if (message.includes('timeout') || message.includes('ECONNREFUSED') || message.includes('ENOTFOUND')) {
+    if (
+      message.includes('timeout') ||
+      message.includes('ECONNREFUSED') ||
+      message.includes('ENOTFOUND')
+    ) {
       const err = new Error(`Cannot reach ${provider}. Network error.`);
       err.statusCode = 503;
       err.provider = provider;

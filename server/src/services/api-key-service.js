@@ -15,25 +15,27 @@ export const apiKeyService = {
     // Format: vk_live_... (vivim key live)
     const key = `vk_live_${buffer.toString('base64url')}`;
     const hash = crypto.createHash('sha256').update(key).digest('hex');
-    
+
     return { key, hash };
   },
 
   /**
    * Hashes an existing API key for lookup/storage
-   * @param {string} key 
+   * @param {string} key
    * @returns {string}
    */
   hashKey(key) {
-    if (!key) return null;
+    if (!key) {
+      return null;
+    }
     return crypto.createHash('sha256').update(key).digest('hex');
   },
 
   /**
    * Creates a new API key for a user
-   * @param {string} userId 
-   * @param {string} name 
-   * @param {Date} [expiresAt] 
+   * @param {string} userId
+   * @param {string} name
+   * @param {Date} [expiresAt]
    * @returns {Promise<{ key: string, apiKey: any }>}
    */
   async createApiKey(userId, name, expiresAt = null) {
@@ -45,10 +47,10 @@ export const apiKeyService = {
           userId,
           keyHash: hash,
           name,
-          expiresAt
-        }
+          expiresAt,
+        },
       });
-      
+
       // We only return the raw key once upon creation
       return { key, apiKey };
     } catch (error) {
@@ -59,33 +61,39 @@ export const apiKeyService = {
 
   /**
    * Verifies an API key and returns the associated user if valid
-   * @param {string} key 
+   * @param {string} key
    * @returns {Promise<any|null>} User object or null if invalid
    */
   async verifyApiKey(key) {
-    if (!key) return null;
-    
+    if (!key) {
+      return null;
+    }
+
     const hash = this.hashKey(key);
-    
+
     try {
       const apiKey = await prisma.apiKey.findUnique({
         where: { keyHash: hash },
-        include: { user: true }
+        include: { user: true },
       });
-      
-      if (!apiKey) return null;
-      
+
+      if (!apiKey) {
+        return null;
+      }
+
       // Check expiration
       if (apiKey.expiresAt && apiKey.expiresAt < new Date()) {
         return null;
       }
-      
+
       // Update last used (fire and forget to not block verification)
-      prisma.apiKey.update({
-        where: { id: apiKey.id },
-        data: { lastUsed: new Date() }
-      }).catch(err => logger.error('Failed to update API key lastUsed', { err: err.message }));
-      
+      prisma.apiKey
+        .update({
+          where: { id: apiKey.id },
+          data: { lastUsed: new Date() },
+        })
+        .catch((err) => logger.error('Failed to update API key lastUsed', { err: err.message }));
+
       return apiKey.user;
     } catch (error) {
       logger.error('Error verifying API key', { error: error.message });
@@ -95,7 +103,7 @@ export const apiKeyService = {
 
   /**
    * Lists API keys for a user
-   * @param {string} userId 
+   * @param {string} userId
    * @returns {Promise<any[]>}
    */
   async listApiKeys(userId) {
@@ -108,16 +116,16 @@ export const apiKeyService = {
         lastUsed: true,
         expiresAt: true,
         // specifically NOT returning keyHash
-        userId: true
+        userId: true,
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
   },
 
   /**
    * Revokes/deletes an API key
-   * @param {string} userId 
-   * @param {string} keyId 
+   * @param {string} userId
+   * @param {string} keyId
    * @returns {Promise<boolean>}
    */
   async revokeApiKey(userId, keyId) {
@@ -125,13 +133,13 @@ export const apiKeyService = {
       const deleted = await prisma.apiKey.deleteMany({
         where: {
           id: keyId,
-          userId
-        }
+          userId,
+        },
       });
       return deleted.count > 0;
     } catch (error) {
       logger.error('Error revoking API key', { userId, keyId, error: error.message });
       return false;
     }
-  }
+  },
 };

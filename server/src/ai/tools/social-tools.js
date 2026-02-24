@@ -14,13 +14,19 @@ const prisma = getPrismaClient();
  * Share an insight to the social feed
  */
 export const shareToFeed = tool({
-  description: 'Share a valuable insight, summary, or knowledge piece to the user\'s social feed. Use this when conversation produces content worth sharing with others.',
+  description:
+    "Share a valuable insight, summary, or knowledge piece to the user's social feed. Use this when conversation produces content worth sharing with others.",
   parameters: z.object({
     title: z.string().min(5).max(100).describe('Title for the shared post'),
     content: z.string().min(10).max(5000).describe('The content to share'),
-    contentType: z.enum(['insight', 'summary', 'tutorial', 'question', 'discussion']).describe('Type of content being shared'),
+    contentType: z
+      .enum(['insight', 'summary', 'tutorial', 'question', 'discussion'])
+      .describe('Type of content being shared'),
     tags: z.array(z.string()).max(5).default([]).describe('Tags for discoverability'),
-    visibility: z.enum(['public', 'followers', 'private']).default('public').describe('Who can see this post'),
+    visibility: z
+      .enum(['public', 'followers', 'private'])
+      .default('public')
+      .describe('Who can see this post'),
   }),
   execute: async ({ title, content, contentType, tags, visibility }, { userId }) => {
     const log = logger.child({ tool: 'shareToFeed', userId });
@@ -60,7 +66,8 @@ export const shareToFeed = tool({
  * Search the social feed
  */
 export const searchFeed = tool({
-  description: 'Search the social feed for posts related to a topic. Use this to find what others have shared about a subject.',
+  description:
+    'Search the social feed for posts related to a topic. Use this to find what others have shared about a subject.',
   parameters: z.object({
     query: z.string().describe('Search query for the feed'),
     limit: z.number().min(1).max(20).default(5).describe('Maximum posts to return'),
@@ -91,7 +98,7 @@ export const searchFeed = tool({
       return {
         query,
         resultCount: posts.length,
-        posts: posts.map(p => ({
+        posts: posts.map((p) => ({
           id: p.id,
           title: p.title,
           preview: p.message?.substring(0, 200),

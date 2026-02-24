@@ -13,6 +13,6 @@ export const zai = createOpenAICompatible({
   apiKey: process.env.ZAI_API_KEY || '',
   baseURL: process.env.ZAI_BASE_URL || 'https://api.z.ai/api/coding/paas/v4',
   headers: () => ({
-    'Accept': 'application/json',
+    Accept: 'application/json',
   }),
 });

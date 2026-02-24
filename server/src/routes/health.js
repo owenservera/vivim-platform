@@ -82,12 +82,14 @@ router.get('/health/detailed', async (req, res) => {
         rss: process.memoryUsage().rss,
       },
     },
-    database: dbHealthy ? {
-      status: 'connected',
-      stats: dbStats,
-    } : {
-      status: 'disconnected',
-    },
+    database: dbHealthy
+      ? {
+          status: 'connected',
+          stats: dbStats,
+        }
+      : {
+          status: 'disconnected',
+        },
   };
 
   console.log('\n🔍 [DETAILED HEALTH CHECK]');
@@ -142,12 +144,14 @@ router.get('/health/admin', requireApiKey(), async (req, res) => {
       uptime: process.uptime(),
       loadAverage: process.platform !== 'win32' ? process.loadavg() : [0, 0, 0],
     },
-    database: dbHealthy ? {
-      status: 'connected',
-      stats: dbStats,
-    } : {
-      status: 'disconnected',
-    },
+    database: dbHealthy
+      ? {
+          status: 'connected',
+          stats: dbStats,
+        }
+      : {
+          status: 'disconnected',
+        },
     security: {
       corsOrigins: process.env.CORS_ORIGINS?.split(',').length || 0,
       rateLimit: process.env.RATE_LIMIT_MAX || 100,
@@ -155,10 +159,13 @@ router.get('/health/admin', requireApiKey(), async (req, res) => {
     },
   };
 
-  log.info({
-    health: adminHealthData.status,
-    user: req.auth?.apiKeyPrefix,
-  }, 'Admin health check');
+  log.info(
+    {
+      health: adminHealthData.status,
+      user: req.auth?.apiKeyPrefix,
+    },
+    'Admin health check'
+  );
 
   res.status(dbHealthy ? 200 : 503).json(adminHealthData);
 });

@@ -20,28 +20,36 @@ const createCircleSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
   icon: z.string().max(10).optional(),
-  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
-  type: z.enum(['manual', 'smart', 'shared', 'ephemeral', 'interest', 'proximity', 'interaction']).default('manual'),
+  color: z
+    .string()
+    .regex(/^#[0-9A-Fa-f]{6}$/)
+    .optional(),
+  type: z
+    .enum(['manual', 'smart', 'shared', 'ephemeral', 'interest', 'proximity', 'interaction'])
+    .default('manual'),
   visibility: z.enum(['secret', 'private', 'visible']).default('private'),
   smartRules: z.record(z.any()).optional(),
   expiresAt: z.string().datetime().optional(),
   isShared: z.boolean().default(false),
-  autoSuggest: z.boolean().default(true)
+  autoSuggest: z.boolean().default(true),
 });
 
 const updateCircleSchema = z.object({
   name: z.string().min(1).max(100).optional(),
   description: z.string().max(500).optional(),
   icon: z.string().max(10).optional(),
-  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
+  color: z
+    .string()
+    .regex(/^#[0-9A-Fa-f]{6}$/)
+    .optional(),
   visibility: z.enum(['secret', 'private', 'visible']).optional(),
   autoSuggest: z.boolean().optional(),
-  smartRules: z.record(z.any()).optional()
+  smartRules: z.record(z.any()).optional(),
 });
 
 const addMemberSchema = z.object({
   userId: z.string().uuid(),
-  role: z.enum(['admin', 'moderator', 'member', 'viewer']).default('member')
+  role: z.enum(['admin', 'moderator', 'member', 'viewer']).default('member'),
 });
 
 // ============================================================================
@@ -55,7 +63,7 @@ router.post('/', authenticateDID, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
@@ -67,7 +75,7 @@ router.post('/', authenticateDID, async (req, res) => {
 
     res.status(201).json({
       success: true,
-      data: result.circle
+      data: result.circle,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Create circle failed');
@@ -79,7 +87,7 @@ router.get('/', authenticateDID, async (req, res) => {
   try {
     const { type } = req.query;
     const result = await circleService.getUserCircles(req.user.userId, {
-      type: type?.toString()
+      type: type?.toString(),
     });
 
     if (!result.success) {
@@ -88,7 +96,7 @@ router.get('/', authenticateDID, async (req, res) => {
 
     res.json({
       success: true,
-      data: result.circles
+      data: result.circles,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get circles failed');
@@ -98,21 +106,18 @@ router.get('/', authenticateDID, async (req, res) => {
 
 router.get('/:circleId', authenticateDID, async (req, res) => {
   try {
-    const result = await circleService.getCircle(
-      req.params.circleId,
-      req.user.userId
-    );
+    const result = await circleService.getCircle(req.params.circleId, req.user.userId);
 
     if (!result.success) {
       return res.status(result.error === 'Circle not found' ? 404 : 403).json({
         success: false,
-        error: result.error
+        error: result.error,
       });
     }
 
     res.json({
       success: true,
-      data: result.circle
+      data: result.circle,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get circle failed');
@@ -127,7 +132,7 @@ router.put('/:circleId', authenticateDID, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
@@ -143,7 +148,7 @@ router.put('/:circleId', authenticateDID, async (req, res) => {
 
     res.json({
       success: true,
-      data: result.circle
+      data: result.circle,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Update circle failed');
@@ -153,10 +158,7 @@ router.put('/:circleId', authenticateDID, async (req, res) => {
 
 router.delete('/:circleId', authenticateDID, async (req, res) => {
   try {
-    const result = await circleService.deleteCircle(
-      req.params.circleId,
-      req.user.userId
-    );
+    const result = await circleService.deleteCircle(req.params.circleId, req.user.userId);
 
     if (!result.success) {
       return res.status(403).json({ success: false, error: result.error });
@@ -180,7 +182,7 @@ router.post('/:circleId/members', authenticateDID, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
@@ -237,8 +239,8 @@ router.get('/:circleId/suggestions', authenticateDID, async (req, res) => {
       success: true,
       data: {
         candidates: result.candidates,
-        total: result.totalCandidates
-      }
+        total: result.totalCandidates,
+      },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Smart circle evaluation failed');
@@ -249,11 +251,8 @@ router.get('/:circleId/suggestions', authenticateDID, async (req, res) => {
 router.post('/:circleId/auto-populate', authenticateDID, async (req, res) => {
   try {
     const { maxAdditions = 10 } = req.body;
-    
-    const result = await circleService.autoPopulateSmartCircle(
-      req.params.circleId,
-      maxAdditions
-    );
+
+    const result = await circleService.autoPopulateSmartCircle(req.params.circleId, maxAdditions);
 
     if (!result.success) {
       return res.status(400).json({ success: false, error: result.error });
@@ -261,7 +260,7 @@ router.post('/:circleId/auto-populate', authenticateDID, async (req, res) => {
 
     res.json({
       success: true,
-      data: { added: result.added }
+      data: { added: result.added },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Auto-populate failed');
@@ -277,7 +276,7 @@ router.get('/suggestions/all', authenticateDID, async (req, res) => {
   try {
     const { limit } = req.query;
     const result = await circleService.getCircleSuggestions(req.user.userId, {
-      limit: limit ? parseInt(limit.toString()) : 10
+      limit: limit ? parseInt(limit.toString()) : 10,
     });
 
     if (!result.success) {
@@ -286,7 +285,7 @@ router.get('/suggestions/all', authenticateDID, async (req, res) => {
 
     res.json({
       success: true,
-      data: result.suggestions
+      data: result.suggestions,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get suggestions failed');
@@ -304,7 +303,7 @@ router.post('/suggestions/generate', authenticateDID, async (req, res) => {
 
     res.json({
       success: true,
-      data: { generated: result.count }
+      data: { generated: result.count },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Generate suggestions failed');
@@ -319,13 +318,10 @@ router.post('/suggestions/generate', authenticateDID, async (req, res) => {
 router.get('/:circleId/activity', authenticateDID, async (req, res) => {
   try {
     const { limit, offset } = req.query;
-    const result = await circleService.getCircleActivity(
-      req.params.circleId,
-      {
-        limit: limit ? parseInt(limit.toString()) : 50,
-        offset: offset ? parseInt(offset.toString()) : 0
-      }
-    );
+    const result = await circleService.getCircleActivity(req.params.circleId, {
+      limit: limit ? parseInt(limit.toString()) : 50,
+      offset: offset ? parseInt(offset.toString()) : 0,
+    });
 
     if (!result.success) {
       return res.status(400).json({ success: false, error: result.error });
@@ -333,7 +329,7 @@ router.get('/:circleId/activity', authenticateDID, async (req, res) => {
 
     res.json({
       success: true,
-      data: result.activities
+      data: result.activities,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get activity failed');

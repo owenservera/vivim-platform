@@ -1,6 +1,6 @@
 /**
  * ACU to Memory Auto-Conversion Pipeline
- * 
+ *
  * Automatically converts high-quality ACUs to memories for the second brain.
  */
 
@@ -16,7 +16,7 @@ const CONVERSION_THRESHOLDS = {
   minQualityScore: 0.7,
   minEngagementScore: 3,
   minWordCount: 50,
-  maxAgeDays: 30
+  maxAgeDays: 30,
 };
 
 const BATCH_SIZE = 50;
@@ -27,11 +27,14 @@ interface ConversionResult {
   error?: string;
 }
 
-export async function convertACUToMemory(acuId: string, options: {
-  category?: string;
-  importance?: number;
-  force?: boolean;
-} = {}): Promise<ConversionResult> {
+export async function convertACUToMemory(
+  acuId: string,
+  options: {
+    category?: string;
+    importance?: number;
+    force?: boolean;
+  } = {}
+): Promise<ConversionResult> {
   const operationLog = createOperationLogger('convertACUToMemory', { acuId, options });
   operationLog.debug({ msg: 'Starting ACU to memory conversion', acuId });
 
@@ -42,10 +45,10 @@ export async function convertACUToMemory(acuId: string, options: {
         conversation: {
           include: {
             topicConversations: { include: { topic: true } },
-            entityConversations: { include: { entity: true } }
-          }
-        }
-      }
+            entityConversations: { include: { entity: true } },
+          },
+        },
+      },
     });
 
     if (!acu) {
@@ -55,7 +58,7 @@ export async function convertACUToMemory(acuId: string, options: {
 
     if (!options.force) {
       const existingMemory = await prisma.memory.findFirst({
-        where: { userId: acu.authorDid, sourceAcuId: acuId }
+        where: { userId: acu.authorDid, sourceAcuId: acuId },
       });
 
       if (existingMemory) {
@@ -70,7 +73,7 @@ export async function convertACUToMemory(acuId: string, options: {
     }
     category = category || 'general';
 
-    const importance = options.importance ?? await calculateImportance(acu);
+    const importance = options.importance ?? (await calculateImportance(acu));
 
     const relationships: string[] = [];
     if (acu.conversation?.entityConversations) {
@@ -88,8 +91,8 @@ export async function convertACUToMemory(acuId: string, options: {
         sourceAcuId: acuId,
         sourceConversationId: acu.conversationId,
         isActive: true,
-        relationships
-      }
+        relationships,
+      },
     });
 
     operationLog.info({ msg: 'ACU converted to memory', memoryId: memory.id, category });
@@ -97,7 +100,7 @@ export async function convertACUToMemory(acuId: string, options: {
     eventBus.emit('memory:created', acu.authorDid, {
       memoryId: memory.id,
       sourceAcuId: acuId,
-      type: 'acu_conversion'
+      type: 'acu_conversion',
     });
 
     await serverErrorReporter.reportInfo(
@@ -133,13 +136,15 @@ export async function processEngagementConversion(userId: string): Promise<{
   let errors = 0;
 
   try {
-    const highEngagementACUs = await prisma.$queryRaw<Array<{
-      id: string;
-      content: string;
-      author_did: string;
-      quality_overall: number;
-      created_at: Date;
-    }>>`
+    const highEngagementACUs = await prisma.$queryRaw<
+      Array<{
+        id: string;
+        content: string;
+        author_did: string;
+        quality_overall: number;
+        created_at: Date;
+      }>
+    >`
       SELECT 
         acu.id,
         acu.content,
@@ -198,10 +203,12 @@ export async function runPeriodicConsolidation(): Promise<{
   let converted = 0;
 
   try {
-    const eligibleACUs = await prisma.$queryRaw<Array<{
-      id: string;
-      author_did: string;
-    }>>`
+    const eligibleACUs = await prisma.$queryRaw<
+      Array<{
+        id: string;
+        author_did: string;
+      }>
+    >`
       SELECT DISTINCT acu.id, acu.author_did
       FROM atomic_chat_units acu
       WHERE acu.quality_overall >= ${CONVERSION_THRESHOLDS.minQualityScore}
@@ -250,8 +257,8 @@ async function calculateImportance(acu: any): Promise<number> {
   const engagementCount = await prisma.userInteraction.count({
     where: {
       contentId: acu.id,
-      action: { in: ['like', 'bookmark', 'share', 'comment'] }
-    }
+      action: { in: ['like', 'bookmark', 'share', 'comment'] },
+    },
   });
   score += Math.min(0.2, engagementCount * 0.05);
 
@@ -276,9 +283,9 @@ export async function convertConversationToMemories(conversationId: string): Pro
       include: {
         atomicChatUnits: {
           where: { qualityOverall: { gte: CONVERSION_THRESHOLDS.minQualityScore } },
-          orderBy: { messageIndex: 'asc' }
-        }
-      }
+          orderBy: { messageIndex: 'asc' },
+        },
+      },
     });
 
     if (!conversation) {
@@ -324,24 +331,29 @@ export async function getConversionStats(userId: string): Promise<{
       prisma.memory.count({ where: { userId, isActive: true } }),
       prisma.memory.count({ where: { userId, sourceAcuId: { not: null } } }),
       prisma.memory.count({
-        where: { userId, createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } }
+        where: { userId, createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
       }),
       prisma.memory.groupBy({
         by: ['category'],
         where: { userId },
         _count: { id: true },
         orderBy: { _count: { id: 'desc' } },
-        take: 5
-      })
+        take: 5,
+      }),
     ]);
 
-    operationLog.debug({ msg: 'Retrieved conversion stats', totalMemories, fromACU, recentConversions });
+    operationLog.debug({
+      msg: 'Retrieved conversion stats',
+      totalMemories,
+      fromACU,
+      recentConversions,
+    });
 
     return {
       totalMemories,
       fromACU,
       recentConversions,
-      topCategories: topCategories.map(c => ({ category: c.category, count: c._count.id }))
+      topCategories: topCategories.map((c) => ({ category: c.category, count: c._count.id })),
     };
   } catch (error) {
     operationLog.error({ msg: 'Failed to get conversion stats', error: (error as Error).message });
@@ -350,18 +362,24 @@ export async function getConversionStats(userId: string): Promise<{
 }
 
 eventBus.on('feed:engagement', async (userId, event) => {
-  const operationLog = createOperationLogger('feedEngagementListener', { userId, action: event.action });
+  const operationLog = createOperationLogger('feedEngagementListener', {
+    userId,
+    action: event.action,
+  });
   operationLog.debug({ msg: 'Feed engagement event received', action: event.action });
-  
+
   if (event.action === 'bookmark' || event.action === 'like') {
     await processEngagementConversion(userId);
   }
 });
 
 eventBus.on('memory:extract_from_feed', async (userId, event) => {
-  const operationLog = createOperationLogger('memoryExtractListener', { userId, contentId: event.contentId });
+  const operationLog = createOperationLogger('memoryExtractListener', {
+    userId,
+    contentId: event.contentId,
+  });
   operationLog.debug({ msg: 'Memory extract event received', contentId: event.contentId });
-  
+
   if (event.contentType === 'acu' || event.contentType === 'conversation') {
     await convertACUToMemory(event.contentId);
   }
@@ -372,7 +390,7 @@ export const acuMemoryPipeline = {
   processEngagementConversion,
   runPeriodicConsolidation,
   convertConversationToMemories,
-  getConversionStats
+  getConversionStats,
 };
 
 export default acuMemoryPipeline;

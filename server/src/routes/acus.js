@@ -1,8 +1,8 @@
 /**
  * ACU API Routes
- * 
+ *
  * Endpoints for managing Atomic Chat Units (ACUs)
- * 
+ *
  * Routes:
  * - GET    /api/v1/acus              - List ACUs with filtering
  * - GET    /api/v1/acus/:id          - Get single ACU
@@ -39,14 +39,14 @@ router.get('/', async (req, res) => {
     // Build where clause
     const where = {};
     if (conversationId) {
-where.conversationId = conversationId;
-}
+      where.conversationId = conversationId;
+    }
     if (type) {
-where.type = type;
-}
+      where.type = type;
+    }
     if (category) {
-where.category = category;
-}
+      where.category = category;
+    }
     if (minQuality > 0) {
       where.qualityOverall = { gte: parseFloat(minQuality) };
     }
@@ -92,7 +92,6 @@ where.category = category;
         hasMore: offset + acus.length < total,
       },
     });
-
   } catch (error) {
     logger.error('Failed to list ACUs', { error: error.message });
     res.status(500).json({
@@ -170,7 +169,6 @@ router.get('/:id', async (req, res) => {
       success: true,
       data: acu,
     });
-
   } catch (error) {
     logger.error('Failed to get ACU', { error: error.message, id: req.params.id });
     res.status(500).json({
@@ -205,10 +203,7 @@ router.get('/:id/links', async (req, res) => {
     // Get links (simple implementation - could be optimized with recursive CTE)
     const links = await getPrismaClient().acuLink.findMany({
       where: {
-        OR: [
-          { sourceId: id },
-          { targetId: id },
-        ],
+        OR: [{ sourceId: id }, { targetId: id }],
       },
       include: {
         source: {
@@ -278,7 +273,6 @@ router.get('/:id/links', async (req, res) => {
         edges,
       },
     });
-
   } catch (error) {
     logger.error('Failed to get ACU links', { error: error.message, id: req.params.id });
     res.status(500).json({
@@ -295,13 +289,7 @@ router.get('/:id/links', async (req, res) => {
  */
 router.post('/search', async (req, res) => {
   try {
-    const {
-      query,
-      type,
-      category,
-      minQuality = 0,
-      limit = 20,
-    } = req.body;
+    const { query, type, category, minQuality = 0, limit = 20 } = req.body;
 
     if (!query) {
       return res.status(400).json({
@@ -313,11 +301,11 @@ router.post('/search', async (req, res) => {
     // Build where clause
     const where = {};
     if (type) {
-where.type = type;
-}
+      where.type = type;
+    }
     if (category) {
-where.category = category;
-}
+      where.category = category;
+    }
     if (minQuality > 0) {
       where.qualityOverall = { gte: parseFloat(minQuality) };
     }
@@ -352,7 +340,6 @@ where.category = category;
       query,
       count: acus.length,
     });
-
   } catch (error) {
     logger.error('Failed to search ACUs', { error: error.message });
     res.status(500).json({
@@ -402,7 +389,6 @@ router.post('/process', async (req, res) => {
         message: result.error,
       });
     }
-
   } catch (error) {
     logger.error('Failed to process conversation', { error: error.message });
     res.status(500).json({
@@ -445,476 +431,458 @@ router.post('/batch', async (req, res) => {
       generateEmbeddings,
       calculateQuality,
       detectLinks,
-    }).then(result => {
-      logger.info('Batch processing complete', result);
-    }).catch(error => {
-      logger.error('Batch processing failed', { error: error.message });
-    });
-
+    })
+      .then((result) => {
+        logger.info('Batch processing complete', result);
+      })
+      .catch((error) => {
+        logger.error('Batch processing failed', { error: error.message });
+      });
   } catch (error) {
     logger.error('Failed to start batch processing', { error: error.message });
-   res.status(500).json({
-       success: false,
-       error: 'Failed to start batch processing',
-       message: error.message,
-     });
-   }
- });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to start batch processing',
+      message: error.message,
+    });
+  }
+});
 
 /**
  * POST /api/v1/acus/quick
  * Quick capture - minimal friction ACU creation
  */
 router.post('/quick', async (req, res) => {
-   try {
-     const {
-       content,
-       tags,
-       type,
-       category,
-     } = req.body;
+  try {
+    const { content, tags, type, category } = req.body;
 
-     if (!content?.trim()) {
-       return res.status(400).json({
-         success: false,
-         error: 'Content required',
-       });
-     }
+    if (!content?.trim()) {
+      return res.status(400).json({
+        success: false,
+        error: 'Content required',
+      });
+    }
 
-     // Auto-classify if not provided
-     const acuType = type || inferType(content);
-     const acuCategory = category || inferCategory(content);
+    // Auto-classify if not provided
+    const acuType = type || inferType(content);
+    const acuCategory = category || inferCategory(content);
 
-     // Generate ACU ID (content hash)
-     const { Prisma } = await import('@prisma/client');
-     const hash = await import('crypto');
-     const contentHash = hash.default
-       .createHash('sha256')
-       .update(content.trim())
-       .digest('hex')
-       .substring(0, 64);
-     
-     const acuId = `acu-${contentHash}`;
+    // Generate ACU ID (content hash)
+    const { Prisma } = await import('@prisma/client');
+    const hash = await import('crypto');
+    const contentHash = hash.default
+      .createHash('sha256')
+      .update(content.trim())
+      .digest('hex')
+      .substring(0, 64);
 
-     // Check for duplicates
-     const existing = await getPrismaClient().atomicChatUnit.findUnique({
-       where: { id: acuId },
-     });
+    const acuId = `acu-${contentHash}`;
 
-     if (existing) {
-       return res.json({
-         success: true,
-         data: existing,
-         created: false,
-         reason: 'duplicate',
-       });
-     }
+    // Check for duplicates
+    const existing = await getPrismaClient().atomicChatUnit.findUnique({
+      where: { id: acuId },
+    });
 
-     // Create ACU
-     const acu = await getPrismaClient().atomicChatUnit.create({
-       data: {
-         id: acuId,
-         authorDid: req.auth?.did || 'did:key:anon', // Would use real DID in production
-         signature: Buffer.from('quick-capture'),
-         content: content.trim(),
-         type: acuType,
-         category: acuCategory,
-         origin: 'quick_capture',
-         qualityOverall: calculateQuickQuality(content, acuType),
-         contentRichness: calculateQuickRichness(content),
-         structuralIntegrity: calculateQuickIntegrity(content),
-         uniqueness: 50,
-         tags: tags || [],
-         sharingPolicy: 'self',
-         sharingCircles: [],
-         canView: true,
-         canAnnotate: true,
-         canRemix: true,
-         canReshare: false,
-         metadata: {
-           source: 'quick-capture',
-           capturedAt: new Date().toISOString(),
-         },
-       },
-     });
+    if (existing) {
+      return res.json({
+        success: true,
+        data: existing,
+        created: false,
+        reason: 'duplicate',
+      });
+    }
 
-     res.json({
-       success: true,
-       data: acu,
-       created: true,
-     });
+    // Create ACU
+    const acu = await getPrismaClient().atomicChatUnit.create({
+      data: {
+        id: acuId,
+        authorDid: req.auth?.did || 'did:key:anon', // Would use real DID in production
+        signature: Buffer.from('quick-capture'),
+        content: content.trim(),
+        type: acuType,
+        category: acuCategory,
+        origin: 'quick_capture',
+        qualityOverall: calculateQuickQuality(content, acuType),
+        contentRichness: calculateQuickRichness(content),
+        structuralIntegrity: calculateQuickIntegrity(content),
+        uniqueness: 50,
+        tags: tags || [],
+        sharingPolicy: 'self',
+        sharingCircles: [],
+        canView: true,
+        canAnnotate: true,
+        canRemix: true,
+        canReshare: false,
+        metadata: {
+          source: 'quick-capture',
+          capturedAt: new Date().toISOString(),
+        },
+      },
+    });
 
-   } catch (error) {
-     logger.error('Quick capture failed', { error: error.message });
-     res.status(500).json({
-       success: false,
-       error: 'Quick capture failed',
-       message: error.message,
-     });
-   }
- });
+    res.json({
+      success: true,
+      data: acu,
+      created: true,
+    });
+  } catch (error) {
+    logger.error('Quick capture failed', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: 'Quick capture failed',
+      message: error.message,
+    });
+  }
+});
 
 /**
  * POST /api/v1/acus/:id/remix
  * Create a remix/derivative of an existing ACU
  */
 router.post('/:id/remix', async (req, res) => {
-   try {
-     const { id: parentId } = req.params;
-     const {
-       content,
-       tags,
-       type = 'remix',
-       category,
-     } = req.body;
+  try {
+    const { id: parentId } = req.params;
+    const { content, tags, type = 'remix', category } = req.body;
 
-     if (!content?.trim()) {
-       return res.status(400).json({
-         success: false,
-         error: 'Content required',
-       });
-     }
+    if (!content?.trim()) {
+      return res.status(400).json({
+        success: false,
+        error: 'Content required',
+      });
+    }
 
-     // Check parent exists
-     const parent = await getPrismaClient().atomicChatUnit.findUnique({
-       where: { id: parentId },
-     });
+    // Check parent exists
+    const parent = await getPrismaClient().atomicChatUnit.findUnique({
+      where: { id: parentId },
+    });
 
-     if (!parent) {
-       return res.status(404).json({
-         success: false,
-         error: 'Parent ACU not found',
-       });
-     }
+    if (!parent) {
+      return res.status(404).json({
+        success: false,
+        error: 'Parent ACU not found',
+      });
+    }
 
-     // Generate remix ID
-     const { hash } = await import('crypto');
-     const contentHash = hash.default
-       .createHash('sha256')
-       .update(`${parentId}:${content.trim()}`)
-       .digest('hex')
-       .substring(0, 64);
-     
-     const remixId = `remix-${contentHash}`;
+    // Generate remix ID
+    const { hash } = await import('crypto');
+    const contentHash = hash.default
+      .createHash('sha256')
+      .update(`${parentId}:${content.trim()}`)
+      .digest('hex')
+      .substring(0, 64);
 
-     // Check for duplicate remix
-     const existing = await getPrismaClient().atomicChatUnit.findUnique({
-       where: { id: remixId },
-     });
+    const remixId = `remix-${contentHash}`;
 
-     if (existing) {
-       return res.json({
-         success: true,
-         data: existing,
-         created: false,
-         reason: 'duplicate',
-       });
-     }
+    // Check for duplicate remix
+    const existing = await getPrismaClient().atomicChatUnit.findUnique({
+      where: { id: remixId },
+    });
 
-     // Create remix
-     const remix = await getPrismaClient().atomicChatUnit.create({
-       data: {
-         id: remixId,
-         authorDid: req.auth?.did || 'did:key:anon',
-         signature: Buffer.from('remix'),
-         content: content.trim(),
-         type,
-         category: category || parent.category || 'conceptual',
-         origin: 'remix',
-         parentId,
-         qualityOverall: 50, // Would calculate properly in production
-         contentRichness: 50,
-         structuralIntegrity: 50,
-         uniqueness: 50,
-         tags: tags || [...(parent.tags || [])],
-         sharingPolicy: parent.sharingPolicy,
-         sharingCircles: parent.sharingCircles,
-         canView: parent.canView,
-         canAnnotate: parent.canAnnotate,
-         canRemix: parent.canRemix,
-         canReshare: parent.canReshare,
-         metadata: {
-           source: 'remix',
-           parentId,
-           parentType: parent.type,
-           createdAt: new Date().toISOString(),
-         },
-       },
-     });
+    if (existing) {
+      return res.json({
+        success: true,
+        data: existing,
+        created: false,
+        reason: 'duplicate',
+      });
+    }
 
-     // Increment parent's quote count
-     await getPrismaClient().atomicChatUnit.update({
-       where: { id: parentId },
-       data: { quoteCount: { increment: 1 } },
-     });
+    // Create remix
+    const remix = await getPrismaClient().atomicChatUnit.create({
+      data: {
+        id: remixId,
+        authorDid: req.auth?.did || 'did:key:anon',
+        signature: Buffer.from('remix'),
+        content: content.trim(),
+        type,
+        category: category || parent.category || 'conceptual',
+        origin: 'remix',
+        parentId,
+        qualityOverall: 50, // Would calculate properly in production
+        contentRichness: 50,
+        structuralIntegrity: 50,
+        uniqueness: 50,
+        tags: tags || [...(parent.tags || [])],
+        sharingPolicy: parent.sharingPolicy,
+        sharingCircles: parent.sharingCircles,
+        canView: parent.canView,
+        canAnnotate: parent.canAnnotate,
+        canRemix: parent.canRemix,
+        canReshare: parent.canReshare,
+        metadata: {
+          source: 'remix',
+          parentId,
+          parentType: parent.type,
+          createdAt: new Date().toISOString(),
+        },
+      },
+    });
 
-     // Create derivation link
-     await getPrismaClient().acuLink.create({
-       data: {
-         sourceId: remixId,
-         targetId: parentId,
-         relation: 'derived_from',
-         weight: 1.0,
-         createdByDid: req.auth?.did,
-       },
-     });
+    // Increment parent's quote count
+    await getPrismaClient().atomicChatUnit.update({
+      where: { id: parentId },
+      data: { quoteCount: { increment: 1 } },
+    });
 
-     res.json({
-       success: true,
-       data: remix,
-       created: true,
-     });
+    // Create derivation link
+    await getPrismaClient().acuLink.create({
+      data: {
+        sourceId: remixId,
+        targetId: parentId,
+        relation: 'derived_from',
+        weight: 1.0,
+        createdByDid: req.auth?.did,
+      },
+    });
 
-   } catch (error) {
-     logger.error('Remix failed', { error: error.message });
-     res.status(500).json({
-       success: false,
-       error: 'Remix failed',
-       message: error.message,
-     });
-   }
- });
+    res.json({
+      success: true,
+      data: remix,
+      created: true,
+    });
+  } catch (error) {
+    logger.error('Remix failed', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: 'Remix failed',
+      message: error.message,
+    });
+  }
+});
 
 /**
  * POST /api/v1/acus/:id/annotate
  * Create an annotation on an existing ACU
  */
 router.post('/:id/annotate', async (req, res) => {
-   try {
-     const { id: parentId } = req.params;
-     const {
-       content,
-       tags,
-       type = 'annotation',
-       category,
-     } = req.body;
+  try {
+    const { id: parentId } = req.params;
+    const { content, tags, type = 'annotation', category } = req.body;
 
-     if (!content?.trim()) {
-       return res.status(400).json({
-         success: false,
-         error: 'Content required',
-       });
-     }
+    if (!content?.trim()) {
+      return res.status(400).json({
+        success: false,
+        error: 'Content required',
+      });
+    }
 
-     // Check parent exists
-     const parent = await getPrismaClient().atomicChatUnit.findUnique({
-       where: { id: parentId },
-     });
+    // Check parent exists
+    const parent = await getPrismaClient().atomicChatUnit.findUnique({
+      where: { id: parentId },
+    });
 
-     if (!parent) {
-       return res.status(404).json({
-         success: false,
-         error: 'Parent ACU not found',
-       });
-     }
+    if (!parent) {
+      return res.status(404).json({
+        success: false,
+        error: 'Parent ACU not found',
+      });
+    }
 
-     // Generate annotation ID
-     const { hash } = await import('crypto');
-     const contentHash = hash.default
-       .createHash('sha256')
-       .update(`${parentId}:${content.trim()}`)
-       .digest('hex')
-       .substring(0, 64);
-     
-     const annotationId = `anno-${contentHash}`;
+    // Generate annotation ID
+    const { hash } = await import('crypto');
+    const contentHash = hash.default
+      .createHash('sha256')
+      .update(`${parentId}:${content.trim()}`)
+      .digest('hex')
+      .substring(0, 64);
 
-     // Check for duplicate annotation
-     const existing = await getPrismaClient().atomicChatUnit.findUnique({
-       where: { id: annotationId },
-     });
+    const annotationId = `anno-${contentHash}`;
 
-     if (existing) {
-       return res.json({
-         success: true,
-         data: existing,
-         created: false,
-         reason: 'duplicate',
-       });
-     }
+    // Check for duplicate annotation
+    const existing = await getPrismaClient().atomicChatUnit.findUnique({
+      where: { id: annotationId },
+    });
 
-     // Create annotation
-     const annotation = await getPrismaClient().atomicChatUnit.create({
-       data: {
-         id: annotationId,
-         authorDid: req.auth?.did || 'did:key:anon',
-         signature: Buffer.from('annotation'),
-         content: content.trim(),
-         type,
-         category: category || parent.category || 'conceptual',
-         origin: 'manual',
-         parentId,
-         qualityOverall: 50,
-         contentRichness: 50,
-         structuralIntegrity: 50,
-         uniqueness: 50,
-         tags: tags || [...(parent.tags || [])],
-         sharingPolicy: parent.sharingPolicy,
-         sharingCircles: parent.sharingCircles,
-         canView: parent.canView,
-         canAnnotate: true,
-         canRemix: parent.canRemix,
-         canReshare: parent.canReshare,
-         metadata: {
-           source: 'annotation',
-           parentId,
-           parentType: parent.type,
-           createdAt: new Date().toISOString(),
-         },
-       },
-     });
+    if (existing) {
+      return res.json({
+        success: true,
+        data: existing,
+        created: false,
+        reason: 'duplicate',
+      });
+    }
 
-     // Create annotation link
-     await getPrismaClient().acuLink.create({
-       data: {
-         sourceId: annotationId,
-         targetId: parentId,
-         relation: 'annotates',
-         weight: 1.0,
-         createdByDid: req.auth?.did,
-       },
-     });
+    // Create annotation
+    const annotation = await getPrismaClient().atomicChatUnit.create({
+      data: {
+        id: annotationId,
+        authorDid: req.auth?.did || 'did:key:anon',
+        signature: Buffer.from('annotation'),
+        content: content.trim(),
+        type,
+        category: category || parent.category || 'conceptual',
+        origin: 'manual',
+        parentId,
+        qualityOverall: 50,
+        contentRichness: 50,
+        structuralIntegrity: 50,
+        uniqueness: 50,
+        tags: tags || [...(parent.tags || [])],
+        sharingPolicy: parent.sharingPolicy,
+        sharingCircles: parent.sharingCircles,
+        canView: parent.canView,
+        canAnnotate: true,
+        canRemix: parent.canRemix,
+        canReshare: parent.canReshare,
+        metadata: {
+          source: 'annotation',
+          parentId,
+          parentType: parent.type,
+          createdAt: new Date().toISOString(),
+        },
+      },
+    });
 
-     res.json({
-       success: true,
-       data: annotation,
-       created: true,
-     });
+    // Create annotation link
+    await getPrismaClient().acuLink.create({
+      data: {
+        sourceId: annotationId,
+        targetId: parentId,
+        relation: 'annotates',
+        weight: 1.0,
+        createdByDid: req.auth?.did,
+      },
+    });
 
-   } catch (error) {
-     logger.error('Annotation failed', { error: error.message });
-     res.status(500).json({
-       success: false,
-       error: 'Annotation failed',
-       message: error.message,
-     });
-   }
- });
+    res.json({
+      success: true,
+      data: annotation,
+      created: true,
+    });
+  } catch (error) {
+    logger.error('Annotation failed', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: 'Annotation failed',
+      message: error.message,
+    });
+  }
+});
 
 /**
  * POST /api/v1/acus/:id/bookmark
  * Bookmark an existing ACU
  */
 router.post('/:id/bookmark', async (req, res) => {
-   try {
-     const { id: acuId } = req.params;
-     const { notebookId } = req.body;
+  try {
+    const { id: acuId } = req.params;
+    const { notebookId } = req.body;
 
-     // Check ACU exists
-     const acu = await getPrismaClient().atomicChatUnit.findUnique({
-       where: { id: acuId },
-     });
+    // Check ACU exists
+    const acu = await getPrismaClient().atomicChatUnit.findUnique({
+      where: { id: acuId },
+    });
 
-     if (!acu) {
-       return res.status(404).json({
-         success: false,
-         error: 'ACU not found',
-       });
-     }
+    if (!acu) {
+      return res.status(404).json({
+        success: false,
+        error: 'ACU not found',
+      });
+    }
 
-     // If notebookId provided, add to notebook
-     if (notebookId) {
-       const notebook = await getPrismaClient().notebook.findUnique({
-         where: { id: notebookId },
-       });
+    // If notebookId provided, add to notebook
+    if (notebookId) {
+      const notebook = await getPrismaClient().notebook.findUnique({
+        where: { id: notebookId },
+      });
 
-       if (!notebook) {
-         return res.status(404).json({
-           success: false,
-           error: 'Notebook not found',
-         });
-       }
+      if (!notebook) {
+        return res.status(404).json({
+          success: false,
+          error: 'Notebook not found',
+        });
+      }
 
-       // Add to notebook (upsert to avoid duplicates)
-       await getPrismaClient().notebookEntry.upsert({
-         where: {
-           notebookId_acuId: {
-             notebookId,
-             acuId,
-           },
-         },
-         create: {
-           notebookId,
-           acuId,
-           sortOrder: 0,
-         },
-         update: {},
-       });
-     }
+      // Add to notebook (upsert to avoid duplicates)
+      await getPrismaClient().notebookEntry.upsert({
+        where: {
+          notebookId_acuId: {
+            notebookId,
+            acuId,
+          },
+        },
+        create: {
+          notebookId,
+          acuId,
+          sortOrder: 0,
+        },
+        update: {},
+      });
+    }
 
-     // Create bookmark ACU if not exists
-     const { hash } = await import('crypto');
-     const bookmarkId = `bookmark-${acuId}`;
+    // Create bookmark ACU if not exists
+    const { hash } = await import('crypto');
+    const bookmarkId = `bookmark-${acuId}`;
 
-     const [bookmark] = await getPrismaClient().atomicChatUnit.upsert({
-       where: { id: bookmarkId },
-       create: {
-         id: bookmarkId,
-         authorDid: req.auth?.did || 'did:key:anon',
-         signature: Buffer.from('bookmark'),
-         content: `[Bookmark] ${acu.content.substring(0, 500)}${acu.content.length > 500 ? '...' : ''}`,
-         type: 'bookmark',
-         category: acu.category,
-         origin: 'manual',
-         parentId: acuId,
-         qualityOverall: acu.qualityOverall,
-         contentRichness: 30, // Short bookmark content
-         structuralIntegrity: 50,
-         uniqueness: 50,
-         tags: [...(acu.tags || []), 'bookmark'],
-         sharingPolicy: 'self',
-         canView: true,
-         canAnnotate: true,
-         canRemix: true,
-         canReshare: false,
-         metadata: {
-           source: 'bookmark',
-           originalAcuId: acuId,
-           bookmarkedAt: new Date().toISOString(),
-         },
-       },
-       update: {
-         // Update metadata if already exists
-         metadata: {
-           ...acu.metadata,
-           bookmarkedAt: new Date().toISOString(),
-         },
-       },
-     });
+    const [bookmark] = await getPrismaClient().atomicChatUnit.upsert({
+      where: { id: bookmarkId },
+      create: {
+        id: bookmarkId,
+        authorDid: req.auth?.did || 'did:key:anon',
+        signature: Buffer.from('bookmark'),
+        content: `[Bookmark] ${acu.content.substring(0, 500)}${acu.content.length > 500 ? '...' : ''}`,
+        type: 'bookmark',
+        category: acu.category,
+        origin: 'manual',
+        parentId: acuId,
+        qualityOverall: acu.qualityOverall,
+        contentRichness: 30, // Short bookmark content
+        structuralIntegrity: 50,
+        uniqueness: 50,
+        tags: [...(acu.tags || []), 'bookmark'],
+        sharingPolicy: 'self',
+        canView: true,
+        canAnnotate: true,
+        canRemix: true,
+        canReshare: false,
+        metadata: {
+          source: 'bookmark',
+          originalAcuId: acuId,
+          bookmarkedAt: new Date().toISOString(),
+        },
+      },
+      update: {
+        // Update metadata if already exists
+        metadata: {
+          ...acu.metadata,
+          bookmarkedAt: new Date().toISOString(),
+        },
+      },
+    });
 
-     // Create bookmark link
-     await getPrismaClient().acuLink.upsert({
-       where: {
-         sourceId_targetId_relation: {
-           sourceId: bookmarkId,
-           targetId: acuId,
-           relation: 'bookmarks',
-         },
-       },
-       create: {
-         sourceId: bookmarkId,
-         targetId: acuId,
-         relation: 'bookmarks',
-         weight: 1.0,
-         createdByDid: req.auth?.did,
-       },
-       update: {},
-     });
+    // Create bookmark link
+    await getPrismaClient().acuLink.upsert({
+      where: {
+        sourceId_targetId_relation: {
+          sourceId: bookmarkId,
+          targetId: acuId,
+          relation: 'bookmarks',
+        },
+      },
+      create: {
+        sourceId: bookmarkId,
+        targetId: acuId,
+        relation: 'bookmarks',
+        weight: 1.0,
+        createdByDid: req.auth?.did,
+      },
+      update: {},
+    });
 
-     res.json({
-       success: true,
-       data: bookmark,
-       created: true,
-     });
-
-   } catch (error) {
-     logger.error('Bookmark failed', { error: error.message });
-     res.status(500).json({
-       success: false,
-       error: 'Bookmark failed',
-       message: error.message,
-     });
-   }
- });
+    res.json({
+      success: true,
+      data: bookmark,
+      created: true,
+    });
+  } catch (error) {
+    logger.error('Bookmark failed', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: 'Bookmark failed',
+      message: error.message,
+    });
+  }
+});
 
 /**
  * GET /api/v1/acus/stats
@@ -922,27 +890,22 @@ router.post('/:id/bookmark', async (req, res) => {
  */
 router.get('/stats', async (req, res) => {
   try {
-    const [
-      total,
-      byType,
-      byCategory,
-      avgQuality,
-    ] = await Promise.all([
+    const [total, byType, byCategory, avgQuality] = await Promise.all([
       // Total count
       getPrismaClient().atomicChatUnit.count(),
-      
+
       // Count by type
       getPrismaClient().atomicChatUnit.groupBy({
         by: ['type'],
         _count: true,
       }),
-      
+
       // Count by category
       getPrismaClient().atomicChatUnit.groupBy({
         by: ['category'],
         _count: true,
       }),
-      
+
       // Average quality
       getPrismaClient().atomicChatUnit.aggregate({
         _avg: {
@@ -974,16 +937,15 @@ router.get('/stats', async (req, res) => {
         },
       },
     });
-
-   } catch (error) {
-     logger.error('Failed to get ACU stats', { error: error.message });
-     res.status(500).json({
-       success: false,
-       error: 'Failed to get ACU stats',
-       message: error.message,
-     });
-   }
- });
+  } catch (error) {
+    logger.error('Failed to get ACU stats', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get ACU stats',
+      message: error.message,
+    });
+  }
+});
 
 // ============================================================================
 // HELPER FUNCTIONS FOR NEW ENDPOINTS
@@ -993,9 +955,15 @@ router.get('/stats', async (req, res) => {
  * Infer ACU type from content for quick capture
  */
 function inferType(content) {
-  if (content.includes('```')) return 'code_snippet';
-  if (content.endsWith('?')) return 'question';
-  if (content.length < 140) return 'thought';
+  if (content.includes('```')) {
+    return 'code_snippet';
+  }
+  if (content.endsWith('?')) {
+    return 'question';
+  }
+  if (content.length < 140) {
+    return 'thought';
+  }
   return 'note';
 }
 
@@ -1004,7 +972,9 @@ function inferType(content) {
  */
 function inferCategory(content) {
   const techKeywords = /\b(function|class|api|database|server|code|bug|deploy|git|programming)\b/i;
-  if (techKeywords.test(content)) return 'technical';
+  if (techKeywords.test(content)) {
+    return 'technical';
+  }
   return 'conceptual';
 }
 
@@ -1015,8 +985,12 @@ function calculateQuickQuality(content, type) {
   let score = 50;
   const words = content.split(/\s+/).length;
   score += Math.min(words / 10, 20);
-  if (content.includes('```')) score += 15;
-  if (content.includes('?')) score += 10;
+  if (content.includes('```')) {
+    score += 15;
+  }
+  if (content.includes('?')) {
+    score += 10;
+  }
   return Math.min(Math.round(score), 100);
 }
 
@@ -1026,9 +1000,15 @@ function calculateQuickQuality(content, type) {
 function calculateQuickRichness(content) {
   let score = 30;
   const words = content.split(/\s+/).length;
-  if (words > 50) score += 20;
-  if (words > 100) score += 15;
-  if (content.includes('```')) score += 10;
+  if (words > 50) {
+    score += 20;
+  }
+  if (words > 100) {
+    score += 15;
+  }
+  if (content.includes('```')) {
+    score += 10;
+  }
   return Math.min(score, 100);
 }
 
@@ -1037,9 +1017,13 @@ function calculateQuickRichness(content) {
  */
 function calculateQuickIntegrity(content) {
   let score = 70;
-  if (content.length < 20) score -= 20;
-  const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
-  if (sentences.length > 2) score += 10;
+  if (content.length < 20) {
+    score -= 20;
+  }
+  const sentences = content.split(/[.!?]+/).filter((s) => s.trim().length > 0);
+  if (sentences.length > 2) {
+    score += 10;
+  }
   return Math.min(Math.max(score, 0), 100);
 }
 

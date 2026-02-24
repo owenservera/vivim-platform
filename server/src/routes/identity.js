@@ -1,6 +1,6 @@
 /**
  * Identity API Routes
- * 
+ *
  * Backend endpoints for secure P2P identity management:
  * - Device registration and sync
  * - KYC verification integrations
@@ -58,9 +58,9 @@ const verifyPhoneSchema = z.object({
 // In-memory stores (production would use database)
 // ============================================================================
 
-const verificationCodes = new Map();  // email/phone -> { code, did, expiresAt }
-const registeredDevices = new Map();   // masterDID -> Device[]
-const issuedCredentials = new Map();   // did -> Credential[]
+const verificationCodes = new Map(); // email/phone -> { code, did, expiresAt }
+const registeredDevices = new Map(); // masterDID -> Device[]
+const issuedCredentials = new Map(); // did -> Credential[]
 
 // ============================================================================
 // Device Management Endpoints
@@ -107,9 +107,10 @@ router.post('/devices/register', async (req, res) => {
     log.error({ error }, 'Device registration failed');
     res.status(400).json({
       success: false,
-      error: error instanceof z.ZodError 
-        ? error.errors.map(e => e.message).join(', ')
-        : 'Registration failed',
+      error:
+        error instanceof z.ZodError
+          ? error.errors.map((e) => e.message).join(', ')
+          : 'Registration failed',
     });
   }
 });
@@ -129,10 +130,10 @@ router.get('/devices', async (req, res) => {
     }
 
     const devices = registeredDevices.get(did) || [];
-    
+
     res.json({
       success: true,
-      data: devices.map(d => ({
+      data: devices.map((d) => ({
         deviceId: d.deviceId,
         name: d.name,
         platform: d.platform,
@@ -164,7 +165,7 @@ router.delete('/devices/:deviceId', async (req, res) => {
     }
 
     const devices = registeredDevices.get(did) || [];
-    const device = devices.find(d => d.deviceId === deviceId);
+    const device = devices.find((d) => d.deviceId === deviceId);
 
     if (!device) {
       return res.status(404).json({
@@ -226,9 +227,10 @@ router.post('/verify/email/start', async (req, res) => {
     log.error({ error }, 'Email verification start failed');
     res.status(400).json({
       success: false,
-      error: error instanceof z.ZodError 
-        ? error.errors.map(e => e.message).join(', ')
-        : 'Failed to start verification',
+      error:
+        error instanceof z.ZodError
+          ? error.errors.map((e) => e.message).join(', ')
+          : 'Failed to start verification',
     });
   }
 });
@@ -375,8 +377,8 @@ router.get('/credentials', async (req, res) => {
 
     res.json({
       success: true,
-      data: credentials.filter(c => c.status === 'valid'),
-      tier: Math.max(0, ...credentials.filter(c => c.status === 'valid').map(c => c.tier)),
+      data: credentials.filter((c) => c.status === 'valid'),
+      tier: Math.max(0, ...credentials.filter((c) => c.status === 'valid').map((c) => c.tier)),
     });
   } catch (error) {
     log.error({ error }, 'Get credentials failed');
@@ -393,7 +395,7 @@ router.post('/credentials/verify', async (req, res) => {
     const { credentialId, did } = req.body;
 
     const credentials = issuedCredentials.get(did) || [];
-    const credential = credentials.find(c => c.id === credentialId);
+    const credential = credentials.find((c) => c.id === credentialId);
 
     if (!credential) {
       return res.json({
@@ -454,7 +456,7 @@ router.delete('/credentials/:credentialId', async (req, res) => {
     }
 
     const credentials = issuedCredentials.get(did) || [];
-    const credential = credentials.find(c => c.id === credentialId);
+    const credential = credentials.find((c) => c.id === credentialId);
 
     if (!credential) {
       return res.status(404).json({
@@ -495,7 +497,7 @@ router.get('/data-export', async (req, res) => {
     }
 
     const devices = registeredDevices.get(did) || [];
-    const credentials = (issuedCredentials.get(did) || []).map(c => ({
+    const credentials = (issuedCredentials.get(did) || []).map((c) => ({
       ...c,
       proof: '[REDACTED]',
       nullifier: '[REDACTED]',
@@ -504,7 +506,7 @@ router.get('/data-export', async (req, res) => {
     const exportData = {
       exportedAt: new Date().toISOString(),
       did,
-      devices: devices.map(d => ({
+      devices: devices.map((d) => ({
         deviceId: d.deviceId,
         name: d.name,
         platform: d.platform,
@@ -512,7 +514,7 @@ router.get('/data-export', async (req, res) => {
         status: d.status,
       })),
       credentials,
-      verificationTier: Math.max(0, ...credentials.map(c => c.tier)),
+      verificationTier: Math.max(0, ...credentials.map((c) => c.tier)),
     };
 
     res.json({

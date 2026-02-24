@@ -1,6 +1,6 @@
 /**
  * Account Management Routes
- * 
+ *
  * User account lifecycle:
  * - GET /me - Get account info
  * - DELETE /me - Request account deletion
@@ -45,8 +45,8 @@ router.get('/me', async (req, res) => {
         createdAt: user.createdAt,
         lastSeenAt: user.lastSeenAt,
         pendingDeletion: user.status === 'DELETING',
-        deletionDate: user.deletedAt
-      }
+        deletionDate: user.deletedAt,
+      },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get account info failed');
@@ -66,12 +66,12 @@ router.delete('/me', async (req, res) => {
     if (exportData) {
       exportResult = await portabilityService.requestExport(req.user.userId, {
         exportType: 'full',
-        formats: ['json']
+        formats: ['json'],
       });
     }
 
     const result = await accountLifecycle.requestAccountDeletion(req.user.userId, {
-      immediate: immediate === true
+      immediate: immediate === true,
     });
 
     if (!result.success) {
@@ -83,8 +83,8 @@ router.delete('/me', async (req, res) => {
       data: {
         scheduledDeletion: result.scheduledDeletion,
         gracePeriodDays: result.gracePeriodDays,
-        exportId: exportResult?.exportId
-      }
+        exportId: exportResult?.exportId,
+      },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Account deletion request failed');
@@ -119,7 +119,7 @@ router.get('/me/data/export', async (req, res) => {
 
     const result = await portabilityService.requestExport(req.user.userId, {
       exportType: 'full',
-      formats: ['json']
+      formats: ['json'],
     });
 
     if (!result.success) {
@@ -131,8 +131,8 @@ router.get('/me/data/export', async (req, res) => {
       data: {
         exportId: result.exportId,
         status: result.status,
-        estimatedTime: result.estimatedTime
-      }
+        estimatedTime: result.estimatedTime,
+      },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Data export failed');
@@ -174,14 +174,14 @@ router.post('/me/api-keys', async (req, res) => {
     }
 
     const { key, apiKey } = await apiKeyService.createApiKey(req.user.userId, name, expiresAt);
-    
+
     // Return the raw key ONLY once on creation
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       apiKey: {
         ...apiKey,
-        key
-      }
+        key,
+      },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Failed to create API key');
@@ -197,7 +197,7 @@ router.delete('/me/api-keys/:keyId', async (req, res) => {
 
     const { keyId } = req.params;
     const revoked = await apiKeyService.revokeApiKey(req.user.userId, keyId);
-    
+
     if (revoked) {
       res.json({ success: true, message: 'API key revoked' });
     } else {
@@ -237,7 +237,7 @@ router.post('/me/mfa/enable', async (req, res) => {
     }
 
     const result = await mfaService.enableMfa(req.user.userId, secret, token);
-    
+
     if (result.success) {
       res.json(result);
     } else {
@@ -261,7 +261,7 @@ router.post('/me/mfa/disable', async (req, res) => {
     }
 
     const result = await mfaService.disableMfa(req.user.userId, token);
-    
+
     if (result.success) {
       res.json(result);
     } else {

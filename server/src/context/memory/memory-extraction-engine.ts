@@ -1,6 +1,6 @@
 /**
  * Memory Extraction Engine
- * 
+ *
  * Automatically extracts meaningful memories from conversations using LLM.
  * Supports batch extraction, incremental extraction, and re-extraction.
  * Designed for production use with proper error handling and retry logic.
@@ -96,8 +96,8 @@ export class MemoryExtractionEngine {
         });
         if (existingJob) {
           logger.info({ conversationId }, 'Memories already extracted, skipping');
-          return { 
-            success: true, 
+          return {
+            success: true,
             memories: [],
             messageCount: conversation.messages.length,
           };
@@ -117,9 +117,14 @@ export class MemoryExtractionEngine {
       });
 
       // Format conversation for extraction
-      const messages = conversation.messages as Array<{ role: string; content?: string; author?: string; messageIndex: number }>;
+      const messages = conversation.messages as Array<{
+        role: string;
+        content?: string;
+        author?: string;
+        messageIndex: number;
+      }>;
       const conversationText = this.formatConversationForExtraction(messages);
-      
+
       // Extract memories using LLM
       const extracted = await this.performExtraction(conversationText);
 
@@ -137,18 +142,14 @@ export class MemoryExtractionEngine {
 
       // Filter by confidence and limit
       const filteredMemories = extracted.memories
-        .filter(m => m.confidence >= this.minConfidenceThreshold)
+        .filter((m) => m.confidence >= this.minConfidenceThreshold)
         .slice(0, this.maxMemoriesPerConversation);
 
       // Create memories in database
       const createdMemories: CreateMemoryInput[] = [];
       for (const memory of filteredMemories) {
         try {
-          const created = await this.createMemoryFromExtraction(
-            userId,
-            conversationId,
-            memory
-          );
+          const created = await this.createMemoryFromExtraction(userId, conversationId, memory);
           createdMemories.push(created);
         } catch (error) {
           logger.warn({ error, memory }, 'Failed to create extracted memory');
@@ -170,7 +171,7 @@ export class MemoryExtractionEngine {
         where: { id: conversationId },
         data: {
           metadata: {
-            ...(conversation.metadata as object || {}),
+            ...((conversation.metadata as object) || {}),
             memoryExtraction: {
               extractedAt: new Date(),
               memoryCount: createdMemories.length,
@@ -180,11 +181,11 @@ export class MemoryExtractionEngine {
       });
 
       logger.info(
-        { 
-          conversationId, 
+        {
+          conversationId,
           memoryCount: createdMemories.length,
           jobId: job.id,
-        }, 
+        },
         'Memory extraction completed'
       );
 
@@ -211,19 +212,17 @@ export class MemoryExtractionEngine {
     message: { role: string; content: string }
   ): Promise<ExtractedMemory[]> {
     const prompt = `${MEMORY_EXTRACTION_PROMPT}\n\nMessage:\n${message.role}: ${message.content}`;
-    
+
     try {
       const response = await this.llmService.chat({
         model: this.extractionModel,
-        messages: [
-          { role: 'system', content: prompt },
-        ],
+        messages: [{ role: 'system', content: prompt }],
         response_format: { type: 'json_object' },
       });
 
       const parsed = JSON.parse(response.content);
       const memories = Array.isArray(parsed) ? parsed : parsed.memories || [];
-      
+
       return memories.map((m: Record<string, unknown>) => ({
         content: String(m.content || ''),
         summary: m.summary ? String(m.summary) : undefined,
@@ -287,17 +286,19 @@ export class MemoryExtractionEngine {
   // PRIVATE HELPERS
   // ============================================================================
 
-  private formatConversationForExtraction(messages: Array<{ 
-    role: string; 
-    content?: string;
-    parts?: unknown[];
-    author?: string;
-    messageIndex: number;
-  }>): string {
+  private formatConversationForExtraction(
+    messages: Array<{
+      role: string;
+      content?: string;
+      parts?: unknown[];
+      author?: string;
+      messageIndex: number;
+    }>
+  ): string {
     return messages
-      .filter(m => m.content && m.content.trim())
-      .map(m => {
-        const role = m.role === 'assistant' ? 'AI' : (m.author || m.role);
+      .filter((m) => m.content && m.content.trim())
+      .map((m) => {
+        const role = m.role === 'assistant' ? 'AI' : m.author || m.role;
         return `[${m.messageIndex + 1}] ${role}: ${m.content}`;
       })
       .join('\n\n');
@@ -310,13 +311,13 @@ export class MemoryExtractionEngine {
       const response = await this.llmService.chat({
         model: this.extractionModel,
         messages: [
-          { 
-            role: 'system', 
-            content: MEMORY_EXTRACTION_PROMPT 
+          {
+            role: 'system',
+            content: MEMORY_EXTRACTION_PROMPT,
           },
-          { 
-            role: 'user', 
-            content: conversationText 
+          {
+            role: 'user',
+            content: conversationText,
           },
         ],
         response_format: { type: 'json_object' },
@@ -334,7 +335,7 @@ export class MemoryExtractionEngine {
       }
 
       const memories = Array.isArray(parsed) ? parsed : (parsed.memories as unknown[]) || [];
-      
+
       const extracted: ExtractedMemory[] = memories.map((m: unknown) => {
         const mem = m as Record<string, unknown>;
         return {

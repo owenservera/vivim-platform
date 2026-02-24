@@ -12,9 +12,9 @@ async function getOrCreateDevUser() {
   }
 
   const prisma = getPrismaClient();
-  
+
   let user = await prisma.user.findUnique({
-    where: { email: 'dev@localhost' }
+    where: { email: 'dev@localhost' },
   });
 
   if (!user) {
@@ -29,36 +29,36 @@ async function getOrCreateDevUser() {
         publicKey: 'dev:local-key',
         keyType: 'Development',
         trustScore: 100,
-        status: 'ACTIVE'
-      }
+        status: 'ACTIVE',
+      },
     });
     log.info({ userId: user.id }, 'Created development user');
   }
 
   user.userId = user.id;
   devUserCache = user;
-  
+
   return user;
 }
 
 export async function devAuthBypass(req, res, next) {
   // Allow bypass in development OR test environments
   const isDevOrTest = config.isDevelopment || config.isTest;
-  
+
   if (!isDevOrTest || !config.skipAuthForDevelopment) {
     return next();
   }
 
   try {
     const user = await getOrCreateDevUser();
-    
+
     req.user = user;
     req.userId = user.id;
     req.isAuthenticated = () => true;
     req.auth = {
       isAuthenticated: true,
       isDevBypass: true,
-      permissions: ['*']
+      permissions: ['*'],
     };
 
     next();

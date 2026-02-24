@@ -41,14 +41,20 @@ async function captureWithSingleFile(url, provider, options = {}) {
   console.warn(`Temporary file: ${tempFilePath}`);
 
   // Build SingleFile CLI command
-  const command = await buildSingleFileCommand(url, tempFilePath, settings, singleFileExecutable, headless);
+  const command = await buildSingleFileCommand(
+    url,
+    tempFilePath,
+    settings,
+    singleFileExecutable,
+    headless
+  );
 
   console.warn('Executing SingleFile CLI...');
 
   // Execute SingleFile CLI
   try {
     await executeCommand(command, timeout);
-    
+
     // Verify file was created
     try {
       const stats = await fs.stat(tempFilePath);
@@ -76,15 +82,15 @@ async function captureWithSingleFile(url, provider, options = {}) {
 async function getProviderSettings(provider) {
   // Map provider to settings filename
   const settingsFileMap = {
-    'zai': 'zai-settings.txt',
-    'chatgpt': 'chatgpt-settings.txt',
-    'claude': 'claude-settings.txt',
-    'qwen': 'qwen-settings.txt',
-    'grok': 'grok-settings.txt',
-    'kimi': 'kimi-settings.txt',
-    'deepseek': 'deepseek-settings.txt',
-    'gemini': 'gemini-settings.txt',
-    'perplexity': null, // Not yet implemented
+    zai: 'zai-settings.txt',
+    chatgpt: 'chatgpt-settings.txt',
+    claude: 'claude-settings.txt',
+    qwen: 'qwen-settings.txt',
+    grok: 'grok-settings.txt',
+    kimi: 'kimi-settings.txt',
+    deepseek: 'deepseek-settings.txt',
+    gemini: 'gemini-settings.txt',
+    perplexity: null, // Not yet implemented
   };
 
   const settingsFileName = settingsFileMap[provider];
@@ -146,7 +152,13 @@ function parseSettingsFile(content) {
  * @param {boolean} headless - Run browser in headless mode
  * @returns {Promise<Object>} Command object { executable, args }
  */
-async function buildSingleFileCommand(url, outputFile, settings, customExecutable = null, headless = true) {
+async function buildSingleFileCommand(
+  url,
+  outputFile,
+  settings,
+  customExecutable = null,
+  headless = true
+) {
   // Default to single-file-node.js in the parent single-file-cli directory
   const defaultExecutable = path.resolve(__dirname, '..', 'single-file-cli', 'single-file-node.js');
   const executable = customExecutable || defaultExecutable;
@@ -158,11 +170,7 @@ async function buildSingleFileCommand(url, outputFile, settings, customExecutabl
     throw new Error(`SingleFile CLI executable not found: ${executable}`);
   }
 
-  const args = [
-    url,
-    outputFile,
-    ...settings.args,
-  ];
+  const args = [url, outputFile, ...settings.args];
 
   if (!headless) {
     args.push('--browser-headless=false');
@@ -234,8 +242,4 @@ async function cleanupTempFile(filePath) {
   }
 }
 
-export {
-  captureWithSingleFile,
-  getProviderSettings,
-  cleanupTempFile,
-};
+export { captureWithSingleFile, getProviderSettings, cleanupTempFile };

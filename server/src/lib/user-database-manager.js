@@ -1,9 +1,9 @@
 /**
  * User Database Manager - Simplified
- * 
+ *
  * Manages user data access via single PostgreSQL database.
  * Uses row-level security and ownerId filtering for data isolation.
- * 
+ *
  * This replaces the previous SQLite-per-user architecture.
  */
 
@@ -47,7 +47,7 @@ export async function getUserConversations(userId) {
   const prisma = getPrismaClient();
   return prisma.conversation.findMany({
     where: { ownerId: userId },
-    orderBy: { createdAt: 'desc' }
+    orderBy: { createdAt: 'desc' },
   });
 }
 
@@ -60,10 +60,10 @@ export async function getUserConversations(userId) {
 export async function getUserConversation(conversationId, userId) {
   const prisma = getPrismaClient();
   return prisma.conversation.findFirst({
-    where: { 
+    where: {
       id: conversationId,
-      ownerId: userId
-    }
+      ownerId: userId,
+    },
   });
 }
 
@@ -76,7 +76,7 @@ export async function getUserACUs(userDid) {
   const prisma = getPrismaClient();
   return prisma.atomicChatUnit.findMany({
     where: { authorDid: userDid },
-    orderBy: { createdAt: 'desc' }
+    orderBy: { createdAt: 'desc' },
   });
 }
 
@@ -89,10 +89,10 @@ export async function getUserACUs(userDid) {
 export async function getUserACU(acuId, userDid) {
   const prisma = getPrismaClient();
   return prisma.atomicChatUnit.findFirst({
-    where: { 
+    where: {
       id: acuId,
-      authorDid: userDid
-    }
+      authorDid: userDid,
+    },
   });
 }
 
@@ -105,7 +105,7 @@ export async function getUserTopicProfiles(userId) {
   const prisma = getPrismaClient();
   return prisma.topicProfile.findMany({
     where: { userId },
-    orderBy: { updatedAt: 'desc' }
+    orderBy: { updatedAt: 'desc' },
   });
 }
 
@@ -118,7 +118,7 @@ export async function getUserEntityProfiles(userId) {
   const prisma = getPrismaClient();
   return prisma.entityProfile.findMany({
     where: { userId },
-    orderBy: { updatedAt: 'desc' }
+    orderBy: { updatedAt: 'desc' },
   });
 }
 
@@ -131,7 +131,7 @@ export async function getUserContextBundles(userId) {
   const prisma = getPrismaClient();
   return prisma.contextBundle.findMany({
     where: { userId },
-    orderBy: { updatedAt: 'desc' }
+    orderBy: { updatedAt: 'desc' },
   });
 }
 
@@ -144,7 +144,7 @@ export async function getUserNotebooks(userId) {
   const prisma = getPrismaClient();
   return prisma.notebook.findMany({
     where: { userId },
-    orderBy: { updatedAt: 'desc' }
+    orderBy: { updatedAt: 'desc' },
   });
 }
 
@@ -157,7 +157,7 @@ export async function getUserMemories(userId) {
   const prisma = getPrismaClient();
   return prisma.memory.findMany({
     where: { userId },
-    orderBy: { updatedAt: 'desc' }
+    orderBy: { updatedAt: 'desc' },
   });
 }
 
@@ -170,7 +170,7 @@ export async function getUserAiPersonas(userId) {
   const prisma = getPrismaClient();
   return prisma.aiPersona.findMany({
     where: { ownerId: userId },
-    orderBy: { updatedAt: 'desc' }
+    orderBy: { updatedAt: 'desc' },
   });
 }
 
@@ -182,7 +182,7 @@ export async function getUserAiPersonas(userId) {
 export async function getUserContextSettings(userId) {
   const prisma = getPrismaClient();
   return prisma.userContextSettings.findUnique({
-    where: { userId }
+    where: { userId },
   });
 }
 
@@ -199,40 +199,47 @@ export async function getUserContextSettings(userId) {
  */
 export async function verifyContentOwnership(contentType, contentId, userId) {
   const prisma = getPrismaClient();
-  
+
   switch (contentType) {
-    case 'conversation':
+    case 'conversation': {
       const conv = await prisma.conversation.findFirst({
-        where: { id: contentId, ownerId: userId }
+        where: { id: contentId, ownerId: userId },
       });
       return !!conv;
-      
-    case 'acu':
+    }
+
+    case 'acu': {
       const user = await prisma.user.findUnique({ where: { id: userId } });
-      if (!user) return false;
+      if (!user) {
+        return false;
+      }
       const acu = await prisma.atomicChatUnit.findFirst({
-        where: { id: contentId, authorDid: user.did }
+        where: { id: contentId, authorDid: user.did },
       });
       return !!acu;
-      
-    case 'notebook':
+    }
+
+    case 'notebook': {
       const notebook = await prisma.notebook.findFirst({
-        where: { id: contentId, userId }
+        where: { id: contentId, userId },
       });
       return !!notebook;
-      
-    case 'contextBundle':
+    }
+
+    case 'contextBundle': {
       const bundle = await prisma.contextBundle.findFirst({
-        where: { id: contentId, userId }
+        where: { id: contentId, userId },
       });
       return !!bundle;
-      
-    case 'memory':
+    }
+
+    case 'memory': {
       const memory = await prisma.memory.findFirst({
-        where: { id: contentId, userId }
+        where: { id: contentId, userId },
       });
       return !!memory;
-      
+    }
+
     default:
       log.warn({ contentType }, 'Unknown content type for ownership check');
       return false;
@@ -248,27 +255,27 @@ export async function verifyContentOwnership(contentType, contentId, userId) {
  */
 export async function checkSharePermission(contentType, contentId, userId) {
   const prisma = getPrismaClient();
-  
+
   // Check ownership first
   const isOwner = await verifyContentOwnership(contentType, contentId, userId);
   if (!isOwner) {
     return { canShare: false, reason: 'Not the owner' };
   }
-  
+
   // Check if there's a sharing policy that allows sharing
   const policy = await prisma.sharingPolicy.findUnique({
-    where: { contentId }
+    where: { contentId },
   });
-  
+
   if (!policy) {
     // No policy = default to self-only
     return { canShare: false, reason: 'No sharing policy set' };
   }
-  
+
   if (policy.status !== 'active') {
     return { canShare: false, reason: 'Sharing policy is not active' };
   }
-  
+
   // Check temporal constraints
   if (policy.temporal) {
     const now = new Date();
@@ -279,8 +286,8 @@ export async function checkSharePermission(contentType, contentId, userId) {
       return { canShare: false, reason: 'Content sharing has expired' };
     }
   }
-  
-    return { canShare: true };
+
+  return { canShare: true };
 }
 
 function getUserClient(userDid) {

@@ -1,6 +1,6 @@
 /**
  * Sharing Policy Service - Phase 3
- * 
+ *
  * Granular content sharing with collaborative privacy,
  * temporal controls, and contextual access
  */
@@ -25,14 +25,14 @@ export const Permission = {
   BOOKMARK: 'canBookmark',
   FORK: 'canFork',
   REMIX: 'canRemix',
-  ANNOTATE: 'canAnnotate'
+  ANNOTATE: 'canAnnotate',
 };
 
 export const DecisionMode = {
   UNANIMOUS: 'unanimous',
   MAJORITY: 'majority',
   CREATOR_OVERRIDE: 'creator_override',
-  HIERARCHICAL: 'hierarchical'
+  HIERARCHICAL: 'hierarchical',
 };
 
 export const StakeholderRole = {
@@ -40,7 +40,7 @@ export const StakeholderRole = {
   PRIMARY_MENTIONED: 'primary_mentioned',
   MENTIONED: 'mentioned',
   PARTICIPANT: 'participant',
-  OBSERVER: 'observer'
+  OBSERVER: 'observer',
 };
 
 // Default permissions for new content
@@ -56,7 +56,7 @@ const DEFAULT_PERMISSIONS = {
   canRemix: false,
   canAnnotate: false,
   reactionsVisibleTo: 'audience',
-  commentsVisibleTo: 'audience'
+  commentsVisibleTo: 'audience',
 };
 
 // ============================================================================
@@ -76,7 +76,7 @@ export async function createSharingPolicy(
     temporal = null,
     geographic = null,
     contextual = null,
-    collaborative = null
+    collaborative = null,
   }
 ) {
   try {
@@ -94,7 +94,7 @@ export async function createSharingPolicy(
           networkDepth: 0,
           discoverable: true,
           searchable: true,
-          ...audience
+          ...audience,
         },
         permissions: { ...DEFAULT_PERMISSIONS, ...permissions },
         temporal,
@@ -102,11 +102,11 @@ export async function createSharingPolicy(
         contextual,
         collaborative: collaborative || {
           decisionMode: DecisionMode.CREATOR_OVERRIDE,
-          stakeholders: []
+          stakeholders: [],
         },
         status: 'active',
-        createdBy: ownerId
-      }
+        createdBy: ownerId,
+      },
     });
 
     log.info({ policyId: policy.id, contentId }, 'Sharing policy created');
@@ -134,12 +134,12 @@ export async function getSharingPolicy(contentId) {
                 id: true,
                 did: true,
                 handle: true,
-                displayName: true
-              }
-            }
-          }
-        }
-      }
+                displayName: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!policy) {
@@ -156,18 +156,14 @@ export async function getSharingPolicy(contentId) {
 /**
  * Update sharing policy
  */
-export async function updateSharingPolicy(
-  contentId,
-  updaterId,
-  updates
-) {
+export async function updateSharingPolicy(contentId, updaterId, updates) {
   try {
     const prisma = getPrismaClient();
 
     // Get existing policy
     const existing = await prisma.sharingPolicy.findUnique({
       where: { contentId },
-      include: { stakeholders: true }
+      include: { stakeholders: true },
     });
 
     if (!existing) {
@@ -176,17 +172,13 @@ export async function updateSharingPolicy(
 
     // Check collaborative privacy if multi-stakeholder
     if (existing.stakeholders.length > 1) {
-      const conflictCheck = await checkCollaborativePrivacy(
-        existing,
-        updaterId,
-        updates
-      );
+      const conflictCheck = await checkCollaborativePrivacy(existing, updaterId, updates);
 
       if (!conflictCheck.allowed) {
         return {
           success: false,
           error: 'Change conflicts with stakeholder privacy preferences',
-          conflict: conflictCheck.conflict
+          conflict: conflictCheck.conflict,
         };
       }
     }
@@ -194,7 +186,7 @@ export async function updateSharingPolicy(
     // Apply updates
     const allowedUpdates = ['audience', 'permissions', 'temporal', 'geographic', 'contextual'];
     const filteredUpdates = {};
-    
+
     for (const key of allowedUpdates) {
       if (updates[key] !== undefined) {
         filteredUpdates[key] = updates[key];
@@ -205,8 +197,8 @@ export async function updateSharingPolicy(
       where: { contentId },
       data: {
         ...filteredUpdates,
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      },
     });
 
     log.info({ contentId, updaterId }, 'Sharing policy updated');
@@ -225,7 +217,7 @@ export async function deleteSharingPolicy(contentId, deleterId) {
     const prisma = getPrismaClient();
 
     const policy = await prisma.sharingPolicy.findUnique({
-      where: { contentId }
+      where: { contentId },
     });
 
     if (!policy) {
@@ -237,7 +229,7 @@ export async function deleteSharingPolicy(contentId, deleterId) {
     }
 
     await prisma.sharingPolicy.delete({
-      where: { contentId }
+      where: { contentId },
     });
 
     log.info({ contentId }, 'Sharing policy deleted');
@@ -273,13 +265,10 @@ export async function checkAccess(
           where: {
             grantedTo: accessorId,
             status: 'active',
-            OR: [
-              { expiresAt: null },
-              { expiresAt: { gt: new Date() } }
-            ]
-          }
-        }
-      }
+            OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
+          },
+        },
+      },
     });
 
     if (!policy) {
@@ -333,7 +322,7 @@ export async function checkAccess(
     // Check temporary access grant
     if (policy.accessGrants.length > 0) {
       const grant = policy.accessGrants[0];
-      
+
       // Check view limits
       if (grant.maxViews && grant.viewsUsed >= grant.maxViews) {
         await revokeAccessGrant(grant.id);
@@ -345,8 +334,8 @@ export async function checkAccess(
         where: { id: grant.id },
         data: {
           viewsUsed: { increment: 1 },
-          lastAccessedAt: new Date()
-        }
+          lastAccessedAt: new Date(),
+        },
       });
 
       return { granted: true, via: 'grant', grantId: grant.id };
@@ -382,8 +371,8 @@ async function checkAudience(audience, accessorId) {
         where: {
           userId: accessorId,
           circleId: { in: audience.circles },
-          status: 'active'
-        }
+          status: 'active',
+        },
       });
 
       if (circleMembership) {
@@ -399,8 +388,8 @@ async function checkAudience(audience, accessorId) {
         where: {
           followerId: accessorId,
           followingId: audience.ownerId || '',
-          status: 'active'
-        }
+          status: 'active',
+        },
       });
 
       if (connection) {
@@ -420,7 +409,9 @@ async function checkAudience(audience, accessorId) {
 // ============================================================================
 
 function checkTemporalControls(temporal) {
-  if (!temporal) return { allowed: true };
+  if (!temporal) {
+    return { allowed: true };
+  }
 
   const now = new Date();
 
@@ -447,7 +438,7 @@ function checkTemporalControls(temporal) {
 
   // Check phases
   if (temporal.phases?.length > 0) {
-    const activePhase = temporal.phases.find(phase => {
+    const activePhase = temporal.phases.find((phase) => {
       const start = new Date(phase.startTime);
       const end = phase.endTime ? new Date(phase.endTime) : null;
       return now >= start && (!end || now <= end);
@@ -497,7 +488,7 @@ function checkContextualControls(contextual, accessorId, context) {
     const currentMinute = now.getMinutes();
     const currentTime = currentHour * 60 + currentMinute;
 
-    const inAllowedHours = contextual.timeOfDay.availableHours.some(range => {
+    const inAllowedHours = contextual.timeOfDay.availableHours.some((range) => {
       const [startHour, startMin] = range.start.split(':').map(Number);
       const [endHour, endMin] = range.end.split(':').map(Number);
       const startTime = startHour * 60 + startMin;
@@ -531,13 +522,7 @@ function checkContextualControls(contextual, accessorId, context) {
 /**
  * Add stakeholder to content
  */
-export async function addStakeholder(
-  policyId,
-  userId,
-  role,
-  contribution,
-  privacySettings = {}
-) {
+export async function addStakeholder(policyId, userId, role, contribution, privacySettings = {}) {
   try {
     const prisma = getPrismaClient();
 
@@ -552,10 +537,10 @@ export async function addStakeholder(
           canRequestAnonymization: true,
           canBlockReshare: true,
           canSetAudienceLimit: true,
-          ...privacySettings
+          ...privacySettings,
         },
-        influenceScore: role === StakeholderRole.CREATOR ? 100 : 50
-      }
+        influenceScore: role === StakeholderRole.CREATOR ? 100 : 50,
+      },
     });
 
     log.info({ policyId, userId, role }, 'Stakeholder added');
@@ -570,20 +555,22 @@ export async function addStakeholder(
  * Check collaborative privacy before policy change
  */
 async function checkCollaborativePrivacy(policy, proposedById, proposedChanges) {
-  const stakeholders = policy.stakeholders;
+  const { stakeholders } = policy;
   const decisionMode = policy.collaborative?.decisionMode || DecisionMode.CREATOR_OVERRIDE;
 
   // Creator override
-  const creator = stakeholders.find(s => s.role === StakeholderRole.CREATOR);
+  const creator = stakeholders.find((s) => s.role === StakeholderRole.CREATOR);
   if (decisionMode === DecisionMode.CREATOR_OVERRIDE && creator?.userId === proposedById) {
     return { allowed: true };
   }
 
   // Check if proposed changes conflict with any stakeholder preferences
   const conflicts = [];
-  
+
   for (const stakeholder of stakeholders) {
-    if (stakeholder.userId === proposedById) continue;
+    if (stakeholder.userId === proposedById) {
+      continue;
+    }
 
     const prefs = stakeholder.privacySettings;
 
@@ -591,7 +578,7 @@ async function checkCollaborativePrivacy(policy, proposedById, proposedChanges) 
     if (prefs.canBlockReshare && proposedChanges.permissions?.canShare === true) {
       conflicts.push({
         stakeholderId: stakeholder.userId,
-        issue: 'share_permission_conflict'
+        issue: 'share_permission_conflict',
       });
     }
 
@@ -600,7 +587,7 @@ async function checkCollaborativePrivacy(policy, proposedById, proposedChanges) 
       // Would need to compare audience sizes
       conflicts.push({
         stakeholderId: stakeholder.userId,
-        issue: 'audience_expansion'
+        issue: 'audience_expansion',
       });
     }
   }
@@ -610,8 +597,8 @@ async function checkCollaborativePrivacy(policy, proposedById, proposedChanges) 
       allowed: false,
       conflict: {
         conflicts,
-        requiresConsensus: true
-      }
+        requiresConsensus: true,
+      },
     };
   }
 
@@ -621,17 +608,13 @@ async function checkCollaborativePrivacy(policy, proposedById, proposedChanges) 
 /**
  * Resolve privacy conflict with voting
  */
-export async function resolvePrivacyConflict(
-  contentId,
-  proposedChanges,
-  votes
-) {
+export async function resolvePrivacyConflict(contentId, proposedChanges, votes) {
   try {
     const prisma = getPrismaClient();
 
     const policy = await prisma.sharingPolicy.findUnique({
       where: { contentId },
-      include: { stakeholders: true }
+      include: { stakeholders: true },
     });
 
     if (!policy) {
@@ -639,41 +622,45 @@ export async function resolvePrivacyConflict(
     }
 
     const decisionMode = policy.collaborative?.decisionMode || DecisionMode.MAJORITY;
-    const stakeholders = policy.stakeholders;
+    const { stakeholders } = policy;
 
     let approved = false;
     let finalDecision = null;
 
     switch (decisionMode) {
       case DecisionMode.UNANIMOUS:
-        approved = Object.values(votes).every(v => v === 'approve');
+        approved = Object.values(votes).every((v) => v === 'approve');
         break;
 
-      case DecisionMode.MAJORITY:
-        const approvals = Object.values(votes).filter(v => v === 'approve').length;
+      case DecisionMode.MAJORITY: {
+        const approvals = Object.values(votes).filter((v) => v === 'approve').length;
         approved = approvals > stakeholders.length / 2;
         break;
+      }
 
-      case DecisionMode.CREATOR_OVERRIDE:
-        const creatorVote = votes[stakeholders.find(s => s.role === StakeholderRole.CREATOR)?.userId];
+      case DecisionMode.CREATOR_OVERRIDE: {
+        const creatorVote =
+          votes[stakeholders.find((s) => s.role === StakeholderRole.CREATOR)?.userId];
         approved = creatorVote === 'approve';
         break;
+      }
 
-      case DecisionMode.HIERARCHICAL:
+      case DecisionMode.HIERARCHICAL: {
         // Most restrictive wins
-        const hasRejections = Object.values(votes).some(v => v === 'reject');
+        const hasRejections = Object.values(votes).some((v) => v === 'reject');
         approved = !hasRejections;
         if (!approved) {
           finalDecision = 'most_restrictive';
         }
         break;
+      }
     }
 
     if (approved) {
       // Apply changes
       await prisma.sharingPolicy.update({
         where: { contentId },
-        data: proposedChanges
+        data: proposedChanges,
       });
     }
 
@@ -686,14 +673,14 @@ export async function resolvePrivacyConflict(
         resolution: approved ? 'approved' : 'rejected',
         finalDecision,
         status: 'resolved',
-        resolvedAt: new Date()
-      }
+        resolvedAt: new Date(),
+      },
     });
 
     return {
       success: true,
       approved,
-      finalDecision
+      finalDecision,
     };
   } catch (error) {
     log.error({ contentId, error: error.message }, 'Conflict resolution failed');
@@ -708,12 +695,7 @@ export async function resolvePrivacyConflict(
 /**
  * Create temporary access grant
  */
-export async function createAccessGrant(
-  policyId,
-  grantedBy,
-  grantedTo,
-  options = {}
-) {
+export async function createAccessGrant(policyId, grantedBy, grantedTo, options = {}) {
   try {
     const prisma = getPrismaClient();
 
@@ -726,8 +708,8 @@ export async function createAccessGrant(
         accessLevel: options.accessLevel || 'view',
         permissions: options.permissions,
         expiresAt: options.expiresAt,
-        maxViews: options.maxViews
-      }
+        maxViews: options.maxViews,
+      },
     });
 
     log.info({ grantId: grant.id, policyId, grantedTo }, 'Access grant created');
@@ -749,8 +731,8 @@ export async function revokeAccessGrant(grantId) {
       where: { id: grantId },
       data: {
         status: 'revoked',
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      },
     });
 
     return { success: true };
@@ -767,13 +749,7 @@ export async function revokeAccessGrant(grantId) {
 /**
  * Log content access
  */
-export async function logContentAccess(
-  policyId,
-  accessorId,
-  action,
-  granted,
-  context = {}
-) {
+export async function logContentAccess(policyId, accessorId, action, granted, context = {}) {
   try {
     const prisma = getPrismaClient();
 
@@ -790,8 +766,8 @@ export async function logContentAccess(
         ipAddress: context.ipAddress,
         userAgent: context.userAgent,
         deviceId: context.deviceId,
-        location: context.location
-      }
+        location: context.location,
+      },
     });
   } catch (error) {
     log.error({ policyId, error: error.message }, 'Failed to log access');
@@ -801,16 +777,13 @@ export async function logContentAccess(
 /**
  * Get access log for content
  */
-export async function getContentAccessLog(
-  contentId,
-  options = {}
-) {
+export async function getContentAccessLog(contentId, options = {}) {
   try {
     const prisma = getPrismaClient();
     const { limit = 100, offset = 0 } = options;
 
     const policy = await prisma.sharingPolicy.findUnique({
-      where: { contentId }
+      where: { contentId },
     });
 
     if (!policy) {
@@ -821,7 +794,7 @@ export async function getContentAccessLog(
       where: { policyId: policy.id },
       orderBy: { timestamp: 'desc' },
       take: limit,
-      skip: offset
+      skip: offset,
     });
 
     return { success: true, logs };
@@ -861,7 +834,7 @@ export const sharingPolicyService = {
   Permission,
   DecisionMode,
   StakeholderRole,
-  DEFAULT_PERMISSIONS
+  DEFAULT_PERMISSIONS,
 };
 
 export default sharingPolicyService;

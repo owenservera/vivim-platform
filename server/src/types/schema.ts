@@ -1,7 +1,7 @@
 /**
  * TypeScript types for OpenScroll database schema
  * Auto-generated from Prisma schema
- * 
+ *
  * These types represent the structure of conversations and messages
  * as stored in the database and used throughout the application.
  */
@@ -10,7 +10,7 @@
 // CONTENT PART TYPES
 // ============================================================================
 
-export type ContentPartType = 
+export type ContentPartType =
   | 'text'
   | 'code'
   | 'image'
@@ -171,7 +171,7 @@ export interface Conversation {
   createdAt: Date;
   updatedAt: Date;
   capturedAt: Date;
-  
+
   // Statistics
   messageCount: number;
   userMessageCount: number;
@@ -179,7 +179,7 @@ export interface Conversation {
   totalWords: number;
   totalCharacters: number;
   totalTokens?: number | null;
-  
+
   // Rich content counts
   totalCodeBlocks: number;
   totalImages: number;
@@ -187,9 +187,9 @@ export interface Conversation {
   totalLatexBlocks: number;
   totalMermaidDiagrams: number;
   totalToolCalls: number;
-  
+
   metadata: Record<string, any>;
-  
+
   // Relations (when included)
   messages?: Message[];
 }
@@ -298,11 +298,11 @@ export interface ConversationStats {
  */
 export function countPartsByType(parts: ContentPart[]): Record<ContentPartType, number> {
   const counts: Record<string, number> = {};
-  
+
   for (const part of parts) {
     counts[part.type] = (counts[part.type] || 0) + 1;
   }
-  
+
   return counts as Record<ContentPartType, number>;
 }
 
@@ -324,17 +324,17 @@ export function computeConversationStats(messages: Message[]): ConversationStats
     totalMermaidDiagrams: 0,
     totalToolCalls: 0,
   };
-  
+
   for (const message of messages) {
     // Count by role
     if (message.role === 'user') stats.userMessageCount++;
     if (message.role === 'assistant') stats.aiMessageCount++;
-    
+
     // Count tokens
     if (message.tokenCount) {
       stats.totalTokens += message.tokenCount;
     }
-    
+
     // Count content types
     for (const part of message.parts) {
       if (part.type === 'text') {
@@ -356,7 +356,7 @@ export function computeConversationStats(messages: Message[]): ConversationStats
       }
     }
   }
-  
+
   return stats;
 }
 

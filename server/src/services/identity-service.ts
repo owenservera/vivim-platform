@@ -1,6 +1,6 @@
 /**
  * VIVIM Identity Service - Server Side
- * 
+ *
  * Complete identity management for Phase 1:
  * - DID resolution and validation
  * - Device registration and management
@@ -10,7 +10,12 @@
  */
 
 import { getPrismaClient } from '../lib/database.js';
-import { getUserClient, createUserDatabase, getUserDbPath, initializeUserDatabaseDir } from '../lib/user-database-manager.js';
+import {
+  getUserClient,
+  createUserDatabase,
+  getUserDbPath,
+  initializeUserDatabaseDir,
+} from '../lib/user-database-manager.js';
 import { createUserContextSystem } from '../context/user-context-system.js';
 import { logger } from '../lib/logger.js';
 import crypto from 'crypto';
@@ -89,20 +94,22 @@ export async function resolveDID(did: string): Promise<DIDDocument | null> {
 
     // Build DID document
     const keyId = `${did}#${did.split(':')[2].slice(1, 8)}`;
-    
+
     return {
       id: did,
-      verificationMethod: [{
-        id: keyId,
-        type: 'Ed25519VerificationKey2020',
-        controller: did,
-        publicKeyMultibase: did.split(':')[2]
-      }],
+      verificationMethod: [
+        {
+          id: keyId,
+          type: 'Ed25519VerificationKey2020',
+          controller: did,
+          publicKeyMultibase: did.split(':')[2],
+        },
+      ],
       authentication: [keyId],
       assertionMethod: [keyId],
       keyAgreement: [keyId],
       capabilityInvocation: [keyId],
-      capabilityDelegation: [keyId]
+      capabilityDelegation: [keyId],
     };
   } catch (error) {
     log.error({ did, error: error.message }, 'DID resolution failed');
@@ -116,10 +123,10 @@ export async function resolveDID(did: string): Promise<DIDDocument | null> {
 export function validateDID(did: string): boolean {
   if (!did || typeof did !== 'string') return false;
   if (!did.startsWith('did:key:z')) return false;
-  
+
   // Check length (should be reasonable)
   if (did.length < 20 || did.length > 100) return false;
-  
+
   return true;
 }
 
@@ -180,7 +187,7 @@ export async function registerUser(
 
     // Check if DID already exists
     const existing = await prisma.user.findUnique({
-      where: { did }
+      where: { did },
     });
 
     if (existing) {
@@ -190,7 +197,7 @@ export async function registerUser(
     // Check handle uniqueness if provided
     if (handle) {
       const handleExists = await prisma.user.findUnique({
-        where: { handle }
+        where: { handle },
       });
       if (handleExists) {
         return { success: false, error: 'Handle already taken' };
@@ -206,8 +213,8 @@ export async function registerUser(
         email: options.email,
         publicKey,
         verificationLevel: 0,
-        trustScore: 50
-      }
+        trustScore: 50,
+      },
     });
 
     log.info({ did, handle, userId: user.id }, 'New user registered');
@@ -227,13 +234,16 @@ export async function registerUser(
         entityExtractionEnabled: true,
         memoryEnabled: false,
         notebookAutoArchiving: false,
-      }
+      },
     });
 
     log.info({ did, handle, userId: user.id }, 'User database initialized');
 
     await createUserContextSystem(did);
-    log.info({ did, handle, userId: user.id }, 'User context system initialized (vector store, embeddings)');
+    log.info(
+      { did, handle, userId: user.id },
+      'User context system initialized (vector store, embeddings)'
+    );
 
     await logAccess(did, null, 'profile', 'register', true);
 
@@ -247,14 +257,11 @@ export async function registerUser(
 /**
  * Get or create user by DID
  */
-export async function getOrCreateUser(
-  did: string,
-  publicKey: string
-): Promise<any> {
+export async function getOrCreateUser(did: string, publicKey: string): Promise<any> {
   const prisma = getPrismaClient();
 
   let user = await prisma.user.findUnique({
-    where: { did }
+    where: { did },
   });
 
   if (!user) {
@@ -278,7 +285,7 @@ export async function getUserContext(did: string): Promise<{
   const prisma = getPrismaClient();
 
   const user = await prisma.user.findUnique({
-    where: { did }
+    where: { did },
   });
 
   if (!user) {
@@ -320,7 +327,7 @@ export async function registerDevice(
 
     // Get user
     const user = await prisma.user.findUnique({
-      where: { did: masterDID }
+      where: { did: masterDID },
     });
 
     if (!user) {
@@ -329,7 +336,7 @@ export async function registerDevice(
 
     // Check for existing device
     const existing = await prisma.device.findUnique({
-      where: { deviceId: registration.deviceId }
+      where: { deviceId: registration.deviceId },
     });
 
     if (existing) {
@@ -344,9 +351,9 @@ export async function registerDevice(
           lastSeenAt: new Date(),
           metadata: {
             capabilities: registration.capabilities,
-            deviceDID: registration.deviceDID
-          }
-        }
+            deviceDID: registration.deviceDID,
+          },
+        },
       });
 
       log.info({ deviceId: registration.deviceId }, 'Device updated');
@@ -368,24 +375,30 @@ export async function registerDevice(
         metadata: {
           capabilities: registration.capabilities,
           deviceDID: registration.deviceDID,
-          delegationProof: registration.delegationProof
-        }
-      }
+          delegationProof: registration.delegationProof,
+        },
+      },
     });
 
-    log.info({ 
-      deviceId: registration.deviceId, 
-      userId: user.id,
-      platform: registration.platform 
-    }, 'New device registered');
+    log.info(
+      {
+        deviceId: registration.deviceId,
+        userId: user.id,
+        platform: registration.platform,
+      },
+      'New device registered'
+    );
 
     return { success: true, device };
   } catch (error) {
-    log.error({ 
-      masterDID, 
-      deviceId: registration.deviceId,
-      error: error.message 
-    }, 'Device registration failed');
+    log.error(
+      {
+        masterDID,
+        deviceId: registration.deviceId,
+        error: error.message,
+      },
+      'Device registration failed'
+    );
     return { success: false, error: 'Registration failed' };
   }
 }
@@ -398,7 +411,7 @@ export async function getUserDevices(userId: string): Promise<any[]> {
 
   return prisma.device.findMany({
     where: { userId },
-    orderBy: { lastSeenAt: 'desc' }
+    orderBy: { lastSeenAt: 'desc' },
   });
 }
 
@@ -414,7 +427,7 @@ export async function revokeDevice(
     const prisma = getPrismaClient();
 
     const device = await prisma.device.findFirst({
-      where: { userId, deviceId }
+      where: { userId, deviceId },
     });
 
     if (!device) {
@@ -428,9 +441,9 @@ export async function revokeDevice(
         metadata: {
           ...device.metadata,
           revokedAt: new Date().toISOString(),
-          revokedReason: reason
-        }
-      }
+          revokedReason: reason,
+        },
+      },
     });
 
     log.info({ deviceId, userId, reason }, 'Device revoked');
@@ -456,9 +469,7 @@ async function verifyDelegation(
     if (!masterPublicKey) return false;
 
     // Verify signature
-    const message = new TextEncoder().encode(
-      `delegate:${masterDID}:${deviceDID}:${deviceId}`
-    );
+    const message = new TextEncoder().encode(`delegate:${masterDID}:${deviceDID}:${deviceId}`);
     const signature = decodeBase64(delegationProof);
 
     return nacl.sign.detached.verify(message, signature, masterPublicKey);
@@ -494,8 +505,8 @@ export async function initiateEmailVerification(
         status: 'pending',
         value: email,
         codeHash,
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
-      }
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+      },
     });
 
     log.info({ userId, email }, 'Email verification initiated');
@@ -523,7 +534,7 @@ export async function completeEmailVerification(
 
     // Find pending verification
     const codeHash = crypto.createHash('sha256').update(code).digest('hex');
-    
+
     const verification = await prisma.verificationRecord.findFirst({
       where: {
         userId,
@@ -531,8 +542,8 @@ export async function completeEmailVerification(
         status: 'pending',
         value: email,
         codeHash,
-        expiresAt: { gt: new Date() }
-      }
+        expiresAt: { gt: new Date() },
+      },
     });
 
     if (!verification) {
@@ -544,8 +555,8 @@ export async function completeEmailVerification(
       where: { id: verification.id },
       data: {
         status: 'verified',
-        verifiedAt: new Date()
-      }
+        verifiedAt: new Date(),
+      },
     });
 
     // Update user
@@ -555,9 +566,9 @@ export async function completeEmailVerification(
         email,
         emailVerified: true,
         verificationLevel: {
-          increment: 1
-        }
-      }
+          increment: 1,
+        },
+      },
     });
 
     log.info({ userId, email }, 'Email verified');
@@ -588,8 +599,8 @@ export async function initiatePhoneVerification(
         status: 'pending',
         value: phoneNumber,
         codeHash,
-        expiresAt: new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
-      }
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+      },
     });
 
     log.info({ userId, phoneNumber }, 'Phone verification initiated');
@@ -599,7 +610,10 @@ export async function initiatePhoneVerification(
 
     return { success: true, code };
   } catch (error) {
-    log.error({ userId, phoneNumber, error: error.message }, 'Phone verification initiation failed');
+    log.error(
+      { userId, phoneNumber, error: error.message },
+      'Phone verification initiation failed'
+    );
     return { success: false, error: 'Failed to initiate verification' };
   }
 }
@@ -611,11 +625,11 @@ function generateVerificationCode(length: number = 6): string {
   const digits = '0123456789';
   let code = '';
   const randomBytes = crypto.randomBytes(length);
-  
+
   for (let i = 0; i < length; i++) {
     code += digits[randomBytes[i] % 10];
   }
-  
+
   return code;
 }
 
@@ -659,8 +673,8 @@ export async function logAccess(
         timestamp: new Date(),
         ipAddress: context?.ipAddress,
         userAgent: context?.userAgent,
-        deviceId: context?.deviceId
-      }
+        deviceId: context?.deviceId,
+      },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Failed to log access');
@@ -688,16 +702,17 @@ export async function getAccessAuditLog(
       targetUserId: userId,
       ...(options.targetType && { targetType: options.targetType }),
       ...(options.action && { action: options.action }),
-      ...(options.startDate && options.endDate && {
-        timestamp: {
-          gte: options.startDate,
-          lte: options.endDate
-        }
-      })
+      ...(options.startDate &&
+        options.endDate && {
+          timestamp: {
+            gte: options.startDate,
+            lte: options.endDate,
+          },
+        }),
     },
     orderBy: { timestamp: 'desc' },
     take: options.limit || 100,
-    skip: options.offset || 0
+    skip: options.offset || 0,
   });
 }
 
@@ -732,18 +747,15 @@ export async function recordConsent(
       scope: options.scope,
       expiresAt: options.expiresAt,
       proof: options.proof,
-      grantedAt: new Date()
-    }
+      grantedAt: new Date(),
+    },
   });
 }
 
 /**
  * Check if user has consented to a purpose
  */
-export async function checkConsent(
-  userId: string,
-  purpose: string
-): Promise<boolean> {
+export async function checkConsent(userId: string, purpose: string): Promise<boolean> {
   const prisma = getPrismaClient();
 
   const consent = await prisma.consentRecord.findFirst({
@@ -752,12 +764,9 @@ export async function checkConsent(
       purpose,
       status: 'active',
       allowed: true,
-      OR: [
-        { expiresAt: null },
-        { expiresAt: { gt: new Date() } }
-      ]
+      OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
     },
-    orderBy: { grantedAt: 'desc' }
+    orderBy: { grantedAt: 'desc' },
   });
 
   return !!consent;
@@ -774,7 +783,7 @@ function base58Encode(data: Uint8Array): string {
   const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
   let result = '';
   let num = BigInt('0x' + Buffer.from(data).toString('hex'));
-  
+
   while (num > 0) {
     result = ALPHABET[Number(num % 58n)] + result;
     num = num / 58n;
@@ -795,7 +804,7 @@ function base58Encode(data: Uint8Array): string {
 function base58Decode(str: string): Uint8Array {
   const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
   let num = 0n;
-  
+
   for (const char of str) {
     const index = ALPHABET.indexOf(char);
     if (index === -1) throw new Error('Invalid base58 character');
@@ -828,7 +837,7 @@ export const identityService = {
   logAccess,
   getAccessAuditLog,
   recordConsent,
-  checkConsent
+  checkConsent,
 };
 
 export default identityService;

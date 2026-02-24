@@ -38,11 +38,7 @@ export function setupSwagger(app) {
   });
 
   // Serve Swagger UI
-  app.use(
-    '/api-docs',
-    swaggerUi.serve,
-    swaggerUi.setup(openApiSpec, swaggerOptions),
-  );
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiSpec, swaggerOptions));
 
   return openApiSpec;
 }

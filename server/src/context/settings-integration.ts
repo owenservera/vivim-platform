@@ -1,6 +1,6 @@
 /**
  * Settings Integration Example
- * 
+ *
  * This file demonstrates how to integrate user settings
  * with the dynamic context pipeline.
  */
@@ -67,7 +67,8 @@ export class ContextPipelineWithSettings {
       personaId,
       settings: {
         maxContextTokens: settings.maxContextTokens,
-        prioritizeConversationHistory: settings.focusMode === 'chat-first' || settings.focusMode === 'balanced',
+        prioritizeConversationHistory:
+          settings.focusMode === 'chat-first' || settings.focusMode === 'balanced',
         knowledgeDepth: this.mapResponseStyleToDepth(settings.responseStyle),
         includeEntityContext: settings.enableEntityContext,
       },
@@ -181,11 +182,7 @@ export const examples = {
   /**
    * Example 2: User customizes context window
    */
-  async customizeContextWindow(
-    prisma: PrismaClient,
-    userId: string,
-    tokenCount: number
-  ) {
+  async customizeContextWindow(prisma: PrismaClient, userId: string, tokenCount: number) {
     const service = new ContextSettingsService({ prisma });
 
     const result = await service.updateSettings(userId, {
@@ -235,20 +232,11 @@ export const examples = {
   /**
    * Example 5: Granular setting update
    */
-  async updateSpecificSetting(
-    prisma: PrismaClient,
-    userId: string,
-    path: string,
-    value: unknown
-  ) {
+  async updateSpecificSetting(prisma: PrismaClient, userId: string, path: string, value: unknown) {
     const service = new ContextSettingsService({ prisma });
 
     // Example: Disable navigation-based predictions
-    const result = await service.updateSetting(
-      userId,
-      'enabledSignals.navigation',
-      false
-    );
+    const result = await service.updateSetting(userId, 'enabledSignals.navigation', false);
 
     return result;
   },
@@ -256,11 +244,7 @@ export const examples = {
   /**
    * Example 6: Exclude specific topics
    */
-  async excludeTopics(
-    prisma: PrismaClient,
-    userId: string,
-    topicSlugs: string[]
-  ) {
+  async excludeTopics(prisma: PrismaClient, userId: string, topicSlugs: string[]) {
     const service = new ContextSettingsService({ prisma });
 
     const current = await service.getSettings(userId);

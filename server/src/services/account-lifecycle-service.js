@@ -28,21 +28,41 @@ export async function checkAccountStatus(userId) {
 
 export async function isAccountActive(userId) {
   const status = await checkAccountStatus(userId);
-  if (!status) return false;
-  if (status.status === 'DELETED') return false;
-  if (status.status === 'DELETING') return false;
-  if (status.status === 'SUSPENDED') return false;
-  if (status.status === 'BANNED') return false;
+  if (!status) {
+    return false;
+  }
+  if (status.status === 'DELETED') {
+    return false;
+  }
+  if (status.status === 'DELETING') {
+    return false;
+  }
+  if (status.status === 'SUSPENDED') {
+    return false;
+  }
+  if (status.status === 'BANNED') {
+    return false;
+  }
   return true;
 }
 
 export async function canUserAccess(userId) {
   const status = await checkAccountStatus(userId);
-  if (!status) return { allowed: false, reason: 'user_not_found' };
-  if (status.status === 'DELETED') return { allowed: false, reason: 'account_deleted' };
-  if (status.status === 'DELETING') return { allowed: false, reason: 'account_being_deleted' };
-  if (status.status === 'SUSPENDED') return { allowed: false, reason: 'account_suspended' };
-  if (status.status === 'BANNED') return { allowed: false, reason: 'account_banned' };
+  if (!status) {
+    return { allowed: false, reason: 'user_not_found' };
+  }
+  if (status.status === 'DELETED') {
+    return { allowed: false, reason: 'account_deleted' };
+  }
+  if (status.status === 'DELETING') {
+    return { allowed: false, reason: 'account_being_deleted' };
+  }
+  if (status.status === 'SUSPENDED') {
+    return { allowed: false, reason: 'account_suspended' };
+  }
+  if (status.status === 'BANNED') {
+    return { allowed: false, reason: 'account_banned' };
+  }
   return { allowed: true, reason: null };
 }
 

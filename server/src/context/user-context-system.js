@@ -1,4 +1,8 @@
-import { getUserClient, createUserDatabase, initializeUserDatabaseDir } from '../lib/user-database-manager.js';
+import {
+  getUserClient,
+  createUserDatabase,
+  initializeUserDatabaseDir,
+} from '../lib/user-database-manager.js';
 import { logger } from '../lib/logger.js';
 
 const log = logger.child({ module: 'user-context-system' });
@@ -23,14 +27,17 @@ export class UserContextSystem {
 
     try {
       this.database = await getUserClient(this.userDid);
-      
+
       await this.initializeAIConfig();
       await this.initializeEmbeddingModel();
-      
+
       this.initialized = true;
       log.info({ userDid: this.userDid }, 'UserContextSystem fully initialized');
     } catch (error) {
-      log.error({ userDid: this.userDid, error: error.message }, 'Failed to initialize UserContextSystem');
+      log.error(
+        { userDid: this.userDid, error: error.message },
+        'Failed to initialize UserContextSystem'
+      );
       throw error;
     }
 
@@ -111,7 +118,7 @@ export class UserContextSystem {
         LIMIT ${limit}
       `;
 
-      return results.map(r => ({
+      return results.map((r) => ({
         id: r.id,
         score: r.score,
         content: r.content,
@@ -138,21 +145,21 @@ export class UserContextSystem {
     const dim = this.embeddingModel.dimension;
     const vec = new Array(dim).fill(0);
     const words = text.toLowerCase().split(/\s+/);
-    
+
     words.forEach((word, i) => {
       const hash = this.simpleHash(word);
       vec[hash % dim] += 1;
     });
-    
+
     const mag = Math.sqrt(vec.reduce((a, b) => a + b * b, 0));
-    return mag > 0 ? vec.map(v => v / mag) : vec;
+    return mag > 0 ? vec.map((v) => v / mag) : vec;
   }
 
   simpleHash(str) {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash;
     }
     return Math.abs(hash);
@@ -206,9 +213,9 @@ export class UserContextSystem {
         where: { id: conversationId },
         include: { messages: { take: 5, orderBy: { createdAt: 'desc' } } },
       });
-      
+
       if (conv?.messages) {
-        const lastUserMsg = conv.messages.find(m => m.role === 'user');
+        const lastUserMsg = conv.messages.find((m) => m.role === 'user');
         if (lastUserMsg) {
           const content = this.extractContent(lastUserMsg.parts);
           context.semanticMatches = await this.searchVectorStore(content, 5);
@@ -222,22 +229,29 @@ export class UserContextSystem {
   }
 
   buildSystemPrompt(context) {
-    const parts = [
-      'You are an AI assistant with access to user context:',
-    ];
+    const parts = ['You are an AI assistant with access to user context:'];
 
     if (context.topics.length > 0) {
-      const topics = context.topics.map(t => t.topic).slice(0, 10).join(', ');
+      const topics = context.topics
+        .map((t) => t.topic)
+        .slice(0, 10)
+        .join(', ');
       parts.push(`User interests: ${topics}`);
     }
 
     if (context.memories.length > 0) {
-      const memories = context.memories.map(m => m.content).slice(0, 5).join('; ');
+      const memories = context.memories
+        .map((m) => m.content)
+        .slice(0, 5)
+        .join('; ');
       parts.push(`Relevant memories: ${memories}`);
     }
 
     if (context.semanticMatches.length > 0) {
-      const matches = context.semanticMatches.map(m => m.content).slice(0, 3).join('; ');
+      const matches = context.semanticMatches
+        .map((m) => m.content)
+        .slice(0, 3)
+        .join('; ');
       parts.push(`Related past conversations: ${matches}`);
     }
 
@@ -245,10 +259,14 @@ export class UserContextSystem {
   }
 
   extractContent(parts) {
-    if (!parts) return '';
-    if (typeof parts === 'string') return parts;
+    if (!parts) {
+      return '';
+    }
+    if (typeof parts === 'string') {
+      return parts;
+    }
     if (Array.isArray(parts)) {
-      return parts.map(p => p.content || p.text || '').join('\n');
+      return parts.map((p) => p.content || p.text || '').join('\n');
     }
     return parts.content || parts.text || '';
   }
@@ -296,12 +314,12 @@ export class UserContextSystem {
 export async function createUserContextSystem(userDid) {
   initializeUserDatabaseDir();
   await createUserDatabase(userDid);
-  
+
   const system = new UserContextSystem(userDid);
   await system.initialize();
-  
+
   userContextSystems.set(userDid, system);
-  
+
   return system;
 }
 
@@ -312,9 +330,9 @@ export async function getUserContextSystem(userDid) {
 
   const system = new UserContextSystem(userDid);
   await system.initialize();
-  
+
   userContextSystems.set(userDid, system);
-  
+
   return system;
 }
 

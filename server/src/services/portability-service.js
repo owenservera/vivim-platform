@@ -80,7 +80,9 @@ async function processExport(exportId) {
       where: { id: exportId },
     });
 
-    if (!exportJob) return;
+    if (!exportJob) {
+      return;
+    }
 
     // Update status
     await prisma.dataExport.update({
@@ -127,7 +129,7 @@ async function processExport(exportId) {
  */
 async function exportToFormat(exportJob, format) {
   const prisma = getPrismaClient();
-  const userId = exportJob.userId;
+  const { userId } = exportJob;
 
   // Gather data
   const data = await gatherUserData(userId, exportJob);
@@ -399,7 +401,7 @@ function anonymizeData(data) {
 
 function hashId(id) {
   // Simple hash - in production use proper hashing
-  return 'user_' + Buffer.from(id).toString('base64').slice(0, 8);
+  return `user_${Buffer.from(id).toString('base64').slice(0, 8)}`;
 }
 
 // ============================================================================
@@ -464,7 +466,9 @@ async function processMigration(migrationId) {
       where: { id: migrationId },
     });
 
-    if (!migration) return;
+    if (!migration) {
+      return;
+    }
 
     // Step 1: Export data
     await updateMigrationStep(migrationId, 'export_data', 'in_progress');

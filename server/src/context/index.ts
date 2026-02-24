@@ -30,20 +30,14 @@ export {
 export type { ContextEvent, ContextEventType } from './context-event-bus';
 
 // --- Enhancement 3: Parallel Pipeline & Streaming ---
-export {
-  ParallelContextPipeline,
-  ConcurrencyLimiter,
-} from './context-pipeline';
+export { ParallelContextPipeline, ConcurrencyLimiter } from './context-pipeline';
 export type { PipelineMetrics, StreamingContextChunk } from './context-pipeline';
 
 // --- Enhancement 4: Adaptive Prediction Engine ---
 export { AdaptivePredictionEngine } from './adaptive-prediction';
 
 // --- Enhancement 5: Context Telemetry & Quality Scoring ---
-export {
-  ContextTelemetry,
-  getContextTelemetry,
-} from './context-telemetry';
+export { ContextTelemetry, getContextTelemetry } from './context-telemetry';
 export type { AssemblyTelemetry, QualityReport, AnomalyAlert } from './context-telemetry';
 
 // --- Enhancement 6: Bundle Differ & Delta Compression ---
@@ -51,20 +45,13 @@ export { BundleDiffer } from './bundle-differ';
 export type { BundleDelta, DiffOperation, DiffStats } from './bundle-differ';
 
 // --- Enhancement 7: Query Optimizer ---
-export {
-  ContextQueryOptimizer,
-  DataLoader,
-  QueryCoalescer,
-} from './query-optimizer';
+export { ContextQueryOptimizer, DataLoader, QueryCoalescer } from './query-optimizer';
 
 // --- Enhancement 8: Prefetch Engine ---
 export { PrefetchEngine } from './prefetch-engine';
 
 // --- Enhancement 9: Context Graph ---
-export {
-  ContextGraph,
-  ContextGraphManager,
-} from './context-graph';
+export { ContextGraph, ContextGraphManager } from './context-graph';
 export type { GraphNode, GraphEdge, SubGraph, GraphMetrics } from './context-graph';
 
 // --- Enhancement 10: Memory System (Second Brain) ---
@@ -73,4 +60,9 @@ export * from './memory';
 // --- Utilities ---
 export { SimpleTokenEstimator } from './utils/token-estimator';
 export { EmbeddingService, MockEmbeddingService } from './utils/embedding-service';
-export { ZAIEmbeddingService, ZAILLMService, createEmbeddingService, createLLMService } from './utils/zai-service';
+export {
+  ZAIEmbeddingService,
+  ZAILLMService,
+  createEmbeddingService,
+  createLLMService,
+} from './utils/zai-service';

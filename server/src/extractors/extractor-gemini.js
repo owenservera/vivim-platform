@@ -23,8 +23,8 @@ async function extractGeminiConversation(url, options = {}) {
 
     // Capture the live page using Playwright
     // Use the robust selectors found in analysis
-    tempFilePath = await captureWithPlaywright(url, 'gemini', { 
-      timeout, 
+    tempFilePath = await captureWithPlaywright(url, 'gemini', {
+      timeout,
       headless,
       waitForSelector: '[data-test-id*="message"], [class*="message"], article, [role="article"]',
       waitForTimeout: 5000,
@@ -33,7 +33,7 @@ async function extractGeminiConversation(url, options = {}) {
         const currentUrl = page.url();
         if (currentUrl.includes('consent.google.com')) {
           log.info('Consent page detected, attempting to accept');
-          
+
           try {
             // Try multiple possible accept button selectors
             const acceptSelectors = [
@@ -44,7 +44,7 @@ async function extractGeminiConversation(url, options = {}) {
               'form[action*="save"] button[type="submit"]',
               '.VfPpkd-LgbsSe:has-text("Accept")',
             ];
-            
+
             let accepted = false;
             for (const selector of acceptSelectors) {
               try {
@@ -59,11 +59,13 @@ async function extractGeminiConversation(url, options = {}) {
                 // Try next selector
               }
             }
-            
+
             if (accepted) {
               // Wait for navigation to actual content
               log.info('Waiting for redirect to content');
-              await page.waitForURL(url => !url.includes('consent.google.com'), { timeout: 10000 });
+              await page.waitForURL((url) => !url.includes('consent.google.com'), {
+                timeout: 10000,
+              });
               log.info('Redirected to content page');
             } else {
               log.warn('Could not find accept button, continuing anyway');
@@ -72,16 +74,16 @@ async function extractGeminiConversation(url, options = {}) {
             log.warn({ error: error.message }, 'Failed to handle consent page');
           }
         }
-      }, 
+      },
     });
-    
+
     logger.info(`Reading captured Gemini HTML from: ${tempFilePath}`);
     const html = await fs.readFile(tempFilePath, 'utf8');
     const $ = cheerio.load(html);
 
     // Extract conversation data
     const conversation = extractGeminiData($, url);
-    
+
     if (conversation.messages.length === 0) {
       const debugPath = `debug-gemini-${Date.now()}.html`;
       await fs.writeFile(debugPath, html);
@@ -102,20 +104,21 @@ async function extractGeminiConversation(url, options = {}) {
  * Extract Gemini conversation data
  */
 function extractGeminiData($, url) {
-  const title = $('title').text().replace('‎Gemini - direct access to Google AI', '').trim() || 
-                $('h1').first().text().trim() || 
-                'Gemini Conversation';
+  const title =
+    $('title').text().replace('‎Gemini - direct access to Google AI', '').trim() ||
+    $('h1').first().text().trim() ||
+    'Gemini Conversation';
 
   const messages = [];
-  
+
   // Selectors found in analysis: [data-test-id], [class*="message"], [class*="turn"]
   // Priority: data-test-id (most stable), then class-based
   let messageElements = $('[data-test-id*="message"], [data-test-id*="turn"]').toArray();
-  
+
   if (messageElements.length === 0) {
     messageElements = $('[class*="message-content"], [class*="conversation-turn"]').toArray();
   }
-  
+
   // Fallback to article
   if (messageElements.length === 0) {
     messageElements = $('article, [role="article"]').toArray();
@@ -125,14 +128,19 @@ function extractGeminiData($, url) {
 
   messageElements.forEach((el, index) => {
     const $el = $(el);
-    
+
     // Determine role
     let role = 'user'; // Default
     const attrRole = $el.attr('data-role');
     const classList = $el.attr('class') || '';
     const text = $el.text();
-    
-    if (attrRole === 'model' || classList.includes('model') || classList.includes('bot') || classList.includes('assistant')) {
+
+    if (
+      attrRole === 'model' ||
+      classList.includes('model') ||
+      classList.includes('bot') ||
+      classList.includes('assistant')
+    ) {
       role = 'assistant';
     } else if (attrRole === 'user' || classList.includes('user')) {
       role = 'user';
@@ -146,7 +154,7 @@ function extractGeminiData($, url) {
 
     // Extract content parts
     const parts = extractContentParts($el, $);
-    
+
     if (parts.length > 0) {
       messages.push({
         id: uuidv4(),
@@ -195,12 +203,16 @@ function extractContentParts($el, $) {
     const $code = $block.find('code');
     const header = $block.find('.code-block-decoration').text().trim(); // e.g. "Python"
     const codeContent = $code.text();
-    
+
     if (codeContent) {
       // Check if it's a mermaid diagram
       // Mermaid diagrams in Gemini often have "Code snippet" header or explicit mermaid syntax
-      const isMermaid = codeContent.trim().match(/^(graph|sequenceDiagram|gantt|classDiagram|stateDiagram|pie|flowchart|erDiagram|journey|gitGraph|mindmap|timeline)/i);
-      
+      const isMermaid = codeContent
+        .trim()
+        .match(
+          /^(graph|sequenceDiagram|gantt|classDiagram|stateDiagram|pie|flowchart|erDiagram|journey|gitGraph|mindmap|timeline)/i
+        );
+
       if (isMermaid) {
         parts.push({
           type: 'mermaid',
@@ -221,7 +233,7 @@ function extractContentParts($el, $) {
       }
       // Replace with placeholder to maintain order if needed, or remove
       // For now, we'll remove to separate content types
-      $block.remove(); 
+      $block.remove();
     }
   });
 
@@ -230,12 +242,12 @@ function extractContentParts($el, $) {
     const $table = $(elem);
     const headers = [];
     const rows = [];
-    
+
     // Get headers
     $table.find('th').each((_, th) => {
       headers.push($(th).text().trim());
     });
-    
+
     // Get rows
     $table.find('tr').each((_, tr) => {
       const row = [];
@@ -247,7 +259,7 @@ function extractContentParts($el, $) {
         rows.push(row);
       }
     });
-    
+
     if (rows.length > 0) {
       parts.push({
         type: 'table',
@@ -263,13 +275,13 @@ function extractContentParts($el, $) {
   $clone.find('.math-inline, .katex, .katex-block, [data-math]').each((_, elem) => {
     const $math = $(elem);
     // Prefer data-math attribute if available, otherwise text
-    let mathContent = $math.attr('data-math'); 
-    
+    let mathContent = $math.attr('data-math');
+
     // If no data-math, try to find the semantic TeX annotation usually hidden in KaTeX
     if (!mathContent) {
       mathContent = $math.find('annotation[encoding="application/x-tex"]').text();
     }
-    
+
     // Fallback to text content but it might be messy
     if (!mathContent) {
       mathContent = $math.text();
@@ -293,11 +305,16 @@ function extractContentParts($el, $) {
     const $img = $(elem);
     const src = $img.attr('src');
     const alt = $img.attr('alt');
-    
+
     const widthAttr = $img.attr('width');
     // Filter out UI icons (usually small SVGs or tiny PNGs)
     // Gemini user images or generated images are usually substantial
-    if (src && !src.includes('icon') && !src.includes('avatar') && (!widthAttr || parseInt(widthAttr) > 50)) { 
+    if (
+      src &&
+      !src.includes('icon') &&
+      !src.includes('avatar') &&
+      (!widthAttr || parseInt(widthAttr) > 50)
+    ) {
       parts.push({
         type: 'image',
         content: src,
@@ -328,8 +345,10 @@ function extractContentParts($el, $) {
 
   // 6. Remaining Text
   // Clean up whitespace and get remaining text
-  const textContent = $clone.text().trim()
-                      .replace(/\n\s+\n/g, '\n\n'); // Normalize paragraphs
+  const textContent = $clone
+    .text()
+    .trim()
+    .replace(/\n\s+\n/g, '\n\n'); // Normalize paragraphs
 
   if (textContent) {
     // If text is mixed with other parts, we might want to split it logic
@@ -344,7 +363,7 @@ function extractContentParts($el, $) {
   }
 
   // Optimize: Join adjacent text parts if needed, but for now distinct parts is fine.
-  
+
   return parts;
 }
 
@@ -365,16 +384,16 @@ function calculateStats(messages) {
 
   for (const message of messages) {
     if (message.role === 'user') {
-userMessageCount++;
-}
+      userMessageCount++;
+    }
     if (message.role === 'assistant') {
-aiMessageCount++;
-}
+      aiMessageCount++;
+    }
 
     for (const part of message.parts) {
       if (part.type === 'text') {
         const text = part.content;
-        totalWords += text.split(/\s+/).filter(w => w).length;
+        totalWords += text.split(/\s+/).filter((w) => w).length;
         totalCharacters += text.length;
       } else if (part.type === 'code') {
         totalCodeBlocks++;

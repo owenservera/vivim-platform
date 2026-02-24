@@ -17,13 +17,13 @@ export const mfaService = {
     // Generate a secure base32 secret
     const secret = authenticator.generateSecret();
     const serviceName = 'VIVIM';
-    
+
     // Create an otpauth:// URI
     const otpauthUrl = authenticator.keyuri(email, serviceName, secret);
-    
+
     // Generate a QR code data URL
     const qrCodeUrl = await qrcode.toDataURL(otpauthUrl);
-    
+
     return { secret, qrCodeUrl };
   },
 
@@ -38,16 +38,16 @@ export const mfaService = {
   async enableMfa(userId, secret, token) {
     try {
       const isValid = authenticator.verify({ token, secret });
-      
+
       if (!isValid) {
         return { success: false, error: 'Invalid MFA token' };
       }
 
       // Generate 8 random backup codes (each 8 hex characters)
       const backupCodes = Array.from({ length: 8 }, () => crypto.randomBytes(4).toString('hex'));
-      
+
       // Hash backup codes before storing them for security
-      const hashedBackupCodes = backupCodes.map(code => this._hashString(code));
+      const hashedBackupCodes = backupCodes.map((code) => this._hashString(code));
 
       await prisma.user.update({
         where: { id: userId },
@@ -55,11 +55,11 @@ export const mfaService = {
           mfaEnabled: true,
           mfaSecret: secret,
           backupCodes: hashedBackupCodes,
-        }
+        },
       });
-      
+
       logger.info({ userId }, 'MFA enabled for user');
-      
+
       return { success: true, backupCodes }; // Return plaintext backup codes just this once
     } catch (error) {
       logger.error({ userId, error: error.message }, 'Failed to enable MFA');
@@ -78,7 +78,7 @@ export const mfaService = {
     try {
       const user = await prisma.user.findUnique({
         where: { id: userId },
-        select: { mfaEnabled: true, mfaSecret: true, backupCodes: true }
+        select: { mfaEnabled: true, mfaSecret: true, backupCodes: true },
       });
 
       if (!user || !user.mfaEnabled || !user.mfaSecret) {
@@ -89,27 +89,29 @@ export const mfaService = {
       // authenticator tokens are typically exactly 6 (or 8) digits
       if (/^\d{6,8}$/.test(token)) {
         const isValid = authenticator.verify({ token, secret: user.mfaSecret });
-        if (isValid) return { success: true };
+        if (isValid) {
+          return { success: true };
+        }
       }
-      
+
       // 2. Try checking if it's a backup code
       const hashedToken = this._hashString(token);
       let newBackupCodes = [...user.backupCodes];
       const initialLength = newBackupCodes.length;
-      
-      newBackupCodes = newBackupCodes.filter(c => c !== hashedToken);
-      
+
+      newBackupCodes = newBackupCodes.filter((c) => c !== hashedToken);
+
       // If length changed, a backup code was matched and removed
       if (newBackupCodes.length < initialLength) {
         // Update user to consume the backup code
         await prisma.user.update({
           where: { id: userId },
-          data: { backupCodes: newBackupCodes }
+          data: { backupCodes: newBackupCodes },
         });
         logger.info({ userId }, 'User authenticated using a backup code');
         return { success: true };
       }
-      
+
       return { success: false, error: 'Invalid MFA token or backup code' };
     } catch (error) {
       logger.error({ userId, error: error.message }, 'MFA verification failed');
@@ -126,20 +128,20 @@ export const mfaService = {
   async disableMfa(userId, token) {
     try {
       const verificationResult = await this.verifyMfa(userId, token);
-      
+
       if (!verificationResult.success) {
         return verificationResult;
       }
-      
+
       await prisma.user.update({
         where: { id: userId },
         data: {
           mfaEnabled: false,
           mfaSecret: null,
           backupCodes: [],
-        }
+        },
       });
-      
+
       logger.info({ userId }, 'MFA disabled for user');
       return { success: true };
     } catch (error) {
@@ -147,8 +149,8 @@ export const mfaService = {
       return { success: false, error: 'Internal server error' };
     }
   },
-  
+
   _hashString(str) {
     return crypto.createHash('sha256').update(str).digest('hex');
-  }
+  },
 };

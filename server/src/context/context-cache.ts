@@ -114,9 +114,7 @@ class LRUCache<T> {
       }
     }
 
-    const estimatedSize = typeof value === 'string'
-      ? value.length
-      : JSON.stringify(value).length;
+    const estimatedSize = typeof value === 'string' ? value.length : JSON.stringify(value).length;
 
     this.cache.set(key, {
       value,
@@ -229,32 +227,32 @@ class LRUCache<T> {
 const NAMESPACE_CONFIGS: Record<CacheNamespace, CacheNamespaceConfig> = {
   bundle: {
     maxEntries: 500,
-    defaultTTLMs: 30 * 60 * 1000,     // 30 minutes
+    defaultTTLMs: 30 * 60 * 1000, // 30 minutes
     touchOnAccess: true,
   },
   settings: {
     maxEntries: 100,
-    defaultTTLMs: 60 * 60 * 1000,      // 1 hour
+    defaultTTLMs: 60 * 60 * 1000, // 1 hour
     touchOnAccess: false,
   },
   presence: {
     maxEntries: 200,
-    defaultTTLMs: 5 * 60 * 1000,       // 5 minutes
+    defaultTTLMs: 5 * 60 * 1000, // 5 minutes
     touchOnAccess: true,
   },
   graph: {
     maxEntries: 50,
-    defaultTTLMs: 15 * 60 * 1000,      // 15 minutes
+    defaultTTLMs: 15 * 60 * 1000, // 15 minutes
     touchOnAccess: true,
   },
   prediction: {
     maxEntries: 200,
-    defaultTTLMs: 2 * 60 * 1000,       // 2 minutes
+    defaultTTLMs: 2 * 60 * 1000, // 2 minutes
     touchOnAccess: false,
   },
   embedding: {
     maxEntries: 1000,
-    defaultTTLMs: 60 * 60 * 1000,      // 1 hour
+    defaultTTLMs: 60 * 60 * 1000, // 1 hour
     touchOnAccess: true,
   },
 };
@@ -323,7 +321,13 @@ export class ContextCache {
     return this.get('bundle', ContextCache.bundleKey(userId, bundleType, refId));
   }
 
-  setBundle(userId: string, bundleType: string, bundle: any, refId?: string | null, ttlMs?: number): void {
+  setBundle(
+    userId: string,
+    bundleType: string,
+    bundle: any,
+    refId?: string | null,
+    ttlMs?: number
+  ): void {
     this.set('bundle', ContextCache.bundleKey(userId, bundleType, refId), bundle, ttlMs);
   }
 

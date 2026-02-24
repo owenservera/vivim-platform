@@ -19,70 +19,98 @@ const log = logger.child({ module: 'sharing-routes' });
 const createPolicySchema = z.object({
   contentId: z.string(),
   contentType: z.string().default('conversation'),
-  audience: z.object({
-    circles: z.array(z.string()).optional(),
-    specificUsers: z.array(z.string()).optional(),
-    exceptions: z.array(z.string()).optional(),
-    networkDepth: z.number().min(0).max(3).optional(),
-    discoverable: z.boolean().optional(),
-    searchable: z.boolean().optional()
-  }).optional(),
-  permissions: z.object({
-    canView: z.boolean().optional(),
-    canViewMetadata: z.boolean().optional(),
-    canReact: z.boolean().optional(),
-    canComment: z.boolean().optional(),
-    canShare: z.boolean().optional(),
-    canQuote: z.boolean().optional(),
-    canBookmark: z.boolean().optional(),
-    canFork: z.boolean().optional(),
-    canRemix: z.boolean().optional(),
-    canAnnotate: z.boolean().optional(),
-    reactionsVisibleTo: z.enum(['author', 'audience', 'public']).optional(),
-    commentsVisibleTo: z.enum(['author', 'audience', 'public']).optional()
-  }).optional(),
-  temporal: z.object({
-    availableFrom: z.string().datetime().optional(),
-    expiresAt: z.string().datetime().optional(),
-    maxViews: z.number().optional(),
-    maxViewsPerUser: z.number().optional(),
-    phases: z.array(z.object({
-      startTime: z.string().datetime(),
-      endTime: z.string().datetime().optional(),
-      audience: z.object({}).optional(),
-      permissions: z.object({}).optional()
-    })).optional()
-  }).optional(),
-  geographic: z.object({
-    allowedCountries: z.array(z.string()).optional(),
-    blockedCountries: z.array(z.string()).optional(),
-    requireVPN: z.boolean().optional()
-  }).optional(),
-  contextual: z.object({
-    timeOfDay: z.object({
-      availableHours: z.array(z.object({
-        start: z.string(),
-        end: z.string()
-      })),
-      timezone: z.enum(['viewer', 'author'])
-    }).optional(),
-    deviceContext: z.object({
-      requireBiometric: z.boolean().optional(),
-      requireTrustedDevice: z.boolean().optional(),
-      blockScreenshots: z.boolean().optional()
-    }).optional(),
-    socialContext: z.object({
-      requireMutualFollow: z.boolean().optional(),
-      minAccountAge: z.number().optional(),
-      minTrustScore: z.number().optional()
-    }).optional()
-  }).optional(),
-  collaborative: z.object({
-    decisionMode: z.enum(['unanimous', 'majority', 'creator_override', 'hierarchical']).optional()
-  }).optional()
+  audience: z
+    .object({
+      circles: z.array(z.string()).optional(),
+      specificUsers: z.array(z.string()).optional(),
+      exceptions: z.array(z.string()).optional(),
+      networkDepth: z.number().min(0).max(3).optional(),
+      discoverable: z.boolean().optional(),
+      searchable: z.boolean().optional(),
+    })
+    .optional(),
+  permissions: z
+    .object({
+      canView: z.boolean().optional(),
+      canViewMetadata: z.boolean().optional(),
+      canReact: z.boolean().optional(),
+      canComment: z.boolean().optional(),
+      canShare: z.boolean().optional(),
+      canQuote: z.boolean().optional(),
+      canBookmark: z.boolean().optional(),
+      canFork: z.boolean().optional(),
+      canRemix: z.boolean().optional(),
+      canAnnotate: z.boolean().optional(),
+      reactionsVisibleTo: z.enum(['author', 'audience', 'public']).optional(),
+      commentsVisibleTo: z.enum(['author', 'audience', 'public']).optional(),
+    })
+    .optional(),
+  temporal: z
+    .object({
+      availableFrom: z.string().datetime().optional(),
+      expiresAt: z.string().datetime().optional(),
+      maxViews: z.number().optional(),
+      maxViewsPerUser: z.number().optional(),
+      phases: z
+        .array(
+          z.object({
+            startTime: z.string().datetime(),
+            endTime: z.string().datetime().optional(),
+            audience: z.object({}).optional(),
+            permissions: z.object({}).optional(),
+          })
+        )
+        .optional(),
+    })
+    .optional(),
+  geographic: z
+    .object({
+      allowedCountries: z.array(z.string()).optional(),
+      blockedCountries: z.array(z.string()).optional(),
+      requireVPN: z.boolean().optional(),
+    })
+    .optional(),
+  contextual: z
+    .object({
+      timeOfDay: z
+        .object({
+          availableHours: z.array(
+            z.object({
+              start: z.string(),
+              end: z.string(),
+            })
+          ),
+          timezone: z.enum(['viewer', 'author']),
+        })
+        .optional(),
+      deviceContext: z
+        .object({
+          requireBiometric: z.boolean().optional(),
+          requireTrustedDevice: z.boolean().optional(),
+          blockScreenshots: z.boolean().optional(),
+        })
+        .optional(),
+      socialContext: z
+        .object({
+          requireMutualFollow: z.boolean().optional(),
+          minAccountAge: z.number().optional(),
+          minTrustScore: z.number().optional(),
+        })
+        .optional(),
+    })
+    .optional(),
+  collaborative: z
+    .object({
+      decisionMode: z
+        .enum(['unanimous', 'majority', 'creator_override', 'hierarchical'])
+        .optional(),
+    })
+    .optional(),
 });
 
-const updatePolicySchema = createPolicySchema.partial().omit({ contentId: true, contentType: true });
+const updatePolicySchema = createPolicySchema
+  .partial()
+  .omit({ contentId: true, contentType: true });
 
 const accessGrantSchema = z.object({
   grantedTo: z.string(),
@@ -90,7 +118,7 @@ const accessGrantSchema = z.object({
   accessLevel: z.enum(['view', 'interact', 'full']).default('view'),
   permissions: z.object({}).optional(),
   expiresAt: z.string().datetime().optional(),
-  maxViews: z.number().optional()
+  maxViews: z.number().optional(),
 });
 
 // ============================================================================
@@ -104,7 +132,7 @@ router.post('/policies', authenticateDID, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
@@ -121,7 +149,7 @@ router.post('/policies', authenticateDID, async (req, res) => {
 
     res.status(201).json({
       success: true,
-      data: result.policy
+      data: result.policy,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Create policy failed');
@@ -150,7 +178,7 @@ router.get('/policies/:contentId', authenticateDID, async (req, res) => {
 
     res.json({
       success: true,
-      data: result.policy
+      data: result.policy,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get policy failed');
@@ -165,7 +193,7 @@ router.put('/policies/:contentId', authenticateDID, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
@@ -181,7 +209,7 @@ router.put('/policies/:contentId', authenticateDID, async (req, res) => {
 
     res.json({
       success: true,
-      data: result.policy
+      data: result.policy,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Update policy failed');
@@ -222,7 +250,7 @@ router.post('/check-access', authenticateDID, async (req, res) => {
       {
         ipAddress: req.ip,
         userAgent: req.get('user-agent'),
-        deviceId: req.user.deviceId
+        deviceId: req.user.deviceId,
       }
     );
 
@@ -236,13 +264,13 @@ router.post('/check-access', authenticateDID, async (req, res) => {
         denialReason: result.reason,
         ipAddress: req.ip,
         userAgent: req.get('user-agent'),
-        deviceId: req.user.deviceId
+        deviceId: req.user.deviceId,
       }
     );
 
     res.json({
       success: true,
-      data: result
+      data: result,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Check access failed');
@@ -282,7 +310,7 @@ router.post('/policies/:contentId/stakeholders', authenticateDID, async (req, re
 
     res.status(201).json({
       success: true,
-      data: result.stakeholder
+      data: result.stakeholder,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Add stakeholder failed');
@@ -306,7 +334,7 @@ router.post('/policies/:contentId/resolve-conflict', authenticateDID, async (req
 
     res.json({
       success: true,
-      data: result
+      data: result,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Conflict resolution failed');
@@ -325,7 +353,7 @@ router.post('/policies/:contentId/grants', authenticateDID, async (req, res) => 
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
@@ -347,7 +375,7 @@ router.post('/policies/:contentId/grants', authenticateDID, async (req, res) => 
 
     res.status(201).json({
       success: true,
-      data: result.grant
+      data: result.grant,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Create grant failed');
@@ -388,13 +416,10 @@ router.get('/policies/:contentId/access-log', authenticateDID, async (req, res) 
       return res.status(403).json({ success: false, error: 'Access denied' });
     }
 
-    const result = await sharingPolicyService.getContentAccessLog(
-      req.params.contentId,
-      {
-        limit: limit ? parseInt(limit.toString()) : 100,
-        offset: offset ? parseInt(offset.toString()) : 0
-      }
-    );
+    const result = await sharingPolicyService.getContentAccessLog(req.params.contentId, {
+      limit: limit ? parseInt(limit.toString()) : 100,
+      offset: offset ? parseInt(offset.toString()) : 0,
+    });
 
     if (!result.success) {
       return res.status(400).json({ success: false, error: result.error });
@@ -402,7 +427,7 @@ router.get('/policies/:contentId/access-log', authenticateDID, async (req, res) 
 
     res.json({
       success: true,
-      data: result.logs
+      data: result.logs,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get access log failed');
@@ -422,7 +447,7 @@ router.post('/intents', authenticateDID, async (req, res) => {
     const intent = await sharingIntentService.createSharingIntent({
       actorDid: did,
       ownerDid: did,
-      ...req.body
+      ...req.body,
     });
 
     res.json({ success: true, data: intent });
@@ -436,13 +461,13 @@ router.get('/intents', authenticateDID, async (req, res) => {
   try {
     const { did } = req.user;
     const { status, contentType, audienceType, limit, offset } = req.query;
-    
+
     const intents = await sharingIntentService.getIntentsByOwner(did, {
       status,
       contentType,
       audienceType,
       limit: parseInt(limit) || 50,
-      offset: parseInt(offset) || 0
+      offset: parseInt(offset) || 0,
     });
 
     res.json({ success: true, data: intents });
@@ -467,10 +492,7 @@ router.get('/intents/:intentId', authenticateDID, async (req, res) => {
 
 router.patch('/intents/:intentId', authenticateDID, async (req, res) => {
   try {
-    const intent = await sharingIntentService.updateSharingIntent(
-      req.params.intentId,
-      req.body
-    );
+    const intent = await sharingIntentService.updateSharingIntent(req.params.intentId, req.body);
     res.json({ success: true, data: intent });
   } catch (error) {
     log.error({ error: error.message }, 'Update intent failed');
@@ -507,12 +529,12 @@ router.post('/links', authenticateDID, async (req, res) => {
   try {
     const { did } = req.user;
     const { intentId, maxUses, expiresAt, password } = req.body;
-    
+
     const shareLink = await sharingIntentService.createShareLink(intentId, {
       maxUses,
       expiresAt,
       password,
-      createdByDid: did
+      createdByDid: did,
     });
 
     const url = `/share/${shareLink.linkCode}`;
@@ -540,12 +562,12 @@ router.post('/links/:linkCode/access', async (req, res) => {
   try {
     const { password } = req.body;
     const accessorDid = req.body.did || null;
-    
+
     const intent = await sharingIntentService.accessShareLink(req.params.linkCode, {
       password,
-      accessorDid
+      accessorDid,
     });
-    
+
     res.json({ success: true, data: intent });
   } catch (error) {
     log.error({ error: error.message }, 'Access share link failed');
@@ -559,12 +581,12 @@ router.get('/analytics/metrics', authenticateDID, async (req, res) => {
   try {
     const { did } = req.user;
     const { startDate, endDate } = req.query;
-    
+
     const metrics = await sharingAnalyticsService.getUserSharingMetrics(did, {
       startDate,
-      endDate
+      endDate,
     });
-    
+
     res.json({ success: true, data: metrics });
   } catch (error) {
     log.error({ error: error.message }, 'Get metrics failed');
@@ -576,14 +598,14 @@ router.get('/analytics/activity', authenticateDID, async (req, res) => {
   try {
     const { did } = req.user;
     const { limit, eventTypes, startDate, endDate } = req.query;
-    
+
     const activity = await sharingAnalyticsService.getUserActivity(did, {
       limit: parseInt(limit) || 50,
       eventTypes: eventTypes?.split(','),
       startDate,
-      endDate
+      endDate,
     });
-    
+
     res.json({ success: true, data: activity });
   } catch (error) {
     log.error({ error: error.message }, 'Get activity failed');
@@ -595,11 +617,11 @@ router.get('/analytics/insights', authenticateDID, async (req, res) => {
   try {
     const { did } = req.user;
     const { unreadOnly } = req.query;
-    
+
     const insights = await sharingAnalyticsService.getInsights(did, {
-      unreadOnly: unreadOnly === 'true'
+      unreadOnly: unreadOnly === 'true',
     });
-    
+
     res.json({ success: true, data: insights });
   } catch (error) {
     log.error({ error: error.message }, 'Get insights failed');

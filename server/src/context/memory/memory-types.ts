@@ -1,11 +1,20 @@
 /**
  * Memory System Types
- * 
+ *
  * Comprehensive type definitions for the VIVIM Second Brain Memory System.
  * Designed for production use with proper typing throughout.
  */
 
-import type { PrismaClient, Memory, MemoryType, MemoryImportance, MemoryConsolidationStatus, MemoryRelationship, MemoryExtractionJob, MemoryAnalytics } from '@prisma/client';
+import type {
+  PrismaClient,
+  Memory,
+  MemoryType,
+  MemoryImportance,
+  MemoryConsolidationStatus,
+  MemoryRelationship,
+  MemoryExtractionJob,
+  MemoryAnalytics,
+} from '@prisma/client';
 
 // ============================================================================
 // ENUM MAPPINGS
@@ -24,7 +33,7 @@ export const MEMORY_TYPES = {
   CUSTOM: 'CUSTOM',
 } as const;
 
-export type MemoryTypeEnum = typeof MEMORY_TYPES[keyof typeof MEMORY_TYPES];
+export type MemoryTypeEnum = (typeof MEMORY_TYPES)[keyof typeof MEMORY_TYPES];
 
 export const MEMORY_IMPORTANCE = {
   CRITICAL: 'CRITICAL',
@@ -34,7 +43,7 @@ export const MEMORY_IMPORTANCE = {
   MINIMAL: 'MINIMAL',
 } as const;
 
-export type MemoryImportanceEnum = typeof MEMORY_IMPORTANCE[keyof typeof MEMORY_IMPORTANCE];
+export type MemoryImportanceEnum = (typeof MEMORY_IMPORTANCE)[keyof typeof MEMORY_IMPORTANCE];
 
 export const MEMORY_CONSOLIDATION_STATUS = {
   RAW: 'RAW',
@@ -44,7 +53,8 @@ export const MEMORY_CONSOLIDATION_STATUS = {
   ARCHIVED: 'ARCHIVED',
 } as const;
 
-export type MemoryConsolidationStatusEnum = typeof MEMORY_CONSOLIDATION_STATUS[keyof typeof MEMORY_CONSOLIDATION_STATUS];
+export type MemoryConsolidationStatusEnum =
+  (typeof MEMORY_CONSOLIDATION_STATUS)[keyof typeof MEMORY_CONSOLIDATION_STATUS];
 
 // ============================================================================
 // CATEGORY MAPPINGS
@@ -57,65 +67,24 @@ export const MEMORY_TYPE_CATEGORIES: Record<MemoryTypeEnum, string[]> = {
     'event',
     'experience',
     'interaction',
-    'milestone'
+    'milestone',
   ],
-  [MEMORY_TYPES.SEMANTIC]: [
-    'knowledge',
-    'concept',
-    'fact',
-    'understanding'
-  ],
-  [MEMORY_TYPES.PROCEDURAL]: [
-    'howto',
-    'skill',
-    'workflow',
-    'process',
-    'method'
-  ],
+  [MEMORY_TYPES.SEMANTIC]: ['knowledge', 'concept', 'fact', 'understanding'],
+  [MEMORY_TYPES.PROCEDURAL]: ['howto', 'skill', 'workflow', 'process', 'method'],
   [MEMORY_TYPES.FACTUAL]: [
     'biography',
     'fact_about_user',
     'fact_about_world',
     'preference',
     'ability',
-    'background'
+    'background',
   ],
-  [MEMORY_TYPES.PREFERENCE]: [
-    'like',
-    'dislike',
-    'style',
-    'requirement',
-    'frustration'
-  ],
-  [MEMORY_TYPES.IDENTITY]: [
-    'role',
-    'identity',
-    'bio',
-    'personality',
-    'values',
-    'belief'
-  ],
-  [MEMORY_TYPES.RELATIONSHIP]: [
-    'person_info',
-    'relationship',
-    'contact',
-    'team'
-  ],
-  [MEMORY_TYPES.GOAL]: [
-    'goal',
-    'plan',
-    'intention',
-    'aspiration'
-  ],
-  [MEMORY_TYPES.PROJECT]: [
-    'project',
-    'task',
-    'deliverable',
-    'deadline'
-  ],
-  [MEMORY_TYPES.CUSTOM]: [
-    'custom'
-  ]
+  [MEMORY_TYPES.PREFERENCE]: ['like', 'dislike', 'style', 'requirement', 'frustration'],
+  [MEMORY_TYPES.IDENTITY]: ['role', 'identity', 'bio', 'personality', 'values', 'belief'],
+  [MEMORY_TYPES.RELATIONSHIP]: ['person_info', 'relationship', 'contact', 'team'],
+  [MEMORY_TYPES.GOAL]: ['goal', 'plan', 'intention', 'aspiration'],
+  [MEMORY_TYPES.PROJECT]: ['project', 'task', 'deliverable', 'deadline'],
+  [MEMORY_TYPES.CUSTOM]: ['custom'],
 };
 
 // Importance thresholds
@@ -196,7 +165,7 @@ export interface MemoryRetrievalOptions {
     before?: Date;
   };
   includePinned?: boolean;
-  contextMessage?: string;  // For contextual relevance scoring
+  contextMessage?: string; // For contextual relevance scoring
 }
 
 export interface MemoryExtractionInput {
@@ -316,7 +285,7 @@ export type MemoryEventHandler = (event: MemoryEvent) => void | Promise<void>;
 // MEMORY RELATIONSHIP TYPES
 // ============================================================================
 
-export type MemoryRelationshipType = 
+export type MemoryRelationshipType =
   | 'similar'
   | 'contradicts'
   | 'supports'
@@ -416,21 +385,21 @@ export function calculateRelevance(
 ): number {
   // Pinned memories always have high relevance
   if (isPinned) return 1.0;
-  
+
   // Base relevance
   let relevance = baseRelevance;
-  
+
   // Boost for frequent access
   const accessBoost = Math.min(0.2, accessCount * 0.02);
   relevance += accessBoost;
-  
+
   // Decay for non-access over time (half-life of 30 days)
   if (lastAccessedAt) {
     const daysSinceAccess = (now.getTime() - lastAccessedAt.getTime()) / (1000 * 60 * 60 * 24);
     const decayFactor = Math.pow(0.5, daysSinceAccess / 30);
     relevance = relevance * (0.5 + 0.5 * decayFactor);
   }
-  
+
   return Math.min(1.0, Math.max(0.0, relevance));
 }
 

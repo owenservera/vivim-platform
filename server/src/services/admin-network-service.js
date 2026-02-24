@@ -38,7 +38,7 @@ class AdminNetworkService {
    */
   async getNode(id) {
     try {
-      const node = this.nodes.find(n => n.id === id);
+      const node = this.nodes.find((n) => n.id === id);
       if (!node) {
         throw new Error(`Node not found: ${id}`);
       }
@@ -106,10 +106,12 @@ class AdminNetworkService {
     try {
       return {
         totalNodes: this.nodes.length,
-        activeNodes: this.nodes.filter(n => n.status === 'online').length,
+        activeNodes: this.nodes.filter((n) => n.status === 'online').length,
         totalConnections: this.connections.length,
-        activeConnections: this.connections.filter(c => c.status === 'active').length,
-        avgLatency: this.connections.reduce((sum, c) => sum + (c.latency || 0), 0) / (this.connections.length || 1),
+        activeConnections: this.connections.filter((c) => c.status === 'active').length,
+        avgLatency:
+          this.connections.reduce((sum, c) => sum + (c.latency || 0), 0) /
+          (this.connections.length || 1),
         totalBandwidth: this.connections.reduce((sum, c) => sum + (c.bandwidth || 0), 0),
       };
     } catch (error) {

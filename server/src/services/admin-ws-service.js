@@ -54,8 +54,9 @@ class AdminWsService extends EventEmitter {
       timestamp: new Date().toISOString(),
     });
 
-    this.clients.forEach(client => {
-      if (client.readyState === 1) { // OPEN
+    this.clients.forEach((client) => {
+      if (client.readyState === 1) {
+        // OPEN
         client.send(message);
       }
     });

@@ -1,6 +1,6 @@
 /**
  * Error Routing and Reporting
- * 
+ *
  * Handles error ingestion from PWA and Provides debugging status for system components.
  */
 
@@ -19,7 +19,7 @@ const router = Router();
 
 /**
  * POST /api/v1/errors
- * 
+ *
  * Receive error reports from PWA/Client
  */
 router.post('/', async (req, res) => {
@@ -30,14 +30,17 @@ router.post('/', async (req, res) => {
   }
 
   for (const report of reports) {
-    logger.error({ 
-      component: report.component,
-      category: report.category,
-      message: report.message,
-      severity: report.severity,
-      context: report.context,
-      stack: report.stack
-    }, `Client Error Reported: ${report.message}`);
+    logger.error(
+      {
+        component: report.component,
+        category: report.category,
+        message: report.message,
+        severity: report.severity,
+        context: report.context,
+        stack: report.stack,
+      },
+      `Client Error Reported: ${report.message}`
+    );
 
     // If it's a critical client error, we might want to alert or store it specially
     if (report.severity === 'critical') {
@@ -59,7 +62,7 @@ router.post('/', async (req, res) => {
 
 /**
  * GET /api/v1/errors/status
- * 
+ *
  * Get a detailed health and debugging status of all server-side components.
  */
 router.get('/status', (req, res) => {
@@ -69,25 +72,27 @@ router.get('/status', (req, res) => {
       cache: {
         connected: cacheService.isConnected,
         type: cacheService.client ? 'redis' : 'memory',
-        memoryCacheSize: cacheService.memoryCache.size
+        memoryCacheSize: cacheService.memoryCache.size,
       },
       queues: Array.from(queueService.queues.entries()).map(([name, queue]) => ({
         name,
         pending: queue.pending,
         size: queue.size,
-        concurrency: queue.concurrency
+        concurrency: queue.concurrency,
       })),
-      circuitBreakers: Array.from(circuitBreakerService.breakers.entries()).map(([name, breaker]) => ({
-        name,
-        state: breaker.state,
-        stats: breaker.stats,
-        enabled: breaker.enabled
-      })),
+      circuitBreakers: Array.from(circuitBreakerService.breakers.entries()).map(
+        ([name, breaker]) => ({
+          name,
+          state: breaker.state,
+          stats: breaker.stats,
+          enabled: breaker.enabled,
+        })
+      ),
       database: {
         // Simple health check could go here
-        status: 'connected' // Placeholder
-      }
-    }
+        status: 'connected', // Placeholder
+      },
+    },
   };
 
   res.json(status);

@@ -107,7 +107,7 @@ export function errorHandler(error, req, res, _next) {
     userId: req.user?.id || req.session?.userId || null,
     requestId: req.id,
     statusCode: error.statusCode || 500,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
   // Log error
@@ -117,26 +117,31 @@ export function errorHandler(error, req, res, _next) {
       code: error.code,
       statusCode: error.statusCode || 500,
       stack: config.isDevelopment ? error.stack : undefined,
-      ...errorContext
+      ...errorContext,
     },
-    'Error handled by global handler',
+    'Error handled by global handler'
   );
 
   // Report error to centralized error reporting system
   const fullErrorMessage = `UNHANDLED_EXCEPTION [${req.method} ${req.path}]: ${error.message}`;
-  serverErrorReporter.reportServerError(
-    fullErrorMessage,
-    error,
-    { 
-      ...errorContext,
-      errorName: error.name,
-      errorCode: error.code,
-      stack: error.stack
-    },
-    error.statusCode >= 500 ? 'critical' : 'high'
-  ).catch(reportErr => {
-    logger.error({ reportError: reportErr.message }, 'Failed to report error to centralized system');
-  });
+  serverErrorReporter
+    .reportServerError(
+      fullErrorMessage,
+      error,
+      {
+        ...errorContext,
+        errorName: error.name,
+        errorCode: error.code,
+        stack: error.stack,
+      },
+      error.statusCode >= 500 ? 'critical' : 'high'
+    )
+    .catch((reportErr) => {
+      logger.error(
+        { reportError: reportErr.message },
+        'Failed to report error to centralized system'
+      );
+    });
 
   // Determine status code
   const statusCode = error.statusCode || 500;

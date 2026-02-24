@@ -328,13 +328,19 @@ export function shouldAlert(classifiedError) {
   const { severity, level } = classifiedError;
 
   // Critical errors always alert
-  if (severity === Severity.CRITICAL) return true;
+  if (severity === Severity.CRITICAL) {
+    return true;
+  }
 
   // System errors of high severity alert
-  if (level === ErrorLevel.SYSTEM && severity === Severity.HIGH) return true;
+  if (level === ErrorLevel.SYSTEM && severity === Severity.HIGH) {
+    return true;
+  }
 
   // Database connection errors always alert
-  if (classifiedError.category === ErrorCategory.DATABASE_CONNECTION) return true;
+  if (classifiedError.category === ErrorCategory.DATABASE_CONNECTION) {
+    return true;
+  }
 
   return false;
 }

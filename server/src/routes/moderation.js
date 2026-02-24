@@ -12,15 +12,29 @@ const flagSchema = z.object({
   contentType: z.enum(['conversation', 'acu', 'memory', 'group_post', 'comment', 'profile']),
   contentOwnerId: z.string().optional(),
   contentText: z.string().optional(),
-  reason: z.enum(['SPAM', 'HARASSMENT', 'HATE_SPEECH', 'VIOLENCE', 'SEXUAL', 'DANGEROUS', 'MISINFORMATION', 'PRIVACY', 'COPYRIGHT', 'IMPERSONATION', 'SELF_HARM', 'UNDERAGE', 'OTHER']),
-  description: z.string().optional()
+  reason: z.enum([
+    'SPAM',
+    'HARASSMENT',
+    'HATE_SPEECH',
+    'VIOLENCE',
+    'SEXUAL',
+    'DANGEROUS',
+    'MISINFORMATION',
+    'PRIVACY',
+    'COPYRIGHT',
+    'IMPERSONATION',
+    'SELF_HARM',
+    'UNDERAGE',
+    'OTHER',
+  ]),
+  description: z.string().optional(),
 });
 
 const reviewSchema = z.object({
   status: z.enum(['APPROVED', 'REMOVED', 'WARNED', 'BANNED']).optional(),
   resolution: z.string().optional(),
   action: z.enum(['none', 'remove', 'warn', 'ban']).optional(),
-  notifyUser: z.boolean().optional()
+  notifyUser: z.boolean().optional(),
 });
 
 const ruleSchema = z.object({
@@ -34,7 +48,7 @@ const ruleSchema = z.object({
   appliesTo: z.enum(['all', 'public', 'private']).optional(),
   priority: z.number().optional(),
   maxStrikes: z.number().optional(),
-  timeWindow: z.number().optional()
+  timeWindow: z.number().optional(),
 });
 
 router.post('/flag', authenticateDID, async (req, res) => {
@@ -44,13 +58,13 @@ router.post('/flag', authenticateDID, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
     const result = await moderationService.flagContent(req.user.userId, {
       ...parsed.data,
-      contentOwnerId: parsed.data.contentOwnerId || req.user.userId
+      contentOwnerId: parsed.data.contentOwnerId || req.user.userId,
     });
 
     if (!result.success) {
@@ -59,7 +73,7 @@ router.post('/flag', authenticateDID, async (req, res) => {
 
     res.status(201).json({
       success: true,
-      data: { flagId: result.flagId }
+      data: { flagId: result.flagId },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Flag content failed');
@@ -70,19 +84,19 @@ router.post('/flag', authenticateDID, async (req, res) => {
 router.get('/flags', requireModerator, async (req, res) => {
   try {
     const { status, reason, priority, contentType, limit, offset } = req.query;
-    
+
     const result = await moderationService.listFlags({
       status,
       reason,
       priority,
       contentType,
       limit: parseInt(limit) || 50,
-      offset: parseInt(offset) || 0
+      offset: parseInt(offset) || 0,
     });
 
     res.json({
       success: true,
-      data: result
+      data: result,
     });
   } catch (error) {
     log.error({ error: error.message }, 'List flags failed');
@@ -93,9 +107,9 @@ router.get('/flags', requireModerator, async (req, res) => {
 router.get('/flags/:flagId', requireModerator, async (req, res) => {
   try {
     const prisma = (await import('../lib/database.js')).getPrismaClient();
-    
+
     const flag = await prisma.contentFlag.findUnique({
-      where: { id: req.params.flagId }
+      where: { id: req.params.flagId },
     });
 
     if (!flag) {
@@ -104,7 +118,7 @@ router.get('/flags/:flagId', requireModerator, async (req, res) => {
 
     res.json({
       success: true,
-      data: flag
+      data: flag,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get flag failed');
@@ -119,7 +133,7 @@ router.post('/flags/:flagId/review', requireModerator, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
@@ -135,7 +149,7 @@ router.post('/flags/:flagId/review', requireModerator, async (req, res) => {
 
     res.json({
       success: true,
-      data: result.flag
+      data: result.flag,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Review flag failed');
@@ -146,11 +160,11 @@ router.post('/flags/:flagId/review', requireModerator, async (req, res) => {
 router.post('/flags/:flagId/appeal', authenticateDID, async (req, res) => {
   try {
     const { reason } = req.body;
-    
+
     if (!reason) {
       return res.status(400).json({
         success: false,
-        error: 'Appeal reason required'
+        error: 'Appeal reason required',
       });
     }
 
@@ -166,7 +180,7 @@ router.post('/flags/:flagId/appeal', authenticateDID, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Appeal submitted successfully'
+      message: 'Appeal submitted successfully',
     });
   } catch (error) {
     log.error({ error: error.message }, 'Appeal flag failed');
@@ -181,18 +195,18 @@ router.post('/rules', requireModerator, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
     const result = await moderationService.createModerationRule({
       ...parsed.data,
-      createdBy: req.user.userId
+      createdBy: req.user.userId,
     });
 
     res.status(201).json({
       success: true,
-      data: result.rule
+      data: result.rule,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Create rule failed');
@@ -203,10 +217,10 @@ router.post('/rules', requireModerator, async (req, res) => {
 router.get('/rules', async (req, res) => {
   try {
     const rules = await moderationService.getActiveRules();
-    
+
     res.json({
       success: true,
-      data: rules
+      data: rules,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get rules failed');
@@ -217,10 +231,10 @@ router.get('/rules', async (req, res) => {
 router.get('/stats', requireModerator, async (req, res) => {
   try {
     const stats = await moderationService.getModerationStats();
-    
+
     res.json({
       success: true,
-      data: stats
+      data: stats,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get stats failed');
@@ -231,10 +245,10 @@ router.get('/stats', requireModerator, async (req, res) => {
 router.get('/user/:userId', requireModerator, async (req, res) => {
   try {
     const record = await moderationService.getUserModerationRecord(req.params.userId);
-    
+
     res.json({
       success: true,
-      data: record
+      data: record,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get user record failed');
@@ -245,11 +259,11 @@ router.get('/user/:userId', requireModerator, async (req, res) => {
 router.post('/notes', requireModerator, async (req, res) => {
   try {
     const { targetType, targetId, content, isInternal, isPublic } = req.body;
-    
+
     if (!targetType || !targetId || !content) {
       return res.status(400).json({
         success: false,
-        error: 'targetType, targetId, and content are required'
+        error: 'targetType, targetId, and content are required',
       });
     }
 
@@ -259,12 +273,12 @@ router.post('/notes', requireModerator, async (req, res) => {
       content,
       moderatorId: req.user.userId,
       isInternal,
-      isPublic
+      isPublic,
     });
 
     res.status(201).json({
       success: true,
-      data: result.note
+      data: result.note,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Add note failed');

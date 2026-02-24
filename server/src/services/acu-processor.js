@@ -1,9 +1,9 @@
 /**
  * ACU Processor Service
- * 
+ *
  * Converts captured conversations into Atomic Chat Units (ACUs)
  * using the Rust core parser and stores them in the knowledge graph.
- * 
+ *
  * Flow:
  * 1. Fetch conversation + messages from database
  * 2. Call Rust core to decompose into ACUs
@@ -42,7 +42,7 @@ export async function processConversationToACUs(conversationId, options = {}) {
   } = options;
 
   const startTime = Date.now();
-  
+
   try {
     logger.info(`Processing conversation ${conversationId} to ACUs`);
 
@@ -70,7 +70,7 @@ export async function processConversationToACUs(conversationId, options = {}) {
       model: conversation.model,
       created_at: conversation.createdAt.toISOString(),
       updated_at: conversation.updatedAt.toISOString(),
-      messages: conversation.messages.map(msg => ({
+      messages: conversation.messages.map((msg) => ({
         id: msg.id,
         role: msg.role,
         author: msg.author,
@@ -95,7 +95,7 @@ export async function processConversationToACUs(conversationId, options = {}) {
     logger.info(`Generated ${acus.length} ACUs from conversation`);
 
     // 4. Determine author DID
-    const finalAuthorDid = authorDid || await getOrCreateAnonymousDid(conversation.ownerId);
+    const finalAuthorDid = authorDid || (await getOrCreateAnonymousDid(conversation.ownerId));
 
     // 5. Generate embeddings if requested
     if (generateEmbeddings && rustCore) {
@@ -128,7 +128,7 @@ export async function processConversationToACUs(conversationId, options = {}) {
     }
 
     const duration = Date.now() - startTime;
-    
+
     logger.info(`Successfully processed conversation ${conversationId}`, {
       acuCount: savedAcus.length,
       duration: `${duration}ms`,
@@ -141,7 +141,6 @@ export async function processConversationToACUs(conversationId, options = {}) {
       duration,
       acus: savedAcus,
     };
-
   } catch (error) {
     const duration = Date.now() - startTime;
     logger.error(`Failed to process conversation ${conversationId}`, {
@@ -173,38 +172,40 @@ function convertPartsToContent(parts) {
     return JSON.stringify(parts);
   }
 
-  return parts.map(part => {
-    if (typeof part === 'string') {
-      return part;
-    }
-
-    if (part.type === 'text') {
-      return part.content;
-    }
-
-    if (part.type === 'code') {
-      const lang = part.metadata?.language || '';
-      return `\`\`\`${lang}\n${part.content}\n\`\`\``;
-    }
-
-    if (part.type === 'latex') {
-      return `$$${part.content}$$`;
-    }
-
-    if (part.type === 'table') {
-      // Convert table to markdown
-      if (part.content?.headers && part.content?.rows) {
-        const headers = part.content.headers.join(' | ');
-        const separator = part.content.headers.map(() => '---').join(' | ');
-        const rows = part.content.rows.map(row => row.join(' | ')).join('\n');
-        return `${headers}\n${separator}\n${rows}`;
+  return parts
+    .map((part) => {
+      if (typeof part === 'string') {
+        return part;
       }
-      return JSON.stringify(part.content);
-    }
 
-    // For other types, return content as-is or stringify
-    return part.content || JSON.stringify(part);
-  }).join('\n\n');
+      if (part.type === 'text') {
+        return part.content;
+      }
+
+      if (part.type === 'code') {
+        const lang = part.metadata?.language || '';
+        return `\`\`\`${lang}\n${part.content}\n\`\`\``;
+      }
+
+      if (part.type === 'latex') {
+        return `$$${part.content}$$`;
+      }
+
+      if (part.type === 'table') {
+        // Convert table to markdown
+        if (part.content?.headers && part.content?.rows) {
+          const headers = part.content.headers.join(' | ');
+          const separator = part.content.headers.map(() => '---').join(' | ');
+          const rows = part.content.rows.map((row) => row.join(' | ')).join('\n');
+          return `${headers}\n${separator}\n${rows}`;
+        }
+        return JSON.stringify(part.content);
+      }
+
+      // For other types, return content as-is or stringify
+      return part.content || JSON.stringify(part);
+    })
+    .join('\n\n');
 }
 
 /**
@@ -216,16 +217,16 @@ async function mockProcessCapture(extractedData) {
 
   for (const message of extractedData.messages) {
     // Simple decomposition: split by paragraphs
-    const {content} = message;
-    const paragraphs = content.split(/\n\n+/).filter(p => p.trim().length > 0);
+    const { content } = message;
+    const paragraphs = content.split(/\n\n+/).filter((p) => p.trim().length > 0);
 
     for (let i = 0; i < paragraphs.length; i++) {
       const paragraph = paragraphs[i].trim();
-      
+
       // Skip very short paragraphs
       if (paragraph.length < 10) {
-continue;
-}
+        continue;
+      }
 
       // Determine type based on content
       let type = 'statement';
@@ -277,10 +278,7 @@ continue;
  * Generate SHA3-256 hash of content (ACU ID)
  */
 function generateContentHash(content) {
-  return crypto
-    .createHash('sha256')
-    .update(content.trim())
-    .digest('hex');
+  return crypto.createHash('sha256').update(content.trim()).digest('hex');
 }
 
 /**
@@ -304,7 +302,7 @@ async function getOrCreateAnonymousDid(userId) {
   // Create anonymous user
   // In production, this would use proper DID generation
   const anonymousDid = `did:key:anon_${userId}`;
-  
+
   try {
     const newUser = await getPrismaClient().user.create({
       data: {
@@ -327,13 +325,7 @@ async function getOrCreateAnonymousDid(userId) {
  * Save ACU to database
  */
 async function saveAcuToDatabase(acu, context) {
-  const {
-    conversationId,
-    authorDid,
-    provider,
-    model,
-    calculateQuality,
-  } = context;
+  const { conversationId, authorDid, provider, model, calculateQuality } = context;
 
   // Calculate quality scores if requested
   let qualityScores = null;
@@ -383,28 +375,28 @@ async function saveAcuToDatabase(acu, context) {
  * Calculate quality scores for an ACU
  */
 function calculateAcuQuality(acu) {
-  const {content} = acu;
-  const {length} = content;
+  const { content } = acu;
+  const { length } = content;
 
   // Content richness: based on length and structure
   let richness = 0;
   if (length > 500) {
-richness = 90;
-} else if (length > 200) {
-richness = 70;
-} else if (length > 50) {
-richness = 50;
-} else {
-richness = 30;
-}
+    richness = 90;
+  } else if (length > 200) {
+    richness = 70;
+  } else if (length > 50) {
+    richness = 50;
+  } else {
+    richness = 30;
+  }
 
   // Bonus for code, formulas, etc.
   if (acu.type === 'code_snippet') {
-richness += 10;
-}
+    richness += 10;
+  }
   if (acu.type === 'formula') {
-richness += 10;
-}
+    richness += 10;
+  }
 
   // Structural integrity: based on type classification
   const integrity = acu.type !== 'unknown' ? 80 : 50;
@@ -413,7 +405,7 @@ richness += 10;
   const uniqueness = Math.min(100, length / 10);
 
   // Overall score: weighted average
-  const overall = (richness * 0.4 + integrity * 0.3 + uniqueness * 0.3);
+  const overall = richness * 0.4 + integrity * 0.3 + uniqueness * 0.3;
 
   return {
     overall: Math.round(overall),
@@ -449,7 +441,7 @@ async function createAcuLinks(acus) {
   // Detect semantic relationships (simple heuristics for now)
   for (let i = 0; i < acus.length; i++) {
     const source = acus[i];
-    
+
     // If this is a question, look for answers
     if (source.type === 'question') {
       for (let j = i + 1; j < Math.min(i + 5, acus.length); j++) {
@@ -508,11 +500,7 @@ async function createAcuLinks(acus) {
  * Useful for backfilling ACUs from existing data
  */
 export async function processAllConversations(options = {}) {
-  const {
-    batchSize = 10,
-    delayMs = 1000,
-    ...processingOptions
-  } = options;
+  const { batchSize = 10, delayMs = 1000, ...processingOptions } = options;
 
   logger.info('Starting batch processing of all conversations');
 
@@ -534,12 +522,14 @@ export async function processAllConversations(options = {}) {
   // Process in batches
   for (let i = 0; i < conversations.length; i += batchSize) {
     const batch = conversations.slice(i, i + batchSize);
-    
-    logger.info(`Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(conversations.length / batchSize)}`);
+
+    logger.info(
+      `Processing batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(conversations.length / batchSize)}`
+    );
 
     // Process batch in parallel
     const batchResults = await Promise.allSettled(
-      batch.map(conv => processConversationToACUs(conv.id, processingOptions)),
+      batch.map((conv) => processConversationToACUs(conv.id, processingOptions))
     );
 
     // Collect results
@@ -557,7 +547,7 @@ export async function processAllConversations(options = {}) {
 
     // Delay between batches to avoid overwhelming the system
     if (i + batchSize < conversations.length) {
-      await new Promise(resolve => setTimeout(resolve, delayMs));
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
     }
   }
 

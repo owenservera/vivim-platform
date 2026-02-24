@@ -89,9 +89,7 @@ export class LinkValidator {
     },
     {
       name: 'deepseek',
-      patterns: [
-        /^https:\/\/chat\.deepseek\.com\/share\/[a-zA-Z0-9]+$/i,
-      ],
+      patterns: [/^https:\/\/chat\.deepseek\.com\/share\/[a-zA-Z0-9]+$/i],
       shareIdExtractor: (url) => {
         const match = url.pathname.match(/\/share\/([a-zA-Z0-9]+)/i);
         return match ? match[1] : null;
@@ -148,9 +146,7 @@ export class LinkValidator {
     },
     {
       name: 'perplexity',
-      patterns: [
-        /^https:\/\/www\.perplexity\.ai\/search\/[a-zA-Z0-9-]+$/i,
-      ],
+      patterns: [/^https:\/\/www\.perplexity\.ai\/search\/[a-zA-Z0-9-]+$/i],
       shareIdExtractor: (url) => {
         const match = url.pathname.match(/\/search\/([a-zA-Z0-9-]+)/i);
         return match ? match[1] : null;
@@ -165,19 +161,21 @@ export class LinkValidator {
   validate(rawUrl: string): LinkValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
-    
+
     // Step 1: Basic sanitization
     let sanitizedUrl = rawUrl.trim();
-    
+
     // Remove trailing whitespace and common punctuation
     sanitizedUrl = sanitizedUrl.replace(/[\s.,;!?]+$/, '');
-    
+
     // Step 2: URL parsing
     let url: URL;
     try {
       url = new URL(sanitizedUrl);
     } catch (error) {
-      errors.push(`Invalid URL format: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      errors.push(
+        `Invalid URL format: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
       return {
         isValid: false,
         normalizedUrl: sanitizedUrl,
@@ -256,25 +254,21 @@ export class LinkValidator {
    * Validate multiple URLs at once
    */
   validateBatch(urls: string[]): LinkValidationResult[] {
-    return urls.map(url => this.validate(url));
+    return urls.map((url) => this.validate(url));
   }
 
   /**
    * Get list of supported providers
    */
   getSupportedProviders(): string[] {
-    return this.providers
-      .filter(p => p.supported)
-      .map(p => p.name);
+    return this.providers.filter((p) => p.supported).map((p) => p.name);
   }
 
   /**
    * Get list of detected but unsupported providers
    */
   getUnsupportedProviders(): string[] {
-    return this.providers
-      .filter(p => !p.supported)
-      .map(p => p.name);
+    return this.providers.filter((p) => !p.supported).map((p) => p.name);
   }
 
   /**
@@ -285,7 +279,7 @@ export class LinkValidator {
     // Keep only essential query parameters
     const essentialParams = ['fev']; // Qwen version param
     const cleanParams = new URLSearchParams();
-    
+
     url.searchParams.forEach((value, key) => {
       if (essentialParams.includes(key)) {
         cleanParams.append(key, value);
@@ -304,7 +298,7 @@ export class LinkValidator {
     let hash = 0;
     for (let i = 0; i < url.length; i++) {
       const char = url.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32bit integer
     }
     return Math.abs(hash).toString(16).padStart(8, '0');

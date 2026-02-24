@@ -25,20 +25,20 @@ async function extractChatgptConversation(url, options = {}) {
     logger.info(`Starting ChatGPT extraction for ${url} using Playwright...`);
 
     // Capture the live page using Playwright (with stealth mode)
-    tempFilePath = await captureWithPlaywright(url, 'chatgpt', { 
+    tempFilePath = await captureWithPlaywright(url, 'chatgpt', {
       timeout,
       headless,
       waitForSelector: 'h1, [data-message-author-role]',
-      waitForTimeout: waitForTimeout, 
+      waitForTimeout: waitForTimeout,
     });
-    
+
     logger.info(`Reading captured ChatGPT HTML from: ${tempFilePath}`);
     const html = await fs.readFile(tempFilePath, 'utf8');
     const $ = cheerio.load(html);
 
     // Extract conversation data for ChatGPT
     const conversation = extractChatgptData($, url, html, richFormatting);
-    
+
     if (conversation.messages.length === 0) {
       const debugPath = `debug-chatgpt-${Date.now()}.html`;
       await fs.writeFile(debugPath, html);
@@ -91,18 +91,18 @@ function extractChatgptData($, url, html, richFormatting = true) {
     const chunks = [];
     const searchStr = 'streamController.enqueue("';
     let pos = 0;
-    
+
     while (true) {
       pos = html.indexOf(searchStr, pos);
       if (pos === -1) {
-break;
-}
-      
+        break;
+      }
+
       pos += searchStr.length;
       const start = pos;
       let end = -1;
       let escape = false;
-      
+
       // Find closing quote ignoring escaped quotes
       for (let i = start; i < html.length; i++) {
         const char = html[i];
@@ -119,84 +119,85 @@ break;
           break;
         }
       }
-      
+
       if (end !== -1) {
         chunks.push(html.substring(start, end));
         pos = end;
       } else {
-        break; 
+        break;
       }
     }
 
     // 2. Concatenate and Parse
     let combinedJsonStr = '';
-    chunks.forEach(jsonPart => {
-        try {
-            // Unescape the string literal content
-            const unescaped = JSON.parse(`"${  jsonPart  }"`);
-            // Filter out React Flight data chunks
-            if (!unescaped.trim().match(/^[A-Z0-9]+:[\[]/)) {
-                combinedJsonStr += unescaped;
-            }
-        } catch (e) { 
-            // Ignore unescape errors
+    chunks.forEach((jsonPart) => {
+      try {
+        // Unescape the string literal content
+        const unescaped = JSON.parse(`"${jsonPart}"`);
+        // Filter out React Flight data chunks
+        if (!unescaped.trim().match(/^[A-Z0-9]+:\[/)) {
+          combinedJsonStr += unescaped;
         }
+      } catch (e) {
+        // Ignore unescape errors
+      }
     });
 
     let root = null;
     try {
-        root = JSON.parse(combinedJsonStr);
+      root = JSON.parse(combinedJsonStr);
     } catch (e) {
-        // Tolerant parsing if possible
+      // Tolerant parsing if possible
     }
 
     // 3. Resolve References and Extract Messages
     if (root && Array.isArray(root)) {
-        const mappingIdx = root.indexOf('mapping');
-        if (mappingIdx !== -1 && mappingIdx + 1 < root.length) {
-            const mapping = root[mappingIdx + 1];
-            
-            Object.values(mapping).forEach(nodeOrRef => {
-                let node = nodeOrRef;
-                // Reference resolution
-                if (typeof nodeOrRef === 'number') {
-                    node = root[nodeOrRef];
-                }
-                
-                if (node && node.message) {
-                    const msgData = node.message;
-                    const role = msgData.author?.role;
-                    
-                    if (role === 'user' || role === 'assistant' || role === 'system') {
-                        let parts = [];
-                        
-                        // Content parts resolution
-                        if (msgData.content && msgData.content.parts) {
-                            parts = msgData.content.parts.map(part => {
-                                if (typeof part === 'number') {
-                                    const resolved = root[part] || ''; 
-                                    return { type: 'text', content: String(resolved) };
-                                }
-                                return { type: 'text', content: String(part) };
-                            });
-                        }
+      const mappingIdx = root.indexOf('mapping');
+      if (mappingIdx !== -1 && mappingIdx + 1 < root.length) {
+        const mapping = root[mappingIdx + 1];
 
-                        if (parts.length > 0) {
-                            messages.push({
-                                id: msgData.id || uuidv4(),
-                                role: role,
-                                author: role === 'user' ? 'User' : 'ChatGPT',
-                                parts: parts,
-                                createdAt: msgData.create_time ? new Date(msgData.create_time * 1000).toISOString() : null,
-                                status: 'completed',
-                            });
-                        }
-                    }
-                }
-            });
-        }
+        Object.values(mapping).forEach((nodeOrRef) => {
+          let node = nodeOrRef;
+          // Reference resolution
+          if (typeof nodeOrRef === 'number') {
+            node = root[nodeOrRef];
+          }
+
+          if (node && node.message) {
+            const msgData = node.message;
+            const role = msgData.author?.role;
+
+            if (role === 'user' || role === 'assistant' || role === 'system') {
+              let parts = [];
+
+              // Content parts resolution
+              if (msgData.content && msgData.content.parts) {
+                parts = msgData.content.parts.map((part) => {
+                  if (typeof part === 'number') {
+                    const resolved = root[part] || '';
+                    return { type: 'text', content: String(resolved) };
+                  }
+                  return { type: 'text', content: String(part) };
+                });
+              }
+
+              if (parts.length > 0) {
+                messages.push({
+                  id: msgData.id || uuidv4(),
+                  role: role,
+                  author: role === 'user' ? 'User' : 'ChatGPT',
+                  parts: parts,
+                  createdAt: msgData.create_time
+                    ? new Date(msgData.create_time * 1000).toISOString()
+                    : null,
+                  status: 'completed',
+                });
+              }
+            }
+          }
+        });
+      }
     }
-
   } catch (e) {
     logger.error(`Error parsing ChatGPT stream: ${e.message}`);
   }
@@ -211,7 +212,7 @@ break;
       } else if ($art.find('h6').text().toLowerCase().includes('chatgpt said')) {
         role = 'assistant';
       }
-      
+
       if (!role) {
         if ($art.find('.bg-user-pixel, .rounded-sm > svg').length > 0) {
           role = 'user';
@@ -223,16 +224,16 @@ break;
       if (role) {
         const $content = $art.find('.whitespace-pre-wrap, .markdown, .prose').first();
         const $target = $content.length > 0 ? $content : $art;
-        
+
         // Extract parts using rich content extractor
         const parts = extractChatgptRichContent($target, $, richFormatting);
 
         if (parts.length > 0) {
-          messages.push({ 
-            id: uuidv4(), 
-            role, 
+          messages.push({
+            id: uuidv4(),
+            role,
             author: role === 'user' ? 'User' : 'ChatGPT',
-            parts, 
+            parts,
             createdAt: null,
             status: 'completed',
           });
@@ -249,11 +250,11 @@ break;
       if (role === 'user' || role === 'assistant') {
         const parts = extractChatgptRichContent($el, $, richFormatting);
         if (parts.length > 0) {
-          messages.push({ 
-            id: uuidv4(), 
-            role, 
+          messages.push({
+            id: uuidv4(),
+            role,
             author: role === 'user' ? 'User' : 'ChatGPT',
-            parts, 
+            parts,
             createdAt: null,
             status: 'completed',
           });
@@ -293,14 +294,18 @@ function extractChatgptRichContent($el, $, richFormatting = true) {
 
   const $clone = $el.clone();
   $clone.find('h5, h6').remove(); // Remove headers like "You said"
-  
+
   const contentBlocks = [];
 
   // 1. Identify Mermaid diagrams in code blocks
   $clone.find('pre, code').each((index, elem) => {
     const $elem = $(elem);
     const text = $elem.text().trim();
-    if (text.match(/^(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram|erDiagram|journey|gantt|pie|quadrantChart|requirementDiagram|gitGraph|C4Context|C4Container|C4Component|C4Dynamic|C4Deployment|mindmap|timeline|zenuml)/i)) {
+    if (
+      text.match(
+        /^(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram|erDiagram|journey|gantt|pie|quadrantChart|requirementDiagram|gitGraph|C4Context|C4Container|C4Component|C4Dynamic|C4Deployment|mindmap|timeline|zenuml)/i
+      )
+    ) {
       contentBlocks.push({
         type: 'mermaid',
         content: text,
@@ -330,7 +335,12 @@ function extractChatgptRichContent($el, $, richFormatting = true) {
   $clone.find('img').each((index, elem) => {
     const $elem = $(elem);
     const src = $elem.attr('src');
-    if (src && !src.includes('profile') && !src.includes('avatar') && !src.includes('data:image/svg')) {
+    if (
+      src &&
+      !src.includes('profile') &&
+      !src.includes('avatar') &&
+      !src.includes('data:image/svg')
+    ) {
       contentBlocks.push({
         type: 'image',
         content: src,
@@ -342,25 +352,25 @@ function extractChatgptRichContent($el, $, richFormatting = true) {
 
   // 4. Identify LaTeX
   $clone.find('.katex-block, .katex-display').each((_, elem) => {
-      const $elem = $(elem);
-      const tex = $elem.find('annotation[encoding="application/x-tex"]').text() || $elem.text();
-      contentBlocks.push({
-          type: 'latex',
-          content: tex,
-          metadata: { display: 'block' },
-      });
-      $elem.remove();
+    const $elem = $(elem);
+    const tex = $elem.find('annotation[encoding="application/x-tex"]').text() || $elem.text();
+    contentBlocks.push({
+      type: 'latex',
+      content: tex,
+      metadata: { display: 'block' },
+    });
+    $elem.remove();
   });
-  
+
   $clone.find('.katex').each((_, elem) => {
-      const $elem = $(elem);
-      const tex = $elem.find('annotation[encoding="application/x-tex"]').text() || $elem.text();
-      contentBlocks.push({
-          type: 'latex',
-          content: tex,
-          metadata: { display: 'inline' },
-      });
-      $elem.remove();
+    const $elem = $(elem);
+    const tex = $elem.find('annotation[encoding="application/x-tex"]').text() || $elem.text();
+    contentBlocks.push({
+      type: 'latex',
+      content: tex,
+      metadata: { display: 'inline' },
+    });
+    $elem.remove();
   });
 
   // 5. Identify Tables
@@ -368,28 +378,30 @@ function extractChatgptRichContent($el, $, richFormatting = true) {
     const $table = $(elem);
     const headers = [];
     $table.find('thead th').each((_, th) => headers.push($(th).text().trim()));
-    
+
     const rows = [];
     $table.find('tbody tr').each((_, tr) => {
       const row = [];
-      $(tr).find('td').each((_, td) => row.push($(td).text().trim()));
+      $(tr)
+        .find('td')
+        .each((_, td) => row.push($(td).text().trim()));
       rows.push(row);
     });
 
     if (rows.length > 0) {
-        contentBlocks.push({
-            type: 'table',
-            content: { headers, rows },
-            metadata: { format: 'html' },
-        });
-        $table.remove();
+      contentBlocks.push({
+        type: 'table',
+        content: { headers, rows },
+        metadata: { format: 'html' },
+      });
+      $table.remove();
     }
   });
 
   // 6. Handle remaining text and potential hidden diagrams
   const remainingText = $clone.text().trim();
-  
-  const mermaidRegex = /(?:^|\n)\s*(graph\s+[LRTDBC]{2}[\s\S]*?(?=\-\-|\n|###|Goal:|1\s+|2\s+))/gi;
+
+  const mermaidRegex = /(?:^|\n)\s*(graph\s+[LRTDBC]{2}[\s\S]*?(?=--|\n|###|Goal:|1\s+|2\s+))/gi;
   let match;
   let lastIndex = 0;
   const newTextBlocks = [];
@@ -430,33 +442,33 @@ function calculateStats(messages) {
 
   for (const message of messages) {
     if (message.role === 'user') {
-userMessageCount++;
-}
+      userMessageCount++;
+    }
     if (message.role === 'assistant') {
-aiMessageCount++;
-}
+      aiMessageCount++;
+    }
 
     if (message.parts) {
-        message.parts.forEach(part => {
-            if (part.type === 'text') {
-                totalWords += part.content.split(/\s+/).filter(w => w).length;
-                totalCharacters += part.content.length;
-            } else if (part.type === 'code') {
-                totalCodeBlocks++;
-                totalCharacters += part.content.length;
-            } else if (part.type === 'mermaid') {
-                totalMermaidDiagrams++;
-                totalCharacters += part.content.length;
-            } else if (part.type === 'image') {
-                totalImages++;
-            } else if (part.type === 'table') {
-                totalTables++;
-            } else if (part.type === 'latex') {
-                totalLatexBlocks++;
-            } else if (part.type === 'tool_call') {
-                totalToolCalls++;
-            }
-        });
+      message.parts.forEach((part) => {
+        if (part.type === 'text') {
+          totalWords += part.content.split(/\s+/).filter((w) => w).length;
+          totalCharacters += part.content.length;
+        } else if (part.type === 'code') {
+          totalCodeBlocks++;
+          totalCharacters += part.content.length;
+        } else if (part.type === 'mermaid') {
+          totalMermaidDiagrams++;
+          totalCharacters += part.content.length;
+        } else if (part.type === 'image') {
+          totalImages++;
+        } else if (part.type === 'table') {
+          totalTables++;
+        } else if (part.type === 'latex') {
+          totalLatexBlocks++;
+        } else if (part.type === 'tool_call') {
+          totalToolCalls++;
+        }
+      });
     }
   }
 

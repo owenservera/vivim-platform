@@ -25,10 +25,13 @@ import { logger } from '../lib/logger.js';
  * Inspired by the Facebook DataLoader pattern.
  */
 export class DataLoader<K extends string, V> {
-  private batch: Map<K, {
-    resolve: (value: V | null) => void;
-    reject: (error: Error) => void;
-  }[]> = new Map();
+  private batch: Map<
+    K,
+    {
+      resolve: (value: V | null) => void;
+      reject: (error: Error) => void;
+    }[]
+  > = new Map();
   private cache: Map<K, V> = new Map();
   private batchFn: (keys: K[]) => Promise<Map<K, V>>;
   private batchTimer: ReturnType<typeof setTimeout> | null = null;
@@ -205,28 +208,28 @@ export class ContextQueryOptimizer {
       const topics = await prisma.topicProfile.findMany({
         where: { id: { in: [...ids] } },
       });
-      return new Map(topics.map(t => [t.id, t]));
+      return new Map(topics.map((t) => [t.id, t]));
     });
 
     this.entityLoader = new DataLoader(async (ids) => {
       const entities = await prisma.entityProfile.findMany({
         where: { id: { in: [...ids] } },
       });
-      return new Map(entities.map(e => [e.id, e]));
+      return new Map(entities.map((e) => [e.id, e]));
     });
 
     this.bundleLoader = new DataLoader(async (ids) => {
       const bundles = await prisma.contextBundle.findMany({
         where: { id: { in: [...ids] } },
       });
-      return new Map(bundles.map(b => [b.id, b]));
+      return new Map(bundles.map((b) => [b.id, b]));
     });
 
     this.memoryLoader = new DataLoader(async (ids) => {
       const memories = await prisma.memory.findMany({
         where: { id: { in: [...ids] } },
       });
-      return new Map(memories.map(m => [m.id, m]));
+      return new Map(memories.map((m) => [m.id, m]));
     });
   }
 
@@ -235,10 +238,7 @@ export class ContextQueryOptimizer {
   /**
    * Load user's top topics with cache-through.
    */
-  async getUserTopTopics(
-    userId: string,
-    limit: number = 10
-  ): Promise<any[]> {
+  async getUserTopTopics(userId: string, limit: number = 10): Promise<any[]> {
     const cacheKey = `topics:${userId}:top${limit}`;
     const cached = this.cache.get<any[]>('graph', cacheKey);
     if (cached) return cached;
@@ -258,10 +258,7 @@ export class ContextQueryOptimizer {
   /**
    * Load user's entities with cache-through.
    */
-  async getUserEntities(
-    userId: string,
-    limit: number = 10
-  ): Promise<any[]> {
+  async getUserEntities(userId: string, limit: number = 10): Promise<any[]> {
     const cacheKey = `entities:${userId}:top${limit}`;
     const cached = this.cache.get<any[]>('graph', cacheKey);
     if (cached) return cached;
@@ -282,12 +279,15 @@ export class ContextQueryOptimizer {
    * Batch load all context data needed for assembly in one go.
    * This replaces 4-6 sequential queries with 1 parallel batch.
    */
-  async batchLoadContextData(userId: string, params: {
-    conversationId?: string;
-    topicIds?: string[];
-    entityIds?: string[];
-    includeMemories?: boolean;
-  }): Promise<{
+  async batchLoadContextData(
+    userId: string,
+    params: {
+      conversationId?: string;
+      topicIds?: string[];
+      entityIds?: string[];
+      includeMemories?: boolean;
+    }
+  ): Promise<{
     topics: any[];
     entities: any[];
     bundles: any[];
@@ -298,64 +298,70 @@ export class ContextQueryOptimizer {
     const cacheKey = `batch:${userId}:${JSON.stringify(params)}`;
 
     return this.coalescer.execute(cacheKey, async () => {
-      const [topics, entities, bundles, memories, instructions, conversation] =
-        await Promise.all([
-          // Topics
-          params.topicIds && params.topicIds.length > 0
-            ? this.topicLoader.loadMany(params.topicIds).then(m => Array.from(m.values()).filter(Boolean))
-            : this.getUserTopTopics(userId, 5),
+      const [topics, entities, bundles, memories, instructions, conversation] = await Promise.all([
+        // Topics
+        params.topicIds && params.topicIds.length > 0
+          ? this.topicLoader
+              .loadMany(params.topicIds)
+              .then((m) => Array.from(m.values()).filter(Boolean))
+          : this.getUserTopTopics(userId, 5),
 
-          // Entities
-          params.entityIds && params.entityIds.length > 0
-            ? this.entityLoader.loadMany(params.entityIds).then(m => Array.from(m.values()).filter(Boolean))
-            : this.getUserEntities(userId, 5),
+        // Entities
+        params.entityIds && params.entityIds.length > 0
+          ? this.entityLoader
+              .loadMany(params.entityIds)
+              .then((m) => Array.from(m.values()).filter(Boolean))
+          : this.getUserEntities(userId, 5),
 
-          // Bundles for user
-          this.prisma.contextBundle.findMany({
-            where: {
-              userId,
-              isDirty: false,
-              OR: [
-                { bundleType: 'identity_core' },
-                { bundleType: 'global_prefs' },
-                ...(params.conversationId
-                  ? [{ bundleType: 'conversation', conversationId: params.conversationId }]
-                  : []),
-                ...(params.topicIds ?? []).map(id => ({ bundleType: 'topic', topicProfileId: id })),
-                ...(params.entityIds ?? []).map(id => ({ bundleType: 'entity', entityProfileId: id })),
-              ],
-            },
-            orderBy: { priority: 'desc' },
-          }),
+        // Bundles for user
+        this.prisma.contextBundle.findMany({
+          where: {
+            userId,
+            isDirty: false,
+            OR: [
+              { bundleType: 'identity_core' },
+              { bundleType: 'global_prefs' },
+              ...(params.conversationId
+                ? [{ bundleType: 'conversation', conversationId: params.conversationId }]
+                : []),
+              ...(params.topicIds ?? []).map((id) => ({ bundleType: 'topic', topicProfileId: id })),
+              ...(params.entityIds ?? []).map((id) => ({
+                bundleType: 'entity',
+                entityProfileId: id,
+              })),
+            ],
+          },
+          orderBy: { priority: 'desc' },
+        }),
 
-          // Memories
-          params.includeMemories !== false
-            ? this.prisma.memory.findMany({
-                where: { userId, isActive: true },
-                orderBy: { importance: 'desc' },
-                take: 20,
-              })
-            : Promise.resolve([]),
+        // Memories
+        params.includeMemories !== false
+          ? this.prisma.memory.findMany({
+              where: { userId, isActive: true },
+              orderBy: { importance: 'desc' },
+              take: 20,
+            })
+          : Promise.resolve([]),
 
-          // Custom instructions
-          this.prisma.customInstruction.findMany({
-            where: { userId, isActive: true },
-            orderBy: { priority: 'desc' },
-          }),
+        // Custom instructions
+        this.prisma.customInstruction.findMany({
+          where: { userId, isActive: true },
+          orderBy: { priority: 'desc' },
+        }),
 
-          // Conversation
-          params.conversationId
-            ? this.prisma.conversation.findUnique({
-                where: { id: params.conversationId },
-                include: {
-                  messages: {
-                    orderBy: { messageIndex: 'asc' },
-                    take: 50,
-                  },
+        // Conversation
+        params.conversationId
+          ? this.prisma.conversation.findUnique({
+              where: { id: params.conversationId },
+              include: {
+                messages: {
+                  orderBy: { messageIndex: 'asc' },
+                  take: 50,
                 },
-              })
-            : Promise.resolve(null),
-        ]);
+              },
+            })
+          : Promise.resolve(null),
+      ]);
 
       return { topics, entities, bundles, memories, instructions, conversation };
     });

@@ -46,7 +46,10 @@ export async function createConversation(data, userClient = null) {
     });
 
     if (existing) {
-      logger.info({ id: existing.id, sourceUrl: data.sourceUrl }, 'createConversation: Found existing record');
+      logger.info(
+        { id: existing.id, sourceUrl: data.sourceUrl },
+        'createConversation: Found existing record'
+      );
     } else {
       logger.debug({ sourceUrl: data.sourceUrl }, 'createConversation: No existing record found');
     }
@@ -59,7 +62,7 @@ export async function createConversation(data, userClient = null) {
       updatedAt: new Date(data.updatedAt || new Date()),
       capturedAt: new Date(data.capturedAt || new Date()),
       contentHash: data.contentHash || null,
-      
+
       messageCount: data.messageCount || data.stats?.totalMessages || data.messages?.length || 0,
       userMessageCount: data.userMessageCount || data.stats?.userMessageCount || 0,
       aiMessageCount: data.aiMessageCount || data.stats?.aiMessageCount || 0,
@@ -72,7 +75,7 @@ export async function createConversation(data, userClient = null) {
       totalTables: data.totalTables || data.stats?.totalTables || 0,
       totalLatexBlocks: data.totalLatexBlocks || data.stats?.totalLatexBlocks || 0,
       totalToolCalls: data.totalToolCalls || data.stats?.totalToolCalls || 0,
-      
+
       metadata: data.metadata || {},
     };
 
@@ -83,37 +86,40 @@ export async function createConversation(data, userClient = null) {
       where: { sourceUrl: data.sourceUrl },
       update: {
         ...conversationData,
-        version: { increment: 1 } // Ensure version increments on update
+        version: { increment: 1 }, // Ensure version increments on update
       },
       create: {
         id: data.id || uuidv4(),
         sourceUrl: data.sourceUrl,
         ...conversationData,
-        version: 1
+        version: 1,
       },
       include: {
         messages: {
-          select: { id: true, messageIndex: true }
-        }
-      }
+          select: { id: true, messageIndex: true },
+        },
+      },
     });
 
-    const existingMessageIds = new Set(conversation.messages.map(m => m.id));
-    const newMessages = (data.messages || []).filter(msg => !existingMessageIds.has(msg.id));
+    const existingMessageIds = new Set(conversation.messages.map((m) => m.id));
+    const newMessages = (data.messages || []).filter((msg) => !existingMessageIds.has(msg.id));
 
     if (newMessages.length > 0) {
-      logger.info({ 
-        conversationId: conversation.id, 
-        count: newMessages.length 
-      }, 'Creating new messages for conversation');
-      
+      logger.info(
+        {
+          conversationId: conversation.id,
+          count: newMessages.length,
+        },
+        'Creating new messages for conversation'
+      );
+
       await db.message.createMany({
         data: newMessages.map((msg, index) => ({
           id: msg.id || uuidv4(),
           conversationId: conversation.id,
           role: msg.role,
           author: msg.author,
-          messageIndex: msg.messageIndex ?? (conversation.messages.length + index),
+          messageIndex: msg.messageIndex ?? conversation.messages.length + index,
           parts: msg.parts || [],
           createdAt: new Date(msg.createdAt || msg.timestamp || new Date()),
           status: msg.status || 'completed',
@@ -123,17 +129,17 @@ export async function createConversation(data, userClient = null) {
         })),
       });
     }
-    
+
     // Invalidate cache
     await cacheService.del(`conversation:${conversation.id}`);
-    
+
     return conversation;
   } catch (error) {
-    if (error.message.includes('Can\'t reach database server')) {
-       logger.warn('💾 [DATABASE OFFLINE] Saving conversation to local filesystem instead...');
-       await fileStorage.saveConversation(data);
-       logger.info('✅ [FS_STORAGE] Conversation saved to local file');
-       return data;
+    if (error.message.includes("Can't reach database server")) {
+      logger.warn('💾 [DATABASE OFFLINE] Saving conversation to local filesystem instead...');
+      await fileStorage.saveConversation(data);
+      logger.info('✅ [FS_STORAGE] Conversation saved to local file');
+      return data;
     }
     logger.error({ error: error.message }, 'Failed to save conversation to DB');
     throw error;
@@ -157,10 +163,10 @@ export async function findConversationById(id) {
 
     const conversation = await getPrismaClient().conversation.findUnique({
       where: { id },
-      include: { 
+      include: {
         _count: {
-          select: { messages: true }
-        }
+          select: { messages: true },
+        },
       },
     });
 
@@ -183,7 +189,7 @@ export async function findConversationById(id) {
  */
 export async function findBySourceUrl(sourceUrl, userClient = null) {
   const db = userClient || getPrismaClient();
-  
+
   try {
     const conversation = await db.conversation.findUnique({
       where: { sourceUrl },
@@ -374,14 +380,17 @@ export async function addMessageToConversation(conversationId, messageData) {
     });
 
     // Record sync operation for the new message
-    await recordOperation({
-      entityType: 'message',
-      entityId: message.id,
-      operation: 'INSERT',
-      payload: message,
-      tableName: 'messages',
-      recordId: message.id,
-    }, tx);
+    await recordOperation(
+      {
+        entityType: 'message',
+        entityId: message.id,
+        operation: 'INSERT',
+        payload: message,
+        tableName: 'messages',
+        recordId: message.id,
+      },
+      tx
+    );
 
     await cacheService.del(`conversation:${conversationId}`);
     await cacheService.delPattern(`messages:${conversationId}:*`);

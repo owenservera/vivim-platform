@@ -12,7 +12,17 @@ import { logger } from '../lib/logger.js';
 const prisma = getPrismaClient();
 
 export interface InvalidationEvent {
-  eventType: 'memory_created' | 'memory_updated' | 'memory_deleted' | 'instruction_changed' | 'message_created' | 'acu_created' | 'acu_updated' | 'topic_updated' | 'entity_updated' | 'conversation_updated';
+  eventType:
+    | 'memory_created'
+    | 'memory_updated'
+    | 'memory_deleted'
+    | 'instruction_changed'
+    | 'message_created'
+    | 'acu_created'
+    | 'acu_updated'
+    | 'topic_updated'
+    | 'entity_updated'
+    | 'conversation_updated';
   userId: string;
   relatedIds: string[];
   timestamp?: Date;
@@ -43,16 +53,16 @@ export class InvalidationService {
    */
   private getAffectedBundleTypes(eventType: InvalidationEvent['eventType']): string[] {
     const eventToBundles: Record<InvalidationEvent['eventType'], string[]> = {
-      'memory_created': ['identity_core', 'global_prefs'],
-      'memory_updated': ['identity_core', 'global_prefs'],
-      'memory_deleted': ['identity_core', 'global_prefs'],
-      'instruction_changed': ['global_prefs'],
-      'message_created': ['conversation'],
-      'conversation_updated': ['conversation'],
-      'acu_created': ['topic', 'entity'],
-      'acu_updated': ['topic', 'entity'],
-      'topic_updated': ['topic'],
-      'entity_updated': ['entity'],
+      memory_created: ['identity_core', 'global_prefs'],
+      memory_updated: ['identity_core', 'global_prefs'],
+      memory_deleted: ['identity_core', 'global_prefs'],
+      instruction_changed: ['global_prefs'],
+      message_created: ['conversation'],
+      conversation_updated: ['conversation'],
+      acu_created: ['topic', 'entity'],
+      acu_updated: ['topic', 'entity'],
+      topic_updated: ['topic'],
+      entity_updated: ['entity'],
     };
 
     return eventToBundles[eventType] || [];
@@ -71,8 +81,8 @@ export class InvalidationService {
     await prisma.contextBundle.updateMany({
       where: conditions,
       data: {
-        isDirty: true
-      }
+        isDirty: true,
+      },
     });
 
     logger.info({ userId, bundleType, relatedIds }, 'Marked bundles dirty');
@@ -81,15 +91,11 @@ export class InvalidationService {
   /**
    * Build Prisma query conditions for dirty bundles
    */
-  private buildDirtyConditions(
-    userId: string,
-    bundleType: string,
-    relatedIds: string[]
-  ): any {
+  private buildDirtyConditions(userId: string, bundleType: string, relatedIds: string[]): any {
     const baseConditions = {
       userId,
       bundleType,
-      isDirty: false
+      isDirty: false,
     };
 
     if (bundleType === 'topic' && relatedIds.length > 0) {
@@ -99,7 +105,7 @@ export class InvalidationService {
         topicProfileId: { in: relatedIds },
         entityProfileId: null,
         conversationId: null,
-        personaId: null
+        personaId: null,
       };
     }
 
@@ -110,7 +116,7 @@ export class InvalidationService {
         topicProfileId: null,
         entityProfileId: { in: relatedIds },
         conversationId: null,
-        personaId: null
+        personaId: null,
       };
     }
 
@@ -121,7 +127,7 @@ export class InvalidationService {
         topicProfileId: null,
         entityProfileId: null,
         conversationId: { in: relatedIds },
-        personaId: null
+        personaId: null,
       };
     }
 
@@ -132,7 +138,7 @@ export class InvalidationService {
         topicProfileId: null,
         entityProfileId: null,
         conversationId: null,
-        personaId: null
+        personaId: null,
       };
     }
 
@@ -150,13 +156,16 @@ export class InvalidationService {
         const conversations = await prisma.conversation.findMany({
           where: {
             ownerId: userId,
-            id: { in: relatedIds }
+            id: { in: relatedIds },
           },
-          select: { id: true, ownerId: true }
+          select: { id: true, ownerId: true },
         });
 
         if (conversations.length > 0) {
-          logger.info({ userId, conversations: conversations.length }, 'Triggering recompilation for conversations');
+          logger.info(
+            { userId, conversations: conversations.length },
+            'Triggering recompilation for conversations'
+          );
         }
       } catch (e) {
         logger.error({ error: e.message }, 'Failed to fetch conversations for recompilation');
@@ -172,8 +181,8 @@ export class InvalidationService {
       const queueItems = await prisma.systemAction.findMany({
         where: {
           trigger: this.INVALIDATION_QUEUE,
-          actionCode: { startsWith: 'invalidate_' }
-        }
+          actionCode: { startsWith: 'invalidate_' },
+        },
       });
 
       if (queueItems.length === 0) {
@@ -194,12 +203,15 @@ export class InvalidationService {
               eventType,
               userId,
               relatedIds,
-              timestamp: new Date()
+              timestamp: new Date(),
             });
             processed++;
           }
         } catch (e) {
-          logger.error({ error: e.message, itemId: item.id }, 'Failed to process invalidation item');
+          logger.error(
+            { error: e.message, itemId: item.id },
+            'Failed to process invalidation item'
+          );
         }
       }
 
@@ -207,8 +219,8 @@ export class InvalidationService {
       if (processed > 0) {
         await prisma.systemAction.deleteMany({
           where: {
-            id: { in: queueItems.slice(0, 10).map(i => i.id) }
-          }
+            id: { in: queueItems.slice(0, 10).map((i) => i.id) },
+          },
         });
       }
 
@@ -231,9 +243,9 @@ export class InvalidationService {
         metadata: {
           userId: event.userId,
           relatedIds: event.relatedIds,
-          eventType: event.eventType
-        }
-      }
+          eventType: event.eventType,
+        },
+      },
     });
   }
 
@@ -248,17 +260,17 @@ export class InvalidationService {
       prisma.systemAction.count({
         where: {
           trigger: this.INVALIDATION_QUEUE,
-          actionCode: { startsWith: 'invalidate_' }
-        }
+          actionCode: { startsWith: 'invalidate_' },
+        },
       }),
       prisma.contextBundle.count({
-        where: { isDirty: true }
-      })
+        where: { isDirty: true },
+      }),
     ]);
 
     return {
       queueLength,
-      dirtyBundles
+      dirtyBundles,
     };
   }
 
@@ -271,8 +283,8 @@ export class InvalidationService {
     const result = await prisma.systemAction.deleteMany({
       where: {
         trigger: this.INVALIDATION_QUEUE,
-        createdAt: { lt: cutoff }
-      }
+        createdAt: { lt: cutoff },
+      },
     });
 
     return result.count;

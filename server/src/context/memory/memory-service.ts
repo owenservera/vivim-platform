@@ -1,8 +1,8 @@
 /**
  * Memory Service
- * 
+ *
  * Core CRUD operations for the VIVIM Second Brain Memory System.
- * Provides complete memory management with proper validation, 
+ * Provides complete memory management with proper validation,
  * embedding generation, and event emission.
  */
 
@@ -56,7 +56,7 @@ export class MemoryService {
       this.eventHandlers.set(event, []);
     }
     this.eventHandlers.get(event)!.push(handler);
-    
+
     // Return unsubscribe function
     return () => {
       const handlers = this.eventHandlers.get(event)!;
@@ -68,7 +68,7 @@ export class MemoryService {
   private async emitEvent(event: MemoryEvent): Promise<void> {
     const handlers = this.eventHandlers.get(event.type) || [];
     const allHandlers = this.eventHandlers.get('*') || [];
-    
+
     for (const handler of [...handlers, ...allHandlers]) {
       try {
         await handler(event);
@@ -87,7 +87,7 @@ export class MemoryService {
    */
   async createMemory(userId: string, input: CreateMemoryInput): Promise<MemoryWithRelations> {
     const { content, memoryType = MEMORY_TYPES.EPISODIC, category } = input;
-    
+
     // Generate embedding if service available
     let embedding: number[] = [];
     if (this.embeddingService) {
@@ -100,7 +100,7 @@ export class MemoryService {
 
     // Set defaults
     const finalCategory = category || getDefaultCategoryForType(memoryType);
-    
+
     // Create memory
     const memory = await this.prisma.memory.create({
       data: {
@@ -147,16 +147,16 @@ export class MemoryService {
    * Create multiple memories in a batch
    */
   async createMemoriesBatch(
-    userId: string, 
+    userId: string,
     inputs: CreateMemoryInput[]
   ): Promise<MemoryWithRelations[]> {
     const results: MemoryWithRelations[] = [];
-    
+
     for (const input of inputs) {
       const memory = await this.createMemory(userId, input);
       results.push(memory);
     }
-    
+
     return results;
   }
 
@@ -192,7 +192,10 @@ export class MemoryService {
   /**
    * Search memories with various filters
    */
-  async searchMemories(userId: string, input: MemorySearchInput): Promise<{
+  async searchMemories(
+    userId: string,
+    input: MemorySearchInput
+  ): Promise<{
     memories: MemoryWithRelations[];
     total: number;
     hasMore: boolean;
@@ -246,7 +249,7 @@ export class MemoryService {
 
     // Importance filter
     if (minImportance !== undefined || maxImportance !== undefined) {
-      const imp: Prisma.FloatFilter<"Memory"> = {};
+      const imp: Prisma.FloatFilter<'Memory'> = {};
       if (minImportance !== undefined) imp.gte = minImportance;
       if (maxImportance !== undefined) imp.lte = maxImportance;
       where.importance = imp;
@@ -389,7 +392,10 @@ export class MemoryService {
       const result = this.fitMemoriesToTokenBudget(allMemories, maxTokens);
 
       // Update access counts
-      await this.updateAccessStats(userId, result.map(m => m.id));
+      await this.updateAccessStats(
+        userId,
+        result.map((m) => m.id)
+      );
 
       return this.formatRetrievalResult(result, maxTokens);
     }
@@ -402,9 +408,12 @@ export class MemoryService {
     });
 
     const result = this.fitMemoriesToTokenBudget(memories, maxTokens);
-    
+
     // Update access counts
-    await this.updateAccessStats(userId, result.map(m => m.id));
+    await this.updateAccessStats(
+      userId,
+      result.map((m) => m.id)
+    );
 
     return this.formatRetrievalResult(result, maxTokens);
   }
@@ -452,7 +461,7 @@ export class MemoryService {
     const existing = await this.prisma.memory.findFirst({
       where: { id: memoryId, userId },
     });
-    
+
     if (!existing) {
       throw new Error(`Memory ${memoryId} not found`);
     }
@@ -620,16 +629,16 @@ export class MemoryService {
       byType: byType as Record<MemoryTypeEnum, number>,
       byCategory,
       byImportance: {
-        critical: memories.filter(m => m.importance >= 0.9).length,
-        high: memories.filter(m => m.importance >= 0.7 && m.importance < 0.9).length,
-        medium: memories.filter(m => m.importance >= 0.4 && m.importance < 0.7).length,
-        low: memories.filter(m => m.importance < 0.4).length,
+        critical: memories.filter((m) => m.importance >= 0.9).length,
+        high: memories.filter((m) => m.importance >= 0.7 && m.importance < 0.9).length,
+        medium: memories.filter((m) => m.importance >= 0.4 && m.importance < 0.7).length,
+        low: memories.filter((m) => m.importance < 0.4).length,
       },
       avgImportance: count > 0 ? totalImportance / count : 0,
       avgRelevance: count > 0 ? totalRelevance / count : 0,
       pinnedCount,
       archivedCount,
-      activeCount: memories.filter(m => m.isActive && !m.isArchived).length,
+      activeCount: memories.filter((m) => m.isActive && !m.isArchived).length,
       totalAccesses,
       lastActivity: analytics?.lastUpdated,
     };
@@ -648,7 +657,7 @@ export class MemoryService {
 
     for (const memory of memories) {
       const memoryTokens = Math.ceil((memory.summary || memory.content).length / 4);
-      
+
       if (usedTokens + memoryTokens <= maxTokens) {
         result.push(memory);
         usedTokens += memoryTokens;
@@ -672,12 +681,10 @@ export class MemoryService {
     maxTokens: number
   ): MemoryRetrievalResult {
     const totalTokens = estimateTokensForMemories(memories);
-    
+
     return {
-      content: memories
-        .map(m => m.summary || m.content)
-        .join('\n\n---\n\n'),
-      memories: memories.map(m => ({
+      content: memories.map((m) => m.summary || m.content).join('\n\n---\n\n'),
+      memories: memories.map((m) => ({
         id: m.id,
         content: m.content,
         summary: m.summary || undefined,
@@ -706,7 +713,7 @@ export class MemoryService {
 
   private async updateAnalytics(userId: string): Promise<void> {
     const stats = await this.getStatistics(userId);
-    
+
     await this.prisma.memoryAnalytics.upsert({
       where: { userId },
       update: {

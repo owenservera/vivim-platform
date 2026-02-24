@@ -21,19 +21,16 @@ export function deriveKey(password, salt) {
 export function encryptContent(plaintext, key) {
   const iv = crypto.randomBytes(IV_LENGTH);
   const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
-  
-  const encrypted = Buffer.concat([
-    cipher.update(plaintext, 'utf8'),
-    cipher.final()
-  ]);
-  
+
+  const encrypted = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()]);
+
   const authTag = cipher.getAuthTag();
-  
+
   return {
     ciphertext: encrypted.toString('base64'),
     iv: iv.toString('base64'),
     authTag: authTag.toString('base64'),
-    algorithm: ALGORITHM
+    algorithm: ALGORITHM,
   };
 }
 
@@ -41,15 +38,12 @@ export function decryptContent(encryptedData, key) {
   const iv = Buffer.from(encryptedData.iv, 'base64');
   const ciphertext = Buffer.from(encryptedData.ciphertext, 'base64');
   const authTag = Buffer.from(encryptedData.authTag, 'base64');
-  
+
   const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
   decipher.setAuthTag(authTag);
-  
-  const decrypted = Buffer.concat([
-    decipher.update(ciphertext),
-    decipher.final()
-  ]);
-  
+
+  const decrypted = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
+
   return decrypted.toString('utf8');
 }
 
@@ -57,10 +51,10 @@ export function encryptWithPassword(plaintext, password) {
   const salt = crypto.randomBytes(SALT_LENGTH);
   const key = deriveKey(password, salt);
   const encrypted = encryptContent(plaintext, key);
-  
+
   return {
     ...encrypted,
-    salt: salt.toString('base64')
+    salt: salt.toString('base64'),
   };
 }
 
@@ -85,10 +79,7 @@ export function verifyPassword(password, stored) {
     64,
     'sha512'
   );
-  return crypto.timingSafeEqual(
-    Buffer.from(hash, 'base64'),
-    computedHash
-  );
+  return crypto.timingSafeEqual(Buffer.from(hash, 'base64'), computedHash);
 }
 
 export function generateShareCode(length = 12) {
@@ -105,7 +96,7 @@ export function generateKeyPair() {
   const { publicKey, privateKey } = crypto.generateKeyPairSync('x25519');
   return {
     publicKey: publicKey.export({ type: 'spki', format: 'der' }).toString('base64'),
-    privateKey: privateKey.export({ type: 'pkcs8', format: 'der' }).toString('base64')
+    privateKey: privateKey.export({ type: 'pkcs8', format: 'der' }).toString('base64'),
   };
 }
 
@@ -119,7 +110,7 @@ export const encryptionService = {
   hashPassword,
   verifyPassword,
   generateShareCode,
-  generateKeyPair
+  generateKeyPair,
 };
 
 export default encryptionService;

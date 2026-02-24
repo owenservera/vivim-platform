@@ -54,12 +54,15 @@ export function buildToolkit({ userId, conversationId, toolSet = 'full', enableS
     Object.assign(tools, socialTools);
   }
 
-  logger.debug({
-    userId,
-    toolSet,
-    toolCount: Object.keys(tools).length,
-    tools: Object.keys(tools),
-  }, 'Toolkit built');
+  logger.debug(
+    {
+      userId,
+      toolSet,
+      toolCount: Object.keys(tools).length,
+      tools: Object.keys(tools),
+    },
+    'Toolkit built'
+  );
 
   return tools;
 }
@@ -73,12 +76,12 @@ export function getToolkitDescriptions(toolSet = 'full') {
   if (toolSet === 'full' || toolSet === 'social') {
     descriptions.push(
       { name: 'shareToFeed', description: 'Share insights to the social feed' },
-      { name: 'searchFeed', description: 'Search the social feed for content' },
+      { name: 'searchFeed', description: 'Search the social feed for content' }
     );
   }
 
   if (toolSet === 'minimal') {
-    return descriptions.filter(d => ['searchKnowledge', 'recallConversation'].includes(d.name));
+    return descriptions.filter((d) => ['searchKnowledge', 'recallConversation'].includes(d.name));
   }
 
   return descriptions;

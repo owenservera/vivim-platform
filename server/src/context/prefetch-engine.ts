@@ -33,16 +33,16 @@ interface PrefetchTask {
   userId: string;
   bundleType: BundleType;
   refId?: string;
-  priority: number;       // Higher = more urgent
+  priority: number; // Higher = more urgent
   source: 'prediction' | 'adjacency' | 'temporal' | 'navigation' | 'manual';
   createdAt: number;
-  maxAgeMs: number;       // Don't prefetch if bundle was compiled within this window
+  maxAgeMs: number; // Don't prefetch if bundle was compiled within this window
 }
 
 interface PrefetchStats {
   tasksScheduled: number;
   tasksExecuted: number;
-  tasksSkipped: number;     // Already fresh in cache
+  tasksSkipped: number; // Already fresh in cache
   tasksFailed: number;
   avgCompilationMs: number;
   compilationTimes: number[];
@@ -103,7 +103,7 @@ class PrefetchPriorityQueue {
   }
 
   has(taskId: string): boolean {
-    return this.heap.some(t => t.id === taskId);
+    return this.heap.some((t) => t.id === taskId);
   }
 
   get size(): number {
@@ -199,7 +199,7 @@ export class PrefetchEngine {
     this.isRunning = true;
 
     this.checkInterval = setInterval(() => {
-      this.processQueue().catch(err => {
+      this.processQueue().catch((err) => {
         logger.error({ error: err.message }, 'Prefetch queue processing error');
       });
     }, intervalMs);
@@ -328,11 +328,13 @@ export class PrefetchEngine {
    * If the user is on topic A, prefetch closely related topics.
    */
   async scheduleAdjacentTopics(userId: string, currentTopicId: string): Promise<void> {
-    const adjacentTopics = await this.prisma.$queryRaw<Array<{
-      id: string;
-      slug: string;
-      co_occurrence: number;
-    }>>`
+    const adjacentTopics = await this.prisma.$queryRaw<
+      Array<{
+        id: string;
+        slug: string;
+        co_occurrence: number;
+      }>
+    >`
       SELECT tp.id, tp.slug,
         COUNT(DISTINCT tc2."conversationId") as co_occurrence
       FROM topic_conversations tc1
@@ -465,9 +467,11 @@ export class PrefetchEngine {
         this.stats.compilationTimes.shift();
       }
 
-      this.stats.avgCompilationMs = this.stats.compilationTimes.length > 0
-        ? this.stats.compilationTimes.reduce((a, b) => a + b, 0) / this.stats.compilationTimes.length
-        : 0;
+      this.stats.avgCompilationMs =
+        this.stats.compilationTimes.length > 0
+          ? this.stats.compilationTimes.reduce((a, b) => a + b, 0) /
+            this.stats.compilationTimes.length
+          : 0;
 
       logger.debug(
         {
@@ -480,10 +484,7 @@ export class PrefetchEngine {
       );
     } catch (error: any) {
       this.stats.tasksFailed++;
-      logger.error(
-        { error: error.message, task: task.id },
-        'Prefetch task failed'
-      );
+      logger.error({ error: error.message, task: task.id }, 'Prefetch task failed');
     }
   }
 

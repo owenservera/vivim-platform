@@ -11,10 +11,7 @@ import { captureWithPlaywright, cleanupPlaywrightFile } from '../capture-playwri
  * @returns {Promise<Object>} The extracted conversation object
  */
 async function extractClaudeConversation(url, options = {}) {
-  const {
-    timeout = 60000,
-    headless = true,
-  } = options;
+  const { timeout = 60000, headless = true } = options;
 
   let tempFilePath = null;
 
@@ -23,11 +20,12 @@ async function extractClaudeConversation(url, options = {}) {
 
     // Capture the live page using Playwright
     // Claude share pages render conversation in a list
-    tempFilePath = await captureWithPlaywright(url, 'claude', { 
-      timeout, 
+    tempFilePath = await captureWithPlaywright(url, 'claude', {
+      timeout,
       headless,
       // Try to wait for message containers
-      waitForSelector: '[data-testid="user-message"], .font-claude-response-body, .prose-claude, .standard-markdown',
+      waitForSelector:
+        '[data-testid="user-message"], .font-claude-response-body, .prose-claude, .standard-markdown',
       waitForTimeout: 5000,
       pageHandler: async (page, log) => {
         // Claude sometimes has a "I understand" button or cookie banner
@@ -37,7 +35,7 @@ async function extractClaudeConversation(url, options = {}) {
             'button:has-text("Accept")',
             'button:has-text("Agree")',
           ];
-          
+
           for (const selector of bannerButtons) {
             const button = page.locator(selector).first();
             if (await button.isVisible({ timeout: 2000 })) {
@@ -50,7 +48,7 @@ async function extractClaudeConversation(url, options = {}) {
         }
       },
     });
-    
+
     logger.info(`Reading captured Claude HTML from: ${tempFilePath}`);
     const html = await fs.readFile(tempFilePath, 'utf8');
     const $ = cheerio.load(html);
@@ -78,49 +76,55 @@ async function extractClaudeConversation(url, options = {}) {
  * Extract Claude conversation data
  */
 function extractClaudeData($, url) {
-  const title = $('title').text().replace(' - Claude', '').trim() || 
-                $('h1').first().text().trim() || 
-                'Claude Conversation';
+  const title =
+    $('title').text().replace(' - Claude', '').trim() ||
+    $('h1').first().text().trim() ||
+    'Claude Conversation';
 
   const messages = [];
-  
+
   // Claude's share pages usually have a consistent structure:
   // User messages are in [data-testid="user-message"]
   // Assistant messages are in .prose-claude or .standard-markdown
-  
-  // We want to find each distinct message. 
+
+  // We want to find each distinct message.
   // Often they are inside a container that represents a "turn"
-  
+
   // Find all user messages
   const userMessages = $('[data-testid="user-message"]').toArray();
   // Find all assistant messages
   const assistantMessages = $('.prose-claude, .standard-markdown').toArray();
-  
+
   // Filter assistant messages to remove nested ones (if any)
-  const topAssistantMessages = assistantMessages.filter(el => {
+  const topAssistantMessages = assistantMessages.filter((el) => {
     return $(el).parents('.prose-claude, .standard-markdown').length === 0;
   });
 
   const allMessages = [...userMessages, ...topAssistantMessages];
-  
+
   // Sort by position in DOM
-  const indexedMessages = allMessages.map(el => ({
-    el,
-    index: indexInDocument($, el),
-  })).sort((a, b) => a.index - b.index);
+  const indexedMessages = allMessages
+    .map((el) => ({
+      el,
+      index: indexInDocument($, el),
+    }))
+    .sort((a, b) => a.index - b.index);
 
   indexedMessages.forEach((item, index) => {
     const $el = $(item.el);
     let role = 'assistant';
     let author = 'Claude';
-    
-    if ($el.attr('data-testid') === 'user-message' || $el.find('[data-testid="user-message"]').length > 0) {
+
+    if (
+      $el.attr('data-testid') === 'user-message' ||
+      $el.find('[data-testid="user-message"]').length > 0
+    ) {
       role = 'user';
       author = 'User';
     }
 
     const parts = extractContentParts($el, $);
-    
+
     if (parts.length > 0) {
       messages.push({
         id: uuidv4(),
@@ -175,20 +179,24 @@ function extractContentParts($el, $) {
   $clone.find('.bg-bg-000\\/50').each((_, elem) => {
     const $container = $(elem);
     const $pre = $container.find('pre');
-    
+
     if ($pre.length > 0) {
       const $code = $pre.find('code');
-      const language = $container.find('.text-text-500').first().text().trim() || 
-                     $code.attr('class')?.match(/language-(\w+)/)?.[1] || 
-                     'text';
-      
+      const language =
+        $container.find('.text-text-500').first().text().trim() ||
+        $code.attr('class')?.match(/language-(\w+)/)?.[1] ||
+        'text';
+
       const codeContent = $code.text().trim() || $pre.text().trim();
-      
+
       if (codeContent) {
         // Check for Mermaid
-        const isMermaid = language.toLowerCase() === 'mermaid' || 
-                          codeContent.match(/^(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram|erDiagram|journey|gantt|pie|quadrantChart|requirementDiagram|gitGraph|C4Context|mindmap|timeline|zenuml)/i);
-        
+        const isMermaid =
+          language.toLowerCase() === 'mermaid' ||
+          codeContent.match(
+            /^(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram|erDiagram|journey|gantt|pie|quadrantChart|requirementDiagram|gitGraph|C4Context|mindmap|timeline|zenuml)/i
+          );
+
         if (isMermaid) {
           parts.push({
             type: 'mermaid',
@@ -206,16 +214,16 @@ function extractContentParts($el, $) {
       }
     }
   });
-  
+
   // Catch any remaining pre blocks that weren't in the standard container
   $clone.find('pre').each((_, elem) => {
     const $pre = $(elem);
     const $code = $pre.find('code');
     const language = $code.attr('class')?.match(/language-(\w+)/)?.[1] || 'text';
     const codeContent = $code.text().trim() || $pre.text().trim();
-    
+
     if (codeContent) {
-       parts.push({
+      parts.push({
         type: 'code',
         content: codeContent,
         metadata: { language: language.toLowerCase() },
@@ -229,11 +237,11 @@ function extractContentParts($el, $) {
   $clone.find('.katex-display, .katex:not(.katex-display .katex)').each((_, elem) => {
     const $math = $(elem);
     let tex = $math.find('annotation[encoding="application/x-tex"]').first().text().trim();
-    
+
     if (!tex) {
       tex = $math.text().trim();
     }
-    
+
     if (tex) {
       parts.push({
         type: 'latex',
@@ -251,7 +259,7 @@ function extractContentParts($el, $) {
     const $table = $(elem);
     const headers = [];
     const rows = [];
-    
+
     $table.find('th').each((_, th) => headers.push($(th).text().trim()));
     $table.find('tr').each((_, tr) => {
       const row = [];
@@ -261,7 +269,7 @@ function extractContentParts($el, $) {
         rows.push(row);
       }
     });
-    
+
     if (rows.length > 0 || headers.length > 0) {
       parts.push({
         type: 'table',
@@ -287,8 +295,10 @@ function extractContentParts($el, $) {
   });
 
   // 5. Remaining Text
-  const textContent = $clone.text().trim()
-                      .replace(/\n\s+\n/g, '\n\n');
+  const textContent = $clone
+    .text()
+    .trim()
+    .replace(/\n\s+\n/g, '\n\n');
   if (textContent) {
     parts.push({
       type: 'text',
@@ -316,16 +326,16 @@ function calculateStats(messages) {
 
   for (const message of messages) {
     if (message.role === 'user') {
-userMessageCount++;
-}
+      userMessageCount++;
+    }
     if (message.role === 'assistant') {
-aiMessageCount++;
-}
+      aiMessageCount++;
+    }
 
     for (const part of message.parts) {
       if (part.type === 'text') {
         const text = part.content;
-        totalWords += text.split(/\s+/).filter(w => w).length;
+        totalWords += text.split(/\s+/).filter((w) => w).length;
         totalCharacters += text.length;
       } else if (part.type === 'code') {
         totalCodeBlocks++;

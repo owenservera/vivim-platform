@@ -1,10 +1,10 @@
 /**
  * GLMT-4.7 Autonomous Librarian Worker
- * 
+ *
  * This worker implements the "Cold Loop" that solves the "Ghost Table" problem
  * by using glm-4.7-flash as a background worker to review unprocessed ACUs
  * and perform Graph Synthesis.
- * 
+ *
  * Key responsibilities:
  * 1. Topic Promotion - Detects patterns in ACUs and creates/updates TopicProfiles
  * 2. Entity Fact Discovery - Extracts and stores entity facts from conversations
@@ -54,16 +54,20 @@ export class LibrarianWorker {
     this.config = {
       enabled: config.enabled ?? process.env.LIBRARIAN_ENABLED === 'true',
       batchSize: config.batchSize ?? parseInt(process.env.LIBRARIAN_BATCH_SIZE || '20', 10),
-      cooldownMinutes: config.cooldownMinutes ?? parseInt(process.env.LIBRARIAN_COOLDOWN_MINUTES || '30', 10),
+      cooldownMinutes:
+        config.cooldownMinutes ?? parseInt(process.env.LIBRARIAN_COOLDOWN_MINUTES || '30', 10),
       llmService: config.llmService ?? new ZAILLMService(),
-      embeddingService: config.embeddingService ?? createEmbeddingService()
+      embeddingService: config.embeddingService ?? createEmbeddingService(),
     };
 
-    logger.info({
-      enabled: this.config.enabled,
-      batchSize: this.config.batchSize,
-      cooldownMinutes: this.config.cooldownMinutes
-    }, 'Librarian Worker initialized');
+    logger.info(
+      {
+        enabled: this.config.enabled,
+        batchSize: this.config.batchSize,
+        cooldownMinutes: this.config.cooldownMinutes,
+      },
+      'Librarian Worker initialized'
+    );
   }
 
   /**
@@ -86,7 +90,7 @@ export class LibrarianWorker {
     try {
       // Step 1: Get unprocessed ACUs
       const unprocessedACUs = await this.getUnprocessedACUs(userId);
-      
+
       if (unprocessedACUs.length === 0) {
         logger.info({ userId }, 'No unprocessed ACUs found');
         return this.getEmptyResult();
@@ -108,11 +112,14 @@ export class LibrarianWorker {
 
       this.lastRunTime = new Date();
 
-      logger.info({
-        userId,
-        ...result,
-        processingTime: Date.now()
-      }, 'Librarian Worker completed');
+      logger.info(
+        {
+          userId,
+          ...result,
+          processingTime: Date.now(),
+        },
+        'Librarian Worker completed'
+      );
 
       return result;
     } catch (error) {
@@ -127,7 +134,7 @@ export class LibrarianWorker {
   async onConversationIdle(conversationId: string): Promise<void> {
     const conversation = await prisma.conversation.findUnique({
       where: { id: conversationId },
-      select: { ownerId: true }
+      select: { ownerId: true },
     });
 
     if (!conversation?.ownerId) {
@@ -147,11 +154,11 @@ export class LibrarianWorker {
         authorDid: userId,
         metadata: {
           path: ['librarianProcessed'],
-          not: true
-        }
+          not: true,
+        },
       },
       take: this.config.batchSize,
-      orderBy: { createdAt: 'asc' }
+      orderBy: { createdAt: 'asc' },
     });
   }
 
@@ -159,7 +166,7 @@ export class LibrarianWorker {
    * Analyze ACUs using GLM-4.7 for topic, entity, and identity insights
    */
   private async analyzeACUs(acus: AtomicChatUnit[]): Promise<ACUAnalysis[]> {
-    const contents = acu => {
+    const contents = (acu) => {
       // Handle both string and object content formats
       if (typeof acu.content === 'string') {
         return acu.content;
@@ -170,7 +177,7 @@ export class LibrarianWorker {
       return String(acu.content || '');
     };
 
-    const contentBatch = acus.map(a => contents(a)).join('\n---\n');
+    const contentBatch = acus.map((a) => contents(a)).join('\n---\n');
 
     const prompt = `You are the GLMT-4.7 Autonomous Librarian. Analyze the following Atomic Chat Units (ACUs) and extract:
 
@@ -199,54 +206,58 @@ Only include topics with confidence > 0.7.`;
         messages: [
           {
             role: 'system',
-            content: 'You are an expert librarian AI that synthesizes knowledge from conversational fragments. Be thorough but precise.'
+            content:
+              'You are an expert librarian AI that synthesizes knowledge from conversational fragments. Be thorough but precise.',
           },
           {
             role: 'user',
-            content: prompt
-          }
+            content: prompt,
+          },
         ],
         temperature: 0.3,
-        maxTokens: 4000
+        maxTokens: 4000,
       });
 
       // Parse the JSON response
       const jsonMatch = response.content.match(/\[[\s\S]*\]/);
       if (!jsonMatch) {
-        logger.warn({ responsePreview: response.content.slice(200) }, 'Failed to parse librarian response');
+        logger.warn(
+          { responsePreview: response.content.slice(200) },
+          'Failed to parse librarian response'
+        );
         // Return empty analyses for all ACUs
-        return acus.map(acu => ({
+        return acus.map((acu) => ({
           acuId: acu.id,
           suggestedTopics: [],
           suggestedEntities: [],
           identityInsights: [],
-          confidence: 0
+          confidence: 0,
         }));
       }
 
       const analyses: ACUAnalysis[] = JSON.parse(jsonMatch[0]);
-      
+
       // Validate and normalize analyses
-      return analyses.map(a => ({
+      return analyses.map((a) => ({
         acuId: a.acuId || '',
         suggestedTopics: a.suggestedTopics || [],
-        suggestedEntities: (a.suggestedEntities || []).map(e => ({
+        suggestedEntities: (a.suggestedEntities || []).map((e) => ({
           name: e.name || '',
           type: e.type || 'unknown',
-          facts: e.facts || []
+          facts: e.facts || [],
         })),
         identityInsights: a.identityInsights || [],
-        confidence: Math.max(0, Math.min(1, a.confidence || 0))
+        confidence: Math.max(0, Math.min(1, a.confidence || 0)),
       }));
     } catch (error) {
       logger.error({ error: (error as Error).message }, 'Failed to analyze ACUs with GLM-4.7');
       // Return empty analyses on failure
-      return acus.map(acu => ({
+      return acus.map((acu) => ({
         acuId: acu.id,
         suggestedTopics: [],
         suggestedEntities: [],
         identityInsights: [],
-        confidence: 0
+        confidence: 0,
       }));
     }
   }
@@ -254,19 +265,25 @@ Only include topics with confidence > 0.7.`;
   /**
    * Perform graph synthesis - create/update topics, entities, and identity
    */
-  private async performGraphSynthesis(userId: string, analyses: ACUAnalysis[]): Promise<GraphSynthesisResult> {
+  private async performGraphSynthesis(
+    userId: string,
+    analyses: ACUAnalysis[]
+  ): Promise<GraphSynthesisResult> {
     const result: GraphSynthesisResult = {
       topicsCreated: 0,
       topicsUpdated: 0,
       entitiesCreated: 0,
       entitiesUpdated: 0,
       identityUpdates: 0,
-      bundlesMarkedDirty: 0
+      bundlesMarkedDirty: 0,
     };
 
     // Collect all topics and entities from analyses
     const topicMap = new Map<string, ACUAnalysis[]>();
-    const entityMap = new Map<string, { analysis: ACUAnalysis; entity: ACUAnalysis['suggestedEntities'][0] }[]>();
+    const entityMap = new Map<
+      string,
+      { analysis: ACUAnalysis; entity: ACUAnalysis['suggestedEntities'][0] }[]
+    >();
 
     for (const analysis of analyses) {
       for (const topic of analysis.suggestedTopics) {
@@ -288,7 +305,7 @@ Only include topics with confidence > 0.7.`;
     // Process topics
     for (const [topicSlug, analysesWithTopic] of topicMap) {
       const existingTopic = await this.findOrCreateTopicProfile(userId, topicSlug);
-      
+
       if (existingTopic.createdAt.getTime() === existingTopic.updatedAt.getTime()) {
         result.topicsCreated++;
       } else {
@@ -303,7 +320,7 @@ Only include topics with confidence > 0.7.`;
     for (const [entityName, entityData] of entityMap) {
       const entity = entityData[0].entity;
       const existingEntity = await this.findOrCreateEntityProfile(userId, entity.name, entity.type);
-      
+
       if (existingEntity.createdAt.getTime() === existingEntity.updatedAt.getTime()) {
         result.entitiesCreated++;
       } else {
@@ -316,8 +333,8 @@ Only include topics with confidence > 0.7.`;
 
     // Process identity insights
     const identityInsights = analyses
-      .flatMap(a => a.identityInsights)
-      .filter(i => i.length > 0);
+      .flatMap((a) => a.identityInsights)
+      .filter((i) => i.length > 0);
 
     if (identityInsights.length > 0) {
       result.identityUpdates = await this.updateIdentityCore(userId, identityInsights);
@@ -329,12 +346,15 @@ Only include topics with confidence > 0.7.`;
   /**
    * Find existing topic or create new one
    */
-  private async findOrCreateTopicProfile(userId: string, slug: string): Promise<TopicProfile & { createdAt: Date; updatedAt: Date }> {
+  private async findOrCreateTopicProfile(
+    userId: string,
+    slug: string
+  ): Promise<TopicProfile & { createdAt: Date; updatedAt: Date }> {
     const normalizedSlug = slug.toLowerCase().replace(/\s+/g, '-');
 
     // Check if topic exists
     const existing = await prisma.topicProfile.findFirst({
-      where: { userId, slug: normalizedSlug }
+      where: { userId, slug: normalizedSlug },
     });
 
     if (existing) {
@@ -343,7 +363,10 @@ Only include topics with confidence > 0.7.`;
 
     // Create new topic profile
     const embedding = await this.config.embeddingService.embed(normalizedSlug);
-    const label = slug.split(/[-_]/g).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    const label = slug
+      .split(/[-_]/g)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
 
     return prisma.topicProfile.create({
       data: {
@@ -362,8 +385,8 @@ Only include topics with confidence > 0.7.`;
         importanceScore: 0.5,
         isDirty: true,
         embedding,
-        metadata: { source: 'librarian', confidence: 'high' }
-      }
+        metadata: { source: 'librarian', confidence: 'high' },
+      },
     }) as Promise<TopicProfile & { createdAt: Date; updatedAt: Date }>;
   }
 
@@ -371,9 +394,9 @@ Only include topics with confidence > 0.7.`;
    * Update topic profile with aggregated insights from ACUs
    */
   private async updateTopicProfile(topic: TopicProfile, analyses: ACUAnalysis[]): Promise<void> {
-    const insights = analyses.map(a => ({
+    const insights = analyses.map((a) => ({
       acuId: a.acuId,
-      insight: `Confidence: ${a.confidence.toFixed(2)}`
+      insight: `Confidence: ${a.confidence.toFixed(2)}`,
     }));
 
     await prisma.topicProfile.update({
@@ -382,26 +405,33 @@ Only include topics with confidence > 0.7.`;
         totalAcus: { increment: analyses.length },
         lastEngagedAt: new Date(),
         engagementStreak: { increment: 1 },
-        relatedAcuIds: [...((topic.relatedAcuIds || []) as string[]), ...analyses.map(a => a.acuId)],
+        relatedAcuIds: [
+          ...((topic.relatedAcuIds || []) as string[]),
+          ...analyses.map((a) => a.acuId),
+        ],
         metadata: {
           ...((topic.metadata as object) || {}),
           librarianInsights: insights,
-          lastLibrarianUpdate: new Date().toISOString()
-        }
-      }
+          lastLibrarianUpdate: new Date().toISOString(),
+        },
+      },
     });
   }
 
   /**
    * Find existing entity or create new one
    */
-  private async findOrCreateEntityProfile(userId: string, name: string, type: string): Promise<EntityProfile & { createdAt: Date; updatedAt: Date }> {
+  private async findOrCreateEntityProfile(
+    userId: string,
+    name: string,
+    type: string
+  ): Promise<EntityProfile & { createdAt: Date; updatedAt: Date }> {
     const normalizedName = name.trim();
     const normalizedType = type.toLowerCase();
 
     // Check if entity exists
     const existing = await prisma.entityProfile.findFirst({
-      where: { userId, name: normalizedName, type: normalizedType }
+      where: { userId, name: normalizedName, type: normalizedType },
     });
 
     if (existing) {
@@ -426,26 +456,30 @@ Only include topics with confidence > 0.7.`;
         importanceScore: 0.5,
         isDirty: true,
         embedding,
-        metadata: { source: 'librarian' }
-      }
+        metadata: { source: 'librarian' },
+      },
     }) as Promise<EntityProfile & { createdAt: Date; updatedAt: Date }>;
   }
 
   /**
    * Update entity profile with aggregated facts
    */
-  private async updateEntityProfile(entity: EntityProfile, data: { analysis: ACUAnalysis; entity: ACUAnalysis['suggestedEntities'][0] }[]): Promise<void> {
-    const existingFacts = ((entity.facts || []) as Array<{ text: string; sourceAcuId?: string }>)
-      .map(f => f.text);
+  private async updateEntityProfile(
+    entity: EntityProfile,
+    data: { analysis: ACUAnalysis; entity: ACUAnalysis['suggestedEntities'][0] }[]
+  ): Promise<void> {
+    const existingFacts = (
+      (entity.facts || []) as Array<{ text: string; sourceAcuId?: string }>
+    ).map((f) => f.text);
 
-    const newFacts = data.flatMap(d => 
-      d.entity.facts.map(fact => ({
+    const newFacts = data.flatMap((d) =>
+      d.entity.facts.map((fact) => ({
         text: fact,
-        sourceAcuId: d.analysis.acuId
+        sourceAcuId: d.analysis.acuId,
       }))
     );
 
-    const uniqueFacts = [...new Set([...existingFacts, ...newFacts.map(f => f.text)])];
+    const uniqueFacts = [...new Set([...existingFacts, ...newFacts.map((f) => f.text)])];
 
     await prisma.entityProfile.update({
       where: { id: entity.id },
@@ -453,15 +487,15 @@ Only include topics with confidence > 0.7.`;
         mentionCount: { increment: data.length },
         conversationCount: { increment: 1 },
         lastMentionedAt: new Date(),
-        facts: uniqueFacts.map(text => ({ 
-          text, 
-          sourceAcuId: data.find(d => d.entity.facts.includes(text))?.analysis.acuId 
+        facts: uniqueFacts.map((text) => ({
+          text,
+          sourceAcuId: data.find((d) => d.entity.facts.includes(text))?.analysis.acuId,
         })),
         metadata: {
           ...((entity.metadata as object) || {}),
-          lastLibrarianUpdate: new Date().toISOString()
-        }
-      }
+          lastLibrarianUpdate: new Date().toISOString(),
+        },
+      },
     });
   }
 
@@ -473,8 +507,8 @@ Only include topics with confidence > 0.7.`;
     const identityMemory = await prisma.memory.findFirst({
       where: {
         userId,
-        category: 'identity_core'
-      }
+        category: 'identity_core',
+      },
     });
 
     if (!identityMemory) {
@@ -486,17 +520,18 @@ Only include topics with confidence > 0.7.`;
           importance: 0.9,
           metadata: {
             source: 'librarian',
-            insightCount: insights.length
-          }
-        }
+            insightCount: insights.length,
+          },
+        },
       });
       return 1;
     }
 
     // Update existing identity memory
-    const existingContent = typeof identityMemory.content === 'string' 
-      ? identityMemory.content 
-      : JSON.stringify(identityMemory.content);
+    const existingContent =
+      typeof identityMemory.content === 'string'
+        ? identityMemory.content
+        : JSON.stringify(identityMemory.content);
 
     const newContent = `${existingContent}\n\n## Librarian Insights (${new Date().toISOString()})\n\n${insights.join('\n\n')}`;
 
@@ -508,9 +543,9 @@ Only include topics with confidence > 0.7.`;
         metadata: {
           ...((identityMemory.metadata as object) || {}),
           lastLibrarianUpdate: new Date().toISOString(),
-          insightCount: (insights.length)
-        }
-      }
+          insightCount: insights.length,
+        },
+      },
     });
 
     return 1;
@@ -528,7 +563,7 @@ Only include topics with confidence > 0.7.`;
       for (const topic of analysis.suggestedTopics) {
         const topicProfile = await prisma.topicProfile.findFirst({
           where: { userId, slug: topic.toLowerCase().replace(/\s+/g, '-') },
-          select: { id: true }
+          select: { id: true },
         });
         if (topicProfile) {
           topicIds.add(topicProfile.id);
@@ -539,7 +574,7 @@ Only include topics with confidence > 0.7.`;
       for (const entity of analysis.suggestedEntities) {
         const entityProfile = await prisma.entityProfile.findFirst({
           where: { userId, name: entity.name, type: entity.type.toLowerCase() },
-          select: { id: true }
+          select: { id: true },
         });
         if (entityProfile) {
           entityIds.add(entityProfile.id);
@@ -553,7 +588,7 @@ Only include topics with confidence > 0.7.`;
     for (const topicId of topicIds) {
       const result = await prisma.contextBundle.updateMany({
         where: { userId, bundleType: 'topic', topicProfileId: topicId },
-        data: { isDirty: true }
+        data: { isDirty: true },
       });
       markedCount += result.count;
     }
@@ -562,7 +597,7 @@ Only include topics with confidence > 0.7.`;
     for (const entityId of entityIds) {
       const result = await prisma.contextBundle.updateMany({
         where: { userId, bundleType: 'entity', entityProfileId: entityId },
-        data: { isDirty: true }
+        data: { isDirty: true },
       });
       markedCount += result.count;
     }
@@ -570,7 +605,7 @@ Only include topics with confidence > 0.7.`;
     // Mark identity core dirty
     await prisma.contextBundle.updateMany({
       where: { userId, bundleType: 'identity_core' },
-      data: { isDirty: true }
+      data: { isDirty: true },
     });
 
     return markedCount;
@@ -580,7 +615,7 @@ Only include topics with confidence > 0.7.`;
    * Mark ACUs as processed by the librarian
    */
   private async markACUsProcessed(userId: string, analyses: ACUAnalysis[]): Promise<void> {
-    const acuIds = analyses.map(a => a.acuId).filter(id => id.length > 0);
+    const acuIds = analyses.map((a) => a.acuId).filter((id) => id.length > 0);
 
     if (acuIds.length === 0) return;
 
@@ -594,7 +629,9 @@ Only include topics with confidence > 0.7.`;
 
   private isInCooldown(): boolean {
     const now = new Date();
-    const cooldownEnd = new Date(this.lastRunTime!.getTime() + this.config.cooldownMinutes * 60 * 1000);
+    const cooldownEnd = new Date(
+      this.lastRunTime!.getTime() + this.config.cooldownMinutes * 60 * 1000
+    );
     return now < cooldownEnd;
   }
 
@@ -605,7 +642,7 @@ Only include topics with confidence > 0.7.`;
       entitiesCreated: 0,
       entitiesUpdated: 0,
       identityUpdates: 0,
-      bundlesMarkedDirty: 0
+      bundlesMarkedDirty: 0,
     };
   }
 
@@ -616,7 +653,7 @@ Only include topics with confidence > 0.7.`;
     return {
       enabled: this.config.enabled,
       lastRunTime: this.lastRunTime,
-      cooldownMinutes: this.config.cooldownMinutes
+      cooldownMinutes: this.config.cooldownMinutes,
     };
   }
 }

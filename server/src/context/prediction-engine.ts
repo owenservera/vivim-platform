@@ -30,8 +30,8 @@ export class PredictionEngine {
         where: { id: presence.activeConversationId },
         include: {
           topicLinks: { include: { topic: true } },
-          messages: { orderBy: { messageIndex: 'desc' }, take: 1 }
-        }
+          messages: { orderBy: { messageIndex: 'desc' }, take: 1 },
+        },
       });
 
       if (conv) {
@@ -40,7 +40,7 @@ export class PredictionEngine {
           conversationId: conv.id,
           topicSlug: conv.topicLinks[0]?.topic?.slug,
           probability: 0.85,
-          requiredBundles: ['conversation', 'topic']
+          requiredBundles: ['conversation', 'topic'],
         });
       }
     }
@@ -55,23 +55,25 @@ export class PredictionEngine {
         type: 'continue_conversation',
         conversationId: convId,
         probability: 0.3,
-        requiredBundles: ['conversation']
+        requiredBundles: ['conversation'],
       });
     }
 
     // ═══════════════════════════════════════════════════════
     // SIGNAL 3: Time-of-day topic patterns
     // ═══════════════════════════════════════════════════════
-    const localHour = presence.localTime ? new Date(presence.localTime).getHours() : new Date().getHours();
+    const localHour = presence.localTime
+      ? new Date(presence.localTime).getHours()
+      : new Date().getHours();
 
     const timeBasedTopics = await this.prisma.topicProfile.findMany({
       where: {
         userId,
         peakHour: localHour,
-        importanceScore: { gte: 0.4 }
+        importanceScore: { gte: 0.4 },
       },
       orderBy: { importanceScore: 'desc' },
-      take: 3
+      take: 3,
     });
 
     for (const topic of timeBasedTopics) {
@@ -79,7 +81,7 @@ export class PredictionEngine {
         type: 'new_on_topic',
         topicSlug: topic.slug,
         probability: 0.2 * topic.importanceScore,
-        requiredBundles: ['topic']
+        requiredBundles: ['topic'],
       });
     }
 
@@ -90,23 +92,20 @@ export class PredictionEngine {
       where: {
         userId,
         lastEngagedAt: {
-          gte: new Date(Date.now() - 48 * 60 * 60 * 1000) // Last 48h
-        }
+          gte: new Date(Date.now() - 48 * 60 * 60 * 1000), // Last 48h
+        },
       },
-      orderBy: [
-        { engagementStreak: 'desc' },
-        { importanceScore: 'desc' }
-      ],
-      take: 5
+      orderBy: [{ engagementStreak: 'desc' }, { importanceScore: 'desc' }],
+      take: 5,
     });
 
     for (const topic of hotTopics) {
-      if (!predictions.find(p => p.topicSlug === topic.slug)) {
+      if (!predictions.find((p) => p.topicSlug === topic.slug)) {
         predictions.push({
           type: 'new_on_topic',
           topicSlug: topic.slug,
           probability: 0.15 * topic.importanceScore,
-          requiredBundles: ['topic']
+          requiredBundles: ['topic'],
         });
       }
     }
@@ -118,11 +117,11 @@ export class PredictionEngine {
       where: {
         userId,
         lastMentionedAt: {
-          gte: new Date(Date.now() - 72 * 60 * 60 * 1000)
-        }
+          gte: new Date(Date.now() - 72 * 60 * 60 * 1000),
+        },
       },
       orderBy: { importanceScore: 'desc' },
-      take: 5
+      take: 5,
     });
 
     for (const entity of hotEntities) {
@@ -130,7 +129,7 @@ export class PredictionEngine {
         type: 'entity_related',
         entityId: entity.id,
         probability: 0.1 * entity.importanceScore,
-        requiredBundles: ['entity']
+        requiredBundles: ['entity'],
       });
     }
 
@@ -142,13 +141,14 @@ export class PredictionEngine {
     if (navHistory.length >= 3) {
       // Detect patterns like: user keeps bouncing between
       // notebook and chat → they're researching something
-      const recentPaths = navHistory.slice(-5).map(n => n.path);
-      const isResearching = recentPaths.some(p => p.includes('/notebook')) &&
-                            recentPaths.some(p => p.includes('/chat'));
+      const recentPaths = navHistory.slice(-5).map((n) => n.path);
+      const isResearching =
+        recentPaths.some((p) => p.includes('/notebook')) &&
+        recentPaths.some((p) => p.includes('/chat'));
 
       if (isResearching) {
         // Boost knowledge retrieval depth for next interaction
-        predictions.forEach(p => {
+        predictions.forEach((p) => {
           if (p.requiredBundles) {
             // Add 'topic' bundle if not already there
             if (!p.requiredBundles.includes('topic')) {
@@ -167,14 +167,12 @@ export class PredictionEngine {
       predictions.push({
         type: 'cold_start',
         probability: 0.7,
-        requiredBundles: ['identity_core', 'global_prefs']
+        requiredBundles: ['identity_core', 'global_prefs'],
       });
     }
 
     // Sort by probability and return top N
-    return predictions
-      .sort((a, b) => b.probability - a.probability)
-      .slice(0, 8);
+    return predictions.sort((a, b) => b.probability - a.probability).slice(0, 8);
   }
 
   /**
@@ -196,17 +194,14 @@ export class PredictionEngine {
     minProbability: number,
     limit: number = 5
   ): PredictedInteraction[] {
-    return predictions
-      .filter(p => p.probability >= minProbability)
-      .slice(0, limit);
+    return predictions.filter((p) => p.probability >= minProbability).slice(0, limit);
   }
 
   /**
    * Group predictions by the type of bundle they require.
    * Useful for batch pre-compilation.
    */
-  groupByBundleType(predictions: PredictedInteraction[]): Map<BundleType, 
-    PredictedInteraction[]> {
+  groupByBundleType(predictions: PredictedInteraction[]): Map<BundleType, PredictedInteraction[]> {
     const grouped = new Map<BundleType, PredictedInteraction[]>();
 
     for (const prediction of predictions) {

@@ -1,6 +1,6 @@
 /**
  * Sync Controller
- * 
+ *
  * Handles delta-synchronization between clients and server.
  * Uses Hybrid Logical Clocks (HLC) and Vector Clocks for consistency.
  */
@@ -21,15 +21,17 @@ const prisma = getPrismaClient();
 const SyncPacketSchema = z.object({
   deviceId: z.string(),
   lastSyncId: z.string().optional(), // Cursor
-  operations: z.array(z.object({
-    id: z.string(),
-    entityType: z.string(), // 'conversation', 'message', 'acu'
-    entityId: z.string(),
-    operation: z.enum(['INSERT', 'UPDATE', 'DELETE']),
-    payload: z.any(),
-    hlcTimestamp: z.string(),
-    vectorClock: z.record(z.number()).optional()
-  }))
+  operations: z.array(
+    z.object({
+      id: z.string(),
+      entityType: z.string(), // 'conversation', 'message', 'acu'
+      entityId: z.string(),
+      operation: z.enum(['INSERT', 'UPDATE', 'DELETE']),
+      payload: z.any(),
+      hlcTimestamp: z.string(),
+      vectorClock: z.record(z.number()).optional(),
+    })
+  ),
 });
 
 // ============================================================================
@@ -50,12 +52,12 @@ router.get('/pull', requireApiKey(), async (req, res, next) => {
     const operations = await prisma.syncOperation.findMany({
       where: {
         deviceId: { not: String(deviceId) }, // Don't send back own changes
-        ...(lastSyncId ? { id: { gt: String(lastSyncId) } } : {})
+        ...(lastSyncId ? { id: { gt: String(lastSyncId) } } : {}),
       },
       orderBy: {
-        hlcTimestamp: 'asc'
+        hlcTimestamp: 'asc',
       },
-      take: Number(limit)
+      take: Number(limit),
     });
 
     const newSyncId = operations.length > 0 ? operations[operations.length - 1].id : lastSyncId;
@@ -63,9 +65,8 @@ router.get('/pull', requireApiKey(), async (req, res, next) => {
     res.json({
       syncId: newSyncId,
       operations,
-      hasMore: operations.length === Number(limit)
+      hasMore: operations.length === Number(limit),
     });
-
   } catch (error) {
     next(error);
   }
@@ -90,8 +91,8 @@ router.post('/push', requireApiKey(), async (req, res, next) => {
           where: {
             entityType: op.entityType,
             entityId: op.entityId,
-            hlcTimestamp: { gt: op.hlcTimestamp }
-          }
+            hlcTimestamp: { gt: op.hlcTimestamp },
+          },
         });
 
         if (existing) {
@@ -103,24 +104,24 @@ router.post('/push', requireApiKey(), async (req, res, next) => {
         // 2. Apply Change to Domain Model
         try {
           await applyOperationToDomain(tx, op);
-          
+
           // 3. Record Operation for Other Clients
           await tx.syncOperation.create({
             data: {
               id: op.id, // Keep client ID for idempotency
               authorDid: req.user?.did || 'unknown',
               deviceId: packet.deviceId,
-              tableName: op.entityType + 's', // Simple pluralization
+              tableName: `${op.entityType}s`, // Simple pluralization
               recordId: op.entityId,
               entityType: op.entityType,
               entityId: op.entityId,
               operation: op.operation,
               payload: op.payload,
               hlcTimestamp: op.hlcTimestamp,
-              isProcessed: true
-            }
+              isProcessed: true,
+            },
           });
-          
+
           results.push({ id: op.id, status: 'applied' });
         } catch (domainError) {
           log.error({ error: domainError, op }, 'Failed to apply domain operation');
@@ -130,7 +131,6 @@ router.post('/push', requireApiKey(), async (req, res, next) => {
     });
 
     res.json({ results });
-
   } catch (error) {
     next(error);
   }
@@ -151,13 +151,12 @@ async function applyOperationToDomain(tx, op) {
       await tx.conversation.upsert({
         where: { id: payload.id },
         update: payload,
-        create: payload
+        create: payload,
       });
     } else if (operation === 'DELETE') {
       await tx.conversation.delete({ where: { id: payload.id } });
     }
-  } 
-  else if (entityType === 'message') {
+  } else if (entityType === 'message') {
     if (operation === 'INSERT') {
       await tx.message.create({ data: payload });
     } else if (operation === 'UPDATE') {

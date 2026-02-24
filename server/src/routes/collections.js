@@ -1,6 +1,6 @@
 /**
  * Collections Routes
- * 
+ *
  * API endpoints for managing conversation collections
  */
 
@@ -36,7 +36,7 @@ function getUserId(req) {
 router.get('/', requireApiKey(), async (req, res, next) => {
   try {
     const userId = getUserId(req);
-    
+
     const collections = await getPrismaClient().collection.findMany({
       where: { userId },
       orderBy: { updatedAt: 'desc' },
@@ -48,7 +48,7 @@ router.get('/', requireApiKey(), async (req, res, next) => {
     });
 
     res.json({
-      collections: collections.map(c => ({
+      collections: collections.map((c) => ({
         id: c.id,
         name: c.name,
         description: c.description,
@@ -143,7 +143,7 @@ router.get('/:id', requireApiKey(), async (req, res, next) => {
       description: collection.description,
       color: collection.color,
       icon: collection.icon,
-      items: collection.items.map(item => ({
+      items: collection.items.map((item) => ({
         id: item.id,
         type: item.itemType,
         conversation: item.conversation,
@@ -179,7 +179,8 @@ router.put('/:id', requireApiKey(), async (req, res, next) => {
       where: { id },
       data: {
         name: name?.slice(0, 100) || collection.name,
-        description: description !== undefined ? description?.slice(0, 500) : collection.description,
+        description:
+          description !== undefined ? description?.slice(0, 500) : collection.description,
         color: color || collection.color,
         icon: icon || collection.icon,
       },
@@ -384,7 +385,7 @@ router.get('/:id/conversations', requireApiKey(), async (req, res, next) => {
     });
 
     res.json({
-      conversations: items.map(item => ({
+      conversations: items.map((item) => ({
         id: item.conversation.id,
         title: item.conversation.title,
         provider: item.conversation.provider,

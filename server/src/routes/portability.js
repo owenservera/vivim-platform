@@ -9,7 +9,9 @@ const log = logger.child({ module: 'portability-routes' });
 
 const exportRequestSchema = z.object({
   exportType: z.enum(['full', 'partial', 'selective']).default('full'),
-  formats: z.array(z.enum(['json', 'activitypub', 'atproto', 'markdown', 'html'])).default(['json']),
+  formats: z
+    .array(z.enum(['json', 'activitypub', 'atproto', 'markdown', 'html']))
+    .default(['json']),
   includeContent: z.boolean().default(true),
   includeCircles: z.boolean().default(true),
   includeSocialGraph: z.boolean().default(true),
@@ -17,7 +19,7 @@ const exportRequestSchema = z.object({
   includeAnalytics: z.boolean().default(false),
   anonymizeOthers: z.boolean().default(false),
   includePrivateContent: z.boolean().default(true),
-  includeDeletedContent: z.boolean().default(false)
+  includeDeletedContent: z.boolean().default(false),
 });
 
 const migrationRequestSchema = z.object({
@@ -26,7 +28,7 @@ const migrationRequestSchema = z.object({
   migrateIdentity: z.boolean().default(true),
   migrateContent: z.boolean().default(true),
   migrateSocialGraph: z.boolean().default(true),
-  migrateSettings: z.boolean().default(true)
+  migrateSettings: z.boolean().default(true),
 });
 
 router.post('/export', authenticateDID, async (req, res) => {
@@ -36,14 +38,11 @@ router.post('/export', authenticateDID, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
-    const result = await portabilityService.requestExport(
-      req.user.userId,
-      parsed.data
-    );
+    const result = await portabilityService.requestExport(req.user.userId, parsed.data);
 
     if (!result.success) {
       return res.status(400).json({ success: false, error: result.error });
@@ -54,8 +53,8 @@ router.post('/export', authenticateDID, async (req, res) => {
       data: {
         exportId: result.exportId,
         status: result.status,
-        estimatedTime: result.estimatedTime
-      }
+        estimatedTime: result.estimatedTime,
+      },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Export request failed');
@@ -66,12 +65,12 @@ router.post('/export', authenticateDID, async (req, res) => {
 router.get('/export/:exportId', authenticateDID, async (req, res) => {
   try {
     const prisma = (await import('../lib/database.js')).getPrismaClient();
-    
+
     const exportJob = await prisma.dataExport.findFirst({
       where: {
         id: req.params.exportId,
-        userId: req.user.userId
-      }
+        userId: req.user.userId,
+      },
     });
 
     if (!exportJob) {
@@ -87,8 +86,8 @@ router.get('/export/:exportId', authenticateDID, async (req, res) => {
         fileUrls: exportJob.fileUrls,
         fileSizes: exportJob.fileSizes,
         completedAt: exportJob.completedAt,
-        expiresAt: exportJob.expiresAt
-      }
+        expiresAt: exportJob.expiresAt,
+      },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get export status failed');
@@ -99,7 +98,7 @@ router.get('/export/:exportId', authenticateDID, async (req, res) => {
 router.get('/exports', authenticateDID, async (req, res) => {
   try {
     const prisma = (await import('../lib/database.js')).getPrismaClient();
-    
+
     const exports = await prisma.dataExport.findMany({
       where: { userId: req.user.userId },
       orderBy: { createdAt: 'desc' },
@@ -110,8 +109,8 @@ router.get('/exports', authenticateDID, async (req, res) => {
         formats: true,
         createdAt: true,
         completedAt: true,
-        expiresAt: true
-      }
+        expiresAt: true,
+      },
     });
 
     res.json({ success: true, data: exports });
@@ -128,14 +127,11 @@ router.post('/migrate', authenticateDID, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
-    const result = await portabilityService.initiateMigration(
-      req.user.userId,
-      parsed.data
-    );
+    const result = await portabilityService.initiateMigration(req.user.userId, parsed.data);
 
     if (!result.success) {
       return res.status(400).json({ success: false, error: result.error });
@@ -145,8 +141,8 @@ router.post('/migrate', authenticateDID, async (req, res) => {
       success: true,
       data: {
         migrationId: result.migrationId,
-        status: result.status
-      }
+        status: result.status,
+      },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Migration initiation failed');
@@ -157,12 +153,12 @@ router.post('/migrate', authenticateDID, async (req, res) => {
 router.get('/migrate/:migrationId', authenticateDID, async (req, res) => {
   try {
     const prisma = (await import('../lib/database.js')).getPrismaClient();
-    
+
     const migration = await prisma.accountMigration.findFirst({
       where: {
         id: req.params.migrationId,
-        userId: req.user.userId
-      }
+        userId: req.user.userId,
+      },
     });
 
     if (!migration) {
@@ -180,8 +176,8 @@ router.get('/migrate/:migrationId', authenticateDID, async (req, res) => {
         itemsFailed: migration.itemsFailed,
         errorMessage: migration.errorMessage,
         createdAt: migration.createdAt,
-        completedAt: migration.completedAt
-      }
+        completedAt: migration.completedAt,
+      },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get migration status failed');
@@ -192,40 +188,34 @@ router.get('/migrate/:migrationId', authenticateDID, async (req, res) => {
 router.get('/data-summary', authenticateDID, async (req, res) => {
   try {
     const prisma = (await import('../lib/database.js')).getPrismaClient();
-    const userId = req.user.userId;
+    const { userId } = req.user;
 
-    const [
-      conversationCount,
-      acuCount,
-      circleCount,
-      memberCount,
-      followingCount,
-      followerCount
-    ] = await Promise.all([
-      prisma.conversation.count({ where: { ownerId: userId } }),
-      prisma.atomicChatUnit.count({ where: { author: { id: userId } } }),
-      prisma.circle.count({ where: { ownerId: userId } }),
-      prisma.circleMember.count({ where: { userId, status: 'active' } }),
-      prisma.socialConnection.count({ where: { followerId: userId, status: 'active' } }),
-      prisma.socialConnection.count({ where: { followingId: userId, status: 'active' } })
-    ]);
+    const [conversationCount, acuCount, circleCount, memberCount, followingCount, followerCount] =
+      await Promise.all([
+        prisma.conversation.count({ where: { ownerId: userId } }),
+        prisma.atomicChatUnit.count({ where: { author: { id: userId } } }),
+        prisma.circle.count({ where: { ownerId: userId } }),
+        prisma.circleMember.count({ where: { userId, status: 'active' } }),
+        prisma.socialConnection.count({ where: { followerId: userId, status: 'active' } }),
+        prisma.socialConnection.count({ where: { followingId: userId, status: 'active' } }),
+      ]);
 
     res.json({
       success: true,
       data: {
         content: {
           conversations: conversationCount,
-          acus: acuCount
+          acus: acuCount,
         },
         circles: {
           owned: circleCount,
-          memberOf: memberCount
+          memberOf: memberCount,
         },
         socialGraph: {
           following: followingCount,
-          followers: followerCount
-        }
-      }
+          followers: followerCount,
+        },
+      },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get data summary failed');

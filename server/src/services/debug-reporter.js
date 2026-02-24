@@ -274,7 +274,9 @@ class DebugReporter {
   }
 
   sanitizeState(state) {
-    if (state === null || state === undefined) return state;
+    if (state === null || state === undefined) {
+      return state;
+    }
     if (typeof state === 'string' || typeof state === 'number' || typeof state === 'boolean') {
       return state;
     }
@@ -291,7 +293,9 @@ class DebugReporter {
       'credential',
     ];
     const sanitizeObject = (obj) => {
-      if (typeof obj !== 'object' || obj === null) return;
+      if (typeof obj !== 'object' || obj === null) {
+        return;
+      }
       for (const key of Object.keys(obj)) {
         if (sensitiveKeys.some((k) => key.toLowerCase().includes(k))) {
           obj[key] = '[REDACTED]';
@@ -309,7 +313,7 @@ class DebugReporter {
     try {
       const filename = `${type}-${new Date().toISOString().split('T')[0]}.jsonl`;
       const filepath = join(DEBUG_LOG_DIR, filename);
-      const line = JSON.stringify(data) + '\n';
+      const line = `${JSON.stringify(data)}\n`;
 
       const stream = createWriteStream(filepath, { flags: 'a' });
       stream.write(line);
@@ -369,8 +373,11 @@ class DebugReporter {
         acc.total++;
         acc.totalDuration += e.duration;
         acc.totalMessages += e.messageCount;
-        if (e.success) acc.successful++;
-        else acc.failed++;
+        if (e.success) {
+          acc.successful++;
+        } else {
+          acc.failed++;
+        }
         return acc;
       },
       { total: 0, totalDuration: 0, totalMessages: 0, successful: 0, failed: 0 }

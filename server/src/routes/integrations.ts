@@ -9,8 +9,9 @@ const log = createRequestLogger('integrations-routes');
 
 // Authentication middleware
 function authenticateDIDMiddleware(req: Request, res: Response, next: NextFunction) {
-  const did = req.headers['x-did'] || (req.headers['authorization'] || '').replace('Bearer did:', 'did:');
-  
+  const did =
+    req.headers['x-did'] || (req.headers['authorization'] || '').replace('Bearer did:', 'did:');
+
   if (!did) {
     return res.status(401).json({ success: false, error: 'DID required' });
   }
@@ -18,7 +19,7 @@ function authenticateDIDMiddleware(req: Request, res: Response, next: NextFuncti
   if (!did.startsWith('did:')) {
     return res.status(401).json({ success: false, error: 'Invalid DID format' });
   }
-  
+
   req.user = { did };
   next();
 }
@@ -40,7 +41,7 @@ const memoryService = new MemoryService({
 router.post('/linkedin/pull', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { profileUrl } = req.body;
-    
+
     if (!profileUrl) {
       return res.status(400).json({ success: false, error: 'LinkedIn profileUrl is required' });
     }
@@ -50,7 +51,7 @@ router.post('/linkedin/pull', async (req: Request, res: Response, next: NextFunc
     // MOCK: Due to LinkedIn's strict anti-scraping measures without official API access,
     // we generate a high-quality rich text summary for demonstration that simulates successful extraction.
     // In a production environment, this would call Proxycurl, PhantomBuster or an official OAuth API.
-    
+
     const mockProfileText = `
 LinkedIn Profile Summary for ${profileUrl}
 
@@ -77,13 +78,17 @@ TypeScript, React, Node.js, Next.js, Prisma, PostgreSQL, Docker, GenAI Integrati
       importance: 0.9, // High importance so it's prioritized in identity_core
       metadata: {
         source: 'linkedin_integration',
-        profileUrl
+        profileUrl,
       },
     };
 
     const memory = await memoryService.createMemory(req.user.did, input);
-    
-    res.json({ success: true, message: 'LinkedIn profile pulled and added to personal context successfully!', memory });
+
+    res.json({
+      success: true,
+      message: 'LinkedIn profile pulled and added to personal context successfully!',
+      memory,
+    });
   } catch (error) {
     log.error({ error }, 'Failed to pull LinkedIn profile');
     next(error);

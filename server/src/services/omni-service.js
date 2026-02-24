@@ -40,7 +40,7 @@ export class OmniService {
   async searchSocial(query, userId) {
     // 1. Search Friends/Users (Mock for now, would search CircleMember)
     // 2. Search AI Personas (System + User owned)
-    
+
     const personas = await this.prisma.aiPersona.findMany({
       where: {
         OR: [
@@ -52,7 +52,7 @@ export class OmniService {
       take: 5,
     });
 
-    return personas.map(p => ({
+    return personas.map((p) => ({
       id: p.id,
       label: p.name,
       subLabel: p.type === 'clone' ? 'Digital Twin' : 'AI Persona',
@@ -72,17 +72,17 @@ export class OmniService {
         // Simple content search for now, vector search later
         content: { contains: query, mode: 'insensitive' },
         OR: [
-            { sharingPolicy: 'network' },
-            { authorDid: userId }, // Assuming userId maps to DID roughly or we look up DID
+          { sharingPolicy: 'network' },
+          { authorDid: userId }, // Assuming userId maps to DID roughly or we look up DID
         ],
       },
       take: 5,
       orderBy: { rediscoveryScore: 'desc' },
     });
 
-    return acus.map(acu => ({
+    return acus.map((acu) => ({
       id: acu.id,
-      label: acu.metadata?.title || `${acu.content.slice(0, 20)  }...`,
+      label: acu.metadata?.title || `${acu.content.slice(0, 20)}...`,
       subLabel: `ACU • ${acu.type}`,
       value: `#${acu.id.slice(0, 8)}`,
       type: '#',
@@ -92,16 +92,47 @@ export class OmniService {
 
   async searchActions(query) {
     const zaiActions = [
-      { id: 'websearch', label: 'Web Search', subLabel: 'Search the web', trigger: 'websearch', icon: 'globe' },
-      { id: 'readurl', label: 'Web Reader', subLabel: 'Read a webpage', trigger: 'read', icon: 'book-open' },
-      { id: 'github', label: 'GitHub Search', subLabel: 'Search repos', trigger: 'github', icon: 'github' },
-      { id: 'githubtree', label: 'GitHub Tree', subLabel: 'Repo structure', trigger: 'githubtree', icon: 'git-branch' },
-      { id: 'githubfile', label: 'GitHub File', subLabel: 'Read file', trigger: 'githubfile', icon: 'file-code' },
+      {
+        id: 'websearch',
+        label: 'Web Search',
+        subLabel: 'Search the web',
+        trigger: 'websearch',
+        icon: 'globe',
+      },
+      {
+        id: 'readurl',
+        label: 'Web Reader',
+        subLabel: 'Read a webpage',
+        trigger: 'read',
+        icon: 'book-open',
+      },
+      {
+        id: 'github',
+        label: 'GitHub Search',
+        subLabel: 'Search repos',
+        trigger: 'github',
+        icon: 'github',
+      },
+      {
+        id: 'githubtree',
+        label: 'GitHub Tree',
+        subLabel: 'Repo structure',
+        trigger: 'githubtree',
+        icon: 'git-branch',
+      },
+      {
+        id: 'githubfile',
+        label: 'GitHub File',
+        subLabel: 'Read file',
+        trigger: 'githubfile',
+        icon: 'file-code',
+      },
     ];
 
-    const filteredZai = zaiActions.filter(a => 
-      a.label.toLowerCase().includes(query.toLowerCase()) ||
-      a.trigger.toLowerCase().includes(query.toLowerCase())
+    const filteredZai = zaiActions.filter(
+      (a) =>
+        a.label.toLowerCase().includes(query.toLowerCase()) ||
+        a.trigger.toLowerCase().includes(query.toLowerCase())
     );
 
     let dbActions = [];
@@ -119,7 +150,7 @@ export class OmniService {
       // DB not ready, skip
     }
 
-    const dbMapped = dbActions.map(a => ({
+    const dbMapped = dbActions.map((a) => ({
       id: a.actionCode,
       label: a.label,
       subLabel: a.subLabel,
@@ -128,7 +159,7 @@ export class OmniService {
       icon: a.icon || 'zap',
     }));
 
-    const zaiMapped = filteredZai.map(a => ({
+    const zaiMapped = filteredZai.map((a) => ({
       id: a.id,
       label: a.label,
       subLabel: a.subLabel,
@@ -151,7 +182,7 @@ export class OmniService {
       take: 5,
     });
 
-    return commands.map(c => ({
+    return commands.map((c) => ({
       id: c.actionCode,
       label: c.label,
       subLabel: c.subLabel,
@@ -163,9 +194,9 @@ export class OmniService {
 
   async searchContext(query, userId) {
     if (!userId) {
-return [];
-}
-    
+      return [];
+    }
+
     const facts = await this.prisma.userFact.findMany({
       where: {
         userId: userId,
@@ -177,11 +208,11 @@ return [];
       take: 5,
     });
 
-    return facts.map(f => ({
+    return facts.map((f) => ({
       id: f.id,
       label: f.category,
-      subLabel: `${f.content.slice(0, 30)  }...`,
-      value: `+${f.id.slice(0,8)}`, // Context injection usually uses ID or content ref
+      subLabel: `${f.content.slice(0, 30)}...`,
+      value: `+${f.id.slice(0, 8)}`, // Context injection usually uses ID or content ref
       type: '+',
       icon: 'file-text',
     }));

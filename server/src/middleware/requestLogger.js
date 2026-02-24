@@ -11,7 +11,9 @@ export function requestLogger(req, res, next) {
 
   // Manifest-Style Ordered Feedback
   const timestamp = new Date().toISOString().split('T')[1].split('.')[0];
-  process.stdout.write(` \x1b[34m[REQ]\x1b[0m \x1b[1mWHAT:\x1b[0m ${req.method} ${req.path.slice(0,20)} | \x1b[1mWHERE:\x1b[0m ${req.ip.slice(0, 15)} | \x1b[1mWHEN:\x1b[0m ${timestamp} | \x1b[1mBY_WHO:\x1b[0m ${req.id.slice(0,8)}\n`);
+  process.stdout.write(
+    ` \x1b[34m[REQ]\x1b[0m \x1b[1mWHAT:\x1b[0m ${req.method} ${req.path.slice(0, 20)} | \x1b[1mWHERE:\x1b[0m ${req.ip.slice(0, 15)} | \x1b[1mWHEN:\x1b[0m ${timestamp} | \x1b[1mBY_WHO:\x1b[0m ${req.id.slice(0, 8)}\n`
+  );
 
   // Log detailed JSON for pino
   log.info({ query: req.query }, 'Incoming request');
@@ -25,7 +27,9 @@ export function requestLogger(req, res, next) {
     const level = res.statusCode >= 400 ? 'warn' : 'info';
 
     const statusColor = res.statusCode >= 400 ? '\x1b[31m' : '\x1b[32m';
-    process.stdout.write(` \x1b[35m[RES]\x1b[0m \x1b[1mHOW:\x1b[0m ${statusColor}${res.statusCode}\x1b[0m | \x1b[1mDURATION:\x1b[0m ${duration}ms | \x1b[1mBY_WHO:\x1b[0m ${req.id.slice(0,8)}\n`);
+    process.stdout.write(
+      ` \x1b[35m[RES]\x1b[0m \x1b[1mHOW:\x1b[0m ${statusColor}${res.statusCode}\x1b[0m | \x1b[1mDURATION:\x1b[0m ${duration}ms | \x1b[1mBY_WHO:\x1b[0m ${req.id.slice(0, 8)}\n`
+    );
 
     log[level](
       {
@@ -33,7 +37,7 @@ export function requestLogger(req, res, next) {
         duration,
         contentLength: res.getHeader('content-length'),
       },
-      'Request completed',
+      'Request completed'
     );
   });
 

@@ -27,14 +27,14 @@ const MASTER_KEY = process.env.MASTER_API_KEY || null;
  */
 function isValidApiKey(apiKey) {
   if (!apiKey) {
-return false;
-}
-  
+    return false;
+  }
+
   // Check master key first
   if (MASTER_KEY && apiKey === MASTER_KEY) {
     return true;
   }
-  
+
   // Check individual API keys
   return API_KEYS.includes(apiKey);
 }
@@ -83,17 +83,20 @@ export function requireApiKey(permissions = []) {
 
     if (!isValidApiKey(apiKey)) {
       const log = req.log || logger;
-      log.warn({ 
-        path: req.path, 
-        method: req.method,
-        hasKey: !!apiKey,
-        ip: req.ip 
-      }, 'Unauthorized API access attempt');
-      
+      log.warn(
+        {
+          path: req.path,
+          method: req.method,
+          hasKey: !!apiKey,
+          ip: req.ip,
+        },
+        'Unauthorized API access attempt'
+      );
+
       return res.status(401).json({
         success: false,
         error: 'Unauthorized: Invalid or missing API key',
-        code: 'UNAUTHORIZED'
+        code: 'UNAUTHORIZED',
       });
     }
 
@@ -102,7 +105,7 @@ export function requireApiKey(permissions = []) {
       apiKey: `${apiKey.substring(0, 8)}...`,
       permissions: permissions,
     };
-    
+
     return next();
   };
 }
@@ -112,11 +115,11 @@ export function requireApiKey(permissions = []) {
  */
 export function optionalAuth(req, res, next) {
   const apiKey = extractApiKey(req);
-  
+
   if (apiKey && isValidApiKey(apiKey)) {
     req.auth = {
       isAuthenticated: true,
-      apiKey: `${apiKey.substring(0, 8)  }...`, // Mask for logging
+      apiKey: `${apiKey.substring(0, 8)}...`, // Mask for logging
       permissions: [],
     };
   } else {
@@ -126,7 +129,7 @@ export function optionalAuth(req, res, next) {
       permissions: [],
     };
   }
-  
+
   next();
 }
 
@@ -144,7 +147,7 @@ export function hasPermission(req, requiredPermissions = []) {
   if (!req.auth?.isAuthenticated) {
     return false;
   }
-  
+
   // For now, we don't implement fine-grained permissions
   // This can be expanded in the future
   return true;
@@ -174,7 +177,7 @@ export async function authenticateDID(req, res, next) {
       return res.status(401).json({
         success: false,
         error: 'DID required',
-        code: 'MISSING_DID'
+        code: 'MISSING_DID',
       });
     }
 
@@ -182,7 +185,7 @@ export async function authenticateDID(req, res, next) {
       return res.status(401).json({
         success: false,
         error: 'Invalid DID format',
-        code: 'INVALID_DID'
+        code: 'INVALID_DID',
       });
     }
 
@@ -192,7 +195,7 @@ export async function authenticateDID(req, res, next) {
         return res.status(401).json({
           success: false,
           error: 'Invalid signature',
-          code: 'INVALID_SIGNATURE'
+          code: 'INVALID_SIGNATURE',
         });
       }
     }
@@ -202,13 +205,13 @@ export async function authenticateDID(req, res, next) {
       return res.status(401).json({
         success: false,
         error: 'Could not resolve DID',
-        code: 'DID_RESOLUTION_FAILED'
+        code: 'DID_RESOLUTION_FAILED',
       });
     }
 
     const publicKey = identityService.didToPublicKey(did);
     const user = await identityService.getOrCreateUser(
-      did, 
+      did,
       Buffer.from(publicKey).toString('base64')
     );
 
@@ -218,7 +221,10 @@ export async function authenticateDID(req, res, next) {
     try {
       userClient = await getUserClient(did);
     } catch (clientError) {
-      logger.warn({ did, error: clientError.message }, 'User client not available yet (user DB may not exist)');
+      logger.warn(
+        { did, error: clientError.message },
+        'User client not available yet (user DB may not exist)'
+      );
     }
 
     req.user = {
@@ -238,7 +244,7 @@ export async function authenticateDID(req, res, next) {
     }
     res.status(500).json({
       success: false,
-      error: 'Authentication failed'
+      error: 'Authentication failed',
     });
   }
 }
@@ -249,7 +255,7 @@ async function verifyRequestSignature(req, did, signature, timestamp) {
       const requestTime = parseInt(timestamp);
       const now = Date.now();
       const fiveMinutes = 5 * 60 * 1000;
-      
+
       if (Math.abs(now - requestTime) > fiveMinutes) {
         return false;
       }
@@ -261,13 +267,11 @@ async function verifyRequestSignature(req, did, signature, timestamp) {
     }
 
     const publicKey = identityService.didToPublicKey(did);
-    if (!publicKey) return false;
+    if (!publicKey) {
+      return false;
+    }
 
-    return verify(
-      new TextEncoder().encode(message.join(':')),
-      decodeBase64(signature),
-      publicKey
-    );
+    return verify(new TextEncoder().encode(message.join(':')), decodeBase64(signature), publicKey);
   } catch (error) {
     return false;
   }
@@ -281,16 +285,16 @@ export function requireVerification(minLevel) {
     if (!req.user) {
       return res.status(401).json({
         success: false,
-        error: 'Authentication required'
+        error: 'Authentication required',
       });
     }
 
     const { getPrismaClient } = await import('../lib/database.js');
     const prisma = getPrismaClient();
-    
+
     const user = await prisma.user.findUnique({
       where: { id: req.user.userId },
-      select: { verificationLevel: true }
+      select: { verificationLevel: true },
     });
 
     if (!user || user.verificationLevel < minLevel) {
@@ -298,7 +302,7 @@ export function requireVerification(minLevel) {
         success: false,
         error: `Verification level ${minLevel} required`,
         code: 'INSUFFICIENT_VERIFICATION',
-        currentLevel: user?.verificationLevel || 0
+        currentLevel: user?.verificationLevel || 0,
       });
     }
 
@@ -314,32 +318,33 @@ export function requireModerator() {
     if (!req.user) {
       return res.status(401).json({
         success: false,
-        error: 'Authentication required'
+        error: 'Authentication required',
       });
     }
 
     const { getPrismaClient } = await import('../lib/database.js');
     const prisma = getPrismaClient();
-    
+
     const user = await prisma.user.findUnique({
       where: { id: req.user.userId },
-      select: { status: true, settings: true }
+      select: { status: true, settings: true },
     });
 
     if (!user) {
       return res.status(404).json({
         success: false,
-        error: 'User not found'
+        error: 'User not found',
       });
     }
 
     const settings = user.settings || {};
-    const isModerator = settings.moderator === true || settings.role === 'moderator' || settings.role === 'admin';
-    
+    const isModerator =
+      settings.moderator === true || settings.role === 'moderator' || settings.role === 'admin';
+
     if (!isModerator) {
       return res.status(403).json({
         success: false,
-        error: 'Moderator access required'
+        error: 'Moderator access required',
       });
     }
 

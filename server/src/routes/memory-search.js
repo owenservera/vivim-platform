@@ -38,23 +38,25 @@ router.post('/search', requireApiKey(), async (req, res, next) => {
       LIMIT ${limit}
     `;
 
-    const filtered = results.filter(item => item.score >= minScore);
+    const filtered = results.filter((item) => item.score >= minScore);
 
-    logger.info({ 
-      query: query.substring(0, 50), 
-      hits: filtered.length,
-      rawHits: results.length
-    }, 'Semantic search performed');
+    logger.info(
+      {
+        query: query.substring(0, 50),
+        hits: filtered.length,
+        rawHits: results.length,
+      },
+      'Semantic search performed'
+    );
 
     res.json({
-      data: filtered.map(item => ({
+      data: filtered.map((item) => ({
         id: item.id,
         score: item.score,
         content: item.content,
-        type: item.type
-      }))
+        type: item.type,
+      })),
     });
-
   } catch (error) {
     next(error);
   }
@@ -63,15 +65,14 @@ router.post('/search', requireApiKey(), async (req, res, next) => {
 router.post('/consolidate/:conversationId', requireApiKey(), async (req, res, next) => {
   try {
     const { conversationId } = req.params;
-    
+
     await scheduleConsolidation(conversationId);
-    
-    res.status(202).json({ 
+
+    res.status(202).json({
       status: 'accepted',
       message: 'Consolidation job queued',
-      jobId: conversationId 
+      jobId: conversationId,
     });
-
   } catch (error) {
     next(error);
   }

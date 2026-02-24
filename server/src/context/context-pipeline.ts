@@ -42,11 +42,14 @@ export interface PipelineStageResult<T> {
 
 export interface PipelineMetrics {
   totalDurationMs: number;
-  stages: Record<string, {
-    durationMs: number;
-    source: 'cache' | 'computed';
-    error?: string;
-  }>;
+  stages: Record<
+    string,
+    {
+      durationMs: number;
+      source: 'cache' | 'computed';
+      error?: string;
+    }
+  >;
   parallelFactor: number;
   cacheHitRate: number;
   tokensBudgeted: number;
@@ -98,7 +101,9 @@ export class ParallelContextPipeline {
    * Full parallel assembly - fetches all data concurrently
    * and builds context in a single optimized pass.
    */
-  async assembleParallel(params: AssemblyParams): Promise<AssembledContext & { metrics: PipelineMetrics }> {
+  async assembleParallel(
+    params: AssemblyParams
+  ): Promise<AssembledContext & { metrics: PipelineMetrics }> {
     const startTime = Date.now();
     const metrics: PipelineMetrics = {
       totalDurationMs: 0,
@@ -120,7 +125,8 @@ export class ParallelContextPipeline {
 
     const settings = settingsResult.status === 'fulfilled' ? settingsResult.value.data : null;
     const embedding = embeddingResult.status === 'fulfilled' ? embeddingResult.value.data : [];
-    const conversation = conversationResult.status === 'fulfilled' ? conversationResult.value.data : null;
+    const conversation =
+      conversationResult.status === 'fulfilled' ? conversationResult.value.data : null;
 
     // Stage 1: Parallel - context detection + identity/prefs bundles
     const [detectionResult, identityResult, prefsResult] = await Promise.allSettled([
@@ -137,22 +143,27 @@ export class ParallelContextPipeline {
 
     this.recordStageResults(metrics, { detectionResult, identityResult, prefsResult });
 
-    const detectedContext = detectionResult.status === 'fulfilled'
-      ? detectionResult.value.data
-      : { topics: [], entities: [], isNewTopic: true, isContinuation: false };
+    const detectedContext =
+      detectionResult.status === 'fulfilled'
+        ? detectionResult.value.data
+        : { topics: [], entities: [], isNewTopic: true, isContinuation: false };
 
     // Stage 2: Parallel - topic/entity/conversation bundles + JIT retrieval
-    const topicBundlePromises = detectedContext.topics.slice(0, 3).map((topic, i) =>
-      this.timedStage(`topic_${i}`, () =>
-        this.fetchOrCompileBundle(params.userId, 'topic', topic.profileId)
-      )
-    );
+    const topicBundlePromises = detectedContext.topics
+      .slice(0, 3)
+      .map((topic, i) =>
+        this.timedStage(`topic_${i}`, () =>
+          this.fetchOrCompileBundle(params.userId, 'topic', topic.profileId)
+        )
+      );
 
-    const entityBundlePromises = detectedContext.entities.slice(0, 3).map((entity, i) =>
-      this.timedStage(`entity_${i}`, () =>
-        this.fetchOrCompileBundle(params.userId, 'entity', entity.id)
-      )
-    );
+    const entityBundlePromises = detectedContext.entities
+      .slice(0, 3)
+      .map((entity, i) =>
+        this.timedStage(`entity_${i}`, () =>
+          this.fetchOrCompileBundle(params.userId, 'entity', entity.id)
+        )
+      );
 
     const [jitResult, convBundleResult, ...dynamicResults] = await Promise.allSettled([
       this.timedStage('jit_retrieval', () =>
@@ -188,15 +199,20 @@ export class ParallelContextPipeline {
       }
     }
 
-    const jitKnowledge: JITKnowledge = jitResult.status === 'fulfilled' && jitResult.value.data
-      ? jitResult.value.data
-      : { acus: [], memories: [] };
+    const jitKnowledge: JITKnowledge =
+      jitResult.status === 'fulfilled' && jitResult.value.data
+        ? jitResult.value.data
+        : { acus: [], memories: [] };
 
     // Stage 3: Budget computation + prompt compilation
     const totalBudget = settings?.maxContextTokens ?? 12000;
     const userTokens = this.tokenEstimator.estimateTokens(params.userMessage);
 
-    const systemPrompt = this.compilePromptFromBundles(bundles, jitKnowledge, totalBudget - userTokens);
+    const systemPrompt = this.compilePromptFromBundles(
+      bundles,
+      jitKnowledge,
+      totalBudget - userTokens
+    );
     const tokensUsed = this.tokenEstimator.estimateTokens(systemPrompt);
 
     // Calculate metrics
@@ -206,7 +222,7 @@ export class ParallelContextPipeline {
     metrics.tokensBudgeted = totalBudget;
     metrics.tokensUsed = tokensUsed;
 
-    const cacheHits = Object.values(metrics.stages).filter(s => s.source === 'cache').length;
+    const cacheHits = Object.values(metrics.stages).filter((s) => s.source === 'cache').length;
     const totalStages = Object.keys(metrics.stages).length;
     metrics.cacheHitRate = totalStages > 0 ? cacheHits / totalStages : 0;
 
@@ -223,7 +239,7 @@ export class ParallelContextPipeline {
         totalUsed: tokensUsed,
         totalAvailable: totalBudget,
       },
-      bundlesUsed: bundles.map(b => b.bundleType),
+      bundlesUsed: bundles.map((b) => b.bundleType),
       metadata: {
         assemblyTimeMs: metrics.totalDurationMs,
         detectedTopics: detectedContext.topics.length,
@@ -267,7 +283,10 @@ export class ParallelContextPipeline {
     // Start embedding + detection in parallel
     const embedding = await this.embedMessage(params.userMessage);
     const detectedContext = await this.detectContext(
-      params.userId, params.userMessage, embedding, params.conversationId
+      params.userId,
+      params.userMessage,
+      embedding,
+      params.conversationId
     );
 
     // Yield topic bundles
@@ -300,7 +319,11 @@ export class ParallelContextPipeline {
 
     // Yield conversation context
     if (params.conversationId) {
-      const convBundle = await this.fetchOrCompileBundle(params.userId, 'conversation', params.conversationId);
+      const convBundle = await this.fetchOrCompileBundle(
+        params.userId,
+        'conversation',
+        params.conversationId
+      );
       if (convBundle) {
         yield {
           layer: 'conversation',
@@ -313,7 +336,12 @@ export class ParallelContextPipeline {
     }
 
     // Yield JIT knowledge last
-    const jit = await this.jitRetrieve(params.userId, params.userMessage, embedding, detectedContext);
+    const jit = await this.jitRetrieve(
+      params.userId,
+      params.userMessage,
+      embedding,
+      detectedContext
+    );
     if (jit && (jit.acus.length > 0 || jit.memories.length > 0)) {
       const jitContent = this.formatJITContent(jit);
       yield {
@@ -339,10 +367,7 @@ export class ParallelContextPipeline {
   // INTERNAL HELPERS
   // ============================================================================
 
-  private async timedStage<T>(
-    name: string,
-    fn: () => Promise<T>
-  ): Promise<PipelineStageResult<T>> {
+  private async timedStage<T>(name: string, fn: () => Promise<T>): Promise<PipelineStageResult<T>> {
     const start = Date.now();
     try {
       const data = await fn();
@@ -422,12 +447,14 @@ export class ParallelContextPipeline {
     const cachedGraph = this.cache.getGraph(userId);
 
     // Semantic topic matching
-    const topicMatches = await this.prisma.$queryRaw<Array<{
-      id: string;
-      slug: string;
-      label: string;
-      similarity: number;
-    }>>`
+    const topicMatches = await this.prisma.$queryRaw<
+      Array<{
+        id: string;
+        slug: string;
+        label: string;
+        similarity: number;
+      }>
+    >`
       SELECT id, slug, label,
         1 - (embedding <=> ${embedding}::float8[]) as similarity
       FROM topic_profiles
@@ -438,12 +465,14 @@ export class ParallelContextPipeline {
     `.catch(() => []);
 
     // Semantic entity matching
-    const entityMatches = await this.prisma.$queryRaw<Array<{
-      id: string;
-      name: string;
-      type: string;
-      similarity: number;
-    }>>`
+    const entityMatches = await this.prisma.$queryRaw<
+      Array<{
+        id: string;
+        name: string;
+        type: string;
+        similarity: number;
+      }>
+    >`
       SELECT id, name, type,
         1 - (embedding <=> ${embedding}::float8[]) as similarity
       FROM entity_profiles
@@ -454,8 +483,8 @@ export class ParallelContextPipeline {
     `.catch(() => []);
 
     const topics = topicMatches
-      .filter(t => t.similarity > 0.35)
-      .map(t => ({
+      .filter((t) => t.similarity > 0.35)
+      .map((t) => ({
         slug: t.slug,
         profileId: t.id,
         source: 'semantic_match' as const,
@@ -463,8 +492,8 @@ export class ParallelContextPipeline {
       }));
 
     const entities = entityMatches
-      .filter(e => e.similarity > 0.40)
-      .map(e => ({
+      .filter((e) => e.similarity > 0.4)
+      .map((e) => ({
         id: e.id,
         name: e.name,
         type: e.type,
@@ -534,17 +563,19 @@ export class ParallelContextPipeline {
     context: DetectedContext
   ): Promise<JITKnowledge> {
     try {
-      const topicSlugs = context.topics.map(t => t.slug);
+      const topicSlugs = context.topics.map((t) => t.slug);
 
       const [acus, memories] = await Promise.allSettled([
-        this.prisma.$queryRaw<Array<{
-          id: string;
-          content: string;
-          type: string;
-          category: string;
-          createdAt: Date;
-          similarity: number;
-        }>>`
+        this.prisma.$queryRaw<
+          Array<{
+            id: string;
+            content: string;
+            type: string;
+            category: string;
+            createdAt: Date;
+            similarity: number;
+          }>
+        >`
           SELECT id, content, type, category, "createdAt",
             1 - (embedding <=> ${embedding}::float8[]) as similarity
           FROM atomic_chat_units
@@ -555,13 +586,15 @@ export class ParallelContextPipeline {
           LIMIT 10
         `.catch(() => []),
 
-        this.prisma.$queryRaw<Array<{
-          id: string;
-          content: string;
-          category: string;
-          importance: number;
-          similarity: number;
-        }>>`
+        this.prisma.$queryRaw<
+          Array<{
+            id: string;
+            content: string;
+            category: string;
+            importance: number;
+            similarity: number;
+          }>
+        >`
           SELECT id, content, category, importance,
             1 - (embedding <=> ${embedding}::float8[]) as similarity
           FROM memories
@@ -575,7 +608,10 @@ export class ParallelContextPipeline {
 
       return {
         acus: acus.status === 'fulfilled' ? acus.value.filter((a: any) => a.similarity > 0.3) : [],
-        memories: memories.status === 'fulfilled' ? memories.value.filter((m: any) => m.similarity > 0.35) : [],
+        memories:
+          memories.status === 'fulfilled'
+            ? memories.value.filter((m: any) => m.similarity > 0.35)
+            : [],
       };
     } catch (error: any) {
       logger.error({ error: error.message }, 'JIT retrieval failed');
@@ -601,9 +637,7 @@ export class ParallelContextPipeline {
       composite: 50,
     };
 
-    bundles.sort((a, b) =>
-      (priorityOrder[b.bundleType] ?? 0) - (priorityOrder[a.bundleType] ?? 0)
-    );
+    bundles.sort((a, b) => (priorityOrder[b.bundleType] ?? 0) - (priorityOrder[a.bundleType] ?? 0));
 
     for (const bundle of bundles) {
       if (tokensUsed + bundle.tokenCount > maxTokens) {

@@ -44,19 +44,19 @@ function canonicalizeReplacer(_key, value) {
 export function calculateMessageHash(role, content, timestamp, parts) {
   // Use content or parts, fallback to empty array
   const actualContent = content || parts || [];
-  
-  const normalizedContent = Array.isArray(actualContent) 
-    ? actualContent 
+
+  const normalizedContent = Array.isArray(actualContent)
+    ? actualContent
     : [{ type: 'text', content: String(actualContent) }];
 
   const canonical = canonicalizeContent(normalizedContent);
-  
+
   // MATCH PWA sha256Multiple (SHA-256)
   const hash = createHash('sha256');
   hash.update(role);
   hash.update(canonical);
   hash.update(timestamp);
-  
+
   return hash.digest('hex');
 }
 
@@ -75,9 +75,9 @@ export function symmetricDecrypt(ciphertextBase64, nonceBase64, keyBase64) {
 
     const decrypted = nacl.secretbox.open(ciphertext, nonce, key);
     if (!decrypted) {
-return null;
-}
-    
+      return null;
+    }
+
     return Buffer.from(decrypted).toString('utf8');
   } catch (error) {
     return null;
@@ -109,8 +109,8 @@ const serverKyberPublicKey = `kyber_pub_${randomBytes(16).toString('hex')}`;
  * Decapsulate a shared secret from a PQC ciphertext
  */
 export async function kyberDecapsulate(ciphertext) {
-  const DEV_SERVER_PRIVATE_KEY = 'server_private_key_placeholder'; 
-  
+  const DEV_SERVER_PRIVATE_KEY = 'server_private_key_placeholder';
+
   // Standardize Tunnel Handshake on SHA-256 for cross-platform (Node/Browser) stability
   const derivedSecret = createHash('sha256')
     .update(DEV_SERVER_PRIVATE_KEY + ciphertext)

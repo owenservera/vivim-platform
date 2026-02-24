@@ -124,7 +124,7 @@ When relevant context from the second brain is provided below, use it naturally 
   toolAwareness: (availableTools) => `
 ## Available Tools
 You have access to the following tools. Use them proactively when they would enhance your response:
-${availableTools.map(t => `- **${t.name}**: ${t.description}`).join('\n')}
+${availableTools.map((t) => `- **${t.name}**: ${t.description}`).join('\n')}
 
 TOOL USAGE GUIDELINES:
 - Use tools when they add genuine value, not performatively
@@ -171,10 +171,10 @@ export class SystemPromptManager {
    * Build a complete system prompt for a given context
    */
   buildPrompt({
-    mode = 'fresh',           // 'fresh' | 'continuation' | 'agent'
+    mode = 'fresh', // 'fresh' | 'continuation' | 'agent'
     personaId = 'default',
     userId,
-    contextBundles = [],      // Compiled context from DynamicContextAssembler
+    contextBundles = [], // Compiled context from DynamicContextAssembler
     availableTools = [],
     conversationStats = null,
     secondBrainStats = null,
@@ -223,12 +223,15 @@ export class SystemPromptManager {
 
     const fullPrompt = sections.filter(Boolean).join('\n\n---\n\n');
 
-    this.logger.debug({
-      personaId,
-      mode,
-      sectionCount: sections.length,
-      promptLength: fullPrompt.length,
-    }, 'System prompt composed');
+    this.logger.debug(
+      {
+        personaId,
+        mode,
+        sectionCount: sections.length,
+        promptLength: fullPrompt.length,
+      },
+      'System prompt composed'
+    );
 
     return fullPrompt;
   }
@@ -261,11 +264,11 @@ export class SystemPromptManager {
    * Get all available personas
    */
   getAllPersonas() {
-    const builtIn = Object.values(PERSONAS).map(p => ({
+    const builtIn = Object.values(PERSONAS).map((p) => ({
       ...p,
       isBuiltIn: true,
     }));
-    const custom = Array.from(this.customPersonas.values()).map(p => ({
+    const custom = Array.from(this.customPersonas.values()).map((p) => ({
       ...p,
       isBuiltIn: false,
     }));

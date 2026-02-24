@@ -28,7 +28,7 @@ export class ProfileRollupService {
       batchSize: 50,
       minACUsForTopic: 3,
       minACUsForEntity: 5,
-      ...config
+      ...config,
     };
 
     // Initialize embedding service
@@ -38,7 +38,10 @@ export class ProfileRollupService {
   /**
    * Main rollup method - processes unprocessed ACUs and updates profiles
    */
-  async rollupProfiles(userId: string, limit?: number): Promise<{
+  async rollupProfiles(
+    userId: string,
+    limit?: number
+  ): Promise<{
     topicsCreated: number;
     topicsUpdated: number;
     entitiesCreated: number;
@@ -53,10 +56,10 @@ export class ProfileRollupService {
       where: {
         authorDid: userId,
         embedding: { isEmpty: true },
-        state: 'ACTIVE'
+        state: 'ACTIVE',
       },
       orderBy: { createdAt: 'asc' },
-      take: limit || this.config.batchSize
+      take: limit || this.config.batchSize,
     });
 
     if (unprocessedACUs.length === 0) {
@@ -66,17 +69,16 @@ export class ProfileRollupService {
         topicsUpdated: 0,
         entitiesCreated: 0,
         entitiesUpdated: 0,
-        acusProcessed: 0
+        acusProcessed: 0,
       };
     }
 
     // Extract potential topics and entities from ACU content
-    const { potentialTopics, potentialEntities } = await this.extractTopicsAndEntities(unprocessedACUs);
+    const { potentialTopics, potentialEntities } =
+      await this.extractTopicsAndEntities(unprocessedACUs);
 
     // Generate embeddings in batch
-    const embeddings = await this.generateEmbeddings(
-      unprocessedACUs.map(acu => acu.content)
-    );
+    const embeddings = await this.generateEmbeddings(unprocessedACUs.map((acu) => acu.content));
 
     // Cluster ACUs into topics
     const { topicUpdates, entityUpdates } = await this.clusterACUs(
@@ -90,20 +92,23 @@ export class ProfileRollupService {
     // Update ACUs with embeddings
     await this.updateACUsWithEmbeddings(unprocessedACUs, embeddings);
 
-    log.info({
-      topicsCreated: topicUpdates.created,
-      topicsUpdated: topicUpdates.updated,
-      entitiesCreated: entityUpdates.created,
-      entitiesUpdated: entityUpdates.updated,
-      acusProcessed: unprocessedACUs.length
-    }, 'Profile rollup complete');
+    log.info(
+      {
+        topicsCreated: topicUpdates.created,
+        topicsUpdated: topicUpdates.updated,
+        entitiesCreated: entityUpdates.created,
+        entitiesUpdated: entityUpdates.updated,
+        acusProcessed: unprocessedACUs.length,
+      },
+      'Profile rollup complete'
+    );
 
     return {
       topicsCreated: topicUpdates.created,
       topicsUpdated: topicUpdates.updated,
       entitiesCreated: entityUpdates.created,
       entitiesUpdated: entityUpdates.updated,
-      acusProcessed: unprocessedACUs.length
+      acusProcessed: unprocessedACUs.length,
     };
   }
 
@@ -120,14 +125,56 @@ export class ProfileRollupService {
 
     // Simple keyword/topic detection
     const topicKeywords = [
-      'react', 'vue', 'angular', 'typescript', 'javascript', 'python', 'rust', 'go',
-      'node', 'express', 'next', 'nuxt', 'prisma', 'postgres', 'mongodb',
-      'database', 'api', 'rest', 'graphql', 'grpc', 'microservices',
-      'docker', 'kubernetes', 'aws', 'gcp', 'azure', 'vercel', 'netlify',
-      'css', 'tailwind', 'styled-components', 'sass', 'less',
-      'testing', 'jest', 'vitest', 'cypress', 'playwright',
-      'security', 'auth', 'jwt', 'oauth', 'web3', 'blockchain',
-      'machine learning', 'ai', 'llm', 'nlp', 'ml', 'deep learning'
+      'react',
+      'vue',
+      'angular',
+      'typescript',
+      'javascript',
+      'python',
+      'rust',
+      'go',
+      'node',
+      'express',
+      'next',
+      'nuxt',
+      'prisma',
+      'postgres',
+      'mongodb',
+      'database',
+      'api',
+      'rest',
+      'graphql',
+      'grpc',
+      'microservices',
+      'docker',
+      'kubernetes',
+      'aws',
+      'gcp',
+      'azure',
+      'vercel',
+      'netlify',
+      'css',
+      'tailwind',
+      'styled-components',
+      'sass',
+      'less',
+      'testing',
+      'jest',
+      'vitest',
+      'cypress',
+      'playwright',
+      'security',
+      'auth',
+      'jwt',
+      'oauth',
+      'web3',
+      'blockchain',
+      'machine learning',
+      'ai',
+      'llm',
+      'nlp',
+      'ml',
+      'deep learning',
     ];
 
     for (const acu of acus) {
@@ -163,7 +210,8 @@ export class ProfileRollupService {
     if (context.includes('github') || context.includes('repository')) return 'tool';
     if (context.includes('framework') || context.includes('library')) return 'tool';
     if (context.includes('company') || context.includes('business')) return 'organization';
-    if (context.includes('said') || context.includes('asked') || context.includes('told')) return 'person';
+    if (context.includes('said') || context.includes('asked') || context.includes('told'))
+      return 'person';
 
     return 'concept';
   }
@@ -221,7 +269,7 @@ export class ProfileRollupService {
       }
 
       const existing = await prisma.topicProfile.findUnique({
-        where: { userId_slug: { userId, slug } }
+        where: { userId_slug: { userId, slug } },
       });
 
       if (existing) {
@@ -231,9 +279,9 @@ export class ProfileRollupService {
           data: {
             totalAcus: { increment: relatedACUs.length },
             lastEngagedAt: new Date(),
-            relatedAcuIds: [...(existing.relatedAcuIds || []), ...relatedACUs.map(acu => acu.id)],
-            engagementStreak: existing.engagementStreak + 1
-          }
+            relatedAcuIds: [...(existing.relatedAcuIds || []), ...relatedACUs.map((acu) => acu.id)],
+            engagementStreak: existing.engagementStreak + 1,
+          },
         });
         topicUpdates.updated++;
       } else {
@@ -252,8 +300,8 @@ export class ProfileRollupService {
             lastEngagedAt: new Date(),
             engagementStreak: 1,
             importanceScore: this.calculateTopicImportance(relatedACUs),
-            isDirty: true
-          }
+            isDirty: true,
+          },
         });
         topicUpdates.created++;
       }
@@ -268,7 +316,7 @@ export class ProfileRollupService {
       const [name, type] = key.split(':');
 
       const existing = await prisma.entityProfile.findUnique({
-        where: { userId_name_type: { userId, name, type } }
+        where: { userId_name_type: { userId, name, type } },
       });
 
       if (existing) {
@@ -277,8 +325,8 @@ export class ProfileRollupService {
           where: { id: existing.id },
           data: {
             mentionCount: { increment: relatedACUs.length },
-            lastMentionedAt: new Date()
-          }
+            lastMentionedAt: new Date(),
+          },
         });
         entityUpdates.updated++;
       } else {
@@ -294,8 +342,8 @@ export class ProfileRollupService {
             firstMentionedAt: new Date(),
             lastMentionedAt: new Date(),
             importanceScore: this.calculateEntityImportance(relatedACUs),
-            isDirty: true
-          }
+            isDirty: true,
+          },
         });
         entityUpdates.created++;
       }
@@ -327,7 +375,10 @@ export class ProfileRollupService {
   /**
    * Detect which entity an ACU relates to
    */
-  private detectEntityForACU(acu: any, potentialEntities: Set<{ name: string; type: string }>): { key: string | null } {
+  private detectEntityForACU(
+    acu: any,
+    potentialEntities: Set<{ name: string; type: string }>
+  ): { key: string | null } {
     const content = acu.content.toLowerCase();
 
     for (const entity of potentialEntities) {
@@ -348,8 +399,8 @@ export class ProfileRollupService {
         where: { id: acus[i].id },
         data: {
           embedding: embeddings[i],
-          state: 'ACTIVE'
-        }
+          state: 'ACTIVE',
+        },
       });
     }
   }
@@ -360,7 +411,7 @@ export class ProfileRollupService {
   private formatTopicLabel(slug: string): string {
     return slug
       .split(/[-_]/g)
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   }
 
@@ -368,12 +419,24 @@ export class ProfileRollupService {
    * Infer topic domain
    */
   private inferTopicDomain(slug: string): string {
-    const techDomains = ['react', 'vue', 'angular', 'typescript', 'javascript', 'python', 'rust', 'go', 'node', 'prisma', 'postgres'];
+    const techDomains = [
+      'react',
+      'vue',
+      'angular',
+      'typescript',
+      'javascript',
+      'python',
+      'rust',
+      'go',
+      'node',
+      'prisma',
+      'postgres',
+    ];
     const businessDomains = ['finance', 'marketing', 'sales', 'hr', 'operations'];
 
     const lowerSlug = slug.toLowerCase();
-    if (techDomains.some(d => lowerSlug.includes(d))) return 'engineering';
-    if (businessDomains.some(d => lowerSlug.includes(d))) return 'business';
+    if (techDomains.some((d) => lowerSlug.includes(d))) return 'engineering';
+    if (businessDomains.some((d) => lowerSlug.includes(d))) return 'business';
     return 'personal';
   }
 
@@ -387,7 +450,7 @@ export class ProfileRollupService {
     const ageHours = recentness / (1000 * 60 * 60);
 
     // Base score from quantity
-    let score = Math.min(1.0, 0.1 + (acus.length * 0.05));
+    let score = Math.min(1.0, 0.1 + acus.length * 0.05);
 
     // Boost for recency (more recent = higher importance)
     if (ageHours < 24) score += 0.3;
@@ -408,7 +471,7 @@ export class ProfileRollupService {
 
     // Base score from quantity and content length
     const avgLength = acus.reduce((sum, acu) => sum + (acu.content?.length || 0), 0) / acus.length;
-    let score = Math.min(1.0, 0.05 + (acus.length * 0.03) + (avgLength / 1000));
+    let score = Math.min(1.0, 0.05 + acus.length * 0.03 + avgLength / 1000);
 
     // Boost for recency and type
     if (ageHours < 24) score += 0.2;
@@ -421,12 +484,21 @@ export class ProfileRollupService {
    * Infer entity relationship
    */
   private inferEntityRelationship(name: string, acus: any[]): string | null {
-    const content = acus.map(acu => acu.content).join(' ').toLowerCase();
+    const content = acus
+      .map((acu) => acu.content)
+      .join(' ')
+      .toLowerCase();
 
-    if (content.includes(`${name.toLowerCase()} is my`) || content.includes(`i work with ${name.toLowerCase()}`)) {
+    if (
+      content.includes(`${name.toLowerCase()} is my`) ||
+      content.includes(`i work with ${name.toLowerCase()}`)
+    ) {
       return 'colleague';
     }
-    if (content.includes(`${name.toLowerCase()} is`) || content.includes(`at ${name.toLowerCase()}`)) {
+    if (
+      content.includes(`${name.toLowerCase()} is`) ||
+      content.includes(`at ${name.toLowerCase()}`)
+    ) {
       return 'client';
     }
     if (content.includes('manager') || content.includes('director')) {
@@ -459,14 +531,14 @@ export class ProfileRollupService {
       prisma.topicProfile.count({ where: { userId } }),
       prisma.entityProfile.count({ where: { userId } }),
       prisma.atomicChatUnit.count({ where: { authorDid: userId, embedding: { isEmpty: true } } }),
-      prisma.atomicChatUnit.count({ where: { authorDid: userId, embedding: { isEmpty: false } } })
+      prisma.atomicChatUnit.count({ where: { authorDid: userId, embedding: { isEmpty: false } } }),
     ]);
 
     return {
       topicProfiles: topicCount,
       entityProfiles: entityCount,
       acusWithoutEmbedding: noEmbeddingCount,
-      acusWithEmbedding: withEmbeddingCount
+      acusWithEmbedding: withEmbeddingCount,
     };
   }
 }

@@ -1,6 +1,6 @@
 /**
  * Memory Retrieval Service
- * 
+ *
  * Intelligent memory retrieval system using hybrid search (semantic + keyword).
  * Provides contextual relevance scoring and integrates with the context engine.
  */
@@ -124,19 +124,13 @@ export class MemoryRetrievalService {
     // Perform parallel searches
     const [semanticResults, keywordResults, pinnedResults] = await Promise.all([
       // Semantic search (if we have embedding)
-      embedding.length > 0 
-        ? this.semanticSearch(baseWhere, embedding)
-        : Promise.resolve([]),
-      
+      embedding.length > 0 ? this.semanticSearch(baseWhere, embedding) : Promise.resolve([]),
+
       // Keyword search
-      keywords.length > 0
-        ? this.keywordSearch(baseWhere, keywords)
-        : Promise.resolve([]),
-      
+      keywords.length > 0 ? this.keywordSearch(baseWhere, keywords) : Promise.resolve([]),
+
       // Pinned memories (always included)
-      includePinned 
-        ? this.getPinnedMemories(baseWhere)
-        : Promise.resolve([]),
+      includePinned ? this.getPinnedMemories(baseWhere) : Promise.resolve([]),
     ]);
 
     // Fuse results using Reciprocal Rank Fusion
@@ -153,7 +147,10 @@ export class MemoryRetrievalService {
 
     // Update access stats
     if (finalMemories.length > 0) {
-      await this.updateAccessStats(userId, finalMemories.map(m => m.id));
+      await this.updateAccessStats(
+        userId,
+        finalMemories.map((m) => m.id)
+      );
     }
 
     return this.formatRetrievalResult(finalMemories, maxTokens);
@@ -162,7 +159,10 @@ export class MemoryRetrievalService {
   /**
    * Retrieve memories for identity context (critical + high importance)
    */
-  async retrieveIdentityContext(userId: string, maxTokens: number = 500): Promise<MemoryRetrievalResult> {
+  async retrieveIdentityContext(
+    userId: string,
+    maxTokens: number = 500
+  ): Promise<MemoryRetrievalResult> {
     return this.retrieve(userId, '', {
       maxTokens,
       minImportance: 0.8,
@@ -174,7 +174,10 @@ export class MemoryRetrievalService {
   /**
    * Retrieve memories for preference context
    */
-  async retrievePreferenceContext(userId: string, maxTokens: number = 300): Promise<MemoryRetrievalResult> {
+  async retrievePreferenceContext(
+    userId: string,
+    maxTokens: number = 300
+  ): Promise<MemoryRetrievalResult> {
     return this.retrieve(userId, '', {
       maxTokens,
       minImportance: 0.6,
@@ -187,8 +190,8 @@ export class MemoryRetrievalService {
    * Retrieve memories relevant to a specific topic
    */
   async retrieveForTopic(
-    userId: string, 
-    topic: string, 
+    userId: string,
+    topic: string,
     maxTokens: number = 1000
   ): Promise<MemoryRetrievalResult> {
     return this.retrieve(userId, topic, {
@@ -206,13 +209,15 @@ export class MemoryRetrievalService {
     userId: string,
     content: string,
     limit: number = 5
-  ): Promise<Array<{
-    id: string;
-    content: string;
-    similarity: number;
-  }>> {
+  ): Promise<
+    Array<{
+      id: string;
+      content: string;
+      similarity: number;
+    }>
+  > {
     let embedding: number[] = [];
-    
+
     if (this.embeddingService) {
       try {
         embedding = await this.embeddingService.embed(content);
@@ -229,7 +234,7 @@ export class MemoryRetrievalService {
         { userId, isActive: true, isArchived: false },
         keywords.slice(0, 5)
       );
-      return results.slice(0, limit).map(r => ({
+      return results.slice(0, limit).map((r) => ({
         id: r.id,
         content: r.content,
         similarity: r.similarity,
@@ -243,7 +248,7 @@ export class MemoryRetrievalService {
       limit
     );
 
-    return results.map(r => ({
+    return results.map((r) => ({
       id: r.id,
       content: r.content,
       similarity: r.similarity,
@@ -261,17 +266,19 @@ export class MemoryRetrievalService {
   ): Promise<SearchResult[]> {
     // Try vector search if pgvector is available
     try {
-      const results = await this.prisma.$queryRaw<Array<{
-        id: string;
-        content: string;
-        summary: string | null;
-        memorytype: string;
-        category: string;
-        importance: number;
-        relevance: number;
-        sourceconversationids: string[];
-        similarity: number;
-      }>>`
+      const results = await this.prisma.$queryRaw<
+        Array<{
+          id: string;
+          content: string;
+          summary: string | null;
+          memorytype: string;
+          category: string;
+          importance: number;
+          relevance: number;
+          sourceconversationids: string[];
+          similarity: number;
+        }>
+      >`
         SELECT 
           id, 
           content, 
@@ -290,7 +297,7 @@ export class MemoryRetrievalService {
         LIMIT ${limit}
       `;
 
-      return results.map(r => ({
+      return results.map((r) => ({
         id: r.id,
         content: r.content,
         summary: r.summary,
@@ -317,21 +324,23 @@ export class MemoryRetrievalService {
 
     try {
       // Build keyword conditions
-      const keywordConditions = keywords.map(k => 
-        Prisma.sql`LOWER(content) LIKE LOWER(${'%' + k + '%'})`
+      const keywordConditions = keywords.map(
+        (k) => Prisma.sql`LOWER(content) LIKE LOWER(${'%' + k + '%'})`
       );
 
-      const results = await this.prisma.$queryRaw<Array<{
-        id: string;
-        content: string;
-        summary: string | null;
-        memorytype: string;
-        category: string;
-        importance: number;
-        relevance: number;
-        sourceconversationids: string[];
-        match_count: number;
-      }>>`
+      const results = await this.prisma.$queryRaw<
+        Array<{
+          id: string;
+          content: string;
+          summary: string | null;
+          memorytype: string;
+          category: string;
+          importance: number;
+          relevance: number;
+          sourceconversationids: string[];
+          match_count: number;
+        }>
+      >`
         SELECT 
           id, 
           content, 
@@ -350,9 +359,9 @@ export class MemoryRetrievalService {
       `;
 
       // Normalize scores
-      const maxMatch = Math.max(...results.map(r => Number(r.match_count)), 1);
+      const maxMatch = Math.max(...results.map((r) => Number(r.match_count)), 1);
 
-      return results.map(r => ({
+      return results.map((r) => ({
         id: r.id,
         content: r.content,
         summary: r.summary,
@@ -380,7 +389,7 @@ export class MemoryRetrievalService {
       take: limit,
     });
 
-    return memories.map(m => ({
+    return memories.map((m) => ({
       id: m.id,
       content: m.content,
       summary: m.summary,
@@ -400,7 +409,7 @@ export class MemoryRetrievalService {
       orderBy: { importance: 'desc' },
     });
 
-    return memories.map(m => ({
+    return memories.map((m) => ({
       id: m.id,
       content: m.content,
       summary: m.summary,
@@ -425,17 +434,15 @@ export class MemoryRetrievalService {
     // Process semantic results
     semantic.forEach((item, index) => {
       const rrf = 1 / (index + k);
-      const combinedScore = (this.semanticWeight * rrf) + 
-        (this.keywordWeight * (item.similarity || 0));
+      const combinedScore = this.semanticWeight * rrf + this.keywordWeight * (item.similarity || 0);
       scoreMap.set(item.id, { result: item, rrf: combinedScore });
     });
 
     // Process keyword results
     keyword.forEach((item, index) => {
       const rrf = 1 / (index + k);
-      const combinedScore = (this.keywordWeight * rrf) + 
-        (this.semanticWeight * (item.similarity || 0));
-      
+      const combinedScore = this.keywordWeight * rrf + this.semanticWeight * (item.similarity || 0);
+
       if (scoreMap.has(item.id)) {
         const existing = scoreMap.get(item.id)!;
         existing.rrf = (existing.rrf + combinedScore) / 2;
@@ -452,12 +459,12 @@ export class MemoryRetrievalService {
     // Sort by combined score
     return Array.from(scoreMap.values())
       .sort((a, b) => b.rrf - a.rrf)
-      .map(x => x.result);
+      .map((x) => x.result);
   }
 
   private deduplicateResults(results: SearchResult[]): SearchResult[] {
     const seen = new Set<string>();
-    return results.filter(r => {
+    return results.filter((r) => {
       if (seen.has(r.id)) return false;
       seen.add(r.id);
       return true;
@@ -471,7 +478,7 @@ export class MemoryRetrievalService {
     for (const memory of memories) {
       const text = memory.summary || memory.content;
       const tokens = Math.ceil(text.length / 4);
-      
+
       if (usedTokens + tokens <= maxTokens) {
         result.push(memory);
         usedTokens += tokens;
@@ -503,10 +510,8 @@ export class MemoryRetrievalService {
     }, 0);
 
     return {
-      content: memories
-        .map(m => m.summary || m.content)
-        .join('\n\n---\n\n'),
-      memories: memories.map(m => ({
+      content: memories.map((m) => m.summary || m.content).join('\n\n---\n\n'),
+      memories: memories.map((m) => ({
         id: m.id,
         content: m.content,
         summary: m.summary || undefined,
@@ -530,16 +535,69 @@ export class MemoryRetrievalService {
       .toLowerCase()
       .replace(/[^\w\s]/g, ' ')
       .split(/\s+/)
-      .filter(word => word.length > 2);
+      .filter((word) => word.length > 2);
 
     const stopwords = new Set([
-      'the', 'is', 'at', 'which', 'on', 'and', 'a', 'an', 'in', 'to', 'of',
-      'for', 'with', 'from', 'this', 'that', 'it', 'are', 'was', 'were',
-      'be', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would',
-      'could', 'should', 'may', 'might', 'can', 'what', 'how', 'when',
-      'where', 'who', 'whom', 'whose', 'why', 'please', 'thanks', 'thank',
-      'hello', 'hi', 'hey', 'there', 'their', 'they', 'you', 'your',
-      'about', 'would', 'could', 'should', 'just', 'like', 'really',
+      'the',
+      'is',
+      'at',
+      'which',
+      'on',
+      'and',
+      'a',
+      'an',
+      'in',
+      'to',
+      'of',
+      'for',
+      'with',
+      'from',
+      'this',
+      'that',
+      'it',
+      'are',
+      'was',
+      'were',
+      'be',
+      'have',
+      'has',
+      'had',
+      'do',
+      'does',
+      'did',
+      'will',
+      'would',
+      'could',
+      'should',
+      'may',
+      'might',
+      'can',
+      'what',
+      'how',
+      'when',
+      'where',
+      'who',
+      'whom',
+      'whose',
+      'why',
+      'please',
+      'thanks',
+      'thank',
+      'hello',
+      'hi',
+      'hey',
+      'there',
+      'their',
+      'they',
+      'you',
+      'your',
+      'about',
+      'would',
+      'could',
+      'should',
+      'just',
+      'like',
+      'really',
     ]);
 
     const wordCounts = new Map<string, number>();
@@ -580,20 +638,24 @@ export class MemoryRetrievalService {
       const mtObj = where.memoryType as Record<string, unknown>;
       if ('in' in mtObj && Array.isArray(mtObj.in)) {
         const types = mtObj.in as string[];
-        clauses.push(Prisma.sql`"memoryType" IN (${Prisma.join(
-          types.map(s => Prisma.sql`${s}`),
-          ', '
-        )})`);
+        clauses.push(
+          Prisma.sql`"memoryType" IN (${Prisma.join(
+            types.map((s) => Prisma.sql`${s}`),
+            ', '
+          )})`
+        );
       }
     }
     if (where.category) {
       const catObj = where.category as Record<string, unknown>;
       if ('in' in catObj && Array.isArray(catObj.in)) {
         const cats = catObj.in as string[];
-        clauses.push(Prisma.sql`category IN (${Prisma.join(
-          cats.map(s => Prisma.sql`${s}`),
-          ', '
-        )})`);
+        clauses.push(
+          Prisma.sql`category IN (${Prisma.join(
+            cats.map((s) => Prisma.sql`${s}`),
+            ', '
+          )})`
+        );
       }
     }
 
@@ -605,10 +667,11 @@ export class MemoryRetrievalService {
       return Prisma.sql`0`;
     }
 
-    const cases = keywords.map((k, i) => 
-      Prisma.sql`CASE WHEN LOWER(content) LIKE LOWER(${'%' + k + '%'}) THEN ${1 / (i + 1)} ELSE 0 END`
+    const cases = keywords.map(
+      (k, i) =>
+        Prisma.sql`CASE WHEN LOWER(content) LIKE LOWER(${'%' + k + '%'}) THEN ${1 / (i + 1)} ELSE 0 END`
     );
-    
+
     return Prisma.sql`(${Prisma.join(cases, ' + ')})`;
   }
 

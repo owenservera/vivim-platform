@@ -1,6 +1,6 @@
 /**
  * Unified Context Service
- * 
+ *
  * Provides context compilation using the isolated per-user context system.
  */
 
@@ -18,7 +18,7 @@ export async function getContextEngine(userDid) {
 
   const engine = await getUserContextSystem(userDid);
   engineCache.set(userDid, engine);
-  
+
   return engine;
 }
 
@@ -65,7 +65,7 @@ export async function createUserBundle(userDid, bundleData) {
 export async function getUserConversations(userDid, options = {}) {
   const engine = await getContextEngine(userDid);
   const { limit = 20, offset = 0 } = options;
-  
+
   return engine.database.conversation.findMany({
     where: { ownerId: userDid },
     take: limit,
@@ -78,7 +78,7 @@ export async function getUserConversations(userDid, options = {}) {
 export async function getUserMemories(userDid, options = {}) {
   const engine = await getContextEngine(userDid);
   const { limit = 50 } = options;
-  
+
   return engine.database.memory.findMany({
     where: { userId: userDid },
     take: limit,
@@ -118,7 +118,7 @@ export async function createUserNotebook(userDid, notebookData) {
 
 export async function addNotebookEntry(userDid, notebookId, entryData) {
   const engine = await getContextEngine(userDid);
-  
+
   const entry = await engine.database.notebookEntry.create({
     data: {
       id: crypto.randomUUID(),
@@ -163,11 +163,15 @@ export async function getUserStats(userDid) {
 export async function getUserACUs(userDid, options = {}) {
   const engine = await getContextEngine(userDid);
   const { limit = 50, type, category } = options;
-  
+
   const where = {};
-  if (type) where.type = type;
-  if (category) where.category = category;
-  
+  if (type) {
+    where.type = type;
+  }
+  if (category) {
+    where.category = category;
+  }
+
   return engine.database.atomicChatUnit.findMany({
     where,
     take: limit,

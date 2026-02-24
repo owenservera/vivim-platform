@@ -35,7 +35,7 @@ export function calculateStatsOptimized(conversation) {
       totalCodeBlocks: 0,
       totalMermaidDiagrams: 0,
       totalImages: 0,
-    },
+    }
   );
 
   return {

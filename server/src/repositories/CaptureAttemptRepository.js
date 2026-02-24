@@ -15,7 +15,7 @@ import { recordOperation } from '../services/sync-service.js';
  */
 export async function createCaptureAttempt(data, userClient = null) {
   const db = userClient || getPrismaClient();
-  
+
   try {
     const attempt = await db.captureAttempt.create({
       data: {
@@ -32,16 +32,13 @@ export async function createCaptureAttempt(data, userClient = null) {
       },
     });
 
-    logger.debug(
-      { attemptId: attempt.id, status: attempt.status },
-      'Capture attempt recorded',
-    );
+    logger.debug({ attemptId: attempt.id, status: attempt.status }, 'Capture attempt recorded');
 
     return attempt;
   } catch (error) {
-    if (error.message.includes('Can\'t reach database server')) {
+    if (error.message.includes("Can't reach database server")) {
       logger.warn('💾 [DATABASE OFFLINE] Saving attempt to local filesystem...');
-      const attempt = { id: `offline-${  Date.now()}`, ...data };
+      const attempt = { id: `offline-${Date.now()}`, ...data };
       await fileStorage.saveAttempt(attempt);
       return attempt;
     }
@@ -59,11 +56,14 @@ export async function createCaptureAttempt(data, userClient = null) {
  */
 export async function completeCaptureAttempt(id, data, userClient = null) {
   const db = userClient || getPrismaClient();
-  
+
   try {
     if (String(id).startsWith('offline-')) {
-       logger.debug({ attemptId: id, status: data.status }, 'Capture attempt completed (offline mode)');
-       return { id, ...data };
+      logger.debug(
+        { attemptId: id, status: data.status },
+        'Capture attempt completed (offline mode)'
+      );
+      return { id, ...data };
     }
 
     const attempt = await db.captureAttempt.update({
@@ -82,9 +82,9 @@ export async function completeCaptureAttempt(id, data, userClient = null) {
 
     return attempt;
   } catch (error) {
-    if (error.message.includes('Can\'t reach database server')) {
-       logger.warn('💾 [DATABASE OFFLINE] Could not update capture attempt (DB down).');
-       return { id, ...data };
+    if (error.message.includes("Can't reach database server")) {
+      logger.warn('💾 [DATABASE OFFLINE] Could not update capture attempt (DB down).');
+      return { id, ...data };
     }
     logger.error({ error: error.message, id }, 'Failed to complete capture attempt');
     throw error;
@@ -106,11 +106,11 @@ export async function getRecentAttempts(options = {}) {
   try {
     const where = {};
     if (status) {
-where.status = status;
-}
+      where.status = status;
+    }
     if (ipAddress) {
-where.ipAddress = ipAddress;
-}
+      where.ipAddress = ipAddress;
+    }
 
     const attempts = await getPrismaClient().captureAttempt.findMany({
       where,
@@ -138,15 +138,15 @@ export async function getCaptureStats(options = {}) {
     if (startDate || endDate) {
       where.createdAt = {};
       if (startDate) {
-where.createdAt.gte = new Date(startDate);
-}
+        where.createdAt.gte = new Date(startDate);
+      }
       if (endDate) {
-where.createdAt.lte = new Date(endDate);
-}
+        where.createdAt.lte = new Date(endDate);
+      }
     }
     if (ipAddress) {
-where.ipAddress = ipAddress;
-}
+      where.ipAddress = ipAddress;
+    }
 
     const [total, successful, failed, avgDuration] = await Promise.all([
       getPrismaClient().captureAttempt.count({ where }),
@@ -180,7 +180,7 @@ where.ipAddress = ipAddress;
  */
 export async function findRecentSuccessfulAttempt(sourceUrl, minutes = 60, userClient = null) {
   const db = userClient || getPrismaClient();
-  
+
   try {
     const since = new Date(Date.now() - minutes * 60 * 1000);
 

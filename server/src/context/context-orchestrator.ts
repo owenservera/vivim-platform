@@ -21,7 +21,7 @@ export class ContextOrchestrator {
     this.bundleCompiler = new BundleCompiler({
       prisma: config.prisma,
       tokenEstimator: config.tokenEstimator,
-      llmService: config.llmService
+      llmService: config.llmService,
     });
   }
 
@@ -30,16 +30,13 @@ export class ContextOrchestrator {
     await this.triggerPredictionAndWarmup(userId, presence);
   }
 
-  private async upsertClientPresence(
-    userId: string,
-    presence: ClientPresenceState
-  ): Promise<void> {
+  private async upsertClientPresence(userId: string, presence: ClientPresenceState): Promise<void> {
     await this.prisma.clientPresence.upsert({
       where: {
         userId_deviceId: {
           userId,
-          deviceId: presence.deviceId
-        }
+          deviceId: presence.deviceId,
+        },
       },
       update: {
         activeConversationId: presence.activeConversationId,
@@ -51,7 +48,7 @@ export class ContextOrchestrator {
         localTime: presence.localTime,
         idleSince: presence.idleSince,
         isOnline: presence.isOnline,
-        lastHeartbeatAt: new Date()
+        lastHeartbeatAt: new Date(),
       },
       create: {
         userId,
@@ -68,8 +65,8 @@ export class ContextOrchestrator {
         predictedTopics: [],
         predictedEntities: [],
         isOnline: presence.isOnline,
-        lastHeartbeatAt: new Date()
-      }
+        lastHeartbeatAt: new Date(),
+      },
     });
   }
 
@@ -77,10 +74,7 @@ export class ContextOrchestrator {
     userId: string,
     presence: ClientPresenceState
   ): Promise<void> {
-    const predictions = await this.predictionEngine.predictNextInteractions(
-      userId,
-      presence
-    );
+    const predictions = await this.predictionEngine.predictNextInteractions(userId, presence);
 
     await this.ensureFresh(userId, 'identity_core', () =>
       this.bundleCompiler.compileIdentityCore(userId)
@@ -95,38 +89,20 @@ export class ContextOrchestrator {
 
       try {
         if (prediction.conversationId) {
-          await this.ensureFreshWithId(
-            userId,
-            'conversation',
-            prediction.conversationId,
-            () => this.bundleCompiler.compileConversationContext(
-              userId,
-              prediction.conversationId!
-            )
+          await this.ensureFreshWithId(userId, 'conversation', prediction.conversationId, () =>
+            this.bundleCompiler.compileConversationContext(userId, prediction.conversationId!)
           );
         }
 
         if (prediction.topicSlug) {
-          await this.ensureFreshWithId(
-            userId,
-            'topic',
-            prediction.topicSlug,
-            () => this.bundleCompiler.compileTopicContext(
-              userId,
-              prediction.topicSlug!
-            )
+          await this.ensureFreshWithId(userId, 'topic', prediction.topicSlug, () =>
+            this.bundleCompiler.compileTopicContext(userId, prediction.topicSlug!)
           );
         }
 
         if (prediction.entityId) {
-          await this.ensureFreshWithId(
-            userId,
-            'entity',
-            prediction.entityId,
-            () => this.bundleCompiler.compileEntityContext(
-              userId,
-              prediction.entityId!
-            )
+          await this.ensureFreshWithId(userId, 'entity', prediction.entityId, () =>
+            this.bundleCompiler.compileEntityContext(userId, prediction.entityId!)
           );
         }
       } catch (error) {
@@ -138,17 +114,13 @@ export class ContextOrchestrator {
       where: {
         userId_deviceId: {
           userId,
-          deviceId: presence.deviceId
-        }
+          deviceId: presence.deviceId,
+        },
       },
       data: {
-        predictedTopics: predictions
-          .filter(p => p.topicSlug)
-          .map(p => p.topicSlug!),
-        predictedEntities: predictions
-          .filter(p => p.entityId)
-          .map(p => p.entityId!)
-      }
+        predictedTopics: predictions.filter((p) => p.topicSlug).map((p) => p.topicSlug!),
+        predictedEntities: predictions.filter((p) => p.entityId).map((p) => p.entityId!),
+      },
     });
   }
 
@@ -165,14 +137,15 @@ export class ContextOrchestrator {
         topicProfileId: null,
         entityProfileId: null,
         conversationId: null,
-        personaId: personaId ?? null
-      }
+        personaId: personaId ?? null,
+      },
     });
 
-    const needsRecompile = !existing ||
+    const needsRecompile =
+      !existing ||
       existing.isDirty ||
       (existing.expiresAt && existing.expiresAt < new Date()) ||
-      (Date.now() - existing.compiledAt.getTime() > this.getTTL(bundleType));
+      Date.now() - existing.compiledAt.getTime() > this.getTTL(bundleType);
 
     if (needsRecompile) {
       await compileFn();
@@ -192,15 +165,16 @@ export class ContextOrchestrator {
         OR: [
           { topicProfileId: referenceId },
           { entityProfileId: referenceId },
-          { conversationId: referenceId }
-        ]
-      }
+          { conversationId: referenceId },
+        ],
+      },
     });
 
-    const needsRecompile = !existing ||
+    const needsRecompile =
+      !existing ||
       existing.isDirty ||
       (existing.expiresAt && existing.expiresAt < new Date()) ||
-      (Date.now() - existing.compiledAt.getTime() > this.getTTL(bundleType));
+      Date.now() - existing.compiledAt.getTime() > this.getTTL(bundleType);
 
     if (needsRecompile) {
       await compileFn();
@@ -209,20 +183,23 @@ export class ContextOrchestrator {
 
   private getTTL(bundleType: string): number {
     const ttls: Record<string, number> = {
-      'identity_core': 24 * 60 * 60 * 1000,
-      'global_prefs': 12 * 60 * 60 * 1000,
-      'topic': 4 * 60 * 60 * 1000,
-      'entity': 6 * 60 * 60 * 1000,
-      'conversation': 30 * 60 * 1000,
+      identity_core: 24 * 60 * 60 * 1000,
+      global_prefs: 12 * 60 * 60 * 1000,
+      topic: 4 * 60 * 60 * 1000,
+      entity: 6 * 60 * 60 * 1000,
+      conversation: 30 * 60 * 1000,
     };
     return ttls[bundleType] ?? 60 * 60 * 1000;
   }
 
-  async invalidateOnMemoryCreated(userId: string, memory: {
-    id: string;
-    category: string;
-    importance: number;
-  }): Promise<void> {
+  async invalidateOnMemoryCreated(
+    userId: string,
+    memory: {
+      id: string;
+      category: string;
+      importance: number;
+    }
+  ): Promise<void> {
     if (['biography', 'identity', 'role'].includes(memory.category) && memory.importance >= 0.8) {
       await this.markDirty(userId, 'identity_core');
     }
@@ -234,8 +211,8 @@ export class ContextOrchestrator {
     const affectedTopics = await this.prisma.topicProfile.findMany({
       where: {
         userId,
-        relatedMemoryIds: { has: memory.id }
-      }
+        relatedMemoryIds: { has: memory.id },
+      },
     });
 
     for (const topic of affectedTopics) {
@@ -248,9 +225,9 @@ export class ContextOrchestrator {
       where: {
         userId,
         bundleType: 'conversation',
-        conversationId
+        conversationId,
       },
-      data: { isDirty: true }
+      data: { isDirty: true },
     });
   }
 
@@ -267,7 +244,7 @@ export class ContextOrchestrator {
   async invalidateOnACUDeletedOrChanged(userId: string): Promise<void> {
     const topicProfiles = await this.prisma.topicProfile.findMany({
       where: { userId, isDirty: false },
-      select: { id: true, relatedAcuIds: true }
+      select: { id: true, relatedAcuIds: true },
     });
 
     for (const topic of topicProfiles) {
@@ -281,9 +258,9 @@ export class ContextOrchestrator {
     const result = await this.prisma.contextBundle.deleteMany({
       where: {
         expiresAt: {
-          lt: new Date()
-        }
-      }
+          lt: new Date(),
+        },
+      },
     });
 
     return result.count;
@@ -292,8 +269,8 @@ export class ContextOrchestrator {
   async getPresence(userId: string, deviceId: string): Promise<ClientPresenceState | null> {
     const presence = await this.prisma.clientPresence.findUnique({
       where: {
-        userId_deviceId: { userId, deviceId }
-      }
+        userId_deviceId: { userId, deviceId },
+      },
     });
 
     if (!presence) return null;
@@ -313,7 +290,7 @@ export class ContextOrchestrator {
       predictedTopics: presence.predictedTopics,
       predictedEntities: presence.predictedEntities,
       lastHeartbeatAt: presence.lastHeartbeatAt,
-      isOnline: presence.isOnline
+      isOnline: presence.isOnline,
     };
   }
 }

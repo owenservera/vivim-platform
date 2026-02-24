@@ -100,26 +100,43 @@ container.register('database', () => getPrismaClient(), { singleton: true });
 container.register('logger', () => logger, { singleton: true });
 
 // Configuration
-container.register('config', () => {
-  const { config } = import('../config/index.js');
-  return config;
-}, { singleton: true });
+container.register(
+  'config',
+  () => {
+    const { config } = import('../config/index.js');
+    return config;
+  },
+  { singleton: true }
+);
 
 // Conversation Repository
-container.register('conversationRepository', (_c) => {
-  const { createConversation, findConversationById, listConversations } = import('../repositories/ConversationRepository.js');
-  return { createConversation, findConversationById, listConversations };
-}, { singleton: true });
+container.register(
+  'conversationRepository',
+  (_c) => {
+    const { createConversation, findConversationById, listConversations } =
+      import('../repositories/ConversationRepository.js');
+    return { createConversation, findConversationById, listConversations };
+  },
+  { singleton: true }
+);
 
 // Capture Attempt Repository
-container.register('captureAttemptRepository', () => {
-  return import('../repositories/CaptureAttemptRepository.js');
-}, { singleton: true });
+container.register(
+  'captureAttemptRepository',
+  () => {
+    return import('../repositories/CaptureAttemptRepository.js');
+  },
+  { singleton: true }
+);
 
 // Extractor Service
-container.register('extractor', () => {
-  return import('../services/extractor.js');
-}, { singleton: false });
+container.register(
+  'extractor',
+  () => {
+    return import('../services/extractor.js');
+  },
+  { singleton: false }
+);
 
 // ============================================================================
 // HELPER FUNCTIONS

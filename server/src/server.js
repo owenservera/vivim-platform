@@ -12,7 +12,7 @@
  */
 
 import 'dotenv/config';
-console.log('DEBUG: Server.js loaded - ' + new Date().toISOString());
+console.log(`DEBUG: Server.js loaded - ${new Date().toISOString()}`);
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -124,7 +124,7 @@ const corsOptions = {
     if (!origin) {
       return callback(null, true);
     }
-    
+
     const allowedOrigins = config.isDevelopment
       ? [
           'http://localhost:5173',
@@ -156,7 +156,7 @@ const corsOptions = {
         origin.startsWith('http://192.168.') ||
         origin.startsWith('http://10.') ||
         origin.startsWith('http://172.');
-      
+
       if (isLocalNetwork) {
         callback(null, true);
       } else {
@@ -264,7 +264,7 @@ app.use(compression());
 // Rate Limiting - Enable in both dev and production with environment-appropriate limits
 const rateLimitConfig = {
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: config.isProduction ? (config.rateLimitMax || 100) : 1000, // Higher limit in dev
+  max: config.isProduction ? config.rateLimitMax || 100 : 1000, // Higher limit in dev
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -281,7 +281,9 @@ const rateLimitConfig = {
 
 const limiter = rateLimit(rateLimitConfig);
 app.use('/api/', limiter);
-logger.info(`Rate limiting enabled (${config.isProduction ? 'production' : 'development'} mode: ${rateLimitConfig.max} req/15min)`);
+logger.info(
+  `Rate limiting enabled (${config.isProduction ? 'production' : 'development'} mode: ${rateLimitConfig.max} req/15min)`
+);
 
 // ============================================================================
 // PARSING MIDDLEWARE

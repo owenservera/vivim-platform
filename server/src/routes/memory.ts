@@ -1,6 +1,6 @@
 /**
  * Memory System Routes
- * 
+ *
  * REST API endpoints for the VIVIM Second Brain Memory System.
  */
 
@@ -24,8 +24,9 @@ const log = createRequestLogger('memory-routes');
 
 // Authentication middleware
 function authenticateDIDMiddleware(req: Request, res: Response, next: NextFunction) {
-  const did = req.headers['x-did'] || (req.headers['authorization'] || '').replace('Bearer did:', 'did:');
-  
+  const did =
+    req.headers['x-did'] || (req.headers['authorization'] || '').replace('Bearer did:', 'did:');
+
   if (!did) {
     return res.status(401).json({ success: false, error: 'DID required' });
   }
@@ -33,7 +34,7 @@ function authenticateDIDMiddleware(req: Request, res: Response, next: NextFuncti
   if (!did.startsWith('did:')) {
     return res.status(401).json({ success: false, error: 'Invalid DID format' });
   }
-  
+
   req.user = { did };
   next();
 }
@@ -119,11 +120,11 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
 router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const memory = await memoryService.getMemoryById(req.user.did, req.params.id);
-    
+
     if (!memory) {
       return res.status(404).json({ success: false, error: 'Memory not found' });
     }
-    
+
     res.json({ success: true, memory });
   } catch (error) {
     log.error({ error, memoryId: req.params.id }, 'Failed to get memory');
@@ -335,7 +336,7 @@ router.get('/context/identity', async (req: Request, res: Response, next: NextFu
   try {
     const { maxTokens = 500 } = req.query;
     const result = await retrievalService.retrieveIdentityContext(
-      req.user.did, 
+      req.user.did,
       parseInt(maxTokens as string)
     );
     res.json({ success: true, ...result });
@@ -353,7 +354,7 @@ router.get('/context/preferences', async (req: Request, res: Response, next: Nex
   try {
     const { maxTokens = 300 } = req.query;
     const result = await retrievalService.retrievePreferenceContext(
-      req.user.did, 
+      req.user.did,
       parseInt(maxTokens as string)
     );
     res.json({ success: true, ...result });
@@ -371,7 +372,7 @@ router.get('/topic/:topic', async (req: Request, res: Response, next: NextFuncti
   try {
     const { maxTokens = 1000 } = req.query;
     const result = await retrievalService.retrieveForTopic(
-      req.user.did, 
+      req.user.did,
       req.params.topic,
       parseInt(maxTokens as string)
     );
@@ -389,11 +390,7 @@ router.get('/topic/:topic', async (req: Request, res: Response, next: NextFuncti
 router.post('/similar', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { content, limit = 5 } = req.body;
-    const memories = await retrievalService.findSimilarMemories(
-      req.user.did, 
-      content, 
-      limit
-    );
+    const memories = await retrievalService.findSimilarMemories(req.user.did, content, limit);
     res.json({ success: true, memories });
   } catch (error) {
     log.error({ error }, 'Failed to find similar memories');
@@ -556,7 +553,7 @@ router.post('/bulk/archive', async (req: Request, res: Response, next: NextFunct
   try {
     const { memoryIds } = req.body;
     let archived = 0;
-    
+
     for (const id of memoryIds) {
       try {
         await memoryService.archiveMemory(req.user.did, id);
@@ -564,7 +561,7 @@ router.post('/bulk/archive', async (req: Request, res: Response, next: NextFunct
       } catch (error) {
         log.warn({ error, memoryId: id }, 'Failed to archive memory');
       }
-      
+
       res.json({ success: true, archived });
     }
   } catch (error) {
@@ -585,13 +582,33 @@ router.get('/types', (req: Request, res: Response) => {
   res.json({
     success: true,
     types: [
-      { value: 'EPISODIC', label: 'Episodic', description: 'Specific events, conversations, experiences' },
-      { value: 'SEMANTIC', label: 'Semantic', description: 'Facts, knowledge, general understanding' },
-      { value: 'PROCEDURAL', label: 'Procedural', description: 'How-to knowledge, skills, workflows' },
+      {
+        value: 'EPISODIC',
+        label: 'Episodic',
+        description: 'Specific events, conversations, experiences',
+      },
+      {
+        value: 'SEMANTIC',
+        label: 'Semantic',
+        description: 'Facts, knowledge, general understanding',
+      },
+      {
+        value: 'PROCEDURAL',
+        label: 'Procedural',
+        description: 'How-to knowledge, skills, workflows',
+      },
       { value: 'FACTUAL', label: 'Factual', description: 'User facts, personal information' },
       { value: 'PREFERENCE', label: 'Preference', description: 'Likes, dislikes, preferences' },
-      { value: 'IDENTITY', label: 'Identity', description: 'Who the user is - bio, role, background' },
-      { value: 'RELATIONSHIP', label: 'Relationship', description: 'People and their relationships' },
+      {
+        value: 'IDENTITY',
+        label: 'Identity',
+        description: 'Who the user is - bio, role, background',
+      },
+      {
+        value: 'RELATIONSHIP',
+        label: 'Relationship',
+        description: 'People and their relationships',
+      },
       { value: 'GOAL', label: 'Goal', description: 'Goals, plans, intentions' },
       { value: 'PROJECT', label: 'Project', description: 'Project-specific knowledge' },
       { value: 'CUSTOM', label: 'Custom', description: 'User-defined categories' },

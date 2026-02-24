@@ -6,7 +6,10 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { feedService } from '../services/feed-service.js';
-import { generateContextualFeed, processFeedEngagement } from '../services/feed-context-integration.js';
+import {
+  generateContextualFeed,
+  processFeedEngagement,
+} from '../services/feed-context-integration.js';
 import { authenticateDID } from '../middleware/auth.js';
 import { logger } from '../lib/logger.js';
 
@@ -20,7 +23,7 @@ router.get('/', authenticateDID, async (req, res) => {
     const result = await feedService.generateFeed(req.user.userId, {
       limit: limit ? parseInt(limit.toString()) : undefined,
       offset: offset ? parseInt(offset.toString()) : undefined,
-      refresh: refresh === 'true'
+      refresh: refresh === 'true',
     });
 
     if (!result.success) {
@@ -32,8 +35,8 @@ router.get('/', authenticateDID, async (req, res) => {
       data: {
         items: result.items,
         fromCache: result.fromCache,
-        totalCandidates: result.totalCandidates
-      }
+        totalCandidates: result.totalCandidates,
+      },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get feed failed');
@@ -47,7 +50,7 @@ router.get('/discover', authenticateDID, async (req, res) => {
 
     const result = await feedService.generateDiscovery(req.user.userId, {
       type: type?.toString(),
-      limit: limit ? parseInt(limit.toString()) : undefined
+      limit: limit ? parseInt(limit.toString()) : undefined,
     });
 
     if (!result.success) {
@@ -56,7 +59,7 @@ router.get('/discover', authenticateDID, async (req, res) => {
 
     res.json({
       success: true,
-      data: result.recommendations
+      data: result.recommendations,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Discovery failed');
@@ -66,10 +69,7 @@ router.get('/discover', authenticateDID, async (req, res) => {
 
 router.get('/explain/:contentId', authenticateDID, async (req, res) => {
   try {
-    const result = await feedService.explainRecommendation(
-      req.user.userId,
-      req.params.contentId
-    );
+    const result = await feedService.explainRecommendation(req.user.userId, req.params.contentId);
 
     if (!result.success) {
       return res.status(404).json({ success: false, error: result.error });
@@ -77,7 +77,7 @@ router.get('/explain/:contentId', authenticateDID, async (req, res) => {
 
     res.json({
       success: true,
-      data: result.explanation
+      data: result.explanation,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Explain recommendation failed');
@@ -113,7 +113,7 @@ router.post('/interact/:contentId', authenticateDID, async (req, res) => {
     const interactionSchema = z.object({
       action: z.enum(['view', 'like', 'comment', 'share', 'bookmark', 'dismiss', 'hide']),
       duration: z.number().optional(),
-      completionRate: z.number().min(0).max(1).optional()
+      completionRate: z.number().min(0).max(1).optional(),
     });
 
     const parsed = interactionSchema.safeParse(req.body);
@@ -121,7 +121,7 @@ router.post('/interact/:contentId', authenticateDID, async (req, res) => {
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: parsed.error.errors
+        details: parsed.error.errors,
       });
     }
 
@@ -133,7 +133,7 @@ router.post('/interact/:contentId', authenticateDID, async (req, res) => {
         duration: parsed.data.duration,
         completionRate: parsed.data.completionRate,
         source: 'feed',
-        timeOfDay: new Date().getHours()
+        timeOfDay: new Date().getHours(),
       }
     );
 
@@ -146,7 +146,7 @@ router.post('/interact/:contentId', authenticateDID, async (req, res) => {
       contentId: req.params.contentId,
       contentType: 'acu',
       action: parsed.data.action,
-      metadata: parsed.data
+      metadata: parsed.data,
     });
 
     res.json({ success: true });
@@ -161,11 +161,11 @@ router.get('/contextual', authenticateDID, async (req, res) => {
     const { limit, offset, topics } = req.query;
 
     const activeTopics = topics ? topics.toString().split(',') : [];
-    
+
     const result = await feedService.generateContextualFeed(req.user.userId, {
       limit: limit ? parseInt(limit.toString()) : 20,
       offset: offset ? parseInt(offset.toString()) : 0,
-      activeTopics
+      activeTopics,
     });
 
     if (!result.success) {
@@ -174,7 +174,7 @@ router.get('/contextual', authenticateDID, async (req, res) => {
 
     res.json({
       success: true,
-      data: result
+      data: result,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Contextual feed failed');
@@ -198,7 +198,7 @@ router.get('/similar/:conversationId', authenticateDID, async (req, res) => {
 
     res.json({
       success: true,
-      data: result
+      data: result,
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get similar conversations failed');
@@ -210,13 +210,13 @@ router.get('/privacy', authenticateDID, async (req, res) => {
   try {
     const preferences = await feedService.getFeedPreferences(req.user.userId);
     const privacy = await feedService.enforcePrivacyBudget(req.user.userId, preferences);
-    
+
     res.json({
       success: true,
       data: {
         privacyBudget: preferences.privacyBudget,
-        settings: privacy
-      }
+        settings: privacy,
+      },
     });
   } catch (error) {
     log.error({ error: error.message }, 'Get privacy settings failed');

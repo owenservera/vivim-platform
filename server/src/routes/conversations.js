@@ -70,7 +70,14 @@ router.get('/', requireAuth, async (req, res, next) => {
 
     const result = await listConversations(options);
 
-    log.info({ count: result.conversations.length, userId: req.user?.userId, includeMessages: options.includeMessages }, 'User conversations listed');
+    log.info(
+      {
+        count: result.conversations.length,
+        userId: req.user?.userId,
+        includeMessages: options.includeMessages,
+      },
+      'User conversations listed'
+    );
 
     res.json(result);
   } catch (error) {
@@ -146,7 +153,10 @@ router.get('/:id/messages', requireAuth, async (req, res, next) => {
       prisma.message.count({ where: { conversationId: id } }),
     ]);
 
-    log.info({ conversationId: id, count: messages.length, source: 'db' }, 'Messages retrieved from db');
+    log.info(
+      { conversationId: id, count: messages.length, source: 'db' },
+      'Messages retrieved from db'
+    );
 
     const responseData = {
       data: messages,
@@ -191,7 +201,10 @@ router.get('/search/:query', requireAuth, async (req, res, next) => {
       provider,
     });
 
-    log.info({ query, count: conversations.length, userId: req.auth?.apiKeyPrefix }, 'Search completed');
+    log.info(
+      { query, count: conversations.length, userId: req.auth?.apiKeyPrefix },
+      'Search completed'
+    );
 
     res.json({
       query,
@@ -245,7 +258,10 @@ router.get('/recent', requireAuth, async (req, res, next) => {
     const { limit = 10 } = req.query;
     const conversations = await getRecentConversations(parseInt(limit, 10));
 
-    log.info({ count: conversations.length, userId: req.auth?.apiKeyPrefix }, 'Recent conversations retrieved');
+    log.info(
+      { count: conversations.length, userId: req.auth?.apiKeyPrefix },
+      'Recent conversations retrieved'
+    );
 
     res.json({ conversations });
   } catch (error) {
@@ -285,7 +301,7 @@ router.post('/:id/fork', requireAuth, async (req, res, next) => {
   try {
     const { id } = req.params;
     const prisma = getPrismaClient();
-    
+
     const source = await prisma.conversation.findUnique({ where: { id } });
     if (!source) {
       return res.status(404).json({ error: 'Conversation not found' });
@@ -301,7 +317,7 @@ router.post('/:id/fork', requireAuth, async (req, res, next) => {
         createdAt: new Date(),
         updatedAt: new Date(),
         capturedAt: new Date(),
-      }
+      },
     });
 
     routeLog.info({ sourceId: id, forkedId: forked.id }, 'Conversation forked');
@@ -320,7 +336,7 @@ router.get('/:id/related', requireAuth, async (req, res, next) => {
   try {
     const { id } = req.params;
     const prisma = getPrismaClient();
-    
+
     const conversation = await prisma.conversation.findUnique({ where: { id } });
     if (!conversation) {
       return res.status(404).json({ error: 'Conversation not found' });

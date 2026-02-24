@@ -149,11 +149,7 @@ export class ContextSettingsService {
   /**
    * Update a specific setting by path
    */
-  async updateSetting(
-    userId: string,
-    path: string,
-    value: unknown
-  ): Promise<SettingsUpdateResult> {
+  async updateSetting(userId: string, path: string, value: unknown): Promise<SettingsUpdateResult> {
     const current = await this.getSettings(userId);
     const updated = this.setByPath(current, path, value);
     return this.updateSettings(userId, updated);
@@ -296,7 +292,10 @@ export class ContextSettingsService {
             { value: 'full', label: 'Full - Include everything (short conversations only)' },
             { value: 'windowed', label: 'Windowed - Recent messages in full, summarize older' },
             { value: 'compacted', label: 'Compacted - Multi-zone progressive compression' },
-            { value: 'multi_level', label: 'Multi-Level - Hierarchical compression for very long chats' },
+            {
+              value: 'multi_level',
+              label: 'Multi-Level - Hierarchical compression for very long chats',
+            },
             { value: 'none', label: 'None - No compression (may fail for long chats)' },
           ],
         },
@@ -442,33 +441,42 @@ export class ContextSettingsService {
       ...current,
       ...partial,
       // Deep merge nested objects
-      layerBudgetOverrides: partial.layerBudgetOverrides !== undefined
-        ? { ...current.layerBudgetOverrides, ...partial.layerBudgetOverrides }
-        : current.layerBudgetOverrides,
-      ttlMultipliers: partial.ttlMultipliers !== undefined
-        ? { ...current.ttlMultipliers, ...partial.ttlMultipliers }
-        : current.ttlMultipliers,
-      enabledSignals: partial.enabledSignals !== undefined
-        ? { ...current.enabledSignals, ...partial.enabledSignals }
-        : current.enabledSignals,
-      elasticityOverrides: partial.elasticityOverrides !== undefined
-        ? { ...current.elasticityOverrides, ...partial.elasticityOverrides }
-        : current.elasticityOverrides,
-      customBudgetFormulas: partial.customBudgetFormulas !== undefined
-        ? { ...current.customBudgetFormulas, ...partial.customBudgetFormulas }
-        : current.customBudgetFormulas,
-      excludedTopicSlugs: partial.excludedTopicSlugs !== undefined
-        ? partial.excludedTopicSlugs
-        : current.excludedTopicSlugs,
-      excludedEntityIds: partial.excludedEntityIds !== undefined
-        ? partial.excludedEntityIds
-        : current.excludedEntityIds,
-      excludedMemoryIds: partial.excludedMemoryIds !== undefined
-        ? partial.excludedMemoryIds
-        : current.excludedMemoryIds,
-      excludedConversationIds: partial.excludedConversationIds !== undefined
-        ? partial.excludedConversationIds
-        : current.excludedConversationIds,
+      layerBudgetOverrides:
+        partial.layerBudgetOverrides !== undefined
+          ? { ...current.layerBudgetOverrides, ...partial.layerBudgetOverrides }
+          : current.layerBudgetOverrides,
+      ttlMultipliers:
+        partial.ttlMultipliers !== undefined
+          ? { ...current.ttlMultipliers, ...partial.ttlMultipliers }
+          : current.ttlMultipliers,
+      enabledSignals:
+        partial.enabledSignals !== undefined
+          ? { ...current.enabledSignals, ...partial.enabledSignals }
+          : current.enabledSignals,
+      elasticityOverrides:
+        partial.elasticityOverrides !== undefined
+          ? { ...current.elasticityOverrides, ...partial.elasticityOverrides }
+          : current.elasticityOverrides,
+      customBudgetFormulas:
+        partial.customBudgetFormulas !== undefined
+          ? { ...current.customBudgetFormulas, ...partial.customBudgetFormulas }
+          : current.customBudgetFormulas,
+      excludedTopicSlugs:
+        partial.excludedTopicSlugs !== undefined
+          ? partial.excludedTopicSlugs
+          : current.excludedTopicSlugs,
+      excludedEntityIds:
+        partial.excludedEntityIds !== undefined
+          ? partial.excludedEntityIds
+          : current.excludedEntityIds,
+      excludedMemoryIds:
+        partial.excludedMemoryIds !== undefined
+          ? partial.excludedMemoryIds
+          : current.excludedMemoryIds,
+      excludedConversationIds:
+        partial.excludedConversationIds !== undefined
+          ? partial.excludedConversationIds
+          : current.excludedConversationIds,
     };
   }
 

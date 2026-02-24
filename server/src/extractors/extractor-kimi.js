@@ -25,7 +25,7 @@ async function extractKimiConversation(url, options = {}) {
 
     // Capture the live page using SingleFile CLI
     tempFilePath = await captureWithSingleFile(url, 'kimi', { timeout, headless });
-    
+
     logger.info(`Reading captured Kimi HTML from: ${tempFilePath}`);
     const html = await fs.readFile(tempFilePath, 'utf8');
     const $ = cheerio.load(html);
@@ -80,36 +80,39 @@ function extractKimiData($, url, richFormatting = true) {
   const title = $('title').text().replace(' - Kimi', '').trim() || 'Kimi Conversation';
 
   const messages = [];
-  
+
   // Method 1: Look for structured chat turns (common in Kimi)
   // Kimi uses specific containers for each turn
   $('[class*="chat-item"], [class*="message-item"], .chat-turn').each((i, el) => {
     const $el = $(el);
-    
+
     // Role detection based on child elements or classes
     let role = 'assistant'; // Default
-    
+
     // Heuristic 1: User avatar or specific user classes
-    if ($el.find('[class*="user-avatar"]').length > 0 || 
-        $el.find('[class*="user_"]').length > 0 ||
-        $el.hasClass('user-message') ||
-        $el.find('img[alt="user"]').length > 0) {
+    if (
+      $el.find('[class*="user-avatar"]').length > 0 ||
+      $el.find('[class*="user_"]').length > 0 ||
+      $el.hasClass('user-message') ||
+      $el.find('img[alt="user"]').length > 0
+    ) {
       role = 'user';
-    } else if ($el.find('.markdown-content').length > 0 || $el.find('[class*="assistant_"]').length > 0) {
+    } else if (
+      $el.find('.markdown-content').length > 0 ||
+      $el.find('[class*="assistant_"]').length > 0
+    ) {
       role = 'assistant';
     }
 
     const $content = $el.find('.markdown-content, [class*="content_"]').first();
     const $target = $content.length > 0 ? $content : $el;
-    
+
     const text = $target.text().trim();
     if (!text || text.length < 1) {
-return;
-}
+      return;
+    }
 
-    const content = richFormatting
-      ? extractKimiRichContent($target, $, richFormatting)
-      : text;
+    const content = richFormatting ? extractKimiRichContent($target, $, richFormatting) : text;
 
     messages.push({
       id: uuidv4(),
@@ -125,13 +128,11 @@ return;
       const $el = $(el);
       const text = $el.text().trim();
       if (!text) {
-return;
-}
+        return;
+      }
 
       // In this fallback, we assume it's assistant if it's markdown-content
-      const content = richFormatting
-        ? extractKimiRichContent($el, $, richFormatting)
-        : text;
+      const content = richFormatting ? extractKimiRichContent($el, $, richFormatting) : text;
 
       messages.push({
         id: uuidv4(),
@@ -143,8 +144,9 @@ return;
   }
 
   // Deduplicate and clean up
-  const cleanedMessages = messages.filter((msg, index, self) => 
-    index === self.findIndex((m) => m.content === msg.content && m.role === msg.role),
+  const cleanedMessages = messages.filter(
+    (msg, index, self) =>
+      index === self.findIndex((m) => m.content === msg.content && m.role === msg.role)
   );
 
   return {
@@ -195,11 +197,11 @@ function extractKimiRichContent($el, $, richFormatting = true) {
   }
 
   if (contentBlocks.length === 0) {
-return '';
-}
+    return '';
+  }
   if (contentBlocks.length === 1 && contentBlocks[0].type === 'text') {
-return contentBlocks[0].content;
-}
+    return contentBlocks[0].content;
+  }
   return contentBlocks;
 }
 
@@ -216,12 +218,12 @@ function calculateStats(conversation) {
   for (const message of conversation.messages) {
     const processContent = (content) => {
       if (typeof content === 'string') {
-        totalWords += content.split(/\s+/).filter(w => w).length;
+        totalWords += content.split(/\s+/).filter((w) => w).length;
         totalCharacters += content.length;
       } else if (Array.isArray(content)) {
-        content.forEach(block => {
+        content.forEach((block) => {
           if (block.type === 'text') {
-            totalWords += block.content.split(/\s+/).filter(w => w).length;
+            totalWords += block.content.split(/\s+/).filter((w) => w).length;
             totalCharacters += block.content.length;
           } else if (block.type === 'code') {
             totalCodeBlocks++;
@@ -246,7 +248,9 @@ function calculateStats(conversation) {
     totalMermaidDiagrams,
     totalImages,
     firstMessageAt: conversation.messages[0]?.timestamp || conversation.createdAt,
-    lastMessageAt: conversation.messages[conversation.messages.length - 1]?.timestamp || new Date().toISOString(),
+    lastMessageAt:
+      conversation.messages[conversation.messages.length - 1]?.timestamp ||
+      new Date().toISOString(),
   };
 }
 

@@ -2,7 +2,7 @@
  * Enhanced Server-Side Error Reporting Module
  * Integrates with the centralized error reporting system
  * Provides comprehensive error tracking for all server operations
- * 
+ *
  * Features:
  * - Database error context extraction
  * - Service contract violation detection
@@ -38,7 +38,9 @@ export class ServerErrorReporter {
    * Get request context for error correlation
    */
   getRequestContext(requestId) {
-    if (!requestId) return {};
+    if (!requestId) {
+      return {};
+    }
     return this.requestContexts.get(requestId) || {};
   }
 
@@ -54,7 +56,7 @@ export class ServerErrorReporter {
   ) {
     try {
       const requestContext = this.getRequestContext(requestId);
-      
+
       await this.reporter.report({
         level: 'warning',
         component: 'api',
@@ -69,23 +71,23 @@ export class ServerErrorReporter {
             actualParams: actualRequest,
             expectedResponse: expectedContract.expectedResponse,
             actualResponse,
-            deviation
-          }
+            deviation,
+          },
         },
         severity,
-        shouldAlert: severity === 'high' || severity === 'critical'
+        shouldAlert: severity === 'high' || severity === 'critical',
       });
-      
-      logger.warn({ 
-        msg: `[CONTRACT_VIOLATION] ${contractId}`, 
+
+      logger.warn({
+        msg: `[CONTRACT_VIOLATION] ${contractId}`,
         violationType,
         deviation,
-        requestId 
+        requestId,
       });
     } catch (reportError) {
-      logger.error({ 
-        msg: 'Failed to report contract violation', 
-        originalError: reportError?.message 
+      logger.error({
+        msg: 'Failed to report contract violation',
+        originalError: reportError?.message,
       });
     }
   }
@@ -99,9 +101,19 @@ export class ServerErrorReporter {
   ) {
     try {
       const requestContext = this.getRequestContext(requestId);
-      const { model, operation, table, query, duration, parameters, errorCode, constraint, pgCode } = context;
+      const {
+        model,
+        operation,
+        table,
+        query,
+        duration,
+        parameters,
+        errorCode,
+        constraint,
+        pgCode,
+      } = context;
       const target = model || table || 'unknown';
-      
+
       let category = ErrorCategory.DATABASE_ERROR;
       if (pgCode === '23505' || errorCode === 'UNIQUE_CONSTRAINT') {
         category = ErrorCategory.CONSTRAINT_VIOLATION;
@@ -110,9 +122,9 @@ export class ServerErrorReporter {
       } else if (error?.message?.includes('timeout') || error?.message?.includes('canceling')) {
         category = ErrorCategory.TRANSACTION_ROLLBACK;
       }
-      
+
       const fullMessage = `DB_FAILURE [${operation} on ${target}]: ${message}${error ? ` (${error.message})` : ''}`;
-      
+
       await this.reporter.report({
         level: 'error',
         component: 'database',
@@ -135,39 +147,36 @@ export class ServerErrorReporter {
             parameters,
             errorCode: errorCode || pgCode || error?.code,
             table: target,
-            constraint
-          }
+            constraint,
+          },
         },
         severity,
-        shouldAlert: severity === 'critical'
+        shouldAlert: severity === 'critical',
       });
-      
-      logger.error({ 
+
+      logger.error({
         msg: fullMessage,
         duration: `${duration}ms`,
         query: query,
         pgCode,
         constraint,
-        context: { ...requestContext, ...context }, 
+        context: { ...requestContext, ...context },
         severity,
-        requestId 
+        requestId,
       });
     } catch (reportError) {
-      logger.error({ msg: 'Failed to report database error with context', originalError: reportError?.message });
+      logger.error({
+        msg: 'Failed to report database error with context',
+        originalError: reportError?.message,
+      });
     }
   }
 
-  async reportServerError(
-    message,
-    error = null,
-    context = {},
-    severity = 'high',
-    requestId
-  ) {
+  async reportServerError(message, error = null, context = {}, severity = 'high', requestId) {
     try {
       const requestContext = this.getRequestContext(requestId);
       const fullMessage = error?.message ? `${message}: ${error.message}` : message;
-      
+
       await this.reporter.report({
         level: 'error',
         component: 'server',
@@ -180,42 +189,36 @@ export class ServerErrorReporter {
           ...context,
           memoryUsage: process.memoryUsage?.().heapUsed,
           cpuUsage: process.cpuUsage ? process.cpuUsage().user : undefined,
-          errorType: error?.name || 'Error'
+          errorType: error?.name || 'Error',
         },
         severity,
-        shouldAlert: severity === 'critical' || severity === 'fatal'
+        shouldAlert: severity === 'critical' || severity === 'fatal',
       });
-      
-      logger.error({ 
-        msg: `[SERVER_ERROR] ${fullMessage}`, 
-        error: error?.message, 
+
+      logger.error({
+        msg: `[SERVER_ERROR] ${fullMessage}`,
+        error: error?.message,
         stack: error?.stack,
-        context: { ...requestContext, ...context }, 
+        context: { ...requestContext, ...context },
         severity,
-        requestId 
+        requestId,
       });
     } catch (reportError) {
-      logger.error({ 
-        msg: 'Failed to report server error to central system', 
+      logger.error({
+        msg: 'Failed to report server error to central system',
         originalError: reportError?.message,
-        originalMessage: message 
+        originalMessage: message,
       });
     }
   }
 
-  async reportDatabaseError(
-    message,
-    error = null,
-    context = {},
-    severity = 'critical',
-    requestId
-  ) {
+  async reportDatabaseError(message, error = null, context = {}, severity = 'critical', requestId) {
     try {
       const requestContext = this.getRequestContext(requestId);
       const { model, operation, table, query, duration } = context;
       const target = model || table || 'unknown';
       const fullMessage = `DB_FAILURE [${operation} on ${target}]: ${message}${error ? ` (${error.message})` : ''}`;
-      
+
       await this.reporter.report({
         level: 'error',
         component: 'database',
@@ -230,35 +233,29 @@ export class ServerErrorReporter {
           table: target,
           query: query ? (typeof query === 'string' ? query : JSON.stringify(query)) : undefined,
           duration,
-          errorCode: error?.code || context.errorCode
+          errorCode: error?.code || context.errorCode,
         },
         severity,
-        shouldAlert: severity === 'critical'
+        shouldAlert: severity === 'critical',
       });
-      
-      logger.error({ 
+
+      logger.error({
         msg: fullMessage,
         duration: `${duration}ms`,
         query: query,
-        context: { ...requestContext, ...context }, 
+        context: { ...requestContext, ...context },
         severity,
-        requestId 
+        requestId,
       });
     } catch (reportError) {
       logger.error({ msg: 'Failed to report database error', originalError: reportError?.message });
     }
   }
 
-  async reportAuthError(
-    message,
-    error = null,
-    context = {},
-    severity = 'medium',
-    requestId
-  ) {
+  async reportAuthError(message, error = null, context = {}, severity = 'medium', requestId) {
     try {
       const requestContext = this.getRequestContext(requestId);
-      
+
       await this.reporter.report({
         level: 'warning',
         component: 'auth',
@@ -272,24 +269,30 @@ export class ServerErrorReporter {
           action: context.action || 'permission_check',
           reason: context.reason || message,
           ip: context.ip,
-          userAgent: context.userAgent
+          userAgent: context.userAgent,
         },
         severity,
-        shouldAlert: severity === 'critical'
+        shouldAlert: severity === 'critical',
       });
-      
-      logger.warn({ 
-        message, 
-        error: error?.message, 
-        context, 
-        severity,
-        requestId 
-      }, 'Auth error reported');
+
+      logger.warn(
+        {
+          message,
+          error: error?.message,
+          context,
+          severity,
+          requestId,
+        },
+        'Auth error reported'
+      );
     } catch (reportError) {
-      logger.error({ 
-        message: 'Failed to report auth error', 
-        originalError: reportError?.message 
-      }, 'Error reporting failed');
+      logger.error(
+        {
+          message: 'Failed to report auth error',
+          originalError: reportError?.message,
+        },
+        'Error reporting failed'
+      );
     }
   }
 
@@ -307,7 +310,7 @@ export class ServerErrorReporter {
       const isBottleneck = context.responseTime > 2000;
       const bottleneckMsg = isBottleneck ? ` [SLOW: ${context.responseTime}ms]` : '';
       const fullMessage = `API_FAILURE [${method} ${endpoint}] Status: ${statusCode}${bottleneckMsg}${error ? ` - ${error.message}` : ''}`;
-      
+
       await this.reporter.report({
         level: statusCode >= 500 ? 'error' : 'warning',
         component: 'api',
@@ -322,27 +325,31 @@ export class ServerErrorReporter {
           method,
           statusCode,
           responseTime: context.responseTime,
-          requestBody: context.requestBody ? (typeof context.requestBody === 'object' ? JSON.stringify(context.requestBody) : context.requestBody) : undefined,
-          isSlowResponse: isBottleneck
+          requestBody: context.requestBody
+            ? typeof context.requestBody === 'object'
+              ? JSON.stringify(context.requestBody)
+              : context.requestBody
+            : undefined,
+          isSlowResponse: isBottleneck,
         },
         severity,
-        shouldAlert: statusCode >= 500 || isBottleneck
+        shouldAlert: statusCode >= 500 || isBottleneck,
       });
-      
-      logger.error({ 
+
+      logger.error({
         msg: fullMessage,
-        error: error?.message, 
+        error: error?.message,
         responseTime: context.responseTime,
-        context: { ...requestContext, ...context }, 
+        context: { ...requestContext, ...context },
         severity,
-        requestId 
+        requestId,
       });
 
       if (isBottleneck) {
         logger.warn({
           msg: `PERFORMANCE_BOTTLENECK detected at ${method} ${endpoint}`,
           duration: context.responseTime,
-          requestId
+          requestId,
         });
       }
     } catch (reportError) {
@@ -350,16 +357,10 @@ export class ServerErrorReporter {
     }
   }
 
-  async reportSyncError(
-    message,
-    error = null,
-    context = {},
-    severity = 'high',
-    requestId
-  ) {
+  async reportSyncError(message, error = null, context = {}, severity = 'high', requestId) {
     try {
       const requestContext = this.getRequestContext(requestId);
-      
+
       let category = 'sync';
       if (context.conflictType === 'version_mismatch') {
         category = ErrorCategory.VERSION_MISMATCH;
@@ -368,7 +369,7 @@ export class ServerErrorReporter {
       } else if (context.conflictType === 'timeout') {
         category = ErrorCategory.SYNC_TIMEOUT;
       }
-      
+
       await this.reporter.report({
         level: 'error',
         component: 'sync',
@@ -390,25 +391,31 @@ export class ServerErrorReporter {
             operation: context.operation,
             localVersion: context.localVersion,
             remoteVersion: context.remoteVersion,
-            conflictData: context.conflictData
-          }
+            conflictData: context.conflictData,
+          },
         },
         severity,
-        shouldAlert: severity === 'critical'
+        shouldAlert: severity === 'critical',
       });
-      
-      logger.error({ 
-        message, 
-        error: error?.message, 
-        context, 
-        severity,
-        requestId 
-      }, 'Sync error reported');
+
+      logger.error(
+        {
+          message,
+          error: error?.message,
+          context,
+          severity,
+          requestId,
+        },
+        'Sync error reported'
+      );
     } catch (reportError) {
-      logger.error({ 
-        message: 'Failed to report sync error', 
-        originalError: reportError?.message 
-      }, 'Error reporting failed');
+      logger.error(
+        {
+          message: 'Failed to report sync error',
+          originalError: reportError?.message,
+        },
+        'Error reporting failed'
+      );
     }
   }
 
@@ -423,7 +430,7 @@ export class ServerErrorReporter {
   ) {
     try {
       const requestContext = this.getRequestContext(requestId);
-      
+
       await this.reporter.report({
         level: 'warning',
         component: 'sync',
@@ -442,39 +449,31 @@ export class ServerErrorReporter {
               localState,
               remoteState,
               conflictFields: conflictDetails?.conflictingFields,
-              mergeStrategy: resolution?.strategy
-            }
-          }
+              mergeStrategy: resolution?.strategy,
+            },
+          },
         },
         severity: 'medium',
-        shouldAlert: false
+        shouldAlert: false,
       });
-      
-      logger.warn({ 
+
+      logger.warn({
         msg: `[CRDT_CONFLICT] ${entityType}:${entityId}`,
         localVersion: localState?.version,
         remoteVersion: remoteState?.version,
         conflictFields: conflictDetails?.conflictingFields,
         resolution: resolution?.strategy,
-        requestId 
+        requestId,
       });
     } catch (reportError) {
-      logger.error({ 
-        msg: 'Failed to report CRDT conflict', 
-        originalError: reportError?.message 
+      logger.error({
+        msg: 'Failed to report CRDT conflict',
+        originalError: reportError?.message,
       });
     }
   }
 
-  trackSyncIssueViaReporter(
-    issueType,
-    source,
-    target,
-    entityType,
-    entityId,
-    details,
-    requestId
-  ) {
+  trackSyncIssueViaReporter(issueType, source, target, entityType, entityId, details, requestId) {
     try {
       this.reporter.trackSyncIssue({
         issueType,
@@ -482,12 +481,12 @@ export class ServerErrorReporter {
         target,
         entityType,
         entityId,
-        details
+        details,
       });
     } catch (error) {
-      logger.error({ 
-        msg: 'Failed to track sync issue', 
-        originalError: error?.message 
+      logger.error({
+        msg: 'Failed to track sync issue',
+        originalError: error?.message,
       });
     }
   }
@@ -502,7 +501,7 @@ export class ServerErrorReporter {
   ) {
     try {
       const requestContext = this.getRequestContext(requestId);
-      
+
       await this.reporter.report({
         level: 'warning',
         component: 'api',
@@ -515,36 +514,37 @@ export class ServerErrorReporter {
           ...context,
           resource,
           validationErrors: fields,
-          requestBody: context.requestBody
+          requestBody: context.requestBody,
         },
         severity,
-        shouldAlert: false
+        shouldAlert: false,
       });
-      
-      logger.warn({ 
-        message: `Validation Error: ${resource}`,
-        fields,
-        context, 
-        severity,
-        requestId 
-      }, 'Validation error reported');
+
+      logger.warn(
+        {
+          message: `Validation Error: ${resource}`,
+          fields,
+          context,
+          severity,
+          requestId,
+        },
+        'Validation error reported'
+      );
     } catch (reportError) {
-      logger.error({ 
-        message: 'Failed to report validation error', 
-        originalError: reportError?.message 
-      }, 'Error reporting failed');
+      logger.error(
+        {
+          message: 'Failed to report validation error',
+          originalError: reportError?.message,
+        },
+        'Error reporting failed'
+      );
     }
   }
 
-  async reportSecurityIssue(
-    type,
-    details,
-    error,
-    requestId
-  ) {
+  async reportSecurityIssue(type, details, error, requestId) {
     try {
       const requestContext = this.getRequestContext(requestId);
-      
+
       await this.reporter.report({
         level: 'critical',
         component: 'server',
@@ -557,23 +557,29 @@ export class ServerErrorReporter {
           ...details,
           type,
           ip: details.ip,
-          userAgent: details.userAgent
+          userAgent: details.userAgent,
         },
         severity: 'critical',
         shouldAlert: true,
-        alertChannels: ['email', 'slack', 'webhook']
+        alertChannels: ['email', 'slack', 'webhook'],
       });
-      
-      logger.error({ 
-        message: `Security Issue: ${type}`,
-        details,
-        error: error?.message
-      }, 'Security issue reported');
+
+      logger.error(
+        {
+          message: `Security Issue: ${type}`,
+          details,
+          error: error?.message,
+        },
+        'Security issue reported'
+      );
     } catch (reportError) {
-      logger.error({ 
-        message: 'Failed to report security issue', 
-        originalError: reportError?.message 
-      }, 'Error reporting failed');
+      logger.error(
+        {
+          message: 'Failed to report security issue',
+          originalError: reportError?.message,
+        },
+        'Error reporting failed'
+      );
     }
   }
 
@@ -587,7 +593,7 @@ export class ServerErrorReporter {
   ) {
     try {
       const requestContext = this.getRequestContext(requestId);
-      
+
       await this.reporter.report({
         level: 'warning',
         component: 'server',
@@ -600,36 +606,38 @@ export class ServerErrorReporter {
           metric,
           value,
           threshold,
-          percentOver: ((value - threshold) / threshold) * 100
+          percentOver: ((value - threshold) / threshold) * 100,
         },
         severity,
-        shouldAlert: severity === 'medium'
+        shouldAlert: severity === 'medium',
       });
-      
-      logger.warn({ 
-        message: `Performance Issue: ${metric}`,
-        value,
-        threshold,
-        context,
-        severity,
-        requestId 
-      }, 'Performance issue reported');
+
+      logger.warn(
+        {
+          message: `Performance Issue: ${metric}`,
+          value,
+          threshold,
+          context,
+          severity,
+          requestId,
+        },
+        'Performance issue reported'
+      );
     } catch (reportError) {
-      logger.error({ 
-        message: 'Failed to report performance issue', 
-        originalError: reportError?.message 
-      }, 'Error reporting failed');
+      logger.error(
+        {
+          message: 'Failed to report performance issue',
+          originalError: reportError?.message,
+        },
+        'Error reporting failed'
+      );
     }
   }
 
-  async reportWarning(
-    message,
-    context = {},
-    requestId
-  ) {
+  async reportWarning(message, context = {}, requestId) {
     try {
       const requestContext = this.getRequestContext(requestId);
-      
+
       await this.reporter.report({
         level: 'warning',
         component: 'server',
@@ -638,26 +646,25 @@ export class ServerErrorReporter {
         message,
         context: { ...requestContext, ...context },
         severity: 'medium',
-        shouldAlert: false
+        shouldAlert: false,
       });
-      
+
       logger.warn({ message, context, requestId }, 'Server warning reported');
     } catch (reportError) {
-      logger.error({ 
-        message: 'Failed to report warning', 
-        originalError: reportError?.message 
-      }, 'Warning reporting failed');
+      logger.error(
+        {
+          message: 'Failed to report warning',
+          originalError: reportError?.message,
+        },
+        'Warning reporting failed'
+      );
     }
   }
 
-  async reportInfo(
-    message,
-    context = {},
-    requestId
-  ) {
+  async reportInfo(message, context = {}, requestId) {
     try {
       const requestContext = this.getRequestContext(requestId);
-      
+
       await this.reporter.report({
         level: 'info',
         component: 'server',
@@ -666,15 +673,18 @@ export class ServerErrorReporter {
         message,
         context: { ...requestContext, ...context },
         severity: 'low',
-        shouldAlert: false
+        shouldAlert: false,
       });
-      
+
       logger.info({ message, context, requestId }, 'Server info reported');
     } catch (reportError) {
-      logger.error({ 
-        message: 'Failed to report info', 
-        originalError: reportError?.message 
-      }, 'Info reporting failed');
+      logger.error(
+        {
+          message: 'Failed to report info',
+          originalError: reportError?.message,
+        },
+        'Info reporting failed'
+      );
     }
   }
 }
@@ -693,7 +703,7 @@ export const errorReportingMiddleware = (req, res, next) => {
       method: req.method,
       ip: req.ip,
       userAgent: req.get('User-Agent'),
-      userId: req.user?.id || req.session?.userId
+      userId: req.user?.id || req.session?.userId,
     });
   }
 
@@ -702,14 +712,15 @@ export const errorReportingMiddleware = (req, res, next) => {
 
   // Track response time
   const startTime = Date.now();
-  
+
   // Override res.end to track response time
   const originalEnd = res.end;
-  res.end = function(chunk, encoding, callback) {
+  res.end = function (chunk, encoding, callback) {
     const responseTime = Date.now() - startTime;
-    
+
     // Report slow responses
-    if (responseTime > 5000) { // 5 seconds threshold
+    if (responseTime > 5000) {
+      // 5 seconds threshold
       serverErrorReporter.reportPerformanceIssue(
         'response_time',
         responseTime,
@@ -719,7 +730,7 @@ export const errorReportingMiddleware = (req, res, next) => {
         requestId
       );
     }
-    
+
     return originalEnd.call(this, chunk, encoding, callback);
   };
 
@@ -730,7 +741,7 @@ export const errorReportingMiddleware = (req, res, next) => {
 export const globalErrorHandler = (err, req, res, next) => {
   const requestId = req.id || req.headers['x-request-id'];
   const responseTime = res.locals?.responseTime || 0;
-  
+
   // Extract error information
   const errorInfo = {
     message: err.message,
@@ -744,7 +755,7 @@ export const globalErrorHandler = (err, req, res, next) => {
     userId: req.user?.id || req.session?.userId || null,
     responseTime,
     requestBody: req.body,
-    query: req.query
+    query: req.query,
   };
 
   // Determine severity based on error type and status code

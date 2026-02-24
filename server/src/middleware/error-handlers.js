@@ -20,20 +20,23 @@ export const asyncHandler = (fn) => (req, res, next) => {
  */
 export const requestTimer = (req, res, next) => {
   const startTime = Date.now();
-  
+
   res.on('finish', () => {
     const duration = Date.now() - startTime;
     res.locals.responseTime = duration;
-    
+
     // Log slow requests
     if (duration > 1000) {
-      logger.warn({
-        method: req.method,
-        path: req.path,
-        duration,
-        statusCode: res.statusCode
-      }, 'Slow request detected');
-      
+      logger.warn(
+        {
+          method: req.method,
+          path: req.path,
+          duration,
+          statusCode: res.statusCode,
+        },
+        'Slow request detected'
+      );
+
       // Report performance issue for very slow requests
       if (duration > 5000) {
         serverErrorReporter.reportPerformanceIssue(
@@ -47,7 +50,7 @@ export const requestTimer = (req, res, next) => {
       }
     }
   });
-  
+
   next();
 };
 
@@ -56,12 +59,13 @@ export const requestTimer = (req, res, next) => {
  */
 export const handleValidationError = (err, req, res, next) => {
   if (err.name === 'ZodError' || err.name === 'ValidationError') {
-    const fields = err.errors?.map(e => ({
-      field: e.path?.join('.') || 'unknown',
-      error: e.message,
-      value: e.input
-    })) || [];
-    
+    const fields =
+      err.errors?.map((e) => ({
+        field: e.path?.join('.') || 'unknown',
+        error: e.message,
+        value: e.input,
+      })) || [];
+
     serverErrorReporter.reportValidationError(
       req.path,
       fields,
@@ -70,15 +74,15 @@ export const handleValidationError = (err, req, res, next) => {
       'low',
       req.id
     );
-    
+
     return res.status(400).json({
       success: false,
       error: 'Validation failed',
       code: 'VALIDATION_ERROR',
-      details: fields
+      details: fields,
     });
   }
-  
+
   next(err);
 };
 
@@ -88,11 +92,11 @@ export const handleValidationError = (err, req, res, next) => {
 export const apiErrorHandler = (err, req, res, next) => {
   const requestId = req.id || 'unknown';
   const responseTime = res.locals?.responseTime || 0;
-  
+
   // Determine error type and status code
   const statusCode = err.statusCode || err.status || 500;
   const errorType = getErrorType(err);
-  
+
   // Prepare error context
   const errorContext = {
     requestId,
@@ -105,9 +109,9 @@ export const apiErrorHandler = (err, req, res, next) => {
     userId: req.user?.id || req.session?.userId,
     query: req.query,
     requestBody: sanitizeRequestBody(req.body),
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
-  
+
   // Report error based on type and severity
   if (statusCode >= 500) {
     serverErrorReporter.reportAPIError(
@@ -130,23 +134,26 @@ export const apiErrorHandler = (err, req, res, next) => {
       requestId
     );
   }
-  
+
   // Log error
-  logger.error({
-    error: err.message,
-    code: errorType,
-    statusCode,
-    stack: config.isDevelopment ? err.stack : undefined,
-    ...errorContext
-  }, 'API error handled');
-  
+  logger.error(
+    {
+      error: err.message,
+      code: errorType,
+      statusCode,
+      stack: config.isDevelopment ? err.stack : undefined,
+      ...errorContext,
+    },
+    'API error handled'
+  );
+
   // Send response
   res.status(statusCode).json({
     success: false,
     error: getErrorMessage(err, statusCode),
     code: errorType,
     requestId,
-    ...(config.isDevelopment && { stack: err.stack, details: err.details })
+    ...(config.isDevelopment && { stack: err.stack, details: err.details }),
   });
 };
 
@@ -154,17 +161,32 @@ export const apiErrorHandler = (err, req, res, next) => {
  * Get error type from error object
  */
 function getErrorType(err) {
-  if (err.name === 'ZodError') return 'VALIDATION_ERROR';
-  if (err.name === 'JsonWebTokenError') return 'AUTH_ERROR';
-  if (err.name === 'UnauthorizedError') return 'UNAUTHORIZED';
-  if (err.code === 'ECONNREFUSED') return 'CONNECTION_ERROR';
-  if (err.code === 'ETIMEDOUT') return 'TIMEOUT_ERROR';
-  if (err.code === 'ENOENT') return 'NOT_FOUND_ERROR';
+  if (err.name === 'ZodError') {
+    return 'VALIDATION_ERROR';
+  }
+  if (err.name === 'JsonWebTokenError') {
+    return 'AUTH_ERROR';
+  }
+  if (err.name === 'UnauthorizedError') {
+    return 'UNAUTHORIZED';
+  }
+  if (err.code === 'ECONNREFUSED') {
+    return 'CONNECTION_ERROR';
+  }
+  if (err.code === 'ETIMEDOUT') {
+    return 'TIMEOUT_ERROR';
+  }
+  if (err.code === 'ENOENT') {
+    return 'NOT_FOUND_ERROR';
+  }
   if (err.name === 'PrismaClientKnownRequestError') {
     switch (err.code) {
-      case 'P2002': return 'UNIQUE_CONSTRAINT_ERROR';
-      case 'P2025': return 'RECORD_NOT_FOUND_ERROR';
-      default: return 'DATABASE_ERROR';
+      case 'P2002':
+        return 'UNIQUE_CONSTRAINT_ERROR';
+      case 'P2025':
+        return 'RECORD_NOT_FOUND_ERROR';
+      default:
+        return 'DATABASE_ERROR';
     }
   }
   return err.code || 'INTERNAL_ERROR';
@@ -181,19 +203,30 @@ function getErrorMessage(err, statusCode) {
     }
     return err.message;
   }
-  
+
   switch (statusCode) {
-    case 400: return 'Bad request';
-    case 401: return 'Unauthorized';
-    case 403: return 'Forbidden';
-    case 404: return 'Resource not found';
-    case 409: return 'Conflict';
-    case 422: return 'Validation failed';
-    case 429: return 'Too many requests';
-    case 500: return 'Internal server error';
-    case 502: return 'Bad gateway';
-    case 503: return 'Service unavailable';
-    default: return 'An error occurred';
+    case 400:
+      return 'Bad request';
+    case 401:
+      return 'Unauthorized';
+    case 403:
+      return 'Forbidden';
+    case 404:
+      return 'Resource not found';
+    case 409:
+      return 'Conflict';
+    case 422:
+      return 'Validation failed';
+    case 429:
+      return 'Too many requests';
+    case 500:
+      return 'Internal server error';
+    case 502:
+      return 'Bad gateway';
+    case 503:
+      return 'Service unavailable';
+    default:
+      return 'An error occurred';
   }
 }
 
@@ -201,17 +234,19 @@ function getErrorMessage(err, statusCode) {
  * Sanitize request body for logging (remove sensitive data)
  */
 function sanitizeRequestBody(body) {
-  if (!body) return undefined;
-  
+  if (!body) {
+    return undefined;
+  }
+
   const sensitive = ['password', 'secret', 'token', 'apiKey', 'api_key', 'creditCard', 'ssn'];
   const sanitized = { ...body };
-  
+
   for (const key of Object.keys(sanitized)) {
-    if (sensitive.some(s => key.toLowerCase().includes(s))) {
+    if (sensitive.some((s) => key.toLowerCase().includes(s))) {
       sanitized[key] = '[REDACTED]';
     }
   }
-  
+
   return sanitized;
 }
 
@@ -220,7 +255,7 @@ function sanitizeRequestBody(body) {
  */
 export const notFoundHandler = (req, res) => {
   const requestId = req.id || 'unknown';
-  
+
   serverErrorReporter.reportAPIError(
     req.path,
     req.method,
@@ -232,19 +267,19 @@ export const notFoundHandler = (req, res) => {
       method: req.method,
       statusCode: 404,
       ip: req.ip,
-      userAgent: req.get('User-Agent')
+      userAgent: req.get('User-Agent'),
     },
     'low',
     requestId
   );
-  
+
   res.status(404).json({
     success: false,
     error: 'Not found',
     code: 'NOT_FOUND',
     message: `Cannot ${req.method} ${req.path}`,
     requestId,
-    ...(config.enableSwagger && { documentationUrl: '/api-docs' })
+    ...(config.enableSwagger && { documentationUrl: '/api-docs' }),
   });
 };
 
@@ -253,26 +288,26 @@ export const notFoundHandler = (req, res) => {
  */
 export const rateLimitErrorHandler = (req, res, next) => {
   const requestId = req.id || 'unknown';
-  
+
   serverErrorReporter.reportSecurityIssue(
     'rate_limit_exceeded',
     {
       ip: req.ip,
       endpoint: req.path,
       method: req.method,
-      userAgent: req.get('User-Agent')
+      userAgent: req.get('User-Agent'),
     },
     undefined,
     requestId
   );
-  
+
   res.status(429).json({
     success: false,
     error: 'Too many requests',
     code: 'RATE_LIMIT_EXCEEDED',
     message: 'Rate limit exceeded. Please try again later.',
     retryAfter: '60',
-    requestId
+    requestId,
   });
 };
 
@@ -282,7 +317,7 @@ export const rateLimitErrorHandler = (req, res, next) => {
 export const authErrorHandler = (err, req, res, next) => {
   if (err.name === 'UnauthorizedError' || err.message?.includes('Unauthorized')) {
     const requestId = req.id || 'unknown';
-    
+
     serverErrorReporter.reportAuthError(
       'Authentication failed',
       err,
@@ -290,20 +325,20 @@ export const authErrorHandler = (err, req, res, next) => {
         action: 'token_validation',
         reason: err.message,
         ip: req.ip,
-        userAgent: req.get('User-Agent')
+        userAgent: req.get('User-Agent'),
       },
       'medium',
       requestId
     );
-    
+
     return res.status(401).json({
       success: false,
       error: 'Unauthorized',
       code: 'UNAUTHORIZED',
       message: 'Invalid or missing authentication token',
-      requestId
+      requestId,
     });
   }
-  
+
   next(err);
 };

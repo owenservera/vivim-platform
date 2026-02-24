@@ -1,6 +1,6 @@
 /**
  * Isolated Context Engine
- * 
+ *
  * Provides 100% isolated context engine instances per user.
  * Each user gets their own context engine that only accesses their database.
  */
@@ -34,7 +34,10 @@ export class IsolatedContextEngine {
       this.initialized = true;
       log.info({ userDid: this.userDid }, 'IsolatedContextEngine initialized');
     } catch (error) {
-      log.error({ userDid: this.userDid, error: error.message }, 'Failed to initialize IsolatedContextEngine');
+      log.error(
+        { userDid: this.userDid, error: error.message },
+        'Failed to initialize IsolatedContextEngine'
+      );
       throw error;
     }
 
@@ -55,7 +58,7 @@ export class IsolatedContextEngine {
    */
   async getTopicProfiles() {
     await this.ensureInitialized();
-    
+
     return this.userDb.topicProfile.findMany({
       where: { userId: this.userDid },
       orderBy: { mentionCount: 'desc' },
@@ -67,7 +70,7 @@ export class IsolatedContextEngine {
    */
   async getEntityProfiles() {
     await this.ensureInitialized();
-    
+
     return this.userDb.entityProfile.findMany({
       where: { userId: this.userDid },
       orderBy: { mentionCount: 'desc' },
@@ -79,7 +82,7 @@ export class IsolatedContextEngine {
    */
   async getContextBundles() {
     await this.ensureInitialized();
-    
+
     return this.userDb.contextBundle.findMany({
       where: { userId: this.userDid },
       orderBy: { lastUsedAt: 'desc' },
@@ -92,7 +95,7 @@ export class IsolatedContextEngine {
   async getConversations(options = {}) {
     await this.ensureInitialized();
     const { limit = 20, offset = 0 } = options;
-    
+
     return this.userDb.conversation.findMany({
       where: { ownerId: this.userDid },
       take: limit,
@@ -108,7 +111,7 @@ export class IsolatedContextEngine {
   async getMemories(options = {}) {
     await this.ensureInitialized();
     const { limit = 50 } = options;
-    
+
     return this.userDb.memory.findMany({
       where: { userId: this.userDid },
       take: limit,
@@ -121,7 +124,7 @@ export class IsolatedContextEngine {
    */
   async getNotebooks() {
     await this.ensureInitialized();
-    
+
     return this.userDb.notebook.findMany({
       where: { userId: this.userDid },
       orderBy: { updatedAt: 'desc' },
@@ -133,7 +136,7 @@ export class IsolatedContextEngine {
    */
   async getContextSettings() {
     await this.ensureInitialized();
-    
+
     return this.userDb.userContextSettings.findUnique({
       where: { userId: this.userDid },
     });
@@ -144,7 +147,7 @@ export class IsolatedContextEngine {
    */
   async updateContextSettings(settings) {
     await this.ensureInitialized();
-    
+
     return this.userDb.userContextSettings.upsert({
       where: { userId: this.userDid },
       create: {
@@ -160,7 +163,7 @@ export class IsolatedContextEngine {
    */
   async createTopicProfile(topicData) {
     await this.ensureInitialized();
-    
+
     return this.userDb.topicProfile.create({
       data: {
         id: crypto.randomUUID(),
@@ -182,7 +185,7 @@ export class IsolatedContextEngine {
    */
   async createEntityProfile(entityData) {
     await this.ensureInitialized();
-    
+
     return this.userDb.entityProfile.create({
       data: {
         id: crypto.randomUUID(),
@@ -205,7 +208,7 @@ export class IsolatedContextEngine {
    */
   async createContextBundle(bundleData) {
     await this.ensureInitialized();
-    
+
     return this.userDb.contextBundle.create({
       data: {
         id: crypto.randomUUID(),
@@ -229,7 +232,7 @@ export class IsolatedContextEngine {
    */
   async updateTopicProfile(topicId, data) {
     await this.ensureInitialized();
-    
+
     return this.userDb.topicProfile.update({
       where: { id: topicId },
       data: {
@@ -245,7 +248,7 @@ export class IsolatedContextEngine {
    */
   async createMemory(memoryData) {
     await this.ensureInitialized();
-    
+
     return this.userDb.memory.create({
       data: {
         id: crypto.randomUUID(),
@@ -265,7 +268,7 @@ export class IsolatedContextEngine {
    */
   async createNotebook(notebookData) {
     await this.ensureInitialized();
-    
+
     return this.userDb.notebook.create({
       data: {
         id: crypto.randomUUID(),
@@ -283,7 +286,7 @@ export class IsolatedContextEngine {
    */
   async addNotebookEntry(notebookId, entryData) {
     await this.ensureInitialized();
-    
+
     const entry = await this.userDb.notebookEntry.create({
       data: {
         id: crypto.randomUUID(),
@@ -309,7 +312,7 @@ export class IsolatedContextEngine {
    */
   async compileContext(conversationId, options = {}) {
     await this.ensureInitialized();
-    
+
     const {
       includeTopics = true,
       includeEntities = true,
@@ -347,11 +350,15 @@ export class IsolatedContextEngine {
   async getACUs(options = {}) {
     await this.ensureInitialized();
     const { limit = 50, type, category } = options;
-    
+
     const where = {};
-    if (type) where.type = type;
-    if (category) where.category = category;
-    
+    if (type) {
+      where.type = type;
+    }
+    if (category) {
+      where.category = category;
+    }
+
     return this.userDb.atomicChatUnit.findMany({
       where,
       take: limit,
@@ -364,7 +371,7 @@ export class IsolatedContextEngine {
    */
   async getStats() {
     await this.ensureInitialized();
-    
+
     const [
       conversationCount,
       acuCount,

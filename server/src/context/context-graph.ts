@@ -235,9 +235,7 @@ export class ContextGraph {
       }
     }
 
-    return results
-      .sort((a, b) => b.similarity - a.similarity)
-      .slice(0, limit);
+    return results.sort((a, b) => b.similarity - a.similarity).slice(0, limit);
   }
 
   /**
@@ -282,7 +280,7 @@ export class ContextGraph {
    */
   getHubs(limit: number = 10): Array<{ node: GraphNode; degree: number }> {
     return Array.from(this.nodes.values())
-      .map(node => ({ node, degree: node.edges.length }))
+      .map((node) => ({ node, degree: node.edges.length }))
       .sort((a, b) => b.degree - a.degree)
       .slice(0, limit);
   }
@@ -298,14 +296,14 @@ export class ContextGraph {
     if (!node) return [];
 
     return node.edges
-      .filter(e => {
+      .filter((e) => {
         if (options.minWeight && e.weight < options.minWeight) return false;
         const target = this.nodes.get(e.targetId);
         if (!target) return false;
         if (options.type && target.type !== options.type) return false;
         return true;
       })
-      .map(e => this.nodes.get(e.targetId)!)
+      .map((e) => this.nodes.get(e.targetId)!)
       .filter(Boolean);
   }
 
@@ -316,9 +314,7 @@ export class ContextGraph {
     if (fromId === toId) return [fromId];
 
     const visited = new Set<string>();
-    const queue: Array<{ id: string; path: string[] }> = [
-      { id: fromId, path: [fromId] },
-    ];
+    const queue: Array<{ id: string; path: string[] }> = [{ id: fromId, path: [fromId] }];
 
     while (queue.length > 0) {
       const { id, path } = queue.shift()!;
@@ -356,7 +352,7 @@ export class ContextGraph {
     if (source) {
       // Avoid duplicates
       const existingIdx = source.edges.findIndex(
-        e => e.targetId === edge.targetId && e.relation === edge.relation
+        (e) => e.targetId === edge.targetId && e.relation === edge.relation
       );
       if (existingIdx >= 0) {
         source.edges[existingIdx] = edge; // Update
@@ -373,7 +369,7 @@ export class ContextGraph {
     this.nodes.delete(nodeId);
     // Remove edges pointing to this node
     for (const node of this.nodes.values()) {
-      node.edges = node.edges.filter(e => e.targetId !== nodeId);
+      node.edges = node.edges.filter((e) => e.targetId !== nodeId);
     }
   }
 
@@ -381,7 +377,7 @@ export class ContextGraph {
    * Get all nodes of a specific type.
    */
   getNodesByType(type: GraphNodeType): GraphNode[] {
-    return Array.from(this.nodes.values()).filter(n => n.type === type);
+    return Array.from(this.nodes.values()).filter((n) => n.type === type);
   }
 
   /**
@@ -411,7 +407,7 @@ export class ContextGraph {
       avgDegree: nodeCount > 0 ? edgeCount / nodeCount : 0,
       density: maxPossibleEdges > 0 ? edgeCount / maxPossibleEdges : 0,
       disconnectedComponents: components,
-      topHubs: hubs.map(h => ({
+      topHubs: hubs.map((h) => ({
         id: h.node.id,
         label: h.node.label,
         degree: h.degree,
@@ -485,11 +481,13 @@ export class ContextGraph {
   // ============================================================================
 
   private async buildTopicCooccurrenceEdges(prisma: PrismaClient, userId: string): Promise<void> {
-    const cooccurrences = await prisma.$queryRaw<Array<{
-      topic_a: string;
-      topic_b: string;
-      co_count: number;
-    }>>`
+    const cooccurrences = await prisma.$queryRaw<
+      Array<{
+        topic_a: string;
+        topic_b: string;
+        co_count: number;
+      }>
+    >`
       SELECT tc1."topicId" as topic_a, tc2."topicId" as topic_b,
         COUNT(DISTINCT tc1."conversationId") as co_count
       FROM topic_conversations tc1
@@ -530,8 +528,8 @@ export class ContextGraph {
     for (const entity of entities) {
       for (const topic of topics) {
         // Check if they share conversation IDs through their respective edges
-        const entityConvIds = new Set(entity.edges.map(e => e.targetId));
-        const topicConvIds = new Set(topic.edges.map(e => e.targetId));
+        const entityConvIds = new Set(entity.edges.map((e) => e.targetId));
+        const topicConvIds = new Set(topic.edges.map((e) => e.targetId));
 
         let overlap = 0;
         for (const convId of entityConvIds) {

@@ -1,7 +1,6 @@
-
 /**
  * Ticket Store for Secure SSE Handshakes
- * 
+ *
  * Provides a short-lived, in-memory storage for one-time-use tickets.
  * Used to exchange complex auth/crypto payloads (POST) for a simple ticket (GET)
  * to secure EventSource connections.
@@ -12,7 +11,7 @@ class TicketStore {
   constructor(ttlMs = 30000) {
     this.tickets = new Map();
     this.ttlMs = ttlMs;
-    
+
     // Cleanup interval (run every minute)
     setInterval(() => this.cleanup(), 60000).unref();
   }
@@ -25,34 +24,34 @@ class TicketStore {
   create(payload) {
     const ticketId = randomUUID();
     const expiresAt = Date.now() + this.ttlMs;
-    
+
     this.tickets.set(ticketId, {
       payload,
       expiresAt,
     });
-    
+
     return ticketId;
   }
 
   /**
    * Consume a ticket and retrieve its payload
    * Tickets are one-time use only.
-   * @param {string} ticketId 
+   * @param {string} ticketId
    * @returns {Object|null} The payload or null if invalid/expired
    */
   consume(ticketId) {
     const ticket = this.tickets.get(ticketId);
-    
+
     if (!ticket) {
-return null;
-}
-    
+      return null;
+    }
+
     // Check expiration
     if (Date.now() > ticket.expiresAt) {
       this.tickets.delete(ticketId);
       return null;
     }
-    
+
     // One-time use: remove immediately
     this.tickets.delete(ticketId);
     return ticket.payload;

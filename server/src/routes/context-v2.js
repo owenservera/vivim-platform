@@ -1,6 +1,6 @@
 /**
  * Context Routes
- * 
+ *
  * API endpoints for user context management using isolated per-user databases.
  */
 
@@ -11,8 +11,9 @@ import { createRequestLogger } from '../lib/logger.js';
 const router = Router();
 
 function authenticateDIDMiddleware(req, res, next) {
-  const did = req.headers['x-did'] || (req.headers['authorization'] || '').replace('Bearer did:', 'did:');
-  
+  const did =
+    req.headers['x-did'] || (req.headers['authorization'] || '').replace('Bearer did:', 'did:');
+
   if (!did) {
     return res.status(401).json({ success: false, error: 'DID required' });
   }
@@ -20,7 +21,7 @@ function authenticateDIDMiddleware(req, res, next) {
   if (!did.startsWith('did:')) {
     return res.status(401).json({ success: false, error: 'Invalid DID format' });
   }
-  
+
   req.user = { did };
   next();
 }
@@ -29,7 +30,7 @@ router.use(authenticateDIDMiddleware);
 
 router.get('/topics', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const topics = await contextService.getUserTopics(req.user.did);
     res.json({ success: true, topics });
@@ -41,7 +42,7 @@ router.get('/topics', async (req, res, next) => {
 
 router.get('/entities', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const entities = await contextService.getUserEntities(req.user.did);
     res.json({ success: true, entities });
@@ -53,7 +54,7 @@ router.get('/entities', async (req, res, next) => {
 
 router.get('/bundles', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const bundles = await contextService.getUserBundles(req.user.did);
     res.json({ success: true, bundles });
@@ -65,7 +66,7 @@ router.get('/bundles', async (req, res, next) => {
 
 router.post('/bundles', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const { name, description, topicIds, entityIds, acuIds, bundleType } = req.body;
     const bundle = await contextService.createUserBundle(req.user.did, {
@@ -85,7 +86,7 @@ router.post('/bundles', async (req, res, next) => {
 
 router.get('/conversations', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const { limit, offset } = req.query;
     const conversations = await contextService.getUserConversations(req.user.did, {
@@ -101,7 +102,7 @@ router.get('/conversations', async (req, res, next) => {
 
 router.get('/memories', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const { limit } = req.query;
     const memories = await contextService.getUserMemories(req.user.did, {
@@ -116,7 +117,7 @@ router.get('/memories', async (req, res, next) => {
 
 router.post('/memories', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const { content, memoryType, importance, sourceAcuIds, sourceConversationIds } = req.body;
     const memory = await contextService.createUserMemory(req.user.did, {
@@ -135,7 +136,7 @@ router.post('/memories', async (req, res, next) => {
 
 router.get('/notebooks', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const notebooks = await contextService.getUserNotebooks(req.user.did);
     res.json({ success: true, notebooks });
@@ -147,7 +148,7 @@ router.get('/notebooks', async (req, res, next) => {
 
 router.post('/notebooks', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const { name, description, color, icon } = req.body;
     const notebook = await contextService.createUserNotebook(req.user.did, {
@@ -165,14 +166,15 @@ router.post('/notebooks', async (req, res, next) => {
 
 router.post('/notebooks/:notebookId/entries', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const { title, content, sourceAcuId, sourceConversationId } = req.body;
-    const entry = await contextService.addNotebookEntry(
-      req.user.did,
-      req.params.notebookId,
-      { title, content, sourceAcuId, sourceConversationId }
-    );
+    const entry = await contextService.addNotebookEntry(req.user.did, req.params.notebookId, {
+      title,
+      content,
+      sourceAcuId,
+      sourceConversationId,
+    });
     res.json({ success: true, entry });
   } catch (error) {
     log.error({ error: error.message }, 'Failed to add notebook entry');
@@ -182,7 +184,7 @@ router.post('/notebooks/:notebookId/entries', async (req, res, next) => {
 
 router.get('/settings', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const settings = await contextService.getUserSettings(req.user.did);
     res.json({ success: true, settings });
@@ -194,7 +196,7 @@ router.get('/settings', async (req, res, next) => {
 
 router.put('/settings', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const settings = await contextService.updateUserSettings(req.user.did, req.body);
     res.json({ success: true, settings });
@@ -206,7 +208,7 @@ router.put('/settings', async (req, res, next) => {
 
 router.get('/stats', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const stats = await contextService.getUserStats(req.user.did);
     res.json({ success: true, stats });
@@ -218,7 +220,7 @@ router.get('/stats', async (req, res, next) => {
 
 router.get('/acus', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const { limit, type, category } = req.query;
     const acus = await contextService.getUserACUs(req.user.did, {
@@ -235,14 +237,15 @@ router.get('/acus', async (req, res, next) => {
 
 router.post('/compile', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const { conversationId, includeTopics, includeEntities, includeBundles, maxTokens } = req.body;
-    const context = await contextService.compileContext(
-      req.user.did,
-      conversationId,
-      { includeTopics, includeEntities, includeBundles, maxTokens }
-    );
+    const context = await contextService.compileContext(req.user.did, conversationId, {
+      includeTopics,
+      includeEntities,
+      includeBundles,
+      maxTokens,
+    });
     res.json({ success: true, context });
   } catch (error) {
     log.error({ error: error.message }, 'Failed to compile context');
@@ -252,7 +255,7 @@ router.post('/compile', async (req, res, next) => {
 
 router.post('/search', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const { query, limit } = req.body;
     const results = await contextService.semanticSearch(req.user.did, query, { limit });
@@ -265,7 +268,7 @@ router.post('/search', async (req, res, next) => {
 
 router.post('/vector/add', async (req, res, next) => {
   const log = createRequestLogger(req);
-  
+
   try {
     const { acuId, content, metadata } = req.body;
     const result = await contextService.addToVectorStore(req.user.did, acuId, content, metadata);

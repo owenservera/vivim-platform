@@ -26,8 +26,8 @@ class LogBroadcaster {
    */
   initialize() {
     if (this.initialized) {
-return;
-}
+      return;
+    }
 
     const self = this;
 
@@ -72,17 +72,17 @@ return;
     return args
       .map((arg) => {
         if (typeof arg === 'string') {
-return arg;
-}
+          return arg;
+        }
         if (arg instanceof Error) {
-          return `${arg.name}: ${arg.message}${arg.stack ? `\n${  arg.stack}` : ''}`;
+          return `${arg.name}: ${arg.message}${arg.stack ? `\n${arg.stack}` : ''}`;
         }
         if (arg === null) {
-return 'null';
-}
+          return 'null';
+        }
         if (arg === undefined) {
-return 'undefined';
-}
+          return 'undefined';
+        }
         if (typeof arg === 'object') {
           try {
             return JSON.stringify(arg, null, 2);
@@ -178,7 +178,7 @@ return 'undefined';
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache, no-transform',
-      'Connection': 'keep-alive',
+      Connection: 'keep-alive',
       'X-Accel-Buffering': 'no', // Disable nginx buffering
       'Access-Control-Allow-Origin': '*',
     });
@@ -265,8 +265,8 @@ return 'undefined';
    */
   destroy() {
     if (!this.initialized) {
-return;
-}
+      return;
+    }
 
     console.log = this.originalConsole.log;
     console.error = this.originalConsole.error;

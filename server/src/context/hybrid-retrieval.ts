@@ -34,7 +34,7 @@ export class HybridRetrievalService {
       semanticWeight: config?.semanticWeight ?? 0.6,
       keywordWeight: config?.keywordWeight ?? 0.4,
       maxResults: config?.maxResults ?? 10,
-      similarityThreshold: config?.similarityThreshold ?? 0.3
+      similarityThreshold: config?.similarityThreshold ?? 0.3,
     };
   }
 
@@ -50,7 +50,7 @@ export class HybridRetrievalService {
       this.semanticSearchACUs(userId, embedding, topicSlugs),
       this.keywordSearchACUs(userId, keywords, topicSlugs),
       this.semanticSearchMemories(userId, embedding),
-      this.keywordSearchMemories(userId, keywords)
+      this.keywordSearchMemories(userId, keywords),
     ]);
 
     const fusedAcus = this.fuseResults(semanticAcus, keywordAcus);
@@ -58,7 +58,7 @@ export class HybridRetrievalService {
 
     return {
       acus: fusedAcus.slice(0, this.config.maxResults),
-      memories: fusedMemories.slice(0, this.config.maxResults / 2)
+      memories: fusedMemories.slice(0, this.config.maxResults / 2),
     };
   }
 
@@ -86,16 +86,16 @@ export class HybridRetrievalService {
       `;
 
       return results
-        .filter(r => r.similarity >= this.config.similarityThreshold)
-        .filter(r => !topicSlugs.includes(r.category || ''))
-        .map(r => ({
+        .filter((r) => r.similarity >= this.config.similarityThreshold)
+        .filter((r) => !topicSlugs.includes(r.category || ''))
+        .map((r) => ({
           id: r.id,
           content: r.content,
           type: r.type,
           category: r.category,
           createdAt: r.createdAt,
           similarity: r.similarity,
-          source: 'semantic' as const
+          source: 'semantic' as const,
         }));
     } catch (error) {
       logger.warn({ error }, 'PostgreSQL semantic search failed, using fallback');
@@ -111,14 +111,14 @@ export class HybridRetrievalService {
       where: {
         authorDid: userId,
         state: 'ACTIVE',
-        embedding: { isEmpty: false }
+        embedding: { isEmpty: false },
       },
       take: 20,
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
 
     return acus
-      .filter(acu => !topicSlugs.includes(acu.category || ''))
+      .filter((acu) => !topicSlugs.includes(acu.category || ''))
       .slice(0, 10)
       .map((acu, index) => ({
         id: acu.id,
@@ -126,8 +126,8 @@ export class HybridRetrievalService {
         type: acu.type,
         category: acu.category,
         createdAt: acu.createdAt,
-        similarity: 0.5 + (index * 0.02),
-        source: 'semantic' as const
+        similarity: 0.5 + index * 0.02,
+        source: 'semantic' as const,
       }));
   }
 
@@ -155,15 +155,15 @@ export class HybridRetrievalService {
       `;
 
       return results
-        .filter(r => r.similarity >= this.config.similarityThreshold)
-        .map(r => ({
+        .filter((r) => r.similarity >= this.config.similarityThreshold)
+        .map((r) => ({
           id: r.id,
           content: r.content,
           type: 'memory' as const,
           category: r.category,
           createdAt: r.createdAt,
           similarity: r.similarity,
-          source: 'semantic' as const
+          source: 'semantic' as const,
         }));
     } catch (error) {
       logger.warn({ error }, 'Memory semantic search failed');
@@ -180,9 +180,7 @@ export class HybridRetrievalService {
       return [];
     }
 
-    const conditions = keywords.map(k => 
-      Prisma.sql`LOWER(content) LIKE LOWER(${'%' + k + '%'})`
-    );
+    const conditions = keywords.map((k) => Prisma.sql`LOWER(content) LIKE LOWER(${'%' + k + '%'})`);
 
     const whereClause = Prisma.sql`
       WHERE "authorDid" = (SELECT did FROM users WHERE id = ${userId})
@@ -203,28 +201,23 @@ export class HybridRetrievalService {
       LIMIT 20
     `;
 
-    return results.map(r => ({
+    return results.map((r) => ({
       id: r.id,
       content: r.content,
       type: r.type,
       category: r.category,
       createdAt: r.createdAt,
       similarity: Math.min(r.similarity, 1.0),
-      source: 'keyword' as const
+      source: 'keyword' as const,
     }));
   }
 
-  private async keywordSearchMemories(
-    userId: string,
-    keywords: string[]
-  ): Promise<SearchResult[]> {
+  private async keywordSearchMemories(userId: string, keywords: string[]): Promise<SearchResult[]> {
     if (keywords.length === 0) {
       return [];
     }
 
-    const conditions = keywords.map(k => 
-      Prisma.sql`LOWER(content) LIKE LOWER(${'%' + k + '%'})`
-    );
+    const conditions = keywords.map((k) => Prisma.sql`LOWER(content) LIKE LOWER(${'%' + k + '%'})`);
 
     const results = await this.prisma.$queryRaw<any[]>`
       SELECT id, content, category, importance, "createdAt",
@@ -237,14 +230,14 @@ export class HybridRetrievalService {
       LIMIT 10
     `;
 
-    return results.map(r => ({
+    return results.map((r) => ({
       id: r.id,
       content: r.content,
       type: 'memory',
       category: r.category,
       createdAt: r.createdAt,
       similarity: Math.min(r.similarity, 1.0),
-      source: 'keyword' as const
+      source: 'keyword' as const,
     }));
   }
 
@@ -254,23 +247,23 @@ export class HybridRetrievalService {
 
     semantic.forEach((item, index) => {
       const rrf = 1 / (index + k);
-      const combinedScore = (this.config.semanticWeight * rrf) + 
-        (this.config.keywordWeight * (item.similarity || 0));
+      const combinedScore =
+        this.config.semanticWeight * rrf + this.config.keywordWeight * (item.similarity || 0);
       scoreMap.set(item.id, { result: item, rrf: combinedScore });
     });
 
     keyword.forEach((item, index) => {
       const rrf = 1 / (index + k);
-      const combinedScore = (this.config.keywordWeight * rrf) + 
-        (this.config.semanticWeight * (item.similarity || 0));
-      
+      const combinedScore =
+        this.config.keywordWeight * rrf + this.config.semanticWeight * (item.similarity || 0);
+
       if (scoreMap.has(item.id)) {
         const existing = scoreMap.get(item.id)!;
         existing.rrf = (existing.rrf + combinedScore) / 2;
         existing.result = {
           ...item,
           similarity: (existing.result.similarity + item.similarity) / 2,
-          source: 'hybrid'
+          source: 'hybrid',
         };
       } else {
         scoreMap.set(item.id, { result: item, rrf: combinedScore });
@@ -279,7 +272,7 @@ export class HybridRetrievalService {
 
     return Array.from(scoreMap.values())
       .sort((a, b) => b.rrf - a.rrf)
-      .map(x => x.result);
+      .map((x) => x.result);
   }
 
   private extractKeywords(message: string): string[] {
@@ -287,15 +280,62 @@ export class HybridRetrievalService {
       .toLowerCase()
       .replace(/[^\w\s]/g, ' ')
       .split(/\s+/)
-      .filter(word => word.length > 2);
+      .filter((word) => word.length > 2);
 
     const stopwords = new Set([
-      'the', 'is', 'at', 'which', 'on', 'and', 'a', 'an', 'in', 'to', 'of',
-      'for', 'with', 'from', 'this', 'that', 'it', 'are', 'was', 'were',
-      'be', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would',
-      'could', 'should', 'may', 'might', 'can', 'what', 'how', 'when',
-      'where', 'who', 'whom', 'whose', 'why', 'please', 'thanks', 'thank',
-      'hello', 'hi', 'hey', 'there', 'their', 'they', 'you', 'your'
+      'the',
+      'is',
+      'at',
+      'which',
+      'on',
+      'and',
+      'a',
+      'an',
+      'in',
+      'to',
+      'of',
+      'for',
+      'with',
+      'from',
+      'this',
+      'that',
+      'it',
+      'are',
+      'was',
+      'were',
+      'be',
+      'have',
+      'has',
+      'had',
+      'do',
+      'does',
+      'did',
+      'will',
+      'would',
+      'could',
+      'should',
+      'may',
+      'might',
+      'can',
+      'what',
+      'how',
+      'when',
+      'where',
+      'who',
+      'whom',
+      'whose',
+      'why',
+      'please',
+      'thanks',
+      'thank',
+      'hello',
+      'hi',
+      'hey',
+      'there',
+      'their',
+      'they',
+      'you',
+      'your',
     ]);
 
     const wordCounts = new Map<string, number>();
@@ -312,14 +352,15 @@ export class HybridRetrievalService {
   }
 
   private calculateKeywordScore(keywords: string[]): Prisma.Sql {
-    const cases = keywords.map((k, i) => 
-      Prisma.sql`CASE WHEN LOWER(content) LIKE LOWER(${'%' + k + '%'}) THEN ${1 / (i + 1)} ELSE 0 END`
+    const cases = keywords.map(
+      (k, i) =>
+        Prisma.sql`CASE WHEN LOWER(content) LIKE LOWER(${'%' + k + '%'}) THEN ${1 / (i + 1)} ELSE 0 END`
     );
-    
+
     if (cases.length === 0) {
       return Prisma.sql`0`;
     }
-    
+
     return Prisma.sql`(${Prisma.join(cases, ' + ')})`;
   }
 }

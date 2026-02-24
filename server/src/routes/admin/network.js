@@ -102,7 +102,7 @@ router.get('/nodes/:id', async (req, res, next) => {
 
   try {
     const { id } = req.params;
-    const node = mockNodes.find(n => n.id === id);
+    const node = mockNodes.find((n) => n.id === id);
 
     if (!node) {
       return res.status(404).json({ error: 'Node not found' });
@@ -196,9 +196,9 @@ router.get('/stats', async (req, res, next) => {
   try {
     const stats = {
       totalNodes: mockNodes.length,
-      activeNodes: mockNodes.filter(n => n.status === 'online').length,
+      activeNodes: mockNodes.filter((n) => n.status === 'online').length,
       totalConnections: mockConnections.length,
-      activeConnections: mockConnections.filter(c => c.status === 'active').length,
+      activeConnections: mockConnections.filter((c) => c.status === 'active').length,
       avgLatency: mockConnections.reduce((sum, c) => sum + c.latency, 0) / mockConnections.length,
       totalBandwidth: mockConnections.reduce((sum, c) => sum + c.bandwidth, 0),
     };

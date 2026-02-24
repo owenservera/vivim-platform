@@ -155,7 +155,7 @@ router.get('/telemetry/estimate', async (req, res) => {
     const estimate = aiTelemetry.estimateCost(
       provider,
       parseInt(promptTokens, 10),
-      parseInt(completionTokens, 10),
+      parseInt(completionTokens, 10)
     );
     res.json({ success: true, data: estimate });
   } catch (error) {
@@ -199,7 +199,7 @@ router.get('/capabilities', async (req, res) => {
             isFree: info.isFree,
             capabilities: info.capabilities,
           })),
-        personas: personas.map(p => ({
+        personas: personas.map((p) => ({
           id: p.id,
           name: p.name,
           emoji: p.emoji,
@@ -207,9 +207,21 @@ router.get('/capabilities', async (req, res) => {
           isBuiltIn: p.isBuiltIn,
         })),
         agentModes: [
-          { id: 'single-shot', name: 'Single Shot', description: 'One LLM call, may include tool use' },
-          { id: 'multi-step', name: 'Multi-Step', description: 'Multiple LLM calls with tool chaining' },
-          { id: 'researcher', name: 'Deep Research', description: 'Extended research with many tool calls' },
+          {
+            id: 'single-shot',
+            name: 'Single Shot',
+            description: 'One LLM call, may include tool use',
+          },
+          {
+            id: 'multi-step',
+            name: 'Multi-Step',
+            description: 'Multiple LLM calls with tool chaining',
+          },
+          {
+            id: 'researcher',
+            name: 'Deep Research',
+            description: 'Extended research with many tool calls',
+          },
           { id: 'conversational', name: 'Quick Chat', description: 'Lightweight, fast responses' },
         ],
         toolSets: [

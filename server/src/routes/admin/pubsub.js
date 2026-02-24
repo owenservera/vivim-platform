@@ -76,7 +76,7 @@ router.get('/topics', async (req, res, next) => {
     let filtered = mockTopics;
 
     if (type) {
-      filtered = filtered.filter(t => t.type === type);
+      filtered = filtered.filter((t) => t.type === type);
     }
 
     log.info({ count: filtered.length, filters: { type } }, 'PubSub topics listed');
@@ -101,7 +101,7 @@ router.get('/topics/:id', async (req, res, next) => {
 
   try {
     const { id } = req.params;
-    const topic = mockTopics.find(t => t.id === id);
+    const topic = mockTopics.find((t) => t.id === id);
 
     if (!topic) {
       return res.status(404).json({ error: 'Topic not found' });
@@ -130,7 +130,7 @@ router.get('/topics/:id/subscribers', async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const subscribers = mockSubscribers.filter(s => s.topicId === id);
+    const subscribers = mockSubscribers.filter((s) => s.topicId === id);
 
     log.info({ topicId: id, count: subscribers.length }, 'Topic subscribers retrieved');
 

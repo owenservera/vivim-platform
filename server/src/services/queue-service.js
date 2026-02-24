@@ -1,6 +1,6 @@
 /**
  * Background Queue Service
- * 
+ *
  * Handles long-running tasks asynchronously.
  * Uses 'p-queue' for concurrency control.
  */
@@ -33,20 +33,25 @@ class QueueService {
 
   /**
    * Add a task to the queue
-   * @param {string} taskType 
-   * @param {Function} taskFunction 
+   * @param {string} taskType
+   * @param {Function} taskFunction
    */
   async add(taskType, taskFunction) {
     const queue = this.getQueue(taskType);
     const taskId = uuidv4();
-    
+
     return queue.add(async () => {
       try {
         await taskFunction();
         logger.info({ taskId, taskType }, 'Task completed');
       } catch (error) {
         logger.error({ taskId, taskType, error: error.message }, 'Task failed');
-        serverErrorReporter.reportServerError(`Background task failed: ${taskType}`, error, { taskId, taskType }, 'medium');
+        serverErrorReporter.reportServerError(
+          `Background task failed: ${taskType}`,
+          error,
+          { taskId, taskType },
+          'medium'
+        );
       }
     });
   }
@@ -56,7 +61,9 @@ class QueueService {
    */
   getStats(taskType) {
     const queue = this.queues.get(taskType);
-    if (!queue) return { size: 0, pending: 0 };
+    if (!queue) {
+      return { size: 0, pending: 0 };
+    }
     return { size: queue.size, pending: queue.pending };
   }
 }

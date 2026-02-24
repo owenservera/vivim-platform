@@ -1,18 +1,18 @@
 /**
  * Z.AI MCP Service
- * 
+ *
  * Provides MCP tool capabilities to VIVIM users:
  * - Web Search (!websearch)
  * - Web Reader (!read)
  * - GitHub/Zread (!github)
  * - Vision (!vision) - handled separately
- * 
+ *
  * Uses Z.AI API key from environment (ZAI_API_KEY)
  */
 
 import { logger } from '../lib/logger.js';
 
-const ZAI_API_KEY = process.env.ZAI_API_KEY;
+const { ZAI_API_KEY } = process.env;
 const ZAI_BASE_URL = 'https://api.z.ai/api/mcp';
 
 // MCP Server endpoints
@@ -34,8 +34,8 @@ async function mcpRequest(endpoint, toolName, params) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json, text/event-stream',
-      'Authorization': `Bearer ${ZAI_API_KEY}`,
+      Accept: 'application/json, text/event-stream',
+      Authorization: `Bearer ${ZAI_API_KEY}`,
     },
     body: JSON.stringify({
       jsonrpc: '2.0',
@@ -55,25 +55,31 @@ async function mcpRequest(endpoint, toolName, params) {
   }
 
   const contentType = response.headers.get('content-type') || '';
-  
+
   if (contentType.includes('text/event-stream')) {
     let result = '';
     const reader = response.body?.getReader();
-    if (!reader) throw new Error('No response body');
-    
+    if (!reader) {
+      throw new Error('No response body');
+    }
+
     const decoder = new TextDecoder();
     while (true) {
       const { done, value } = await reader.read();
-      if (done) break;
-      
+      if (done) {
+        break;
+      }
+
       const chunk = decoder.decode(value, { stream: true });
       const lines = chunk.split('\n');
-      
+
       for (const line of lines) {
         if (line.startsWith('data: ')) {
           const data = line.slice(6);
-          if (data === '[DONE]') break;
-          
+          if (data === '[DONE]') {
+            break;
+          }
+
           try {
             const parsed = JSON.parse(data);
             if (parsed.result?.content?.[0]?.text) {
@@ -87,7 +93,7 @@ async function mcpRequest(endpoint, toolName, params) {
         }
       }
     }
-    
+
     try {
       return JSON.parse(result);
     } catch {
@@ -96,7 +102,7 @@ async function mcpRequest(endpoint, toolName, params) {
   }
 
   const data = await response.json();
-  
+
   if (data.error) {
     throw new Error(`Z.AI MCP error: ${data.error.message}`);
   }
@@ -110,15 +116,13 @@ async function mcpRequest(endpoint, toolName, params) {
  */
 export async function webSearch(query) {
   logger.info({ query }, 'Z.AI Web Search');
-  
+
   const result = await mcpRequest(MCP_ENDPOINTS.webSearch, 'webSearchPrime', {
     search_query: query,
   });
 
   // Parse and format results
-  const searchResults = result?.content?.[0]?.text 
-    ? JSON.parse(result.content[0].text) 
-    : result;
+  const searchResults = result?.content?.[0]?.text ? JSON.parse(result.content[0].text) : result;
 
   return {
     tool: 'websearch',
@@ -134,16 +138,14 @@ export async function webSearch(query) {
  */
 export async function webRead(url) {
   logger.info({ url }, 'Z.AI Web Reader');
-  
+
   const result = await mcpRequest(MCP_ENDPOINTS.webReader, 'webReader', {
     url,
     include_content: true,
   });
 
   // Parse the result
-  const content = result?.content?.[0]?.text 
-    ? JSON.parse(result.content[0].text) 
-    : result;
+  const content = result?.content?.[0]?.text ? JSON.parse(result.content[0].text) : result;
 
   return {
     tool: 'webreader',
@@ -161,16 +163,14 @@ export async function webRead(url) {
  */
 export async function githubSearch(repo, query) {
   logger.info({ repo, query }, 'Z.AI GitHub Search (Zread)');
-  
+
   const result = await mcpRequest(MCP_ENDPOINTS.zread, 'search_doc', {
     repo,
     query,
   });
 
   // Parse the result
-  const searchResults = result?.content?.[0]?.text 
-    ? JSON.parse(result.content[0].text) 
-    : result;
+  const searchResults = result?.content?.[0]?.text ? JSON.parse(result.content[0].text) : result;
 
   return {
     tool: 'github',
@@ -187,14 +187,12 @@ export async function githubSearch(repo, query) {
  */
 export async function githubRepoStructure(repo) {
   logger.info({ repo }, 'Z.AI GitHub Repo Structure');
-  
+
   const result = await mcpRequest(MCP_ENDPOINTS.zread, 'get_repo_structure', {
     repo,
   });
 
-  const structure = result?.content?.[0]?.text 
-    ? JSON.parse(result.content[0].text) 
-    : result;
+  const structure = result?.content?.[0]?.text ? JSON.parse(result.content[0].text) : result;
 
   return {
     tool: 'github',
@@ -209,15 +207,13 @@ export async function githubRepoStructure(repo) {
  */
 export async function githubReadFile(repo, filePath) {
   logger.info({ repo, filePath }, 'Z.AI GitHub Read File');
-  
+
   const result = await mcpRequest(MCP_ENDPOINTS.zread, 'read_file', {
     repo,
     path: filePath,
   });
 
-  const content = result?.content?.[0]?.text 
-    ? JSON.parse(result.content[0].text) 
-    : result;
+  const content = result?.content?.[0]?.text ? JSON.parse(result.content[0].text) : result;
 
   return {
     tool: 'github',
@@ -233,15 +229,16 @@ export async function githubReadFile(repo, filePath) {
  */
 export async function visionAnalyze(imagePath, analysisType = 'general') {
   logger.info({ imagePath, analysisType }, 'Z.AI Vision Analysis');
-  
+
   // For vision, we use the local MCP server
   // This is a placeholder - actual implementation depends on how images are handled
   // The Vision MCP is installed locally via @z_ai/mcp-server
-  
+
   return {
     tool: 'vision',
     status: 'not_implemented',
-    message: 'Vision analysis requires local MCP server setup. Use !read to analyze screenshots from URLs.',
+    message:
+      'Vision analysis requires local MCP server setup. Use !read to analyze screenshots from URLs.',
   };
 }
 
@@ -252,11 +249,11 @@ export async function executeZAIAction(action, params) {
   switch (action) {
     case 'websearch':
       return webSearch(params.query);
-    
+
     case 'read':
     case 'readurl':
       return webRead(params.url);
-    
+
     case 'github':
       if (params.file) {
         return githubReadFile(params.repo, params.file);
@@ -265,10 +262,10 @@ export async function executeZAIAction(action, params) {
         return githubRepoStructure(params.repo);
       }
       return githubSearch(params.repo, params.query);
-    
+
     case 'vision':
       return visionAnalyze(params.image, params.type);
-    
+
     default:
       throw new Error(`Unknown Z.AI action: ${action}`);
   }

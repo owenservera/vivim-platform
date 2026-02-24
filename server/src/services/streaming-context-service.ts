@@ -1,6 +1,6 @@
 /**
  * Streaming Context Service
- * 
+ *
  * Provides real-time context updates during AI conversations.
  */
 
@@ -49,9 +49,9 @@ export class StreamingContextService {
   }> {
     const operationLog = createOperationLogger('preassembleContext', {
       userId: config.userId,
-      conversationId: config.conversationId
+      conversationId: config.conversationId,
     });
-    
+
     operationLog.debug({ msg: 'Starting context pre-assembly', config });
     const startTime = Date.now();
 
@@ -61,14 +61,14 @@ export class StreamingContextService {
       operationLog.debug({
         msg: 'Context pre-assembled',
         tokens: result.budget?.totalUsed,
-        assemblyTimeMs: Date.now() - startTime
+        assemblyTimeMs: Date.now() - startTime,
       });
 
       return {
         systemPrompt: result.systemPrompt,
         layers: result.budget,
         stats: result.metadata,
-        assemblyTimeMs: Date.now() - startTime
+        assemblyTimeMs: Date.now() - startTime,
       };
     } catch (error) {
       operationLog.error({ msg: 'Context pre-assembly failed', error: (error as Error).message });
@@ -86,31 +86,31 @@ export class StreamingContextService {
   async *streamContext(config: StreamingContextConfig): AsyncGenerator<ContextChunk> {
     const operationLog = createOperationLogger('streamContext', {
       userId: config.userId,
-      conversationId: config.conversationId
+      conversationId: config.conversationId,
     });
-    
+
     const stateKey = `${config.userId}:${config.conversationId}`;
-    
+
     operationLog.debug({ msg: 'Starting context streaming' });
-    
+
     this.state.set(stateKey, {
       userId: config.userId,
       conversationId: config.conversationId,
       assembled: false,
       currentChunk: 0,
       totalChunks: 0,
-      startTime: Date.now()
+      startTime: Date.now(),
     });
 
     try {
       const preassembled = await this.preassembleContext(config);
-      
+
       yield {
         layer: 'full_context',
         content: preassembled.systemPrompt,
         tokenCount: preassembled.stats?.conversationStats?.totalTokens || 0,
         priority: 100,
-        isFinal: true
+        isFinal: true,
       };
 
       const state = this.state.get(stateKey);
@@ -122,7 +122,7 @@ export class StreamingContextService {
 
       eventBus.emit('context:stream_complete', config.userId, {
         conversationId: config.conversationId,
-        assemblyTimeMs: Date.now() - state!.startTime
+        assemblyTimeMs: Date.now() - state!.startTime,
       });
 
       operationLog.debug({ msg: 'Context streaming complete', chunks: 1 });
@@ -141,7 +141,11 @@ export class StreamingContextService {
     }
   }
 
-  async updateContext(userId: string, conversationId: string, newMessage: string): Promise<{ updated: boolean; newTopics?: string[] }> {
+  async updateContext(
+    userId: string,
+    conversationId: string,
+    newMessage: string
+  ): Promise<{ updated: boolean; newTopics?: string[] }> {
     const operationLog = createOperationLogger('updateContext', { userId, conversationId });
     operationLog.debug({ msg: 'Updating context', newMessageLength: newMessage.length });
 
@@ -157,7 +161,7 @@ export class StreamingContextService {
       eventBus.emit('context:updated', userId, {
         conversationId,
         trigger: 'new_message',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
 
       operationLog.debug({ msg: 'Context updated' });
@@ -175,16 +179,16 @@ export class StreamingContextService {
   private async assembleWithCache(config: StreamingContextConfig) {
     const operationLog = createOperationLogger('assembleWithCache', {
       userId: config.userId,
-      conversationId: config.conversationId
+      conversationId: config.conversationId,
     });
 
     try {
       const { unifiedContextService } = await import('../services/unified-context-service.js');
-      
+
       const result = await unifiedContextService.generateContextForChat(config.conversationId, {
         userId: config.userId,
         userMessage: config.initialMessage,
-        personaId: config.personaId
+        personaId: config.personaId,
       });
 
       operationLog.debug({ msg: 'Context assembled with cache', tokens: result.layers?.totalUsed });
@@ -193,7 +197,7 @@ export class StreamingContextService {
         systemPrompt: result.systemPrompt,
         budget: result.layers,
         metadata: result.stats,
-        bundlesUsed: []
+        bundlesUsed: [],
       };
     } catch (error) {
       operationLog.error({ msg: 'Assembly with cache failed', error: (error as Error).message });
@@ -208,11 +212,11 @@ export class ContextUpdateSubscriber {
   subscribe(userId: string, conversationId: string, callback: (update: any) => void): () => void {
     const operationLog = createOperationLogger('subscribe', { userId, conversationId });
     const key = `${userId}:${conversationId}`;
-    
+
     if (!this.subscribers.has(key)) {
       this.subscribers.set(key, new Set());
     }
-    
+
     this.subscribers.get(key)!.add(callback);
     operationLog.debug({ msg: 'Subscribed to context updates' });
 
@@ -228,14 +232,17 @@ export class ContextUpdateSubscriber {
   private emit(key: string, event: string, data: any) {
     const operationLog = createOperationLogger('emit', { key, event });
     const subs = this.subscribers.get(key);
-    
+
     if (subs) {
       operationLog.debug({ msg: 'Broadcasting to subscribers', count: subs.size });
-      subs.forEach(cb => {
+      subs.forEach((cb) => {
         try {
           cb({ event, data, timestamp: Date.now() });
         } catch (error) {
-          operationLog.error({ msg: 'Subscriber callback failed', error: (error as Error).message });
+          operationLog.error({
+            msg: 'Subscriber callback failed',
+            error: (error as Error).message,
+          });
         }
       });
     }
@@ -248,8 +255,10 @@ export const contextUpdateSubscriber = new ContextUpdateSubscriber();
 eventBus.on('feed:engagement', async (userId, event) => {
   const operationLog = createOperationLogger('feedEngagementEvent', { userId });
   operationLog.debug({ msg: 'Feed engagement event for context', action: event.action });
-  
-  const state = await import('../services/feed-context-integration.js').then(m => m.getContextState(userId));
+
+  const state = await import('../services/feed-context-integration.js').then((m) =>
+    m.getContextState(userId)
+  );
   if (state.success) {
     contextUpdateSubscriber.emit(`${userId}:${event.contentId}`, 'context_update', state.state);
   }
@@ -258,14 +267,14 @@ eventBus.on('feed:engagement', async (userId, event) => {
 eventBus.on('context:updated', (userId, event) => {
   const operationLog = createOperationLogger('contextUpdatedEvent', { userId });
   operationLog.debug({ msg: 'Context updated event', conversationId: event.conversationId });
-  
+
   contextUpdateSubscriber.emit(`${userId}:${event.conversationId}`, 'context_refresh', event);
 });
 
 eventBus.on('memory:created', (userId, event) => {
   const operationLog = createOperationLogger('memoryCreatedEvent', { userId });
   operationLog.debug({ msg: 'Memory created event', memoryId: event.memoryId });
-  
+
   contextUpdateSubscriber.emit(`${userId}`, 'memory_created', event);
 });
 

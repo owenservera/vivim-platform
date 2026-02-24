@@ -5,7 +5,7 @@ import {
   BundleType,
   ConversationArc,
   ITokenEstimator,
-  ILLMService
+  ILLMService,
 } from './types';
 import { MemoryRetrievalService } from './memory/memory-retrieval-service';
 import { createEmbeddingService } from './utils/zai-service.js';
@@ -28,7 +28,7 @@ export class BundleCompiler {
     this.prisma = config.prisma;
     this.tokenEstimator = config.tokenEstimator;
     this.llmService = config.llmService;
-    
+
     if (config.enableIntelligentMemoryRetrieval) {
       const embeddingService = createEmbeddingService();
       this.memoryRetrievalService = new MemoryRetrievalService({
@@ -53,7 +53,15 @@ export class BundleCompiler {
       preferredTypes?: string[];
       includePinned?: boolean;
     } = {}
-  ): Promise<Array<{ id: string; content: string; memoryType: string; importance: number; relevance: number }>> {
+  ): Promise<
+    Array<{
+      id: string;
+      content: string;
+      memoryType: string;
+      importance: number;
+      relevance: number;
+    }>
+  > {
     if (!this.memoryRetrievalService) {
       return [];
     }
@@ -65,7 +73,7 @@ export class BundleCompiler {
       includePinned: options.includePinned ?? true,
     });
 
-    return result.memories.map(m => ({
+    return result.memories.map((m) => ({
       id: m.id,
       content: m.content,
       memoryType: m.memoryType,
@@ -80,61 +88,85 @@ export class BundleCompiler {
         userId,
         isActive: true,
         category: { in: ['biography', 'identity', 'role'] },
-        importance: { gte: 0.8 }
+        importance: { gte: 0.8 },
       },
       orderBy: { importance: 'desc' },
-      take: targetTokens ? Math.ceil(targetTokens / 50) : 15
+      take: targetTokens ? Math.ceil(targetTokens / 50) : 15,
     });
 
-    const compiled = [`## About This User`, ...coreMemories.map(m => `- ${m.content}`)].join('\n');
+    const compiled = [`## About This User`, ...coreMemories.map((m) => `- ${m.content}`)].join(
+      '\n'
+    );
 
-    return this.storeBundle(userId, 'identity_core', compiled, {
-      memoryIds: coreMemories.map(m => m.id)
-    }, null, null, null, null);
+    return this.storeBundle(
+      userId,
+      'identity_core',
+      compiled,
+      {
+        memoryIds: coreMemories.map((m) => m.id),
+      },
+      null,
+      null,
+      null,
+      null
+    );
   }
 
   async compileGlobalPrefs(userId: string, targetTokens?: number): Promise<CompiledBundle> {
     const [instructions, prefMemories] = await Promise.all([
       this.prisma.customInstruction.findMany({
         where: { userId, isActive: true, scope: 'global' },
-        orderBy: { priority: 'desc' }
+        orderBy: { priority: 'desc' },
       }),
       this.prisma.memory.findMany({
         where: {
           userId,
           isActive: true,
           category: 'preference',
-          importance: { gte: 0.6 }
+          importance: { gte: 0.6 },
         },
         orderBy: { importance: 'desc' },
-        take: targetTokens ? Math.ceil(targetTokens / 60) : 10
-      })
+        take: targetTokens ? Math.ceil(targetTokens / 60) : 10,
+      }),
     ]);
 
     const compiled = [
       `## Response Guidelines`,
-      ...instructions.map(i => `- ${i.content}`),
+      ...instructions.map((i) => `- ${i.content}`),
       ``,
       `## Known Preferences`,
-      ...prefMemories.map(m => `- ${m.content}`)
+      ...prefMemories.map((m) => `- ${m.content}`),
     ].join('\n');
 
-    return this.storeBundle(userId, 'global_prefs', compiled, {
-      instructionIds: instructions.map(i => i.id),
-      memoryIds: prefMemories.map(m => m.id)
-    }, null, null, null, null);
+    return this.storeBundle(
+      userId,
+      'global_prefs',
+      compiled,
+      {
+        instructionIds: instructions.map((i) => i.id),
+        memoryIds: prefMemories.map((m) => m.id),
+      },
+      null,
+      null,
+      null,
+      null
+    );
   }
 
-  async compileTopicContext(userId: string, topicSlug: string, targetTokens?: number): Promise<CompiledBundle> {
+  async compileTopicContext(
+    userId: string,
+    topicSlug: string,
+    targetTokens?: number
+  ): Promise<CompiledBundle> {
     const topic = await this.prisma.topicProfile.findUnique({
       where: { userId_slug: { userId, slug: topicSlug } },
       include: {
         conversations: {
           include: { conversation: true },
           orderBy: { relevanceScore: 'desc' },
-          take: 10
-        }
-      }
+          take: 10,
+        },
+      },
     });
 
     if (!topic) {
@@ -146,20 +178,22 @@ export class BundleCompiler {
         where: {
           userId,
           isActive: true,
-          id: { in: topic.relatedMemoryIds }
+          id: { in: topic.relatedMemoryIds },
         },
         orderBy: { importance: 'desc' },
-        take: targetTokens ? Math.ceil(targetTokens / 60) : 10
+        take: targetTokens ? Math.ceil(targetTokens / 60) : 10,
       }),
       this.prisma.customInstruction.findMany({
         where: {
           userId,
           isActive: true,
           scope: 'topic',
-          topicTags: { hasSome: [topicSlug, ...topic.aliases] }
-        }
+          topicTags: { hasSome: [topicSlug, ...topic.aliases] },
+        },
       }),
-      this.prisma.$queryRaw<Array<{ id: string; content: string; type: string; createdAt: Date; similarity: number }>>`
+      this.prisma.$queryRaw<
+        Array<{ id: string; content: string; type: string; createdAt: Date; similarity: number }>
+      >`
         SELECT id, content, type, "createdAt", 0.5 as similarity
         FROM atomic_chat_units
         WHERE "authorDid" = (SELECT did FROM users WHERE id = ${userId})
@@ -167,7 +201,7 @@ export class BundleCompiler {
           AND embedding IS NOT NULL
           AND array_length(embedding, 1) > 0
         LIMIT ${targetTokens ? Math.ceil(targetTokens / 40) : 20}
-      `
+      `,
     ]);
 
     const compiled = [
@@ -176,19 +210,23 @@ export class BundleCompiler {
       `Engagement: ${topic.totalConversations} conversations, last engaged ${this.timeAgo(topic.lastEngagedAt)}`,
       ``,
       ...(topicInstructions.length > 0
-        ? [`### Topic-Specific Instructions`, ...topicInstructions.map(i => `- ${i.content}`), ``]
+        ? [`### Topic-Specific Instructions`, ...topicInstructions.map((i) => `- ${i.content}`), ``]
         : []),
       ...(topicMemories.length > 0
-        ? [`### What You Know (${topic.label})`, ...topicMemories.map(m => `- ${m.content}`), ``]
+        ? [`### What You Know (${topic.label})`, ...topicMemories.map((m) => `- ${m.content}`), ``]
         : []),
       ...(topic.conversations.length > 0
         ? [
             `### Previous Discussions`,
-            ...topic.conversations.map(tc => `- ${tc.conversation.title} (${this.timeAgo(tc.conversation.createdAt)})`),
-            ``
+            ...topic.conversations.map(
+              (tc) => `- ${tc.conversation.title} (${this.timeAgo(tc.conversation.createdAt)})`
+            ),
+            ``,
           ]
         : []),
-      ...(topAcus.length > 0 ? [`### Key Knowledge Points`, ...topAcus.slice(0, 10).map(a => `- ${a.content}`)] : [])
+      ...(topAcus.length > 0
+        ? [`### Key Knowledge Points`, ...topAcus.slice(0, 10).map((a) => `- ${a.content}`)]
+        : []),
     ].join('\n');
 
     await this.prisma.topicProfile.update({
@@ -198,8 +236,8 @@ export class BundleCompiler {
         compiledAt: new Date(),
         compiledTokenCount: this.tokenEstimator.estimateTokens(compiled),
         isDirty: false,
-        contextVersion: { increment: 1 }
-      }
+        contextVersion: { increment: 1 },
+      },
     });
 
     return this.storeBundle(
@@ -207,9 +245,9 @@ export class BundleCompiler {
       'topic',
       compiled,
       {
-        memoryIds: topicMemories.map(m => m.id),
-        acuIds: topAcus.map(a => a.id),
-        instructionIds: topicInstructions.map(i => i.id)
+        memoryIds: topicMemories.map((m) => m.id),
+        acuIds: topAcus.map((a) => a.id),
+        instructionIds: topicInstructions.map((i) => i.id),
       },
       topic.id,
       null,
@@ -218,9 +256,13 @@ export class BundleCompiler {
     );
   }
 
-  async compileEntityContext(userId: string, entityId: string, targetTokens?: number): Promise<CompiledBundle> {
+  async compileEntityContext(
+    userId: string,
+    entityId: string,
+    targetTokens?: number
+  ): Promise<CompiledBundle> {
     const entity = await this.prisma.entityProfile.findUnique({
-      where: { id: entityId }
+      where: { id: entityId },
     });
 
     if (!entity) {
@@ -246,11 +288,11 @@ export class BundleCompiler {
       entity.relationship ? `Relationship: ${entity.relationship}` : '',
       ``,
       `### Known Facts`,
-      ...facts.filter(f => f.confidence > 0.5).map(f => `- ${f.fact}`),
+      ...facts.filter((f) => f.confidence > 0.5).map((f) => `- ${f.fact}`),
       ``,
       ...(relatedAcus.length > 0
-        ? [`### Relevant History`, ...relatedAcus.slice(0, 8).map(a => `- ${a.content}`)]
-        : [])
+        ? [`### Relevant History`, ...relatedAcus.slice(0, 8).map((a) => `- ${a.content}`)]
+        : []),
     ]
       .filter(Boolean)
       .join('\n');
@@ -259,7 +301,7 @@ export class BundleCompiler {
       userId,
       'entity',
       compiled,
-      { acuIds: relatedAcus.map(a => a.id) },
+      { acuIds: relatedAcus.map((a) => a.id) },
       null,
       entityId,
       null,
@@ -267,13 +309,17 @@ export class BundleCompiler {
     );
   }
 
-  async compileConversationContext(userId: string, conversationId: string, targetTokens?: number): Promise<CompiledBundle> {
+  async compileConversationContext(
+    userId: string,
+    conversationId: string,
+    targetTokens?: number
+  ): Promise<CompiledBundle> {
     const conv = await this.prisma.conversation.findUnique({
       where: { id: conversationId },
       include: {
         messages: { orderBy: { messageIndex: 'asc' } },
-        topicConversations: { include: { topic: true } }
-      }
+        topicConversations: { include: { topic: true } },
+      },
     });
 
     if (!conv) {
@@ -287,16 +333,20 @@ export class BundleCompiler {
       `Title: ${conv.title}`,
       `Started: ${this.timeAgo(conv.createdAt)}`,
       `Messages so far: ${conv.messageCount}`,
-      conv.topicConversations.length > 0 ? `Topics: ${conv.topicConversations.map(tc => tc.topic.label).join(', ')}` : '',
+      conv.topicConversations.length > 0
+        ? `Topics: ${conv.topicConversations.map((tc) => tc.topic.label).join(', ')}`
+        : '',
       ``,
       `### Conversation Arc`,
       summary.arc,
       ``,
       ...(summary.openQuestions.length > 0
-        ? [`### Unresolved Questions`, ...summary.openQuestions.map(q => `- ${q}`), ``]
+        ? [`### Unresolved Questions`, ...summary.openQuestions.map((q) => `- ${q}`), ``]
         : []),
-      ...(summary.decisions.length > 0 ? [`### Decisions Made`, ...summary.decisions.map(d => `- ${d}`)] : []),
-      ...(summary.currentFocus ? [``, `### Current Focus`, summary.currentFocus] : [])
+      ...(summary.decisions.length > 0
+        ? [`### Decisions Made`, ...summary.decisions.map((d) => `- ${d}`)]
+        : []),
+      ...(summary.currentFocus ? [``, `### Current Focus`, summary.currentFocus] : []),
     ]
       .filter(Boolean)
       .join('\n');
@@ -312,11 +362,13 @@ export class BundleCompiler {
           .join('\n'),
         openQuestions: [],
         decisions: [],
-        currentFocus: null
+        currentFocus: null,
       };
     }
 
-    const messagesText = conv.messages.map((m: any) => `[${m.role}]: ${this.extractText(m.parts)}`).join('\n\n');
+    const messagesText = conv.messages
+      .map((m: any) => `[${m.role}]: ${this.extractText(m.parts)}`)
+      .join('\n\n');
 
     try {
       const response = await this.llmService.chat({
@@ -331,11 +383,11 @@ export class BundleCompiler {
   "decisions": ["concrete decisions or conclusions reached"],
   "currentFocus": "what the conversation is currently about (last few messages)"
 }
-Be concise. This will be injected into a future prompt as context.`
+Be concise. This will be injected into a future prompt as context.`,
           },
-          { role: 'user', content: messagesText }
+          { role: 'user', content: messagesText },
         ],
-        response_format: { type: 'json_object' }
+        response_format: { type: 'json_object' },
       });
 
       return JSON.parse(response.content);
@@ -345,7 +397,7 @@ Be concise. This will be injected into a future prompt as context.`
         arc: `Conversation about: ${conv.title}`,
         openQuestions: [],
         decisions: [],
-        currentFocus: null
+        currentFocus: null,
       };
     }
   }
@@ -377,8 +429,8 @@ Be concise. This will be injected into a future prompt as context.`
             topicProfileId: normalizedTopicProfileId,
             entityProfileId: normalizedEntityProfileId,
             conversationId: normalizedConversationId,
-            personaId: normalizedPersonaId
-          }
+            personaId: normalizedPersonaId,
+          },
         },
         update: {
           compiledPrompt: compiled,
@@ -386,7 +438,7 @@ Be concise. This will be injected into a future prompt as context.`
           composition: composition as any,
           isDirty: false,
           version: { increment: 1 },
-          compiledAt: new Date()
+          compiledAt: new Date(),
         },
         create: {
           userId,
@@ -397,8 +449,8 @@ Be concise. This will be injected into a future prompt as context.`
           topicProfileId: normalizedTopicProfileId,
           entityProfileId: normalizedEntityProfileId,
           conversationId: normalizedConversationId,
-          personaId: normalizedPersonaId
-        }
+          personaId: normalizedPersonaId,
+        },
       });
 
       return {
@@ -410,7 +462,7 @@ Be concise. This will be injected into a future prompt as context.`
         composition: result.composition as BundleComposition,
         version: result.version,
         isDirty: result.isDirty,
-        compiledAt: result.compiledAt
+        compiledAt: result.compiledAt,
       };
     } catch (error: any) {
       if (error.code === 'P2002') {
@@ -423,8 +475,8 @@ Be concise. This will be injected into a future prompt as context.`
             topicProfileId: normalizedTopicProfileId,
             entityProfileId: normalizedEntityProfileId,
             conversationId: normalizedConversationId,
-            personaId: normalizedPersonaId
-          }
+            personaId: normalizedPersonaId,
+          },
         });
 
         const result = await this.prisma.contextBundle.upsert({
@@ -435,8 +487,8 @@ Be concise. This will be injected into a future prompt as context.`
               topicProfileId: normalizedTopicProfileId,
               entityProfileId: normalizedEntityProfileId,
               conversationId: normalizedConversationId,
-              personaId: normalizedPersonaId
-            }
+              personaId: normalizedPersonaId,
+            },
           },
           update: {
             compiledPrompt: compiled,
@@ -444,7 +496,7 @@ Be concise. This will be injected into a future prompt as context.`
             composition: composition as any,
             isDirty: false,
             version: { increment: 1 },
-            compiledAt: new Date()
+            compiledAt: new Date(),
           },
           create: {
             userId,
@@ -455,8 +507,8 @@ Be concise. This will be injected into a future prompt as context.`
             topicProfileId: normalizedTopicProfileId,
             entityProfileId: normalizedEntityProfileId,
             conversationId: normalizedConversationId,
-            personaId: normalizedPersonaId
-          }
+            personaId: normalizedPersonaId,
+          },
         });
 
         return {
@@ -468,7 +520,7 @@ Be concise. This will be injected into a future prompt as context.`
           composition: result.composition as BundleComposition,
           version: result.version,
           isDirty: result.isDirty,
-          compiledAt: result.compiledAt
+          compiledAt: result.compiledAt,
         };
       }
 

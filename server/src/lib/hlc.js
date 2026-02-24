@@ -1,6 +1,6 @@
 /**
  * Hybrid Logical Clock (HLC)
- * 
+ *
  * Generates globally unique, monotonic timestamps for distributed systems.
  * Format: "2024-01-15T10:30:00.000Z-0001-deviceId123"
  */
@@ -20,25 +20,21 @@ export class HLC {
     if (!timestamp) {
       return null;
     }
-    
+
     // Format: ISO-COUNTER-NODEID
     // 2024-01-15T10:30:00.000Z-0001-node123
-    
+
     // Use regex to robustly parse format regardless of hyphens in nodeId
     // Anchors on the 'Z' from toISOString() and the 4-digit counter
     const match = timestamp.match(/^(.+Z)-(\d{4})-(.+)$/);
-    
+
     if (!match) {
       throw new Error(`Invalid HLC format: ${timestamp}`);
     }
-    
+
     const [, wallTimeStr, counterStr, nodeId] = match;
-    
-    return new HLC(
-      new Date(wallTimeStr).getTime(),
-      parseInt(counterStr, 10),
-      nodeId,
-    );
+
+    return new HLC(new Date(wallTimeStr).getTime(), parseInt(counterStr, 10), nodeId);
   }
 
   toString() {
@@ -52,14 +48,14 @@ export class HLC {
    */
   tick() {
     const now = Date.now();
-    
+
     if (now > this.wallMs) {
       this.wallMs = now;
       this.counter = 0;
     } else {
       this.counter++;
     }
-    
+
     return this;
   }
 
@@ -69,7 +65,7 @@ export class HLC {
   receive(remoteTimestamp) {
     const remote = HLC.parse(remoteTimestamp);
     const now = Date.now();
-    
+
     if (now > this.wallMs && now > remote.wallMs) {
       this.wallMs = now;
       this.counter = 0;
@@ -81,10 +77,10 @@ export class HLC {
     } else {
       this.counter++;
     }
-    
+
     return this;
   }
-  
+
   clone() {
     return new HLC(this.wallMs, this.counter, this.nodeId);
   }

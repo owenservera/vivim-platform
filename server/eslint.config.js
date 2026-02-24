@@ -1,14 +1,15 @@
 import js from '@eslint/js'
 import globals from 'globals'
-import { defineConfig } from 'eslint/config'
+import prettierConfig from 'eslint-config-prettier'
 
-export default defineConfig([
+export default [
+  {
+    ignores: ['node_modules/**'],
+  },
+  js.configs.recommended,
+  prettierConfig,
   {
     files: ['**/*.js'],
-    ignores: ['node_modules/**'],
-    extends: [
-      js.configs.recommended,
-    ],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -19,20 +20,14 @@ export default defineConfig([
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-debugger': 'error',
       'no-alert': 'error',
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      'prefer-const': 'error',
-      'no-var': 'error',
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      'prefer-const': 'warn',
+      'no-var': 'warn',
       'eqeqeq': ['error', 'always'],
       'curly': ['error', 'all'],
-      'brace-style': ['error', '1tbs'],
-      'comma-dangle': ['error', 'always-multiline'],
-      'quotes': ['error', 'single', { avoidEscape: true }],
-      'semi': ['error', 'always'],
-
-      // ES2024+ features
       'no-nested-ternary': 'warn',
-      'prefer-arrow-callback': 'error',
-      'prefer-template': 'error',
+      'prefer-arrow-callback': 'warn',
+      'prefer-template': 'warn',
       'prefer-destructuring': ['warn', { object: true }],
     },
   },
@@ -45,4 +40,4 @@ export default defineConfig([
       },
     },
   },
-])
+]

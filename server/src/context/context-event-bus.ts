@@ -152,10 +152,14 @@ export class ContextEventBus {
     handler: EventHandler,
     options: { priority?: number } = {}
   ): () => void {
-    const unsubscribe = this.on(eventType, async (event) => {
-      unsubscribe();
-      await handler(event);
-    }, options);
+    const unsubscribe = this.on(
+      eventType,
+      async (event) => {
+        unsubscribe();
+        await handler(event);
+      },
+      options
+    );
     return unsubscribe;
   }
 
@@ -203,7 +207,7 @@ export class ContextEventBus {
     handlers.push(...this.wildcardHandlers);
 
     // Deduplicate by handler ID and sort by priority
-    const uniqueHandlers = [...new Map(handlers.map(h => [h.id, h])).values()];
+    const uniqueHandlers = [...new Map(handlers.map((h) => [h.id, h])).values()];
     uniqueHandlers.sort((a, b) => b.priority - a.priority);
 
     // Execute handlers
@@ -266,7 +270,7 @@ export class ContextEventBus {
         {
           batch: true,
           batchSize: events.length,
-          events: events.map(e => e.payload),
+          events: events.map((e) => e.payload),
           firstTimestamp: events[0].timestamp,
           lastTimestamp: events[events.length - 1].timestamp,
         },
@@ -298,10 +302,10 @@ export class ContextEventBus {
     let events = this.eventHistory;
 
     if (filter?.type) {
-      events = events.filter(e => e.type === filter.type);
+      events = events.filter((e) => e.type === filter.type);
     }
     if (filter?.userId) {
-      events = events.filter(e => e.userId === filter.userId);
+      events = events.filter((e) => e.userId === filter.userId);
     }
 
     return events.slice(-count);
@@ -319,7 +323,7 @@ export class ContextEventBus {
 
   private removeHandler(handlerId: string): void {
     for (const [key, registrations] of this.handlers.entries()) {
-      const filtered = registrations.filter(r => r.id !== handlerId);
+      const filtered = registrations.filter((r) => r.id !== handlerId);
       if (filtered.length === 0) {
         this.handlers.delete(key);
       } else {
@@ -327,7 +331,7 @@ export class ContextEventBus {
       }
     }
 
-    this.wildcardHandlers = this.wildcardHandlers.filter(r => r.id !== handlerId);
+    this.wildcardHandlers = this.wildcardHandlers.filter((r) => r.id !== handlerId);
   }
 
   getHandlerCount(): number {
@@ -367,58 +371,90 @@ export function wireDefaultInvalidation(
   cache: import('./context-cache').ContextCache
 ): void {
   // Memory events → invalidate identity + topic bundles
-  bus.on('memory:created', async (event) => {
-    const { category, importance } = event.payload;
-    if (['biography', 'identity', 'role'].includes(category) && importance >= 0.8) {
-      cache.invalidateBundles(event.userId, ['identity_core']);
-    }
-    if (category === 'preference' && importance >= 0.6) {
-      cache.invalidateBundles(event.userId, ['global_prefs']);
-    }
-    cache.invalidateGraph(event.userId);
-  }, { priority: 100 });
+  bus.on(
+    'memory:created',
+    async (event) => {
+      const { category, importance } = event.payload;
+      if (['biography', 'identity', 'role'].includes(category) && importance >= 0.8) {
+        cache.invalidateBundles(event.userId, ['identity_core']);
+      }
+      if (category === 'preference' && importance >= 0.6) {
+        cache.invalidateBundles(event.userId, ['global_prefs']);
+      }
+      cache.invalidateGraph(event.userId);
+    },
+    { priority: 100 }
+  );
 
   // ACU events → invalidate topic bundles
-  bus.on('acu:processed', async (event) => {
-    cache.invalidateBundles(event.userId, ['topic', 'entity']);
-    cache.invalidateGraph(event.userId);
-  }, { priority: 90 });
+  bus.on(
+    'acu:processed',
+    async (event) => {
+      cache.invalidateBundles(event.userId, ['topic', 'entity']);
+      cache.invalidateGraph(event.userId);
+    },
+    { priority: 90 }
+  );
 
   // Conversation events → invalidate conversation bundles
-  bus.on('conversation:message_added', async (event) => {
-    const { conversationId } = event.payload;
-    cache.delete('bundle', `${event.userId}:conversation:${conversationId}`);
-  }, { priority: 100 });
+  bus.on(
+    'conversation:message_added',
+    async (event) => {
+      const { conversationId } = event.payload;
+      cache.delete('bundle', `${event.userId}:conversation:${conversationId}`);
+    },
+    { priority: 100 }
+  );
 
   // Instruction events → invalidate global prefs
-  bus.on('instruction:created', async (event) => {
-    cache.invalidateBundles(event.userId, ['global_prefs']);
-  }, { priority: 90 });
+  bus.on(
+    'instruction:created',
+    async (event) => {
+      cache.invalidateBundles(event.userId, ['global_prefs']);
+    },
+    { priority: 90 }
+  );
 
-  bus.on('instruction:updated', async (event) => {
-    cache.invalidateBundles(event.userId, ['global_prefs']);
-  }, { priority: 90 });
+  bus.on(
+    'instruction:updated',
+    async (event) => {
+      cache.invalidateBundles(event.userId, ['global_prefs']);
+    },
+    { priority: 90 }
+  );
 
   // Settings events → invalidate settings cache
-  bus.on('settings:updated', async (event) => {
-    cache.invalidateSettings(event.userId);
-    cache.invalidateBundles(event.userId); // Settings affect budget, so invalidate all
-  }, { priority: 100 });
+  bus.on(
+    'settings:updated',
+    async (event) => {
+      cache.invalidateSettings(event.userId);
+      cache.invalidateBundles(event.userId); // Settings affect budget, so invalidate all
+    },
+    { priority: 100 }
+  );
 
   // Presence events → update presence cache
-  bus.on('presence:updated', async (event) => {
-    const { deviceId, presence } = event.payload;
-    if (deviceId && presence) {
-      cache.setPresence(event.userId, deviceId, presence);
-    }
-  }, { priority: 50 });
+  bus.on(
+    'presence:updated',
+    async (event) => {
+      const { deviceId, presence } = event.payload;
+      if (deviceId && presence) {
+        cache.setPresence(event.userId, deviceId, presence);
+      }
+    },
+    { priority: 50 }
+  );
 
   // System cleanup
-  bus.on('system:cleanup', async () => {
-    // Prune caches on system cleanup
-    const stats = cache.getAllStats();
-    logger.info({ stats }, 'System cleanup: cache stats');
-  }, { priority: 10 });
+  bus.on(
+    'system:cleanup',
+    async () => {
+      // Prune caches on system cleanup
+      const stats = cache.getAllStats();
+      logger.info({ stats }, 'System cleanup: cache stats');
+    },
+    { priority: 10 }
+  );
 
   logger.info('Default cache invalidation handlers wired');
 }

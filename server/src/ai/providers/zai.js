@@ -19,17 +19,22 @@ export class ZAIProvider extends BaseAIProvider {
   getHeaders() {
     return {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.apiKey}`,
+      Authorization: `Bearer ${this.apiKey}`,
       'Accept-Language': 'en-US,en',
     };
   }
 
   transformMessages(messages) {
-    return messages.map(msg => ({ role: msg.role, content: msg.content }));
+    return messages.map((msg) => ({ role: msg.role, content: msg.content }));
   }
 
   async complete(messages, options = {}) {
-    const { model = this.defaultModel, max_tokens = 4096, temperature = 0.7, thinking_type = 'disabled' } = options;
+    const {
+      model = this.defaultModel,
+      max_tokens = 4096,
+      temperature = 0.7,
+      thinking_type = 'disabled',
+    } = options;
 
     logger.info({ model, messageCount: messages.length }, 'ZAI request');
 
@@ -55,7 +60,12 @@ export class ZAIProvider extends BaseAIProvider {
   }
 
   async stream(messages, options = {}, onChunk) {
-    const { model = this.defaultModel, max_tokens = 4096, temperature = 0.7, thinking_type = 'disabled' } = options;
+    const {
+      model = this.defaultModel,
+      max_tokens = 4096,
+      temperature = 0.7,
+      thinking_type = 'disabled',
+    } = options;
 
     const response = await fetch(`${this.baseURL}/chat/completions`, {
       method: 'POST',
@@ -81,7 +91,9 @@ export class ZAIProvider extends BaseAIProvider {
 
     while (true) {
       const { done, value } = await reader.read();
-      if (done) break;
+      if (done) {
+        break;
+      }
       buffer += decoder.decode(value, { stream: true });
       for (const line of buffer.split('\n')) {
         if (line.startsWith('data: ')) {
@@ -90,8 +102,12 @@ export class ZAIProvider extends BaseAIProvider {
             try {
               const parsed = JSON.parse(data);
               const content = parsed.choices?.[0]?.delta?.content;
-              if (content) onChunk({ content, done: false });
-            } catch (e) {}
+              if (content) {
+                onChunk({ content, done: false });
+              }
+            } catch (e) {
+              // ignore JSON parse errors in stream
+            }
           }
         }
       }
