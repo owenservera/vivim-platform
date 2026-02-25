@@ -490,6 +490,7 @@ export class IndexedDBObjectStore extends EventEmitter implements ObjectStore {
 // ============================================================================
 
 export interface ConversationMetadata {
+  id?: string;
   conversationId: Hash;
   rootHash: Hash;
   title: string;
@@ -500,6 +501,11 @@ export interface ConversationMetadata {
   snapshotCount: number;
   tags: string[];
   author: string;
+  provider?: string;
+  sourceUrl?: string;
+  state?: string;
+  ownerId?: string;
+  version?: number;
 }
 
 export class ConversationStore {
@@ -648,8 +654,13 @@ export class ConversationStore {
         messageCount: (root.metadata as any)?.totalMessages as number || (root.metadata as any)?.messageCount as number || 0,
         snapshotCount: 0,
         tags: root.metadata?.tags as string[] || [],
-        author: root.author || '' as any
-      } as any;
+        author: root.author || '' as any,
+        provider: root.metadata?.provider as string || 'other',
+        sourceUrl: root.metadata?.sourceUrl as string || '',
+        state: root.metadata?.state as string || 'ACTIVE',
+        ownerId: root.metadata?.ownerId as string || undefined,
+        version: root.metadata?.version as number || 1
+      };
 
       return new Promise((resolve, reject) => {
         const request = store.put(index);
@@ -767,8 +778,13 @@ export class ConversationStore {
         messageCount: (root.metadata as any)?.totalMessages as number || (root.metadata as any)?.messageCount as number || 0,
         snapshotCount: 0,
         tags: root.metadata?.tags as string[] || [],
-        author: root.author || '' as any
-      } as any;
+        author: root.author || '' as any,
+        provider: root.metadata?.provider as string || 'other',
+        sourceUrl: root.metadata?.sourceUrl as string || '',
+        state: root.metadata?.state as string || 'ACTIVE',
+        ownerId: root.metadata?.ownerId as string || undefined,
+        version: root.metadata?.version as number || 1
+      };
       tx.objectStore(STORES.CONVERSATIONS).put(index);
     });
     

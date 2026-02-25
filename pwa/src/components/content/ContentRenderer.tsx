@@ -16,16 +16,40 @@ import {
   Check,
   Globe
 } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
+import remarkDirective from 'remark-directive';
 import rehypeKatex from 'rehype-katex';
+import { visit } from 'unist-util-visit';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useToast } from '../../hooks/useToast';
 
 // Simplified types to match the expected pwa context if needed
 export type ContentType = 'text' | 'code' | 'image' | 'latex' | 'math' | 'table' | 'mermaid' | 'tool_call' | 'tool_result' | 'link' | 'audio' | 'video' | 'file' | 'html' | 'quote';
+
+// Remark plugin to convert custom directives like :::note into HTML elements
+function remarkAdmonitions() {
+  return (tree: any) => {
+    visit(tree, (node) => {
+      if (
+        node.type === 'textDirective' ||
+        node.type === 'leafDirective' ||
+        node.type === 'containerDirective'
+      ) {
+        const data = node.data || (node.data = {});
+        const tagName = node.type === 'textDirective' ? 'span' : 'div';
+        
+        data.hName = tagName;
+        data.hProperties = { 
+          className: `admonition admonition-${node.name}`,
+          'data-admonition-type': node.name
+        };
+      }
+    });
+  };
+}
 
 export interface ContentBlock {
   id?: string;
@@ -111,6 +135,180 @@ const isArrayContent = (content: any): content is ContentBlock[] | ContentPart[]
   return Array.isArray(content);
 };
 
+/* ── Unified Code Block UI Component ── */
+interface CodeBlockUIProps {
+  content: string;
+  language: string;
+  filename?: string;
+  enableCopy?: boolean;
+}
+
+const CodeBlockUI: React.FC<CodeBlockUIProps> = memo(({ content, language, filename, enableCopy = true }) => {
+  const [copied, setCopied] = useState(false);
+  const toast = useToast();
+
+  const handleCopy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopied(true);
+      toast.success('Code copied');
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+       toast.error('Failed to copy');
+    }
+  }, [content, toast]);
+
+  return (
+    <div className="my-4 rounded-xl overflow-hidden glass-border bg-[#0d1117] shadow-2xl border border-white/10">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-white/5 border-b border-white/10 backdrop-blur-md">
+        <div className="flex items-center gap-2.5">
+          <div className="flex gap-1.5 mr-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+            <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+          </div>
+          {filename ? (
+            <FileText className="w-3.5 h-3.5 text-blue-400" />
+          ) : (
+            <Terminal className="w-3.5 h-3.5 text-gray-400" />
+          )}
+          <span className="text-[11px] font-medium font-mono text-gray-400 tracking-tight">{filename || language}</span>
+        </div>
+        {enableCopy && (
+          <button
+            onClick={handleCopy}
+            className="p-1.5 rounded-md hover:bg-white/10 transition-colors text-gray-400 hover:text-white border border-transparent hover:border-white/10"
+            title="Copy code"
+          >
+            {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+          </button>
+        )}
+      </div>
+      <div className="p-0 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+        <SyntaxHighlighter
+          language={language || 'text'}
+          style={vscDarkPlus}
+          customStyle={{
+            margin: 0,
+            padding: '1.25rem',
+            fontSize: 'var(--text-xs, 13px)',
+            background: 'transparent',
+            lineHeight: '1.6',
+          }}
+          codeTagProps={{
+            style: {
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+            }
+          }}
+        >
+          {String(content).replace(/\n$/, '')}
+        </SyntaxHighlighter>
+      </div>
+    </div>
+  );
+});
+CodeBlockUI.displayName = 'CodeBlockUI';
+
+/* ── Custom ReactMarkdown Components ── */
+const getMarkdownComponents = (enableCopy: boolean): Components => ({
+  code({ node, inline, className, children, ...props }: any) {
+    const match = /language-(\w+)/.exec(className || '');
+    const language = match ? match[1] : '';
+    
+    if (!inline && language === 'mermaid') {
+      return <MermaidPart part={{ content: String(children) }} />;
+    } else if (!inline && match) {
+      return (
+        <CodeBlockUI 
+          content={String(children)} 
+          language={language} 
+          enableCopy={enableCopy} 
+        />
+      );
+    } else if (!inline) {
+      // Unspecified language block
+      return (
+        <CodeBlockUI 
+          content={String(children)} 
+          language="text" 
+          enableCopy={enableCopy} 
+        />
+      );
+    }
+    // Inline code
+    return (
+      <code className="px-1.5 py-0.5 mx-0.5 text-[0.85em] font-mono text-indigo-400 bg-indigo-500/10 rounded-md border border-indigo-500/20" {...props}>
+        {children}
+      </code>
+    );
+  },
+  pre({ children }) {
+    // We already handle styling in the 'code' block
+    return <>{children}</>;
+  },
+  table({ children }) {
+    return (
+      <div className="my-4 overflow-x-auto rounded-xl border border-white/10 shadow-sm bg-[#0d1117]/50">
+        <table className="min-w-full divide-y divide-white/10 text-sm">
+          {children}
+        </table>
+      </div>
+    );
+  },
+  thead({ children }) {
+    return <thead className="bg-white/5">{children}</thead>;
+  },
+  th({ children }) {
+    return <th className="px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">{children}</th>;
+  },
+  td({ children }) {
+    return <td className="px-4 py-3 text-sm text-gray-300 border-t border-white/5">{children}</td>;
+  },
+  blockquote({ children }) {
+    return (
+      <blockquote className="my-4 pl-4 border-l-4 border-indigo-500/50 text-gray-400 italic bg-indigo-500/5 py-2 pr-4 rounded-r-lg">
+        {children}
+      </blockquote>
+    );
+  },
+  a({ href, children }) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:text-indigo-300 underline decoration-indigo-400/30 underline-offset-2 transition-colors">
+        {children}
+      </a>
+    );
+  },
+  div({ node, className, children, ...props }: any) {
+    // Handle custom admonitions
+    if (className?.includes('admonition')) {
+      const type = node?.properties?.['data-admonition-type'] || 'note';
+      const typeStyles: Record<string, { bg: string, border: string, icon: React.ReactNode, title: string }> = {
+        note: { bg: 'bg-blue-500/10', border: 'border-blue-500/20', icon: <FileText className="w-4 h-4 text-blue-400" />, title: 'Note' },
+        warning: { bg: 'bg-amber-500/10', border: 'border-amber-500/20', icon: <AlertTriangle className="w-4 h-4 text-amber-400" />, title: 'Warning' },
+        important: { bg: 'bg-indigo-500/10', border: 'border-indigo-500/20', icon: <AlertCircle className="w-4 h-4 text-indigo-400" />, title: 'Important' },
+        caution: { bg: 'bg-red-500/10', border: 'border-red-500/20', icon: <AlertTriangle className="w-4 h-4 text-red-400" />, title: 'Caution' }
+      };
+      
+      const style = typeStyles[type] || typeStyles.note;
+      
+      return (
+        <div className={`my-4 p-4 rounded-xl border ${style.bg} ${style.border}`} {...props}>
+          <div className="flex items-center gap-2 font-semibold text-sm mb-2 uppercase tracking-wide opacity-80">
+            {style.icon}
+            <span style={{ color: (style.icon as any)?.props?.className?.match(/text-(\w+)-400/)?.[0]?.replace('text-', '').replace('-400', '') || 'inherit' }}>
+              {type}
+            </span>
+          </div>
+          <div className="text-sm text-gray-200 leading-relaxed">
+            {children}
+          </div>
+        </div>
+      );
+    }
+    return <div className={className} {...props}>{children}</div>;
+  }
+});
+
 /**
  * Main Content Renderer Component - Memoized for performance
  */
@@ -120,13 +318,16 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(({
   maxImageWidth = 800,
   enableCopy = true 
 }) => {
+  const markdownComponents = React.useMemo(() => getMarkdownComponents(enableCopy), [enableCopy]);
+
   // Handle string content (legacy/simple text)
   if (isStringContent(content)) {
     return (
       <div className={`prose prose-invert max-w-none text-sm leading-relaxed ${className}`}>
         <ReactMarkdown 
-          remarkPlugins={[remarkGfm, remarkMath]} 
+          remarkPlugins={[remarkGfm, remarkMath, remarkDirective, remarkAdmonitions]} 
           rehypePlugins={[rehypeKatex]}
+          components={markdownComponents}
         >
           {content}
         </ReactMarkdown>
@@ -141,8 +342,9 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(({
     return (
       <div className={`prose prose-invert max-w-none text-sm leading-relaxed ${className}`}>
         <ReactMarkdown 
-          remarkPlugins={[remarkGfm, remarkMath]} 
+          remarkPlugins={[remarkGfm, remarkMath, remarkDirective, remarkAdmonitions]} 
           rehypePlugins={[rehypeKatex]}
+          components={markdownComponents}
         >
           {stringified}
         </ReactMarkdown>
@@ -250,6 +452,7 @@ const TextPart: React.FC<{ part: any; enableCopy?: boolean }> = memo(({ part, en
   const format = part.metadata?.format || 'markdown';
   const [copied, setCopied] = useState(false);
   const toast = useToast();
+  const markdownComponents = React.useMemo(() => getMarkdownComponents(enableCopy), [enableCopy]);
 
   const handleCopy = useCallback(async () => {
     try {
@@ -267,8 +470,9 @@ const TextPart: React.FC<{ part: any; enableCopy?: boolean }> = memo(({ part, en
       <div className="relative group/text">
         <div className="prose prose-invert prose-sm max-w-none text-gray-200 leading-relaxed">
           <ReactMarkdown 
-            remarkPlugins={[remarkGfm, remarkMath]} 
+            remarkPlugins={[remarkGfm, remarkMath, remarkDirective, remarkAdmonitions]} 
             rehypePlugins={[rehypeKatex]}
+            components={markdownComponents}
           >
             {content}
           </ReactMarkdown>
@@ -303,67 +507,8 @@ const CodePart: React.FC<{ part: any; enableCopy?: boolean }> = memo(({ part, en
 
   const language = part.language || part.metadata?.language || 'text';
   const filename = part.metadata?.filename;
-  const [copied, setCopied] = useState(false);
-  const toast = useToast();
 
-  const handleCopy = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(content);
-      setCopied(true);
-      toast.success('Code copied');
-      setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
-       toast.error('Failed to copy');
-    }
-  }, [content, toast]);
-
-  return (
-    <div className="my-4 rounded-xl overflow-hidden glass-border bg-gray-950/80 shadow-2xl border border-white/5">
-      <div className="flex items-center justify-between px-4 py-2.5 bg-white/5 border-b border-white/5 backdrop-blur-md">
-        <div className="flex items-center gap-2.5">
-          <div className="flex gap-1.5 mr-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
-            <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
-          </div>
-          {filename ? (
-            <FileText className="w-3.5 h-3.5 text-blue-400" />
-          ) : (
-            <Terminal className="w-3.5 h-3.5 text-gray-400" />
-          )}
-          <span className="text-[11px] font-medium font-mono text-gray-400 tracking-tight">{filename || language}</span>
-        </div>
-        {enableCopy && (
-          <button
-            onClick={handleCopy}
-            className="p-1.5 rounded-md hover:bg-white/10 transition-colors text-gray-400 hover:text-white border border-transparent hover:border-white/10"
-          >
-            {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
-          </button>
-        )}
-      </div>
-      <div className="p-0 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-        <SyntaxHighlighter
-          language={language}
-          style={vscDarkPlus}
-          customStyle={{
-            margin: 0,
-            padding: '1.25rem',
-            fontSize: 'var(--text-xs, 12px)',
-            background: 'transparent',
-            lineHeight: '1.6',
-          }}
-          codeTagProps={{
-            style: {
-              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-            }
-          }}
-        >
-          {content}
-        </SyntaxHighlighter>
-      </div>
-    </div>
-  );
+  return <CodeBlockUI content={content} language={language} filename={filename} enableCopy={enableCopy} />;
 });
 
 const ImagePart: React.FC<{ part: any; maxImageWidth?: number }> = memo(({ part, maxImageWidth = 800 }) => {

@@ -28,19 +28,29 @@ class UnifiedRepository {
         includeArchived: false
       });
       
-      const results: Conversation[] = [];
+      const pagedMeta = metadata.slice(offset);
       
-      for (const meta of metadata.slice(offset)) {
-        const fullConv = await this.storage.getConversation(meta.id as any);
-        if (fullConv) {
-          results.push(this.adaptToConversation(fullConv, meta));
+      const results = await Promise.all(pagedMeta.map(async (meta) => {
+        const root = await this.storage.getConversation(meta.id as any);
+        if (root) {
+          return this.adaptToConversation(root, meta);
         }
-      }
+        return null;
+      }));
       
-      return results;
+      return results.filter((c): c is Conversation => c !== null);
     } catch (error) {
       logger.error('Repository', 'Failed to get conversations for home', error as Error);
       return [];
+    }
+  }
+
+  async getMetadata(id: string): Promise<ConversationMetadata | null> {
+    try {
+      return (await this.db.getMetadata(id)) || null;
+    } catch (error) {
+      logger.error('Repository', `Failed to get metadata for ${id}`, error as Error);
+      return null;
     }
   }
 

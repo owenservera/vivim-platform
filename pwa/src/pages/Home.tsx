@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useWindowVirtualizer } from '@tanstack/react-virtual';
 import {
   Plus, Bot, RefreshCw, WifiOff, Database, AlertCircle, CloudOff,
   Search, Grid2x2, List, Pin, Archive, MessageSquare, LayoutList,
@@ -38,6 +39,8 @@ import type { RecommendationItem } from '../lib/recommendation/types';
 import type { Conversation } from '../types/conversation';
 import type { AIResult, AIAction } from '../types/features';
 import './Home.css';
+
+import { useHomeUIStore } from '../stores/useHomeUIStore';
 
 type FilterTab = 'all' | 'pinned' | 'archived' | 'recent';
 type ViewMode = 'list' | 'grid';
@@ -180,11 +183,8 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
 
   useEffect(() => {
     if (isExpanded && overrideMessages && cardRef.current) {
-       const rect = cardRef.current.getBoundingClientRect();
-       const offset = 140; // Approx height of bottom chat input
-       if (rect.bottom > window.innerHeight - offset) {
-         window.scrollBy({ top: rect.bottom - (window.innerHeight - offset), behavior: 'smooth' });
-       }
+       // Scrolling is now managed by the virtualizer or standard flow without brittle magic numbers
+       cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   }, [overrideMessages, isLoadingAI, isExpanded]);
 
@@ -441,12 +441,8 @@ export const Home: React.FC = () => {
   const [debugInfo, setDebugInfo] = useState<any>(null);
   const [apiSource, setApiSource] = useState<'local' | 'api' | null>(null);
 
-  // ── New UI state ──
-  const [filterTab, setFilterTab] = useState<FilterTab>('all');
-  const [viewMode, setViewMode] = useState<ViewMode>('list');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<SortBy>('date');
-  const [fabExpanded, setFabExpanded] = useState(false);
+  // ── New UI state (via Zustand) ──
+  const { filterTab, viewMode, searchQuery, sortBy, fabExpanded, setFilterTab, setViewMode, setSearchQuery, setSortBy, setFabExpanded } = useHomeUIStore();
   const [fabVisible, _setFabVisible] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
@@ -462,7 +458,7 @@ export const Home: React.FC = () => {
     logger.info('HOME', `[${loadId}] ========== LOAD CONVERSATIONS START (page ${pageNum}) ==========`);
 
     const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error('Loading timed out after 30 seconds')), 30000);
+      setTimeout(() => reject(new Error('Loading timed out after 5 seconds')), 5000);
     });
 
     try {
@@ -486,10 +482,10 @@ export const Home: React.FC = () => {
         try {
           const apiResponse = await Promise.race([
             apiClient.get('/conversations', {
-              params: { limit: 50, offset: 0, include_messages: true }
+              params: { limit: 50, offset: 0, include_messages: false }
             }),
             new Promise<never>((_, reject) =>
-              setTimeout(() => reject(new Error('API fallback timed out')), 15000)
+              setTimeout(() => reject(new Error('API fallback timed out')), 5000)
             )
           ]);
 
@@ -511,14 +507,7 @@ export const Home: React.FC = () => {
               capturedAt: conv.capturedAt || conv.createdAt,
               exportedAt: conv.capturedAt || conv.createdAt,
               tags: conv.tags || [],
-              messages: (conv.messages || []).map((msg: any) => ({
-                id: msg.id,
-                role: msg.role,
-                content: msg.parts || [],
-                timestamp: msg.createdAt,
-                metadata: msg.metadata || {},
-                parts: msg.parts || []
-              })),
+              messages: [],
               stats: {
                 totalMessages: conv.messageCount || (conv.messages?.length ?? 0),
                 totalWords: conv.totalWords || 0,
@@ -536,19 +525,6 @@ export const Home: React.FC = () => {
             }));
 
             setApiSource('api');
-
-            dataSyncService.syncFullDatabase((progress) => {
-              logger.info('HOME', `[Background Sync] ${progress.phase}: ${progress.message}`);
-            }).then(result => {
-              if (result.success) {
-                logger.info('HOME', `[Background Sync] Complete: ${result.syncedConversations} conversations synced`);
-                conversationService.getAllConversations().then(localList => {
-                  if (localList.length > 0) setConversations(localList.slice(0, 10));
-                }).catch(() => {});
-              }
-            }).catch(err => {
-              logger.warn('HOME', `[Background Sync] Failed: ${err}`);
-            });
           }
         } catch (apiFallbackError) {
           logger.warn('HOME', `[${loadId}] API fallback failed: ${apiFallbackError}`);
@@ -572,16 +548,16 @@ export const Home: React.FC = () => {
       const newPinnedIds = new Set<string>();
       const newArchivedIds = new Set<string>();
 
-      for (const convo of pagedList) {
+      await Promise.all(pagedList.map(async (convo) => {
         try {
-          const meta = await unifiedRepository.getConversation(convo.id);
-          if (meta?.metadata?.isPinned) newPinnedIds.add(convo.id);
-          if (meta?.metadata?.isArchived) newArchivedIds.add(convo.id);
+          const meta = await unifiedRepository.getMetadata(convo.id);
+          if (meta?.isPinned) newPinnedIds.add(convo.id);
+          if (meta?.isArchived) newArchivedIds.add(convo.id);
         } catch {}
-      }
+      }));
 
-      setPinnedIds(newPinnedIds);
-      setArchivedIds(newArchivedIds);
+      setPinnedIds(prev => new Set([...prev, ...newPinnedIds]));
+      setArchivedIds(prev => new Set([...prev, ...newArchivedIds]));
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err);
       logger.error('HOME', `[${loadId}] LOAD FAILED: ${errorMsg}`, err instanceof Error ? err : new Error(String(err)));
@@ -802,6 +778,14 @@ export const Home: React.FC = () => {
     archived: archivedIds.size,
     recent: conversations.filter(c => isNew(c.createdAt)).length,
   }), [conversations, pinnedIds, archivedIds]);
+
+  const parentRef = useRef<HTMLDivElement>(null);
+
+  const virtualizer = useWindowVirtualizer({
+    count: filteredConversations.length,
+    estimateSize: (i) => expandedId === filteredConversations[i].id ? 600 : (viewMode === 'grid' ? 180 : 140),
+    overscan: 5,
+  });
 
   /* ── Render ── */
   return (
@@ -1055,57 +1039,66 @@ export const Home: React.FC = () => {
                 {filteredConversations.length} result{filteredConversations.length !== 1 ? 's' : ''} for &ldquo;{searchQuery}&rdquo;
               </div>
             )}
-            <div className={viewMode === 'grid' ? 'home-feed-grid' : 'home-feed-list'}>
-              <AnimatePresence mode="popLayout">
-              {filteredConversations.map((convo, idx) => (
-                <motion.div
-                  key={convo.id}
-                  layout
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3, delay: Math.min(idx * 0.04, 0.25) }}
-                  style={{ width: '100%' }}
-                >
-                  <FeedItemCard
-                    conversation={convo}
-                    isPinned={pinnedIds.has(convo.id)}
-                    isArchived={archivedIds.has(convo.id)}
-                    gridMode={viewMode === 'grid'}
-                    onContinue={handleContinue}
-                    onShare={handleShare}
-                    onPinToggle={handlePinToggle}
-                    onArchiveToggle={handleArchiveToggle}
-                    onDelete={handleDelete}
-                    onFork={handleFork}
-                    onDuplicate={handleDuplicate}
-                    onAIClick={handleAIClick}
-                    isExpanded={expandedId === convo.id}
-                    overrideMessages={activeChatId === convo.id ? aiMessages : undefined}
-                    isLoadingAI={activeChatId === convo.id ? aiLoading : false}
-                    onExpandToggle={async (id) => {
-                      if (expandedId === id) {
-                        setExpandedId(null);
-                        setActiveChatId(null);
-                      } else {
-                        setExpandedId(id);
-                        const targetConvo = conversations.find(c => c.id === id);
-                        if (targetConvo && (!targetConvo.messages || targetConvo.messages.length === 0)) {
-                          try {
-                            const fullConvo = await unifiedRepository.getConversation(id);
-                            if (fullConvo && fullConvo.messages && fullConvo.messages.length > 0) {
-                              setConversations(prev => prev.map(c => c.id === id ? { ...c, messages: fullConvo.messages } : c));
+            <div 
+              ref={parentRef}
+              className="home-feed-container"
+              style={{ position: 'relative', height: `${virtualizer.getTotalSize()}px`, width: '100%', maxWidth: '800px', margin: '0 auto' }}
+            >
+              {virtualizer.getVirtualItems().map((virtualRow) => {
+                const convo = filteredConversations[virtualRow.index];
+                return (
+                  <div
+                    key={virtualRow.key}
+                    data-index={virtualRow.index}
+                    ref={virtualizer.measureElement}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      transform: `translateY(${virtualRow.start}px)`,
+                      paddingBottom: '8px'
+                    }}
+                  >
+                    <FeedItemCard
+                      conversation={convo}
+                      isPinned={pinnedIds.has(convo.id)}
+                      isArchived={archivedIds.has(convo.id)}
+                      gridMode={viewMode === 'grid'}
+                      onContinue={handleContinue}
+                      onShare={handleShare}
+                      onPinToggle={handlePinToggle}
+                      onArchiveToggle={handleArchiveToggle}
+                      onDelete={handleDelete}
+                      onFork={handleFork}
+                      onDuplicate={handleDuplicate}
+                      onAIClick={handleAIClick}
+                      isExpanded={expandedId === convo.id}
+                      overrideMessages={activeChatId === convo.id ? aiMessages : undefined}
+                      isLoadingAI={activeChatId === convo.id ? aiLoading : false}
+                      onExpandToggle={async (id) => {
+                        if (expandedId === id) {
+                          setExpandedId(null);
+                          setActiveChatId(null);
+                        } else {
+                          setExpandedId(id);
+                          const targetConvo = conversations.find(c => c.id === id);
+                          if (targetConvo && (!targetConvo.messages || targetConvo.messages.length === 0)) {
+                            try {
+                              const fullConvo = await unifiedRepository.getConversation(id);
+                              if (fullConvo && fullConvo.messages && fullConvo.messages.length > 0) {
+                                setConversations(prev => prev.map(c => c.id === id ? { ...c, messages: fullConvo.messages } : c));
+                              }
+                            } catch (err) {
+                              logger.warn('HOME', `Failed to load messages for expansion: ${err}`);
                             }
-                          } catch (err) {
-                            logger.warn('HOME', `Failed to load messages for expansion: ${err}`);
                           }
                         }
-                      }
-                    }}
-                  />
-                </motion.div>
-              ))}
-              </AnimatePresence>
+                      }}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </>
         )}
