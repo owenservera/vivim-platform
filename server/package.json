@@ -20,7 +20,7 @@
     "db:push": "bunx prisma db push",
     "db:seed": "bun run prisma/seed-real-data.ts",
     "test:e2e": "bun run scripts/test-e2e.ts",
-    "build:core": "pwsh finish_rust_setup.ps1",
+    "build": "bun run db:generate",
     "typecheck": "tsc --noEmit",
     "generate:vivim-context": "node scripts/generate-vivim-context.js"
   },

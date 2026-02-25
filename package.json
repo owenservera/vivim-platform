@@ -15,10 +15,10 @@
     "dev:admin": "cd admin-panel && bun run dev",
     "setup": "bun run setup:deps && bun run setup:db",
     "setup:deps": "bun install && cd pwa && bun install && cd ../server && bun install && cd ../network && bun install && cd ../admin-panel && bun install && cd ..",
-    "setup:db": "cd server && bun run db:generate && bun run db:migrate",
-    "start": "concurrently \"cd pwa && bun run preview\" \"cd server && bun run start\" \"cd network && bun run start\"",
-    "build": "cd pwa && bun run build && cd ../server && bun run build && cd ../network && bun run build",
-    "test": "cd pwa && bun run test & cd server && bun run test & cd network && bun run test",
+    "setup:db": "cd server && bun run db:generate && bun run db:migrate && cd ../network && bun run db:generate",
+    "start": "concurrently \"cd pwa && bun run preview\" \"cd server && bun run start\" \"cd network && bun run start\" \"cd admin-panel && bun run preview\"",
+    "build": "cd pwa && bun run build && cd ../server && bun run build && cd ../network && bun run build && cd ../admin-panel && bun run build",
+    "test": "cd pwa && bun run test & cd server && bun run test & cd network && bun run test & cd admin-panel && bun run test",
     "dev:admin-standalone": "cd admin-panel && bun run dev"
   },
   "devDependencies": {
