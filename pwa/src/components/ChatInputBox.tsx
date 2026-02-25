@@ -5,6 +5,7 @@ export interface ChatInputBoxProps {
   onSend: (message: string, action?: string) => Promise<void>;
   isLoading: boolean;
   onStop?: () => void;
+  onClose?: () => void;
   placeholder?: string;
   initialValue?: string;
   className?: string;
@@ -14,6 +15,7 @@ export const ChatInputBox: React.FC<ChatInputBoxProps> = ({
   onSend,
   isLoading,
   onStop,
+  onClose,
   placeholder = "Message AI...",
   initialValue = "",
   className = ""
@@ -25,6 +27,7 @@ export const ChatInputBox: React.FC<ChatInputBoxProps> = ({
           onSend={onSend}
           isLoading={isLoading}
           onStop={onStop || (() => {})}
+          onClose={onClose}
           placeholder={placeholder}
           initialValue={initialValue}
         />

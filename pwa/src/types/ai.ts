@@ -96,7 +96,25 @@ export interface AICompletionResponse {
     toolsUsed?: string[];
   };
   contextAllocation?: Record<string, any>;
-  contextStats?: Record<string, any>;
+  contextStats?: ContextStats;
+}
+
+export interface ContextStats {
+  engine?: string;
+  messageCount?: number;
+  detectedTopics?: Array<{ name: string; slug: string; confidence: number; source: string }>;
+  detectedEntities?: Array<{ name: string; type: string; confidence: number; source: string }>;
+  cacheHitRate?: number;
+  bundlesInfo?: Array<{
+    id: string;
+    type: string;
+    title: string;
+    tokenCount: number;
+    snippet: string;
+  }>;
+  assemblyTimeMs?: number;
+  acusRetrieved?: Array<{ id: string; content: string; category: string; similarity: number }>;
+  memoriesRetrieved?: Array<{ id: string; content: string; category: string; importance: number }>;
 }
 
 /**

@@ -9,6 +9,11 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'doc',
+      id: 'user/getting-started',
+      label: 'Quick Start Guide',
+    },
+    {
+      type: 'doc',
       id: 'development/guide',
       label: 'Development Guide',
     },
@@ -16,6 +21,79 @@ const sidebars: SidebarsConfig = {
       type: 'doc',
       id: 'deployment/guide',
       label: 'Deployment',
+    },
+  ],
+  
+  user: [
+    {
+      type: 'doc',
+      id: 'user/capturing-conversations',
+      label: 'Capturing Conversations',
+    },
+    {
+      type: 'doc',
+      id: 'user/searching-finding',
+      label: 'Searching & Finding',
+    },
+    {
+      type: 'doc',
+      id: 'user/collections',
+      label: 'Collections',
+    },
+    {
+      type: 'doc',
+      id: 'user/bookmarks',
+      label: 'Bookmarks',
+    },
+    {
+      type: 'doc',
+      id: 'user/for-you',
+      label: 'For You Recommendations',
+    },
+    {
+      type: 'doc',
+      id: 'user/ai-chat',
+      label: 'AI Chat',
+    },
+    {
+      type: 'doc',
+      id: 'user/byok-chat',
+      label: 'BYOK Chat',
+    },
+    {
+      type: 'doc',
+      id: 'user/sharing',
+      label: 'Sharing Knowledge',
+    },
+    {
+      type: 'doc',
+      id: 'user/context-recipes',
+      label: 'Context Recipes',
+    },
+    {
+      type: 'doc',
+      id: 'user/context-cockpit',
+      label: 'Context Cockpit',
+    },
+    {
+      type: 'doc',
+      id: 'user/context-components',
+      label: 'Context Components (ACUs)',
+    },
+    {
+      type: 'doc',
+      id: 'user/analytics',
+      label: 'Analytics',
+    },
+    {
+      type: 'doc',
+      id: 'user/error-dashboard',
+      label: 'Error Dashboard',
+    },
+    {
+      type: 'doc',
+      id: 'user/settings-account',
+      label: 'Settings & Account',
     },
   ],
   

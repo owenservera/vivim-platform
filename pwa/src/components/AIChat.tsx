@@ -195,6 +195,14 @@ export const AIChat = ({ initialMessage }: AIChatProps) => {
           <ContextVisualizer 
             contextAllocation={lastResponse.contextAllocation as any} 
             bundlesInfo={lastResponse.contextStats?.bundlesInfo as any}
+            metadata={{
+              detectedTopics: lastResponse.contextStats?.detectedTopics as any,
+              detectedEntities: lastResponse.contextStats?.detectedEntities as any,
+              cacheHitRate: lastResponse.contextStats?.cacheHitRate,
+              assemblyTimeMs: lastResponse.contextStats?.assemblyTimeMs,
+              memories: lastResponse.contextStats?.memoriesRetrieved as any,
+              acus: lastResponse.contextStats?.acusRetrieved as any,
+            }}
             totalTokensAvailable={12000} 
           />
         </div>

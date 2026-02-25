@@ -310,7 +310,7 @@ export default defineConfig({
     noExternal: ['@vitejs/plugin-react', 'vite-plugin-pwa']
   },
   optimizeDeps: {
-    include: ['@testing-library/react', '@testing-library/jest-dom']
+    include: ['@testing-library/react', '@testing-library/jest-dom', 'katex', 'mermaid']
   },
   server: {
     port: 5173,

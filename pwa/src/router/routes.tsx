@@ -36,6 +36,7 @@ const ForYou = lazy(() => import('../pages/ForYou'));
 const BYOKChat = lazy(() => import('../pages/BYOKChat'));
 const ContextComponents = lazy(() => import('../pages/ContextComponents'));
 const ContextRecipes = lazy(() => import('../pages/settings/ContextRecipes'));
+const ContextCockpitPage = lazy(() => import('../pages/ContextCockpitPage'));
 
 // Loading component
 const PageLoading = () => (
@@ -217,6 +218,15 @@ const router = createBrowserRouter([
     element: (
       <AppLayout>
         <ContextRecipes />
+      </AppLayout>
+    ),
+    errorElement: <ErrorBoundary />
+  },
+  {
+    path: "/context-cockpit",
+    element: (
+      <AppLayout>
+        <ContextCockpitPage />
       </AppLayout>
     ),
     errorElement: <ErrorBoundary />

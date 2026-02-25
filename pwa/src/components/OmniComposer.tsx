@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, Square, Save, Globe, Zap } from 'lucide-react';
+import { Send, Square, Save, Globe, Zap, X } from 'lucide-react';
 import { SuggestionMenu, type TriggerType, type SuggestionItem } from './SuggestionMenu';
 import { searchOmni } from '../lib/omni-api';
 import './OmniComposer.css';
@@ -8,6 +8,7 @@ interface OmniComposerProps {
   onSend: (message: string, action?: string) => Promise<void>;
   isLoading: boolean;
   onStop: () => void;
+  onClose?: () => void;
   placeholder?: string;
   initialValue?: string;
 }
@@ -16,6 +17,7 @@ export const OmniComposer: React.FC<OmniComposerProps> = ({
   onSend,
   isLoading,
   onStop,
+  onClose,
   placeholder = "Type a message...",
   initialValue = ""
 }) => {
@@ -222,6 +224,16 @@ export const OmniComposer: React.FC<OmniComposerProps> = ({
         <span className="omni-helper-text">
           Use <b>/</b>cmd <b>@</b>mention <b>+</b>ctx <b>!</b>act <b>#</b>topic
         </span>
+        
+        {onClose && (
+           <button 
+             onClick={onClose} 
+             className="ml-auto text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 mt-1 flex items-center justify-center p-1"
+             title="Close chat"
+           >
+             <X className="w-4 h-4" />
+           </button>
+        )}
       </div>
     </div>
   );

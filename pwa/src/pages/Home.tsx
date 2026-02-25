@@ -2,6 +2,7 @@ import React, {
   useEffect, useState, useRef, useCallback, useMemo
 } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   Plus, Bot, RefreshCw, WifiOff, Database, AlertCircle, CloudOff,
   Search, Grid2x2, List, Pin, Archive, MessageSquare, LayoutList,
@@ -30,6 +31,7 @@ import {
   toast,
 } from '../components/ios';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { ContentRenderer } from '../components/content/ContentRenderer';
 import { useCircles } from '../lib/feature-hooks';
 import { featureService } from '../lib/feature-service';
 import type { RecommendationItem } from '../lib/recommendation/types';
@@ -155,9 +157,22 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
   
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const userScrolledUp = useRef(false);
+
+  useEffect(() => {
+    if (!scrollContainerRef.current) return;
+    const scrollEl = scrollContainerRef.current;
+    const handleScroll = () => {
+      const isNearBottom = scrollEl.scrollHeight - scrollEl.scrollTop - scrollEl.clientHeight < 50;
+      userScrolledUp.current = !isNearBottom;
+    };
+    scrollEl.addEventListener('scroll', handleScroll);
+    return () => scrollEl.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     if (isExpanded && scrollContainerRef.current) {
+      if (userScrolledUp.current) return;
       const container = scrollContainerRef.current;
       container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
     }
@@ -326,44 +341,37 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
               </div>
               <div 
                 ref={scrollContainerRef}
-                className="max-h-[500px] overflow-y-auto pr-2 space-y-4 ios-scrollbar-hide flex flex-col items-stretch"
+                className="max-h-[600px] overflow-y-auto pr-2 space-y-6 custom-scrollbar flex flex-col items-stretch"
               >
                 {(overrideMessages || convo.messages || []).map((msg: any, i: number) => {
-                  let text = '';
                   const parts = msg.parts || msg.content;
-                  if (Array.isArray(parts)) {
-                    text = parts.map((p: any) => {
-                      if (typeof p === 'string') return p;
-                      if (p?.type === 'text') return p.text || p.content || '';
-                      if (p?.text) return p.text;
-                      if (p?.content) return p.content;
-                      return '';
-                    }).join('');
-                  } else if (typeof parts === 'string') {
-                    text = parts;
-                  } else if (typeof msg.content === 'string') {
-                    text = msg.content;
-                  }
-                  
-                  if (!text || !text.trim()) return null;
+                  if (!parts) return null;
                   
                   return (
-                    <div key={msg.id || i} className={`group relative flex flex-col w-full ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                      <div className={`relative max-w-[85%] px-3 py-2 rounded-2xl text-[13px] whitespace-pre-wrap ${msg.role === 'user' ? 'bg-indigo-600 text-white rounded-br-sm' : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-bl-sm'}`}>
-                        {text.trim()}
+                    <div key={msg.id || i} className={`group relative flex flex-col w-full ${msg.role === 'user' ? 'items-end user-message-entry' : 'items-start assistant-message-entry'}`}>
+                      <div className={`relative px-4 py-3 text-[13px] rounded-2xl ${
+                        msg.role === 'user' 
+                          ? 'bg-indigo-600 text-white rounded-br-sm md:max-w-[75%] max-w-[85%] shadow-md' 
+                          : 'bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-gray-100 rounded-bl-sm w-full border border-gray-100 dark:border-white/5 shadow-sm'
+                      } overflow-x-hidden transition-all hover:shadow-lg`}>
+                        {msg.role === 'user' ? (
+                           <div className="whitespace-pre-wrap leading-relaxed">{typeof parts === 'string' ? parts : Array.isArray(parts) ? parts.map((p: any) => p.text || p.content || '').join('') : ''}</div>
+                        ) : (
+                          <ContentRenderer content={parts} />
+                        )}
                         
-                        {!overrideMessages && (
-                        <div className={`absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 flex ${msg.role === 'user' ? 'right-[calc(100%+0.5rem)]' : 'left-[calc(100%+0.5rem)]'}`}>
+                        {!overrideMessages && msg.role === 'user' && (
+                        <div className={`absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 flex right-[calc(100%+0.75rem)]`}>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               onContinue(convo.id, convo.messages.slice(0, i + 1));
                             }}
-                            className="bg-white dark:bg-gray-800 shadow-md border border-gray-100 dark:border-gray-700 rounded-lg p-1.5 text-indigo-600 dark:text-indigo-400 hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 whitespace-nowrap"
+                            className="bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 rounded-full p-2 text-indigo-600 dark:text-indigo-400 hover:scale-110 active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap group/btn"
                             title="Branch conversation from here"
                           >
-                            <Sparkles className="w-[10px] h-[10px]" />
-                            <span className="text-[10px] font-bold">Branch</span>
+                            <Sparkles className="w-3.5 h-3.5 group-hover/btn:animate-pulse" />
+                            <span className="text-[10px] font-bold pr-1">Branch</span>
                           </button>
                         </div>
                         )}
@@ -372,11 +380,12 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
                   );
                 })}
                 {isLoadingAI && (
-                  <div className="flex flex-col items-start w-full">
-                    <div className="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-2xl rounded-bl-sm flex items-center gap-2">
-                       <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                       <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                       <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></span>
+                  <div className="flex flex-col items-start w-full assistant-message-entry">
+                    <div className="px-5 py-3 bg-gray-50 dark:bg-gray-900/50 rounded-2xl rounded-bl-sm flex items-center gap-1.5 border border-gray-100 dark:border-white/5 shadow-sm">
+                       <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                       <div className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                       <div className="w-1.5 h-1.5 bg-pink-500 rounded-full animate-bounce"></div>
+                       <span className="text-[10px] ml-2 font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase">Thinking</span>
                     </div>
                   </div>
                 )}
@@ -440,6 +449,7 @@ export const Home: React.FC = () => {
   const [fabExpanded, setFabExpanded] = useState(false);
   const [fabVisible, _setFabVisible] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
 
   const observerTarget = useRef<HTMLDivElement>(null);
   const { toast: showToast } = useIOSToast();
@@ -551,6 +561,8 @@ export const Home: React.FC = () => {
       const start = (pageNum - 1) * pageSize;
       const pagedList = list.slice(start, start + pageSize);
 
+      setHasMore(pagedList.length === pageSize);
+
       if (pageNum === 1) {
         setConversations(pagedList);
       } else {
@@ -658,7 +670,7 @@ export const Home: React.FC = () => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !loading) {
+        if (entries[0].isIntersecting && !loading && hasMore) {
           const nextPage = page + 1;
           setPage(nextPage);
           loadConversations(nextPage);
@@ -793,7 +805,7 @@ export const Home: React.FC = () => {
 
   /* ── Render ── */
   return (
-    <div className="home-feed-wrapper flex flex-col min-h-full pb-20">
+    <div className={`home-feed-wrapper flex flex-col min-h-full ${activeChatId ? 'pb-[180px]' : 'pb-20'}`}>
 
       {/* ── For You Stories ── */}
       {recommendations.length > 0 && (
@@ -845,31 +857,44 @@ export const Home: React.FC = () => {
       )}
 
       {/* ── Status Banners ── */}
+      <AnimatePresence>
       {!storageStatus.ready && !error && (
-        <div className="mx-4 mt-3 px-3 py-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-200 dark:border-yellow-800">
+        <motion.div 
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: 'auto', opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          className="mx-4 mt-3 px-3 py-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-200 dark:border-yellow-800 overflow-hidden"
+        >
           <div className="flex items-center gap-2">
             <Database className="w-3.5 h-3.5 text-yellow-600 dark:text-yellow-400 shrink-0" />
             <p className="text-xs text-yellow-700 dark:text-yellow-400">
               {storageStatus.message || 'Storage is initializing…'}
             </p>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {apiSource === 'api' && !error && (
-        <div className="mx-4 mt-3 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+        <motion.div 
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: 'auto', opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          className="mx-4 mt-3 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800 overflow-hidden"
+        >
           <div className="flex items-center gap-2">
             <CloudOff className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
             <p className="text-xs text-blue-700 dark:text-blue-400">
               Showing live data · syncing locally in background…
             </p>
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
 
-      {/* ── Search + View Toggle ── */}
+      {/* ── Sticky Header (Search + View Toggle + Filters) ── */}
       {conversations.length > 0 && (
-        <div className="home-search-row">
+        <div className="sticky top-0 z-50 bg-[#f8f9fb]/85 dark:bg-[#0a0a0f]/85 backdrop-blur-md pb-1 border-b border-gray-200 dark:border-gray-800 transition-colors">
+          <div className="home-search-row">
           <div className="home-search-input-wrap">
             <Search className="search-icon" />
             <input
@@ -917,10 +942,8 @@ export const Home: React.FC = () => {
             </button>
           </div>
         </div>
-      )}
 
-      {/* ── Filter Tabs ── */}
-      {conversations.length > 0 && (
+        {/* ── Filter Tabs ── */}
         <div className="home-filter-tabs">
           {([
             { id: 'all',      label: 'All',      icon: <LayoutList className="w-3 h-3" /> },
@@ -942,6 +965,7 @@ export const Home: React.FC = () => {
             </button>
           ))}
         </div>
+      </div>
       )}
 
       {/* ── Main Content ── */}
@@ -1032,10 +1056,16 @@ export const Home: React.FC = () => {
               </div>
             )}
             <div className={viewMode === 'grid' ? 'home-feed-grid' : 'home-feed-list'}>
+              <AnimatePresence mode="popLayout">
               {filteredConversations.map((convo, idx) => (
-                <div
+                <motion.div
                   key={convo.id}
-                  style={{ animationDelay: `${Math.min(idx * 30, 300)}ms` }}
+                  layout
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3, delay: Math.min(idx * 0.04, 0.25) }}
+                  style={{ width: '100%' }}
                 >
                   <FeedItemCard
                     conversation={convo}
@@ -1073,23 +1103,40 @@ export const Home: React.FC = () => {
                       }
                     }}
                   />
-                </div>
+                </motion.div>
               ))}
+              </AnimatePresence>
             </div>
           </>
         )}
       </div>
 
       {/* Intersection sentinel for infinite scroll */}
-      <div ref={observerTarget} className="h-8 w-full" />
+      {hasMore ? (
+        <div ref={observerTarget} className="h-8 w-full" />
+      ) : conversations.length > 0 ? (
+        <div className="w-full text-center py-8 text-xs text-gray-400 dark:text-gray-500 font-medium tracking-wide">
+          You've reached the end
+        </div>
+      ) : null}
 
       {/* ── FAB (floating action buttons) ── */}
       {fabVisible && (
-        <div className="home-fab-area">
+        <div className="home-fab-area z-[1020]">
           {/* Mini actions (when expanded) */}
+          <AnimatePresence>
           {fabExpanded && (
-            <>
-              <button
+            <motion.div 
+              className="flex flex-col gap-3 mb-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.button
+                initial={{ opacity: 0, y: 15, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.8 }}
+                transition={{ duration: 0.2, delay: 0.1 }}
                 className="home-fab-mini"
                 onClick={() => { setFabExpanded(false); navigate('/capture'); }}
                 id="fab-capture"
@@ -1098,8 +1145,12 @@ export const Home: React.FC = () => {
                 <span className="home-fab-mini-icon" style={{ background: 'linear-gradient(135deg,#10b981,#059669)' }}>
                   <Plus className="w-5 h-5" />
                 </span>
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                initial={{ opacity: 0, y: 15, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.8 }}
+                transition={{ duration: 0.2, delay: 0.05 }}
                 className="home-fab-mini"
                 onClick={() => { setFabExpanded(false); navigate('/ai-conversations'); }}
                 id="fab-ai-chat"
@@ -1108,8 +1159,12 @@ export const Home: React.FC = () => {
                 <span className="home-fab-mini-icon" style={{ background: 'linear-gradient(135deg,#8b5cf6,#6d28d9)' }}>
                   <Sparkles className="w-5 h-5" />
                 </span>
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                initial={{ opacity: 0, y: 15, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.8 }}
+                transition={{ duration: 0.2, delay: 0 }}
                 className="home-fab-mini"
                 onClick={async () => {
                   setFabExpanded(false);
@@ -1131,9 +1186,10 @@ export const Home: React.FC = () => {
                 <span className="home-fab-mini-icon" style={{ background: 'linear-gradient(135deg,#3b82f6,#1d4ed8)' }}>
                   <RefreshCw className="w-5 h-5" />
                 </span>
-              </button>
-            </>
+              </motion.button>
+            </motion.div>
           )}
+          </AnimatePresence>
 
           {/* Main FAB */}
           <button
@@ -1148,12 +1204,18 @@ export const Home: React.FC = () => {
       )}
 
       {/* Backdrop to close FAB */}
+      <AnimatePresence>
       {fabExpanded && (
-        <div
-          className="fixed inset-0 z-[1010]"
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 z-[1010] backdrop-blur-[2px] bg-black/10 dark:bg-black/40"
           onClick={() => setFabExpanded(false)}
         />
       )}
+      </AnimatePresence>
 
       {/* ── Debug Panel (dev only) ── */}
       {import.meta.env.DEV && (
@@ -1238,6 +1300,11 @@ export const Home: React.FC = () => {
             }}
             isLoading={aiLoading}
             onStop={stopAI}
+            onClose={() => {
+              setActiveChatId(null);
+              setExpandedId(null);
+              clearAIMessages();
+            }}
           />
         </div>
       )}

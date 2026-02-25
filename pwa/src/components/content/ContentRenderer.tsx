@@ -17,6 +17,11 @@ import {
   Globe
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useToast } from '../../hooks/useToast';
 
 // Simplified types to match the expected pwa context if needed
@@ -45,7 +50,8 @@ let katex: any = null;
 async function initMermaid() {
   if (!mermaid) {
     try {
-      mermaid = (await import('mermaid')).default;
+      const mermaidModule = await import('mermaid');
+      mermaid = mermaidModule.default || mermaidModule;
       mermaid.initialize({
         startOnLoad: false,
         theme: 'dark',
@@ -63,7 +69,11 @@ async function initMermaid() {
 async function initKatex() {
   if (!katex) {
     try {
-      katex = await import('katex');
+      const katexModule = await import('katex');
+      try {
+        await import('katex/dist/katex.min.css');
+      } catch (e) {}
+      katex = katexModule.default || katexModule;
     } catch (error) {
       console.warn('KaTeX library not available:', error);
       return null;
@@ -113,8 +123,13 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(({
   // Handle string content (legacy/simple text)
   if (isStringContent(content)) {
     return (
-      <div className={`prose prose-invert max-w-none text-sm ${className}`}>
-        <ReactMarkdown>{content}</ReactMarkdown>
+      <div className={`prose prose-invert max-w-none text-sm leading-relaxed ${className}`}>
+        <ReactMarkdown 
+          remarkPlugins={[remarkGfm, remarkMath]} 
+          rehypePlugins={[rehypeKatex]}
+        >
+          {content}
+        </ReactMarkdown>
       </div>
     );
   }
@@ -124,8 +139,13 @@ export const ContentRenderer: React.FC<ContentRendererProps> = memo(({
     // If it's an object but not an array, try to display it as JSON string or text
     const stringified = typeof content === 'object' ? JSON.stringify(content, null, 2) : String(content);
     return (
-      <div className={`prose prose-invert max-w-none text-sm ${className}`}>
-        <ReactMarkdown>{stringified}</ReactMarkdown>
+      <div className={`prose prose-invert max-w-none text-sm leading-relaxed ${className}`}>
+        <ReactMarkdown 
+          remarkPlugins={[remarkGfm, remarkMath]} 
+          rehypePlugins={[rehypeKatex]}
+        >
+          {stringified}
+        </ReactMarkdown>
       </div>
     );
   }
@@ -244,14 +264,19 @@ const TextPart: React.FC<{ part: any; enableCopy?: boolean }> = memo(({ part, en
 
   if (format === 'markdown' || format === undefined) {
     return (
-      <div className="relative group">
-        <div className="prose prose-invert prose-sm max-w-none text-gray-200">
-          <ReactMarkdown>{content}</ReactMarkdown>
+      <div className="relative group/text">
+        <div className="prose prose-invert prose-sm max-w-none text-gray-200 leading-relaxed">
+          <ReactMarkdown 
+            remarkPlugins={[remarkGfm, remarkMath]} 
+            rehypePlugins={[rehypeKatex]}
+          >
+            {content}
+          </ReactMarkdown>
         </div>
         {enableCopy && content.length > 20 && (
           <button
             onClick={handleCopy}
-            className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded bg-gray-800/80 hover:bg-gray-700"
+            className="absolute top-0 right-0 opacity-0 group-hover/text:opacity-100 transition-opacity p-1.5 rounded bg-gray-800/80 hover:bg-gray-700 backdrop-blur-sm border border-white/10"
             aria-label="Copy text"
           >
             {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-gray-400" />}
@@ -293,30 +318,50 @@ const CodePart: React.FC<{ part: any; enableCopy?: boolean }> = memo(({ part, en
   }, [content, toast]);
 
   return (
-    <div className="my-3 rounded-xl overflow-hidden bg-gray-900 border border-gray-800 shadow-lg">
-      <div className="flex items-center justify-between px-4 py-2 bg-gray-800/50 border-b border-gray-800">
-        <div className="flex items-center gap-2">
+    <div className="my-4 rounded-xl overflow-hidden glass-border bg-gray-950/80 shadow-2xl border border-white/5">
+      <div className="flex items-center justify-between px-4 py-2.5 bg-white/5 border-b border-white/5 backdrop-blur-md">
+        <div className="flex items-center gap-2.5">
+          <div className="flex gap-1.5 mr-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+            <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+          </div>
           {filename ? (
             <FileText className="w-3.5 h-3.5 text-blue-400" />
           ) : (
             <Terminal className="w-3.5 h-3.5 text-gray-400" />
           )}
-          <span className="text-xs font-mono text-gray-300">{filename || language}</span>
+          <span className="text-[11px] font-medium font-mono text-gray-400 tracking-tight">{filename || language}</span>
         </div>
         {enableCopy && (
           <button
             onClick={handleCopy}
-            className="p-1 rounded hover:bg-gray-700 transition-colors"
+            className="p-1.5 rounded-md hover:bg-white/10 transition-colors text-gray-400 hover:text-white border border-transparent hover:border-white/10"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5 text-gray-400" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
           </button>
         )}
       </div>
-      <pre className="p-4 overflow-x-auto">
-        <code className={`text-xs font-mono text-gray-300 language-${language}`}>
+      <div className="p-0 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+        <SyntaxHighlighter
+          language={language}
+          style={vscDarkPlus}
+          customStyle={{
+            margin: 0,
+            padding: '1.25rem',
+            fontSize: 'var(--text-xs, 12px)',
+            background: 'transparent',
+            lineHeight: '1.6',
+          }}
+          codeTagProps={{
+            style: {
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+            }
+          }}
+        >
           {content}
-        </code>
-      </pre>
+        </SyntaxHighlighter>
+      </div>
     </div>
   );
 });
