@@ -1,285 +1,323 @@
 ---
 sidebar_position: 1
 title: Architecture Overview
-description: VIVIM System Architecture
+description: VIVIM System Architecture - visual guide
 ---
 
-# Architecture Overview
+# 🏗️ Architecture Overview
 
-This document provides a comprehensive overview of the VIVIM system architecture, including the major components, data flows, and design decisions.
+> The complete picture of how VIVIM works - from capture to context
+
+---
+
+## Quick Visual Map
+
+```mermaid
+flowchart TB
+    subgraph "📱 Client"
+        PWA[PWA App]
+    end
+    
+    subgraph "☁️ VIVIM Cloud"
+        API[REST API]
+        WS[WebSocket]
+    end
+    
+    subgraph "🧠 Core Services"
+        CAP[Capture]
+        CTX[Context Engine]
+        SYNC[Sync]
+    end
+    
+    subgraph "💾 Data"
+        DB[(PostgreSQL)]
+        REDIS[(Redis)]
+        VEC[(Vector DB)]
+    end
+    
+    subgraph "🌐 P2P Network"
+        P2P[P2P Node]
+    end
+    
+    PWA -->|HTTP| API
+    PWA -->|WS| WS
+    API --> CAP
+    API --> CTX
+    API --> SYNC
+    CAP --> DB
+    CTX --> VEC
+    CTX --> REDIS
+    PWA <--> P2P
+```
+
+---
 
 ## High-Level Architecture
 
+### The Big Picture
+
 ```mermaid
 flowchart TB
-    subgraph "External Services"
-        AI[AI Providers]
-        OAUTH[OAuth Providers]
+    subgraph "🌍 External World"
+        AI[🤖 AI Providers]
+        GOOGLE[🔐 Google OAuth]
     end
     
-    subgraph "Client Applications"
-        PWA[VIVIM PWA]
-        ADMIN[Admin Panel]
-    end
-    
-    subgraph "VIVIM Backend"
-        LB[Load Balancer]
+    subgraph "📱 VIVIM System"
+        subgraph "Client"
+            PWA[⚡ PWA]
+            ADMIN[🛠️ Admin Panel]
+        end
         
-        subgraph "API Cluster"
+        subgraph "API Layer"
+            LB[⚖️ Load Balancer]
             REST[REST API]
-            WS[WebSocket Server]
+            WS[🔌 WebSocket]
         end
         
         subgraph "Services"
-            CAP[Capture Service]
-            CTX[Context Engine]
-            SYNC[Sync Service]
-            MEM[Memory Service]
+            CAP[📥 Capture]
+            CTX[🧠 Context]
+            SYNC[🔄 Sync]
+            MEM[💾 Memory]
         end
         
         subgraph "Workers"
-            WARMUP[Context Warmup]
-            LIB[Librarian Worker]
-            EXTRACT[Extraction Worker]
+            WARM[🚀 Warmup]
+            LIB[📚 Librarian]
+            EXT[⚙️ Extract]
+        end
+        
+        subgraph "Data"
+            PG[(💿 PostgreSQL)]
+            REDIS[(⚡ Redis)]
+            VEC[(🔢 Vector)]
+            S3[(📦 S3)]
+        end
+        
+        subgraph "Network"
+            P2P[🌐 P2P]
+            GOSSIP[📢 Gossipsub]
+            FED[🔗 Federation]
         end
     end
     
-    subgraph "Data Infrastructure"
-        PG[(PostgreSQL)]
-        REDIS[(Redis)]
-        VEC[(Vector Store)]
-        S3[(Object Storage)]
-    end
-    
-    subgraph "Network Engine"
-        P2P[P2P Node]
-        GOSSIP[GossipSub]
-        FED[Federation]
-    end
-    
-    AI -->|Capture| CAP
-    OAUTH -->|Auth| REST
+    AI -->|1. Capture| CAP
+    GOOGLE -->|Auth| REST
     PWA -->|API| REST
-    PWA -->|WS| WS
-    ADMIN -->|API| REST
+    PWA -->|Live| WS
     
-    REST --> CAP
-    REST --> CTX
-    REST --> SYNC
-    REST --> MEM
+    REST --> CAP & CTX & SYNC & MEM
+    CAP --> PG & S3
+    CTX --> PG & VEC & REDIS
     
-    CAP --> PG
-    CTX --> PG
-    CTX --> VEC
-    SYNC --> PG
-    MEM --> PG
-    
-    CAP --> S3
-    CTX --> REDIS
-    
-    PWA --> P2P
-    P2P --> GOSSIP
-    P2P --> FED
+    PWA <--> P2P
+    P2P --> GOSSIP & FED
 ```
 
 ---
 
-## Component Responsibilities
+## 🔄 Data Flow: Capture to Context
+
+### Step 1: Capture Conversation
+
+```mermaid
+sequenceDiagram
+    participant U as 👤 User
+    participant P as 📱 PWA
+    participant A as ⚡ API
+    participant W as ⚙️ Workers
+    participant D as 💾 Database
+    
+    U->>P: Pastes ChatGPT URL
+    P->>A: POST /api/v1/capture
+    A->>W: Queue extraction job
+    W->>A: Fetch & parse HTML
+    A->>D: Store conversation
+    A->>P: Return success
+    P->>U: ✅ Saved!
+```
+
+### Step 2: Build Context
+
+```mermaid
+sequenceDiagram
+    participant A as ⚡ API
+    participant P as 🧠 Pipeline
+    participant R as 🔍 Retriever
+    participant C as 📦 Assembler
+    participant AI as 🤖 AI
+    
+    A->>P: New chat message
+    P->>R: Query ACUs
+    R-->>P: Relevant ACUs
+    P->>R: Query Memories
+    R-->>P: Relevant Memories
+    P->>C: All results
+    C->>C: Deduplicate & rank
+    C->>C: Allocate tokens
+    C->>A: Final context
+    A->>AI: Prompt + Context
+    AI-->>A: Response
+    A-->>U: 🤖 Response
+```
+
+---
+
+## 🧱 Core Components
 
 ### API Server (`/server`)
 
-The API server is the central hub for all client communications, handling:
-
-- **Authentication**: OAuth 2.0 (Google), session-based auth, API keys
-- **REST Endpoints**: CRUD operations for conversations, users, ACUs
-- **WebSocket**: Real-time updates, sync notifications
-- **Context Assembly**: Dynamic context generation for AI prompts
+| Feature | Description |
+|---------|-------------|
+| **Auth** | OAuth 2.0 (Google), sessions, API keys |
+| **REST** | Full CRUD for conversations, users, ACUs |
+| **WebSocket** | Real-time updates, sync notifications |
+| **Context** | Dynamic prompt assembly |
 
 ### PWA Frontend (`/pwa`)
 
-The Progressive Web App provides:
+| Feature | Description |
+|---------|-------------|
+| **Framework** | React 19 + TypeScript |
+| **State** | Zustand + TanStack Query |
+| **Storage** | IndexedDB (Dexie) - offline-first |
+| **Styling** | Tailwind CSS |
+| **PWA** | Service worker, offline support |
 
-- **Conversation Capture**: URL-based extraction from AI providers
-- **Content Rendering**: Rich content display (code, images, tables, mermaid)
-- **Offline Support**: Service workers for offline functionality
-- **Real-time Sync**: WebSocket connection for live updates
+### Context Engine (`/server/src/context`)
 
-### Network Engine (`/network`)
+```mermaid
+flowchart LR
+    subgraph "Input"
+        Q[Query]
+        H[History]
+        U[User Profile]
+    end
+    
+    subgraph "8-Layer Pipeline"
+        L0[L0: Identity]
+        L1[L1: Preferences]
+        L2[L2: Topics]
+        L3[L3: Entities]
+        L4[L4: Conversations]
+        L5[L5: JIT Memory]
+        L6[L6: History]
+        L7[L7: User Message]
+    end
+    
+    Q & H & U --> L0 & L1 & L2 & L3 & L4 & L5 & L6 & L7
+```
 
-Decentralized P2P layer enabling:
+### Network Layer (`/network`)
 
-- **Peer Discovery**: DHT-based peer finding
-- **Data Sync**: CRDT-based conflict-free replication
-- **Federation**: Cross-instance communication
-- **E2E Encryption**: Secure peer-to-peer messaging
+| Technology | Purpose |
+|------------|---------|
+| **libp2p** | P2P networking |
+| **Yjs** | CRDT sync |
+| **Gossipsub** | Pub/Sub messaging |
+| **DHT** | Peer discovery |
 
 ---
 
-## Data Flow: Conversation Capture
+## 📊 Data Models
+
+### Active Context Units (ACUs)
 
 ```mermaid
-sequenceDiagram
-    participant U as User
-    participant PWA as PWA Frontend
-    participant API as API Server
-    participant CAP as Capture Service
-    participant DB as Database
-    participant VEC as Vector Store
+erDiagram
+    USER ||--o{ ACU : creates
+    ACU {
+        string id PK
+        string content
+        string type "fact|preference|project|person|code|idea"
+        string sharingPolicy "self|circle|public"
+    }
+    ACU ||--o{ ACU : links_to
+```
 
-    U->>PWA: Enter AI Chat URL
-    PWA->>API: POST /api/v1/capture
-    
-    API->>CAP: Forward Capture Request
-    CAP->>CAP: Validate URL & Provider
-    
-    alt Provider Supported
-        CAP->>CAP: Extract Content
-        CAP->>CAP: Parse Messages
-        CAP->>CAP: Generate ACUs
-        
-        CAP->>DB: Store Conversation
-        CAP->>DB: Store Messages
-        CAP->>DB: Store ACUs
-        
-        CAP->>VEC: Generate Embeddings
-        VEC->>VEC: Store Vector Data
-        
-        DB-->>CAP: Confirmation
-        CAP-->>API: Success Response
-        API-->>PWA: 200 OK + Conversation ID
-        
-        PWA->>U: Display Captured Content
-    else Provider Not Supported
-        CAP-->>API: Error: Unsupported Provider
-        API-->>PWA: 400 Error
-        PWA->>U: Show Error Message
-    end
+### Conversations & Messages
+
+```mermaid
+erDiagram
+    USER ||--o{ CONVERSATION : has
+    CONVERSATION ||--o{ MESSAGE : contains
+    CONVERSATION {
+        string id PK
+        string provider "chatgpt|claude|gemini..."
+        string title
+    }
+    MESSAGE {
+        string id PK
+        string role "user|assistant"
+        content json
+    }
 ```
 
 ---
 
-## Data Flow: Context Injection
-
-```mermaid
-sequenceDiagram
-    participant AI as AI Assistant
-    participant API as Context API
-    participant PIPELINE as Parallel Pipeline
-    participant ASSEMBLER as Context Assembler
-    participant DB as Database
-    participant VEC as Vector Store
-
-    AI->>API: Request Context for Prompt
-    API->>PIPELINE: Create Context Request
-    
-    rect rgb(240, 248, 255)
-        Note over PIPELINE: Parallel Retrieval
-        PIPELINE->>DB: Query Explicit Matches
-        PIPELINE->>VEC: Semantic Search
-        PIPELINE->>DB: Query Memories
-        PIPELINE->>VEC: Query Topics
-    end
-    
-    PIPELINE-->>ASSEMBLER: Retrieved Context Items
-    
-    ASSEMBLER->>ASSEMBLER: Calculate Token Budget
-    ASSEMBLER->>ASSEMBLER: Apply Priority Rules
-    ASSEMBLER->>ASSEMBLER: Format for LLM
-    
-    ASSEMBLER-->>API: Assembled Context Bundle
-    API-->>AI: Context in Prompt
-    
-    AI->>AI: Generate Response with Context
-```
-
----
-
-## API Route Structure
-
-```mermaid
-graph LR
-    subgraph "API v1 (/api/v1)"
-        CAP[capture]
-        CONV[conversations]
-        ACU[acus]
-        MEM[memory]
-        SYNC[sync]
-        FEED[feed]
-        ID[identity]
-    end
-    
-    subgraph "API v2 (/api/v2)"
-        CIRC[circles]
-        SHAR[sharing]
-        FEEDv2[feed-v2]
-        PORT[portability]
-    end
-    
-    subgraph "Admin (/api/admin)"
-        SYS[system]
-        NET[network]
-        DB[database]
-        CRDT[crdt]
-    end
-    
-    subgraph "Special (/api)"
-        UNI[unified]
-        OMNI[omni]
-        AI[ai/*]
-    end
-```
-
----
-
-## Security Architecture
+## 🔐 Security Architecture
 
 ```mermaid
 flowchart TB
-    subgraph "Client Security"
-        E2E[End-to-End Encryption]
-        KEYS[Key Management]
-        DEV[Device Trust]
+    subgraph "Security Layers"
+        AUTH[🔐 Auth]
+        ENC[🔒 Encryption]
+        PERM[👮 Permissions]
+        AUD[📝 Audit]
     end
     
-    subgraph "Transport Security"
-        TLS[TLS 1.3]
-        CORS[CORS Policies]
-        RATE[Rate Limiting]
+    subgraph "Your Keys"
+        KPub[Public Key]
+        KPriv[Private Key]
     end
     
-    subgraph "Application Security"
-        AUTH[Authentication]
-        PERM[Authorization]
-        VAL[Input Validation]
-    end
+    AUTH --> ENC
+    ENC --> PERM
+    PERM --> AUD
     
-    subgraph "Data Security"
-        ENC[Encryption at Rest]
-        MASK[Data Masking]
-        AUDIT[Audit Logging]
-    end
-    
-    E2E --> TLS
-    KEYS --> TLS
-    DEV --> AUTH
-    
-    TLS --> AUTH
-    CORS --> AUTH
-    RATE --> AUTH
-    
-    AUTH --> PERM
-    PERM --> VAL
-    
-    VAL --> ENC
-    ENC --> MASK
-    MASK --> AUDIT
+    ENC <--> KPub & KPriv
 ```
 
 ---
 
-## Next Steps
+## 🚀 Getting Started with Architecture
 
-- [Server Architecture](/docs/architecture/server) - Detailed API and services
-- [Context Engine](/docs/architecture/context) - Dynamic context system
-- [Network Layer](/docs/network/overview) - P2P and sync details
-- [Database Schema](/docs/database/schema) - Data models
+Ready to dive deeper? Here's your path:
+
+| If you want to... | Start here |
+|-------------------|------------|
+| Understand context pipeline | [Context Engine](/docs/architecture/context) |
+| See how sync works | [Sync Architecture](/docs/architecture/sync) |
+| Learn about storage | [Database Schema](/docs/database/schema) |
+| Explore P2P networking | [Network Overview](/docs/network/overview) |
+| Set up development | [Development Guide](/docs/development/guide) |
+
+---
+
+## Quick Reference
+
+### Key Technologies
+
+- **Runtime**: Node.js 20+
+- **Database**: PostgreSQL + Redis + Vector DB
+- **P2P**: libp2p v1
+- **Sync**: Yjs + CRDT
+- **Cache**: Redis multi-layer
+- **Queue**: BullMQ
+
+### API Base URLs
+
+| Environment | URL |
+|------------|-----|
+| Development | `http://localhost:3000` |
+| Production | `https://api.vivim.app` |
+
+### Key Endpoints
+
+| Endpoint | Purpose |
+|----------|---------|
+| `POST /api/v1/capture` | Import conversation |
+| `GET /api/v1/conversations` | List conversations |
+| `POST /api/v1/context` | Get AI context |
+| `WS /ws` | Real-time updates |

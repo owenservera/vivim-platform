@@ -144,4 +144,4 @@ When you capture a conversation:
 - You can delete at any time
 - Your data is encrypted
 
-See [Security & Privacy](/docs/privacy/overview) for more details.
+See [Security Overview](/docs/security/overview) for more details.
