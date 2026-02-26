@@ -1,0 +1,14 @@
+{
+  "id": "@vivim/roadmap-engine",
+  "name": "Roadmap Engine",
+  "version": "1.0.0",
+  "description": "System development tracking and automated project onboarding (Core App)",
+  "author": "did:key:zVIVIM_SYSTEM_AUTHOR",
+  "license": "MIT",
+  "type": "api",
+  "capabilities": [
+    { "id": "roadmap:track", "name": "Milestone Tracking" },
+    { "id": "enroll:app", "name": "App Onboarding" }
+  ],
+  "protocols": ["on-chain-discovery-v1", "roadmap-protocol-v1"]
+}

@@ -14,7 +14,10 @@ import {
   AiDocumentationApp,
   CryptoEngineApp,
   AssistantEngineApp,
-  ToolEngineApp
+  ToolEngineApp,
+  PublicDashboardApp,
+  PublishingAgentApp,
+  RoadmapEngineApp
 } from '../index.js';
 
 // Memory Event Storage locally for node execution
@@ -74,6 +77,9 @@ async function bootDecentralizedNode() {
   const cryptoApp = new CryptoEngineApp({ chainClient });
   const assistantApp = new AssistantEngineApp({ chainClient });
   const toolApp = new ToolEngineApp({ chainClient });
+  const dashboardApp = new PublicDashboardApp({ chainClient });
+  const agentApp = new PublishingAgentApp({ chainClient, contentClient });
+  const roadmapApp = new RoadmapEngineApp({ chainClient, contentClient });
 
   // 3. Ignite Sequence
   await networkNode.start();
@@ -86,7 +92,10 @@ async function bootDecentralizedNode() {
     aiDocApp.start(),
     cryptoApp.start(),
     assistantApp.start(),
-    toolApp.start()
+    toolApp.start(),
+    dashboardApp.start(),
+    agentApp.start(),
+    roadmapApp.start()
   ]);
 
   const peerId = networkNode.getNodeInfo().peerId;

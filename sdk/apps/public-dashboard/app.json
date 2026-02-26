@@ -1,0 +1,14 @@
+{
+  "id": "@vivim/public-dashboard",
+  "name": "Public Dashboard",
+  "version": "1.0.0",
+  "description": "VIVIM Network Tracker & Diagnostic Interface (Core App)",
+  "author": "did:key:zVIVIM_SYSTEM_AUTHOR",
+  "license": "MIT",
+  "type": "api",
+  "capabilities": [
+    { "id": "network:monitor", "name": "Network Monitoring" },
+    { "id": "topology:visualize", "name": "Topology Visualization" }
+  ],
+  "protocols": ["on-chain-discovery-v1", "dag-sync-v1"]
+}

@@ -35,8 +35,13 @@ export * from './apps/assistant-engine/index.js';
 export * from './apps/tool-engine/index.js';
 export * from './apps/public-dashboard/index.js';
 export * from './apps/publishing-agent/index.js';
+export * from './apps/roadmap-engine/index.js';
 
 // Utilities
+export * from './utils/index.js';
+
+// Protocols (Exit Node, Sync)
+export * from './protocols/index.js';
 export * from './utils/index.js';
 
 // Re-export commonly used types

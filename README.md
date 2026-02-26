@@ -69,6 +69,7 @@ See `vivim.docs.context/DOCUMENTATION_GUIDE.md` for detailed instructions on:
 
 ```
 vivim-app/
+├── sdk/                # VIVIM SDK - Core toolkit for decentralized apps
 ├── github-frontend/    # Modern GitHub-style frontend (Next.js 15)
 ├── pwa/                # React PWA frontend
 ├── server/             # Express.js API server
@@ -78,6 +79,12 @@ vivim-app/
 ```
 
 ## 🛠️ Tech Stack
+
+### VIVIM SDK
+- **Language**: TypeScript
+- **Runtime**: Bun
+- **Storage**: CRDT / SQLite (Bun-native)
+- **Networking**: P2P / WebRTC
 
 ### GitHub Frontend
 - **Framework**: Next.js 15 (App Router)
@@ -143,7 +150,8 @@ MIT License - See [LICENSE](LICENSE) file for details.
 ## 🔗 Links
 
 - [GitHub Repository](https://github.com/owenservera/vivim-app)
-- [Documentation](https://vivim-docs.vercel.app) (coming soon)
+- [SDK Documentation](sdk/docs/index.md)
+- [Documentation Site](https://vivim-docs.vercel.app) (coming soon)
 - [Issue Tracker](https://github.com/owenservera/vivim-app/issues)
 
 ---

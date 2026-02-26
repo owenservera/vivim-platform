@@ -1,0 +1,12 @@
+{
+  "name": "vivim-sdk-basic-example",
+  "version": "1.0.0",
+  "description": "Basic VIVIM SDK example",
+  "type": "module",
+  "scripts": {
+    "start": "bun run index.ts"
+  },
+  "dependencies": {
+    "@vivim/sdk": "workspace:*"
+  }
+}

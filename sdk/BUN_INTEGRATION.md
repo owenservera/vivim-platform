@@ -36,8 +36,9 @@ const sqliteStore = new BunSQLiteStore({
 
 // 2. Wrap into a Core SDK instance
 const sdk = new VivimSDK({
-  networkNodeId: 'bun-edge-001',
-  recordKeeper: true
+  identity: {
+    did: 'bun-edge-001'
+  }
 });
 
 // Bind custom store manually if necessary (or update SDK config pattern)

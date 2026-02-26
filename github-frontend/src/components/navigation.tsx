@@ -16,6 +16,7 @@ const navItems = [
   { href: "/pull-requests", label: "Pull Requests", icon: GitPullRequest },
   { href: "/contributors", label: "Contributors", icon: Users },
   { href: "/releases", label: "Releases", icon: Package },
+  { href: "/sdk", label: "SDK", icon: Package },
   { href: "/docs", label: "Docs", icon: Book },
 ]
 

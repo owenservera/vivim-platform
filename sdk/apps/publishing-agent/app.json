@@ -1,0 +1,14 @@
+{
+  "id": "@vivim/publishing-agent",
+  "name": "Publishing Agent",
+  "version": "1.0.0",
+  "description": "Automated code publication and blockchain anchoring daemon (Core App)",
+  "author": "did:key:zVIVIM_SYSTEM_AUTHOR",
+  "license": "MIT",
+  "type": "api",
+  "capabilities": [
+    { "id": "git:publish", "name": "AI-Augmented Git Publishing" },
+    { "id": "anchor:codebase", "name": "On-Chain Code Anchoring" }
+  ],
+  "protocols": ["on-chain-discovery-v1", "git-blockchain-sync-v1"]
+}
