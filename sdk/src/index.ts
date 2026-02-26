@@ -47,6 +47,7 @@ export * from './utils/index.js';
 // Assistant & Tool UI standard types
 export * from './core/assistant.js';
 export { VivimAssistantRuntime } from './core/assistant-runtime.js';
+export * from './extension/assistant-ui-adapter.js';
 
 // Re-export commonly used types
 export type {

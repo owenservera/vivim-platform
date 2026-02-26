@@ -481,7 +481,7 @@ const ContentPartRenderer: React.FC<PartRendererProps> = memo(({ part, index, en
 ContentPartRenderer.displayName = 'ContentPartRenderer';
 
 const TextPart: React.FC<{ part: any; enableCopy?: boolean }> = memo(({ part, enableCopy = true }) => {
-  const content = isStringContent(part.content) ? part.content : String(part.content ?? '');
+  const content = part.text || (isStringContent(part.content) ? part.content : String(part.content ?? ''));
   const format = part.metadata?.format || 'markdown';
   const isThought = part.metadata?.isThought || part.isThought;
   const [copied, setCopied] = useState(false);
@@ -554,7 +554,9 @@ const TextPart: React.FC<{ part: any; enableCopy?: boolean }> = memo(({ part, en
 
 const CodePart: React.FC<{ part: any; enableCopy?: boolean }> = memo(({ part, enableCopy = true }) => {
   let content = '';
-  if (isStringContent(part.content)) {
+  if (part.text) {
+    content = part.text;
+  } else if (isStringContent(part.content)) {
     content = part.content;
   } else {
     content = JSON.stringify(part.content, null, 2);
@@ -568,7 +570,9 @@ const CodePart: React.FC<{ part: any; enableCopy?: boolean }> = memo(({ part, en
 
 const ImagePart: React.FC<{ part: any; maxImageWidth?: number }> = memo(({ part, maxImageWidth = 800 }) => {
   let src = '';
-  if (isStringContent(part.content)) {
+  if (part.image) {
+    src = part.image;
+  } else if (isStringContent(part.content)) {
     src = part.content;
   } else if (part.url) {
     src = part.url;

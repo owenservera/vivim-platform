@@ -45,6 +45,10 @@ import { logger } from '../lib/logger';
 import { apiClient } from '../lib/api';
 import { dataSyncService } from '../lib/data-sync-service';
 import { useAIChat } from '../hooks/useAI';
+import { useVivimAssistant } from '../hooks/useVivimAssistant';
+import { getSDK } from '../lib/vivim-sdk';
+import { VivimSDKTransport } from '@vivim/sdk';
+
 import { ChatInputBox } from '../components/ChatInputBox';
 import {
   IOSStories,
@@ -171,13 +175,44 @@ const computeStats = (convos: Conversation[]) => {
    Expanded Assistant View (Heavy component, lazy loaded per-card)
 ────────────────────────────────────────────────- */
 const ExpandedAssistantView: React.FC<{ conversationId: string; aui: any }> = ({ conversationId, aui }) => {
+  const [transport, setTransport] = useState<any>(null);
+
+  useEffect(() => {
+    let active = true;
+    const initSDK = async () => {
+      try {
+        const sdk = await getSDK();
+        if (!active) return;
+        
+        // Create the standardized transport adapter from SDK core
+        const sdkTransport = new VivimSDKTransport(sdk.assistant, conversationId);
+        setTransport(sdkTransport);
+      } catch (err) {
+        logger.error('HOME_ASSISTANT', 'Failed to initialize SDK transport', err as Error);
+      }
+    };
+    initSDK();
+    return () => { active = false; };
+  }, [conversationId]);
+
   const runtime = useChatRuntime({
-    transport: new AssistantChatTransport({
+    transport: transport || new AssistantChatTransport({
       api: `${getApiBaseUrl()}/ai/stream`,
       headers: getHeaders(),
       body: { conversationId }
     }),
   });
+
+  if (!transport) {
+    return (
+      <div className="h-[600px] flex items-center justify-center bg-gray-50/50 dark:bg-gray-950/50">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
+          <span className="text-xs font-medium text-gray-500">Initializing VIVIM Core...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <AssistantRuntimeProvider runtime={runtime} aui={aui} key={conversationId}>
@@ -526,12 +561,13 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
 export const HomeAssistant: React.FC = () => {
   const {
     messages: aiMessages,
-    setMessages: setAIMessages,
     isLoading: aiLoading,
     sendMessage: sendAIMessage,
+    setMessages: setAIMessages,
+    setExistingThread,
     stop: stopAI,
-    clearMessages: clearAIMessages
-  } = useAIChat();
+    reset: clearAIMessages
+  } = useVivimAssistant();
 
   const { toast: showToast } = useIOSToast();
   const { filterTab, viewMode, searchQuery, sortBy, fabExpanded, setFilterTab, setViewMode, setSearchQuery, setSortBy, setFabExpanded } = useHomeUIStore();
@@ -772,6 +808,8 @@ export const HomeAssistant: React.FC = () => {
   const handleContinue = useCallback((id: string, messages?: any[]) => {
     setActiveChatId(id);
     setExpandedId(id);
+    setExistingThread(id);
+
     if (messages && messages.length > 0) {
       setAIMessages(messages.map(m => {
         let text = '';
@@ -780,15 +818,21 @@ export const HomeAssistant: React.FC = () => {
         } else {
           text = m.content;
         }
-        return { role: m.role, content: text };
-      }));
+        return { 
+          id: m.id || Math.random().toString(36).slice(2, 11),
+          role: m.role, 
+          content: [{ type: 'text', text }],
+          createdAt: m.createdAt ? new Date(m.createdAt).getTime() : Date.now(),
+          threadId: id
+        };
+      }) as any);
     } else {
       setAIMessages([]);
     }
     setTimeout(() => {
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }, 100);
-  }, [setAIMessages, setActiveChatId]);
+  }, [setAIMessages, setActiveChatId, setExistingThread]);
 
   const handleFork = useCallback((id: string, forkId: string) => {
     logger.info('HOME_ASSISTANT', `Conversation forked from ${id} → ${forkId}`);

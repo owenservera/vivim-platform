@@ -37,6 +37,7 @@
     "@tanstack/react-virtual": "^3.13.19",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@vivim/network-engine": "workspace:*",
+    "@vivim/sdk": "workspace:*",
     "ai": "^6.0.100",
     "buffer": "^6.0.3",
     "class-variance-authority": "^0.7.1",
