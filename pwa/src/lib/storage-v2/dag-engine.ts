@@ -1,5 +1,5 @@
 /**
- * OpenScroll Storage V2 - DAG Engine
+ * VIVIM Storage V2 - DAG Engine
  *
  * Core operations for manipulating the conversation DAG:
  * - Append messages

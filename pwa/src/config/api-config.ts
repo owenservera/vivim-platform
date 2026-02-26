@@ -1,5 +1,5 @@
 /**
- * Environment Configuration for OpenScroll PWA
+ * Environment Configuration for VIVIM PWA
  * 
  * This file configures the PWA to connect to the server at the correct IP address
  */
@@ -7,7 +7,7 @@
 // Determine the correct API base URL based on the server's actual IP
 const getApiBaseUrl = () => {
   // Check if we have a stored override
-  const override = typeof localStorage !== 'undefined' ? localStorage.getItem('OPENSCROLL_API_OVERRIDE') : null;
+  const override = typeof localStorage !== 'undefined' ? localStorage.getItem('VIVIM_API_OVERRIDE') : null;
   if (override) {
     return override;
   }

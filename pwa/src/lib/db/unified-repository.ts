@@ -2,8 +2,6 @@ import { getVivimDB, type Conversation, type ConversationMetadata } from './vivi
 import { getStorage } from '../storage-v2';
 import { logger } from '../logger';
 
-const DB_NAME = 'VivimUserConversationsDB';
-
 class UnifiedRepository {
   private db = getVivimDB();
   private storage = getStorage();

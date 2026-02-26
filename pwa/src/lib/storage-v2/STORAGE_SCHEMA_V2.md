@@ -1,4 +1,4 @@
-# OpenScroll Storage Schema V2: DAG+CRDT
+# VIVIM Storage Schema V2: DAG+CRDT
 
 **Version:** 2.0.0
 **Date:** January 23, 2026
@@ -434,7 +434,7 @@ OBJECTS: [Object1, Object2, ...]
 ### 9.1 Database Structure
 
 ```
-OpenScrollV2
+VIVIMV2
 ├── objects           (ObjectStore) - Hash -> Node
 ├── conversations     (ObjectStore) - ConvRoot -> Metadata
 ├── snapshots         (ObjectStore) - SnapshotHash -> Snapshot

@@ -1,5 +1,5 @@
 /**
- * OpenScroll Recommendation System
+ * VIVIM Recommendation System
  * X-Algorithm Based Personalization
  *
  * Phase 1: Light Algorithm

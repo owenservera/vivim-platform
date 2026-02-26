@@ -13,12 +13,14 @@ import {
   Loader2,
   Bot,
   User,
-  CheckCheck
+  CheckCheck,
+  ExternalLink
 } from 'lucide-react';
 import { IOSAvatar, useIOSToast, toast } from './index';
 import { cn } from '../../lib/utils';
 import { featureService } from '../../lib/feature-service';
 import { useBookmarks, useFeatureCapabilities } from '../../lib/feature-hooks';
+import { ContentRenderer } from '../content/ContentRenderer';
 import type { Conversation } from '../../types/conversation';
 import type { AIAction } from '../../types/features';
 
@@ -189,8 +191,26 @@ export const FullScreenConversation: React.FC<FullScreenConversationProps> = ({
           <h1 className="font-semibold text-gray-900 dark:text-white truncate">
             {conversation.title}
           </h1>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            {conversation.provider} · {conversation.stats?.totalMessages || 0} messages
+          <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2">
+            <span>
+              {conversation.provider} 
+              {conversation.metadata?.model && conversation.metadata.model !== 'unknown' && ` (${conversation.metadata.model})`} 
+              · {conversation.stats?.totalMessages || 0} messages
+            </span>
+            {conversation.sourceUrl && (
+              <>
+                <span className="opacity-30">|</span>
+                <a 
+                  href={conversation.sourceUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="inline-flex items-center gap-1 text-blue-500 hover:text-blue-600 transition-colors"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  Original
+                </a>
+              </>
+            )}
           </p>
         </div>
 
@@ -279,11 +299,11 @@ export const FullScreenConversation: React.FC<FullScreenConversationProps> = ({
                     ? 'bg-blue-500 text-white rounded-br-md'
                     : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-bl-md'
                 )}>
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                    {typeof msg.content === 'string' 
-                      ? msg.content 
-                      : JSON.stringify(msg.content)}
-                  </p>
+                  <div className="text-sm leading-relaxed">
+                    <ContentRenderer 
+                      content={msg.parts || (typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content))} 
+                    />
+                  </div>
                   <div className={cn(
                     'flex items-center gap-1 mt-1 text-[10px]',
                     msg.role === 'user' ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'

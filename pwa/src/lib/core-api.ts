@@ -1,5 +1,5 @@
 /**
- * OpenScroll Core API Client
+ * VIVIM Core API Client
  * 
  * Interfaces with the Rust Core backend for:
  * - FTS5 Full-Text Search
@@ -16,7 +16,7 @@ import { log } from './logger';
 
 const getCoreApiBaseUrl = () => {
   const override = typeof localStorage !== 'undefined' 
-    ? localStorage.getItem('OPENSCROLL_API_OVERRIDE') 
+    ? localStorage.getItem('VIVIM_API_OVERRIDE')
     : null;
   const baseUrl = override || import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1';
   const root = baseUrl.replace(/\/api\/v1\/?$/, '').replace(/\/api\/?$/, '').replace(/\/$/, '');
@@ -25,14 +25,14 @@ const getCoreApiBaseUrl = () => {
 
 const getApiKey = () => {
   const storedApiKey = typeof localStorage !== 'undefined' 
-    ? localStorage.getItem('OPENSCROLL_API_KEY') 
+    ? localStorage.getItem('VIVIM_API_KEY')
     : null;
   if (storedApiKey) return storedApiKey;
   
   const envApiKey = import.meta.env.VITE_API_KEY || import.meta.env.REACT_APP_API_KEY;
   if (envApiKey) return envApiKey;
   
-  return 'sk-openscroll-dev-key-123456789';
+  return 'sk-vivim-dev-key-123456789';
 };
 
 const headers = () => ({

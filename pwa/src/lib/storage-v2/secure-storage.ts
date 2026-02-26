@@ -1,5 +1,5 @@
 /**
- * OpenScroll Storage V2 - Main Storage Module with Secure Crypto
+ * VIVIM Storage V2 - Main Storage Module with Secure Crypto
  *
  * Unified API for conversation storage:
  * - Content-addressed DAG storage

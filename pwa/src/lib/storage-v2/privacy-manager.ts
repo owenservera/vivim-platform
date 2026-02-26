@@ -1,5 +1,5 @@
 /**
- * OpenScroll Storage V2 - Privacy Manager
+ * VIVIM Storage V2 - Privacy Manager
  *
  * Manages privacy state transitions for conversations:
  * - LOCAL -> SHARED (encrypted for recipients)

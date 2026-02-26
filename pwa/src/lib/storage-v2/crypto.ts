@@ -1,5 +1,5 @@
 /**
- * OpenScroll Storage V2 - Cryptographic Utilities
+ * VIVIM Storage V2 - Cryptographic Utilities
  *
  * Provides:
  * - SHA-256 content hashing (Legacy)

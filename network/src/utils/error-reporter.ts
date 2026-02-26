@@ -1,4 +1,4 @@
-import { ErrorReporter, reportError, reportWarning, reportInfo, ErrorCategory, SyncIssueType, SyncResolution } from '../../../common/error-reporting';
+import { ErrorReporter, reportError, reportWarning, reportInfo, ErrorCategory, SyncIssueType, SyncResolution } from '../common/error-reporting';
 
 // Map network component sub-types to valid ErrorCategory values
 const NETWORK_ERROR_CATEGORIES = {

@@ -1,5 +1,5 @@
 /**
- * OpenScroll Identity Module
+ * VIVIM Identity Module
  * 
  * Comprehensive identity management for P2P network:
  * - Self-sovereign identity (DID-based)

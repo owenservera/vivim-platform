@@ -23,6 +23,12 @@ export { queryClient } from './query-client';
 export { useUIStore } from './ui-store';
 export { unifiedDebugService } from './unified-debug-service';
 
+// Blockchain & Content
+export * from './chain-client';
+export * from './content-client';
+export * from './chat-runtime';
+export * from './tool-registry';
+
 // Hooks
 export {
   useFeatureCapabilities,

@@ -1,7 +1,7 @@
 /**
- * OpenScroll Storage V2 - Barrel Export
+ * VIVIM Storage V2 - Barrel Export
  *
- * Next-generation storage for OpenScroll conversations:
+ * Next-generation storage for VIVIM conversations:
  * - Content-addressed DAG
  * - Cryptographic signatures
  * - P2P native

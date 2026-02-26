@@ -1,5 +1,5 @@
 /**
- * Core recommendation types for OpenScroll
+ * Core recommendation types for VIVIM
  * Based on X-algorithm architecture
  */
 

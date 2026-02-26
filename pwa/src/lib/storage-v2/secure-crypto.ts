@@ -1,5 +1,5 @@
 /**
- * OpenScroll Storage V2 - Secure Cryptographic Utilities
+ * VIVIM Storage V2 - Secure Cryptographic Utilities
  *
  * Provides:
  * - Secure key storage using Web Crypto API

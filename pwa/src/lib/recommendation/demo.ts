@@ -13,7 +13,7 @@ import type { UserPreferences } from './types';
  * Run a simple demo of the recommendation system
  */
 export async function runDemo() {
-  console.log('=== OpenScroll Recommendation System Demo ===\n');
+  console.log('=== VIVIM Recommendation System Demo ===\n');
 
   // Step 1: Generate test data
   console.log('1. Generating test conversations...');

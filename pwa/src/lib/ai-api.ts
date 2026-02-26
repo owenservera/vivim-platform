@@ -1,6 +1,6 @@
 /**
  * AI API Client
- * Full-featured API client for the OpenScroll AI system
+ * Full-featured API client for the VIVIM AI system
  * Supports: completion, streaming, agent pipeline, structured output, settings
  */
 

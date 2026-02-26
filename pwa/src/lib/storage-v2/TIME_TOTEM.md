@@ -28,7 +28,7 @@ Forever open.
 - Works offline
 - Verifiable forever
 
-**If OpenScroll the company disappears, if the code goes closed-source, if private groups take over — the Time Totem still works.**
+**If VIVIM the company disappears, if the code goes closed-source, if private groups take over — the Time Totem still works.**
 
 ---
 
@@ -41,7 +41,7 @@ A `.totem.html` file is a self-contained verification artifact:
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Time Totem - OpenScroll Verification Artifact</title>
+  <title>Time Totem - VIVIM Verification Artifact</title>
   <style>
     /* Embedded styles - always work */
   </style>
@@ -89,7 +89,7 @@ A `.totem.html` file is a self-contained verification artifact:
 ``┌─────────────────────────────────────────────────────────────┐
 │  Risk: Platform Changes                                      │
 │                                                              │
-│  • OpenScroll goes closed-source                             │
+│  • VIVIM goes closed-source                             │
 │  • Company shuts down                                        │
 │  • New owners change verification rules                     │
 │  • Private groups fork and close                            │
@@ -134,7 +134,7 @@ From zero coordinates, infinite verification.
 ```html
 <!--
   Time Totem v1.0
-  OpenScroll Verification Artifact
+  VIVIM Verification Artifact
   Generated: 2026-01-23T12:00:00Z
   Conversation: 0xabc...
 
@@ -180,11 +180,11 @@ From zero coordinates, infinite verification.
 ```html
 <script type="application/totem-proof" id="totem-proof">
 {
-  "@context": "https://openscroll.org/totem/v1",
+  "@context": "https://vivim.ai/totem/v1",
   "conversationId": "0xabc...",
   "merkleRoot": "0xdef...",
   "generatedAt": "2026-01-23T12:00:00Z",
-  "generator": "OpenScroll V2",
+  "generator": "VIVIM V2",
   "generatorVersion": "2.0.0",
 
   "signatures": {
@@ -394,7 +394,7 @@ Solution:
 ### 7.2 Platform Shutdown
 
 ```
-Scenario: OpenScroll company shuts down
+Scenario: VIVIM company shuts down
 
 Solution:
 1. Users already have their Time Totems
@@ -406,7 +406,7 @@ Solution:
 ### 7.3 Closed Source Fork
 
 ```
-Scenario: Private group forks OpenScroll, goes closed-source
+Scenario: Private group forks VIVIM, goes closed-source
 
 Solution:
 1. Original Time Totems still verify
@@ -500,7 +500,7 @@ const TIME_TOTEM_VERIFICATION = {
 ```
 I, the Time Totem, promise:
 
-I will verify any OpenScroll conversation
+I will verify any VIVIM conversation
   Forever,
   Regardless of platform changes,
   Regardless of company status,
@@ -544,7 +544,7 @@ export class TimeTotemGenerator {
 <body class="totem-body">
   <header class="totem-header">
     <h1>⏳ Time Totem</h1>
-    <p>OpenScroll Verification Artifact</p>
+    <p>VIVIM Verification Artifact</p>
     <p class="totem-meta">
       Generated: ${new Date().toISOString()}
       | Conversation: ${exported.root.conversationId.slice(0, 16)}...
@@ -668,8 +668,8 @@ When verifying a Time Totem, check:
 ```
 This Time Totem shall verify forever.
 
-No matter what happens to OpenScroll the platform,
-No matter what happens to OpenScroll the company,
+No matter what happens to VIVIM the platform,
+No matter what happens to VIVIM the company,
 No matter what happens to the blockchain,
 No matter what happens to the internet,
 

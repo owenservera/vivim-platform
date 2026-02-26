@@ -77,7 +77,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             const needsSync = await Promise.race([
               dataSyncService.needsFullSync(),
               new Promise<boolean>((_, reject) =>
-                setTimeout(() => reject(new Error('needsFullSync timed out')), 15000)
+                setTimeout(() => reject(new Error('needsFullSync timed out')), 30000)
               )
             ]);
 
@@ -90,7 +90,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
                   console.log(`[Sync] ${progress.phase}: ${progress.message}`);
                 }),
                 new Promise<never>((_, reject) =>
-                  setTimeout(() => reject(new Error('syncFullDatabase timed out after 60 seconds')), 60000)
+                  setTimeout(() => reject(new Error('syncFullDatabase timed out after 180 seconds')), 180000)
                 )
               ]);
 
@@ -134,7 +134,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setIsLoading(false);
         setError('Initialization timed out. Please refresh the page.');
       }
-    }, 65000); // 65 seconds - slightly longer than sync timeout
+    }, 200000); // 200 seconds - slightly longer than sync timeout (180s)
 
     initAuth();
 

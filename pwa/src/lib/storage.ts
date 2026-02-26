@@ -1,5 +1,5 @@
 /**
- * OpenScroll Storage - Simplified Working Version
+ * VIVIM Storage - Simplified Working Version
  *
  * Single-user private storage using IndexedDB.
  * This is the working version for Phase 0.
@@ -57,7 +57,7 @@ export interface CaptureResult {
 // IndexedDB Storage
 // ============================================================================
 
-const DB_NAME = 'OpenScrollDB';
+const DB_NAME = 'VIVIMDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'conversations';
 

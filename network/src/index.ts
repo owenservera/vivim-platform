@@ -10,6 +10,7 @@ export { PeerDiscovery } from './p2p/PeerDiscovery.js';
 
 // CRDT Synchronization
 export { CRDTSyncService, type CRDTSyncConfig } from './crdt/CRDTSyncService.js';
+export { Libp2pYjsProvider, type Libp2pYjsProviderConfig } from './crdt/Libp2pYjsProvider.js';
 export { VectorClock } from './crdt/VectorClock.js';
 export { ConversationCRDT } from './crdt/ConversationCRDT.js';
 export { CircleCRDT } from './crdt/CircleCRDT.js';
@@ -35,6 +36,23 @@ export { InstanceDiscovery } from './federation/InstanceDiscovery.js';
 export { E2EEncryption } from './security/E2EEncryption.js';
 export { KeyManager } from './security/KeyManager.js';
 export { CapabilityManager } from './security/CapabilityManager.js';
+
+// Blockchain Chain
+export * from './chain/types.js';
+export { VivimChainClient, type ChainClientConfig } from './chain/ChainClient.js';
+export { EventStore, type IEventStorage, type EventFilter } from './chain/EventStore.js';
+export { StateMachine } from './chain/StateMachine.js';
+export { EventHandlerRegistry, type EventHandler } from './chain/EventHandler.js';
+export { ChainDHT, CHAIN_DHT_KEYS } from './chain/ChainDHT.js';
+export { GossipSync, GOSSIP_TOPICS, type SyncMessage } from './chain/GossipSync.js';
+export { HLClock } from './chain/HLClock.js';
+export * from './chain/utils.js';
+
+// Storage
+export { DistributedContentClient, ContentType, type ContentObject } from './storage/DistributedContentClient.js';
+
+// API Adapters
+export { VivimChatRuntime } from './api/VivimChatRuntime.js';
 
 // Types
 export type {

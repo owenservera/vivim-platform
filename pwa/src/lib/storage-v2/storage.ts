@@ -1,5 +1,5 @@
 /**
- * OpenScroll Storage V2 - Main Storage Module
+ * VIVIM Storage V2 - Main Storage Module
  *
  * Unified API for conversation storage:
  * - Content-addressed DAG storage

@@ -6,14 +6,14 @@
 import { createLibp2p, Libp2pOptions } from 'libp2p';
 import { webRTC } from '@libp2p/webrtc';
 import { webSockets } from '@libp2p/websockets';
-import { tcp } from '@libp2p/tcp';
+// import { tcp } from '@libp2p/tcp';
 import { noise } from '@libp2p/noise';
 import { yamux } from '@libp2p/yamux';
 import { mplex } from '@libp2p/mplex';
 import { kadDHT } from '@libp2p/kad-dht';
 import { gossipsub } from '@libp2p/gossipsub';
 import { bootstrap } from '@libp2p/bootstrap';
-import { mdns } from '@libp2p/mdns';
+// import { mdns } from '@libp2p/mdns';
 import { identify } from '@libp2p/identify';
 import { ping } from '@libp2p/ping';
 import type { Libp2p } from '@libp2p/interface';
@@ -22,6 +22,9 @@ import type { PeerId } from '@libp2p/interface';
 import { logger } from '../utils/logger.js';
 import { EventEmitter } from 'events';
 import { networkErrorReporter } from '../utils/error-reporter.js';
+import { KeyManager } from '../security/KeyManager.js';
+import { DHTService } from '../dht/DHTService.js';
+import { PubSubService } from '../pubsub/PubSubService.js';
 
 const log = logger.child({ module: 'network-node' });
 
@@ -61,6 +64,10 @@ export class NetworkNode extends EventEmitter {
   private config: NetworkNodeConfig;
   private isRunning = false;
   
+  public readonly keyManager: KeyManager;
+  public readonly dhtService: DHTService;
+  public readonly pubSubService: PubSubService;
+  
   constructor(config: Partial<NetworkNodeConfig> = {}) {
     super();
     
@@ -77,6 +84,10 @@ export class NetworkNode extends EventEmitter {
       maxConnections: 100,
       ...config
     };
+
+    this.keyManager = new KeyManager();
+    this.dhtService = new DHTService({ enabled: this.config.enableDHT });
+    this.pubSubService = new PubSubService();
     
     log.info({ config: this.config }, 'Network node created');
   }
@@ -131,6 +142,10 @@ export class NetworkNode extends EventEmitter {
       // Set up event handlers
       this.setupEventHandlers();
       
+      // Initialize services
+      await this.dhtService.initialize(this.node);
+      await this.pubSubService.initialize(this.node);
+
       // Start listening
       await this.node.start();
       
@@ -173,6 +188,9 @@ export class NetworkNode extends EventEmitter {
     try {
       log.info('Stopping network node...');
       
+      this.dhtService.destroy();
+      this.pubSubService.destroy();
+
       await this.node.stop();
       this.isRunning = false;
       
@@ -204,10 +222,10 @@ export class NetworkNode extends EventEmitter {
     // WebSockets for browser-to-server
     transports.push(webSockets());
     
-    // TCP for server-to-server
-    if (this.config.nodeType !== 'client') {
-      transports.push(tcp());
-    }
+    // TCP for server-to-server (Commented out for browser compatibility)
+    // if (this.config.nodeType !== 'client') {
+    //   transports.push(tcp());
+    // }
     
     return transports;
   }
@@ -225,10 +243,10 @@ export class NetworkNode extends EventEmitter {
       }));
     }
     
-    // mDNS for local network discovery
-    if (this.config.enableMDNS) {
-      discovery.push(mdns());
-    }
+    // mDNS for local network discovery (Commented out for browser compatibility)
+    // if (this.config.enableMDNS) {
+    //   discovery.push(mdns());
+    // }
     
     return discovery;
   }

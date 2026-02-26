@@ -100,7 +100,7 @@ export interface DBSchema {
 // Database
 // ============================================================================
 
-const DB_NAME = 'VivimDB';
+const DB_NAME = 'VivimMetadataDB';
 const DB_VERSION = 1;
 
 class VivimDatabase {
@@ -263,8 +263,8 @@ class VivimDatabase {
     const results: ConversationMetadata[] = [];
     
     if (pinnedFirst) {
-      // First get pinned (isPinned = 1 for true in our encoding)
-      let cursor = await index.openCursor(IDBKeyRange.only(1), 'prev');
+      // First get pinned
+      let cursor = await index.openCursor(IDBKeyRange.only(true), 'prev');
       let count = 0;
       while (cursor && count < limit + offset) {
         if (count >= offset) {
@@ -276,7 +276,7 @@ class VivimDatabase {
       
       // Then get unpinned
       if (results.length < limit) {
-        cursor = await index.openCursor(IDBKeyRange.only(0), 'prev');
+        cursor = await index.openCursor(IDBKeyRange.only(false), 'prev');
         while (cursor && results.length < limit + offset) {
           if (results.length >= offset) {
             const meta = cursor.primaryKey as unknown as ConversationMetadata;

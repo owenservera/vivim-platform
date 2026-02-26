@@ -1,5 +1,5 @@
 /**
- * OpenScroll Unified Logging System
+ * VIVIM Unified Logging System
  * Provides a single, stable source of truth for both Client and Server logs.
  */
 

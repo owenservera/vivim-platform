@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import { randomBytes } from 'crypto';
+import * as ed25519 from '@noble/ed25519';
 import { E2EEncryption, type KeyPair } from './E2EEncryption.js';
 import { createModuleLogger } from '../utils/logger.js';
 
@@ -27,19 +28,24 @@ export class KeyManager extends EventEmitter {
 
   generateKey(type: KeyRecord['type']): KeyRecord {
     const id = randomBytes(16).toString('hex');
-    let keyPair: KeyPair | null = null;
+    let publicKey: Uint8Array;
+    let privateKey: Uint8Array;
 
     if (type === 'encryption') {
-      keyPair = this.encryption.generateKeyPair();
+      const keyPair = this.encryption.generateKeyPair();
+      publicKey = keyPair.publicKey;
+      privateKey = keyPair.privateKey;
     } else {
-      keyPair = this.encryption.generateKeyPair();
+      // Use ed25519 for signing and identity
+      privateKey = ed25519.utils.randomPrivateKey();
+      publicKey = ed25519.getPublicKey(privateKey);
     }
 
     const record: KeyRecord = {
       id,
       type,
-      publicKey: keyPair.publicKey,
-      privateKey: keyPair.privateKey,
+      publicKey,
+      privateKey,
       createdAt: Date.now(),
     };
 
@@ -47,7 +53,7 @@ export class KeyManager extends EventEmitter {
 
     if (type === 'encryption' && !this.activeKeyId) {
       this.activeKeyId = id;
-      this.encryption.setKeyPair(keyPair);
+      this.encryption.setKeyPair({ publicKey, privateKey });
     }
 
     log.info({ id, type }, 'Key generated');

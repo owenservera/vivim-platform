@@ -34,6 +34,12 @@
   ],
   "author": "VIVIM Team",
   "license": "MIT",
+  "workspaces": [
+    "pwa",
+    "server",
+    "network",
+    "admin-panel"
+  ],
   "engines": {
     "bun": ">=1.0.0"
   }

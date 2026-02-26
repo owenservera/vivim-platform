@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Search, PlusCircle, MessageSquare, Settings } from 'lucide-react';
+import { Home, Search, PlusCircle, MessageSquare, Settings, Sparkles, Shield } from 'lucide-react';
 
 export const BottomNav: React.FC = () => {
   return (
@@ -11,6 +11,14 @@ export const BottomNav: React.FC = () => {
       >
         <Home className="w-6 h-6" strokeWidth={2.5} />
         <span className="text-[10px] font-medium">Home</span>
+      </NavLink>
+
+      <NavLink 
+        to="/chain-chat" 
+        className={({ isActive }) => `flex flex-col items-center justify-center w-full h-full space-y-1 ${isActive ? 'text-blue-600' : 'text-gray-500 hover:text-gray-900'}`}
+      >
+        <Shield className="w-6 h-6" strokeWidth={2.5} />
+        <span className="text-[10px] font-medium">Chain Chat</span>
       </NavLink>
       
       <NavLink 

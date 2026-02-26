@@ -1,4 +1,4 @@
-# OpenScroll Privacy & Sharing Model
+# VIVIM Privacy & Sharing Model
 
 **Version:** 1.0.0
 **Date:** January 23, 2026

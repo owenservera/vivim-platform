@@ -1,5 +1,5 @@
 /**
- * OpenScroll Storage V2 - Core Types
+ * VIVIM Storage V2 - Core Types
  *
  * Content-addressed, cryptographically signed, DAG-based conversation storage.
  */

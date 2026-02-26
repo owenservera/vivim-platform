@@ -1,7 +1,7 @@
-# SDK0Light - OpenScroll Frontend Styling Guide
+# SDK0Light - VIVIM Frontend Styling Guide
 
 ## Overview
-SDK0Light is the official styling guide for OpenScroll frontend applications. It defines consistent design patterns, color usage, typography, spacing, and component styling to ensure a cohesive user experience across all interfaces.
+SDK0Light is the official styling guide for VIVIM frontend applications.
 
 ## Design Philosophy
 - **Premium & Modern**: Clean, sophisticated interface with attention to detail

@@ -263,31 +263,33 @@ export class ConversationService {
   }
 
   private adaptMessage(node: MessageNode): Message {
+    const parts = this.adaptToParts(node.content);
     return {
       id: node.id,
       role: node.role,
-      content: this.adaptContent(node.content),
+      content: parts, // Legacy fallback, same as parts
       timestamp: node.timestamp,
       metadata: node.metadata || {},
-      parts: Array.isArray(node.content) ? node.content as ContentPart[] : []
+      parts: parts
     };
   }
 
-  private adaptContent(content: unknown): string | ContentBlock[] {
-    // If it's already in the right format, return it
-    if (typeof content === 'string') return content;
+  private adaptToParts(content: unknown): ContentPart[] {
+    if (typeof content === 'string') {
+      return [{ type: 'text', content }];
+    }
     if (Array.isArray(content)) {
-      // Check if it's already in ContentBlock format
+      // Check if it's already in ContentBlock/ContentPart format
       if (content.length > 0 && typeof content[0] === 'object' && content[0].type) {
-        return content as ContentBlock[];
+        return content as ContentPart[];
       }
       // Convert string array to text content blocks
       return content.map(item => ({
-        type: 'text' as const,
+        type: 'text',
         content: typeof item === 'string' ? item : JSON.stringify(item)
-      })) as unknown as ContentBlock[];
+      })) as ContentPart[];
     }
-    return String(content);
+    return [{ type: 'text', content: String(content) }];
   }
 
   private calculateStats(messages: Message[], root: ConversationRoot): ConversationStats {

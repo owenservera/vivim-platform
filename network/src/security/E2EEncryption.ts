@@ -29,11 +29,11 @@ export class E2EEncryption extends EventEmitter {
   constructor(config: E2EConfig = {}) {
     super();
     this.config = {
-      algorithm: 'x25519',
+      algorithm: 'secp256k1',
       cipher: 'aes-256-gcm',
       ...config,
     };
-    this.ecdh = createECDH(this.config.algorithm || 'x25519');
+    this.ecdh = createECDH(this.config.algorithm || 'secp256k1');
   }
 
   generateKeyPair(): KeyPair {

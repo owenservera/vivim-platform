@@ -81,25 +81,30 @@ export class DataSyncService {
         message: 'Processing conversations...'
       });
 
-      for (let i = 0; i < allConversations.length; i++) {
-        const conv = allConversations[i];
+      // Process in batches to balance speed and resource usage
+      const CONCURRENCY_LIMIT = 5;
+      for (let i = 0; i < allConversations.length; i += CONCURRENCY_LIMIT) {
+        const batch = allConversations.slice(i, i + CONCURRENCY_LIMIT);
         
-        onProgress?.({
-          phase: 'processing',
-          current: i + 1,
-          total: totalConversations,
-          message: `Processing ${conv.title || 'Untitled'} (${i + 1}/${totalConversations})`
-        });
+        await Promise.all(batch.map(async (conv, index) => {
+          const currentIdx = i + index + 1;
+          onProgress?.({
+            phase: 'processing',
+            current: currentIdx,
+            total: totalConversations,
+            message: `Processing ${conv.title || 'Untitled'} (${currentIdx}/${totalConversations})`
+          });
 
-        try {
-          // Convert backend conversation to local format and store
-          await this.storeConversation(conv);
-          result.syncedConversations++;
-        } catch (error) {
-          const errorMsg = error instanceof Error ? error.message : 'Unknown error';
-          result.errors.push(`Failed to sync conversation ${conv.id}: ${errorMsg}`);
-          logger.error('DataSyncService', `Failed to sync conversation ${conv.id}`, error as Error);
-        }
+          try {
+            // Convert backend conversation to local format and store
+            await this.storeConversation(conv);
+            result.syncedConversations++;
+          } catch (error) {
+            const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+            result.errors.push(`Failed to sync conversation ${conv.id}: ${errorMsg}`);
+            logger.error('DataSyncService', `Failed to sync conversation ${conv.id}`, error as Error);
+          }
+        }));
       }
 
       // Step 3: Complete sync
@@ -133,7 +138,7 @@ export class DataSyncService {
     try {
       // Add overall timeout for the entire fetch operation
       const overallTimeout = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('fetchAllConversations timed out after 45 seconds')), 45000)
+        setTimeout(() => reject(new Error('fetchAllConversations timed out after 60 seconds')), 60000)
       );
 
       const fetchOperation = (async () => {
@@ -146,7 +151,7 @@ export class DataSyncService {
         while (hasMore) {
           // Add timeout to each batch request
           const batchTimeout = new Promise<any>((_, reject) =>
-            setTimeout(() => reject(new Error('Batch fetch timed out')), 10000)
+            setTimeout(() => reject(new Error('Batch fetch timed out')), 20000)
           );
 
           // SECURITY: Backend filters by authenticated user's userId automatically

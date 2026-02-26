@@ -1,5 +1,5 @@
 /**
- * OpenScroll (0,0) Fallback Generator
+ * VIVIM (0,0) Fallback Generator
  *
  * The ultimate fallback.
  * Two modes only: PRIVATE (0) or OPEN (1)

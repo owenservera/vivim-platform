@@ -1,5 +1,5 @@
 /**
- * OpenScroll Storage V2 - Merkle Tree Implementation
+ * VIVIM Storage V2 - Merkle Tree Implementation
  *
  * Provides:
  * - Sparse Merkle Tree for conversation verification

@@ -1,5 +1,5 @@
 /**
- * OpenScroll KYC Manager
+ * VIVIM KYC Manager
  * 
  * Privacy-Preserving Identity Verification with Regional Compliance
  * 

@@ -41,8 +41,8 @@ export function ForkButton({
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('OPENSCROLL_API_KEY') || import.meta.env.VITE_API_KEY || ''}`,
-          'X-API-Key': localStorage.getItem('OPENSCROLL_API_KEY') || import.meta.env.VITE_API_KEY || '',
+          'Authorization': `Bearer ${localStorage.getItem('VIVIM_API_KEY') || import.meta.env.VITE_API_KEY || ''}`,
+          'X-API-Key': localStorage.getItem('VIVIM_API_KEY') || import.meta.env.VITE_API_KEY || '',
         },
       });
 

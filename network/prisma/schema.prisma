@@ -50,10 +50,12 @@ model NetworkNode {
   bandwidth     Int?     // Mbps
   
   // Relations
-  connections    NodeConnection[]
+  connections    NodeConnection[] @relation("SourceConnections")
+  targetConnections NodeConnection[] @relation("TargetConnections")
   storedContent  StoredContent[]
+  contentProviders ContentProvider[] @relation("ContentProviders")
   routingTable   RoutingEntry[] @relation("RoutingTarget")
-  routingEntries RoutingEntry[] @relation("RoutingSource")
+  routingEntries RoutingEntry[] @relation("RoutingEntries")
   
   // Timestamps
   createdAt   DateTime @default(now()) @db.Timestamptz(6)
@@ -131,7 +133,7 @@ model NodeConnection {
   // Relations
   sourceNode NetworkNode @relation(fields: [sourceNodeId], references: [id], name: "SourceConnections")
   targetNode NetworkNode @relation(fields: [targetNodeId], references: [id], name: "TargetConnections")
-  
+
   @@unique([sourceNodeId, targetNodeId, transport])
   @@index([sourceNodeId])
   @@index([targetNodeId])
@@ -171,7 +173,7 @@ model ContentRecord {
   encoding    String?  // compression, encryption
   
   // Routing info
-  providers   ContentProvider[]
+  providers   ContentProvider[] @relation("ContentProviders")
   
   // DHT metadata
   dhtKey      String   @unique
@@ -207,8 +209,8 @@ model ContentProvider {
   createdAt   DateTime @default(now()) @db.Timestamptz(6)
   
   // Relations
-  content     ContentRecord @relation(fields: [contentId], references: [id], onDelete: Cascade)
-  node        NetworkNode   @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+  content     ContentRecord @relation(fields: [contentId], references: [id], onDelete: Cascade, name: "ContentProviders")
+  node        NetworkNode   @relation(fields: [nodeId], references: [id], onDelete: Cascade, name: "ContentProviders")
   
   @@unique([contentId, nodeId])
   @@index([nodeId])
@@ -232,7 +234,7 @@ model RoutingEntry {
   
   // Relations
   sourceNode  NetworkNode @relation(fields: [sourceNodeId], references: [id], name: "RoutingEntries", onDelete: Cascade)
-  targetNode  NetworkNode @relation(fields: [targetNodeId], references: [id], name: "RoutingTable", onDelete: Cascade)
+  targetNode  NetworkNode @relation(fields: [targetNodeId], references: [id], name: "RoutingTarget", onDelete: Cascade)
   
   @@unique([sourceNodeId, targetNodeId])
   @@index([sourceNodeId, bucketIndex])
@@ -452,7 +454,8 @@ model FederationInstance {
   lastActivityAt DateTime? @db.Timestamptz(6)
   
   // Relations
-  bridges     FederationBridge[]
+  bridges     FederationBridge[] @relation("LocalBridges")
+  remoteBridges FederationBridge[] @relation("RemoteBridges")
   
   // Timestamps
   createdAt   DateTime @default(now()) @db.Timestamptz(6)
@@ -500,6 +503,7 @@ model FederationBridge {
   
   // Relations
   localInstance  FederationInstance @relation(fields: [localInstanceId], references: [id], name: "LocalBridges", onDelete: Cascade)
+  remoteInstance FederationInstance @relation(fields: [remoteInstanceId], references: [id], name: "RemoteBridges", onDelete: Cascade)
   
   @@unique([localInstanceId, remoteInstanceId])
   @@index([status])

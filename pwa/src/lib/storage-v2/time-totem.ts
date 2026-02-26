@@ -1,5 +1,5 @@
 /**
- * OpenScroll Storage V2 - Time Totem Generator
+ * VIVIM Storage V2 - Time Totem Generator
  *
  * Creates self-verifying HTML artifacts that work forever.
  * No dependencies. No network. No trust. Just open and verify.
@@ -40,7 +40,7 @@ ${TOTEM_CSS}
   <header class="totem-header">
     <div class="totem-icon">⏳</div>
     <h1>Time Totem</h1>
-    <p class="totem-subtitle">OpenScroll Verification Artifact</p>
+    <p class="totem-subtitle">VIVIM Verification Artifact</p>
     <div class="totem-meta">
       <span>Generated: ${new Date().toISOString().slice(0, 10)}</span>
       <span>Conversation: ${exported.root.conversationId.slice(0, 16)}...</span>
@@ -203,13 +203,13 @@ ${TOTEM_VERIFICATION_CODE}
     }
 
     return {
-      '@context': 'https://openscroll.org/totem/v1',
+      '@context': 'https://vivim.ai/totem/v1',
       conversationId: exported.root.conversationId,
       title: exported.root.title,
       merkleRoot: exported.merkleRoot,
       messageCount: messages.length,
       generatedAt: new Date().toISOString(),
-      generator: 'OpenScroll V2',
+      generator: 'VIVIM V2',
       generatorVersion: '2.0.0',
       signatures,
       root: {

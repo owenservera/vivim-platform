@@ -16,6 +16,7 @@ import { GlobalSocketListener } from '../components/GlobalSocketListener';
 
 // Lazy load pages for better performance
 const Home = lazy(() => import('../pages/Home'));
+const HomeAssistant = lazy(() => import('../pages/HomeAssistant'));
 const Login = lazy(() => import('../pages/Login'));
 const Search = lazy(() => import('../pages/Search'));
 const Analytics = lazy(() => import('../pages/Analytics'));
@@ -37,6 +38,9 @@ const BYOKChat = lazy(() => import('../pages/BYOKChat'));
 const ContextComponents = lazy(() => import('../pages/ContextComponents'));
 const ContextRecipes = lazy(() => import('../pages/settings/ContextRecipes'));
 const ContextCockpitPage = lazy(() => import('../pages/ContextCockpitPage'));
+const BlockchainAIChat = lazy(() => import('../components/BlockchainAIChat').then(m => ({ default: m.BlockchainAIChat })));
+const IdentitySetup = lazy(() => import('../features/identity/components/IdentitySetup').then(m => ({ default: m.IdentitySetup })));
+const StorageDashboard = lazy(() => import('../features/storage/components/StorageDashboard').then(m => ({ default: m.StorageDashboard })));
 
 // Loading component
 const PageLoading = () => (
@@ -77,7 +81,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
       <GlobalSocketListener />
       
       <ResponsiveLayout
-        maxWidth="lg"
+        maxWidth="full"
         padding="md"
         className="flex-1"
         mobileClassName="px-2"
@@ -118,6 +122,18 @@ const router = createBrowserRouter([
     ),
     errorElement: <ErrorBoundary />
   },
+  {
+    path: "/assistant-home",
+    element: (
+      <AuthGuard>
+        <AppLayout>
+          <HomeAssistant />
+        </AppLayout>
+      </AuthGuard>
+    ),
+    errorElement: <ErrorBoundary />
+  },
+
   {
     path: "/login",
     element: (
@@ -259,6 +275,37 @@ const router = createBrowserRouter([
       <AuthGuard>
         <AppLayout>
           <AIChat />
+        </AppLayout>
+      </AuthGuard>
+    ),
+    errorElement: <ErrorBoundary />
+  },
+  {
+    path: "/chain-chat",
+    element: (
+      <AuthGuard>
+        <AppLayout>
+          <BlockchainAIChat />
+        </AppLayout>
+      </AuthGuard>
+    ),
+    errorElement: <ErrorBoundary />
+  },
+  {
+    path: "/identity",
+    element: (
+      <AppLayout>
+        <IdentitySetup />
+      </AppLayout>
+    ),
+    errorElement: <ErrorBoundary />
+  },
+  {
+    path: "/storage",
+    element: (
+      <AuthGuard>
+        <AppLayout>
+          <StorageDashboard />
         </AppLayout>
       </AuthGuard>
     ),
