@@ -40,6 +40,43 @@ The SDK is organized into modular layers that work together to provide a seamles
 └────────┘ └────────┘ └────────┘
 ```
 
+### 📊 System Architecture
+
+```mermaid
+graph TD
+    subgraph "Applications Layer"
+        ACU[ACU Processor]
+        Feed[OmniFeed]
+        Social[Circle Engine]
+    end
+
+    subgraph "SDK Core Layer"
+        SDK[VivimSDK Core]
+        RK[RecordKeeper]
+        AP[Anchor Protocol]
+        SD[Self-Design Module]
+    end
+
+    subgraph "Infrastructure Layer"
+        Network[P2P Network Engine]
+        Storage[L0 Storage / SQLite]
+        Blockchain[Chain of Trust]
+    end
+
+    ACU --> SDK
+    Feed --> SDK
+    Social --> SDK
+
+    SDK --> RK
+    SDK --> AP
+    SDK --> SD
+
+    RK --> Blockchain
+    AP --> Blockchain
+```
+
+For detailed diagrams, see [ARCHITECTURE_VISUALIZATION.md](./docs/ARCHITECTURE_VISUALIZATION.md).
+
 For a deep dive into the architecture, check out [VIVIM_SDK_DOCUMENTATION.md](../VIVIM_SDK_DOCUMENTATION.md).
 
 ## 🚀 Getting Started

@@ -24,13 +24,13 @@ export class Logger {
   private level: LogLevel;
   private prefix: string;
   private timestamps: boolean;
-  private debug: boolean;
+  private enableDebug: boolean;
 
   constructor(config: LoggerConfig = { level: 'info' }) {
     this.level = config.level;
     this.prefix = config.prefix || 'VIVIM';
     this.timestamps = config.timestamps ?? true;
-    this.debug = typeof process !== 'undefined' && process.env?.DEBUG === 'true';
+    this.enableDebug = typeof process !== 'undefined' && process.env?.DEBUG === 'true';
   }
 
   private shouldLog(level: LogLevel): boolean {
@@ -63,7 +63,7 @@ export class Logger {
   }
 
   debug(message: string, data?: Record<string, unknown>): void {
-    if (this.debug && this.shouldLog('debug')) {
+    if (this.enableDebug && this.shouldLog('debug')) {
       console.debug(this.formatMessage('debug', message, data));
     }
   }

@@ -17,6 +17,11 @@ import { getLogger, Logger } from '../utils/logger.js';
 import { generateKeyPair, publicKeyToDID, signData, verifySignature } from '../utils/crypto.js';
 import type { TypedEventEmitter } from './types.js';
 
+// Core Modules
+import { OnChainRecordKeeper } from './recordkeeper.js';
+import { AnchorProtocol } from './anchor.js';
+import { SelfDesignModule } from './self-design.js';
+
 /**
  * VIVIM SDK
  * 
@@ -32,10 +37,21 @@ export class VivimSDK extends (EventEmitter as new () => TypedEventEmitter<SDKEv
   private initialized = false;
   private logger: Logger;
 
+  // Core Module Instances
+  public readonly recordKeeper: OnChainRecordKeeper;
+  public readonly anchor: AnchorProtocol;
+  public readonly selfDesign: SelfDesignModule;
+
   constructor(config: VivimSDKConfig = {}) {
     super();
     this.config = this.mergeConfig(config);
     this.logger = getLogger().child('SDK');
+    
+    // Initialize Core Modules
+    this.recordKeeper = new OnChainRecordKeeper(this);
+    this.anchor = new AnchorProtocol(this);
+    this.selfDesign = new SelfDesignModule(this);
+
     this.logger.info('VIVIM SDK initialized', { version: SDK_VERSION });
   }
 
@@ -99,7 +115,39 @@ export class VivimSDK extends (EventEmitter as new () => TypedEventEmitter<SDKEv
     }
 
     this.initialized = true;
+    
+    // Start core protocols
+    await this.anchor.start();
+    
     this.logger.info('SDK initialized successfully', { did: this.identity?.did });
+  }
+
+  /**
+   * Get the Record Keeper instance
+   */
+  getRecordKeeper(): OnChainRecordKeeper {
+    return this.recordKeeper;
+  }
+
+  /**
+   * Get the Anchor Protocol instance
+   */
+  getAnchorProtocol(): AnchorProtocol {
+    return this.anchor;
+  }
+
+  /**
+   * Get the Self-Design Module instance
+   */
+  getSelfDesign(): SelfDesignModule {
+    return this.selfDesign;
+  }
+
+  /**
+   * Get the Self-Design Graph (compatible with legacy API if needed)
+   */
+  getSelfDesignGraph(): SelfDesignModule {
+    return this.selfDesign;
   }
 
   /**
