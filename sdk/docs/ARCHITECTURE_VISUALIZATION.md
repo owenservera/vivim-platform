@@ -194,6 +194,32 @@ graph LR
     Anchor --> Network[P2P Broadcast]
 ```
 
+## 7. Assistant & Tool UI Integration
+
+How the decentralized core powers modern AI user interfaces.
+
+```mermaid
+graph TD
+    UI[Assistant UI / Tool UI] --> AR[VivimAssistantRuntime]
+    AR --> SDK[VivimSDK Core]
+    
+    subgraph "Event & Data Mapping"
+        AR --> MapMsg[Map SDKMessage to UI Message]
+        AR --> MapTool[Map SDKTool to UI Tool]
+    end
+    
+    SDK --> ChatNode[AIChatNode]
+    SDK --> ToolNode[ToolEngine]
+    
+    ChatNode --> Stream[Async Stream Interface]
+    ToolNode --> Exec[Distributed Execution]
+    
+    Stream --> AR
+    Exec --> AR
+    
+    AR --> UI
+```
+
 ---
 
 *These diagrams can be rendered using Mermaid.js compatible viewers (e.g., GitHub, VS Code Mermaid extension).*

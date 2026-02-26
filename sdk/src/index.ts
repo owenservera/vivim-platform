@@ -44,6 +44,10 @@ export * from './utils/index.js';
 export * from './protocols/index.js';
 export * from './utils/index.js';
 
+// Assistant & Tool UI standard types
+export * from './core/assistant.js';
+export { VivimAssistantRuntime } from './core/assistant-runtime.js';
+
 // Re-export commonly used types
 export type {
   Identity,

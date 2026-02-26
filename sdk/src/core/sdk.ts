@@ -21,6 +21,7 @@ import type { TypedEventEmitter } from './types.js';
 import { OnChainRecordKeeper } from './recordkeeper.js';
 import { AnchorProtocol } from './anchor.js';
 import { SelfDesignModule } from './self-design.js';
+import { VivimAssistantRuntime } from './assistant-runtime.js';
 
 /**
  * VIVIM SDK
@@ -41,6 +42,7 @@ export class VivimSDK extends (EventEmitter as new () => TypedEventEmitter<SDKEv
   public readonly recordKeeper: OnChainRecordKeeper;
   public readonly anchor: AnchorProtocol;
   public readonly selfDesign: SelfDesignModule;
+  public readonly assistant: VivimAssistantRuntime;
 
   constructor(config: VivimSDKConfig = {}) {
     super();
@@ -51,6 +53,7 @@ export class VivimSDK extends (EventEmitter as new () => TypedEventEmitter<SDKEv
     this.recordKeeper = new OnChainRecordKeeper(this);
     this.anchor = new AnchorProtocol(this);
     this.selfDesign = new SelfDesignModule(this);
+    this.assistant = new VivimAssistantRuntime(this);
 
     this.logger.info('VIVIM SDK initialized', { version: SDK_VERSION });
   }

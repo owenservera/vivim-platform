@@ -41,6 +41,13 @@ export const SDK_EVENTS = {
   SYNC_PROGRESS: 'sync:progress',
   SYNC_COMPLETED: 'sync:completed',
   SYNC_ERROR: 'sync:error',
+
+  // Assistant & Tool UI Events
+  ASSISTANT_MESSAGE: 'assistant:message',
+  ASSISTANT_STREAM: 'assistant:stream',
+  TOOL_CALL: 'tool:call',
+  TOOL_RESULT: 'tool:result',
+  TOOL_STATUS: 'tool:status',
 } as const;
 
 // Network topics

@@ -76,11 +76,12 @@ export class AssistantEngineApp extends EventEmitter {
 
     // AI Response Event Map directly formatted for the Assistant-UI baseline state
     const responseEvent = await this.chainClient.createEvent({
-        type: 'message:create' as any,
+        type: 'assistant:message' as any,
         payload: {
            text: simulatedResponse,
            threadId: topicId,
-           role: 'assistant'
+           role: 'assistant',
+           content: [{ type: 'text', text: simulatedResponse }]
         },
         tags: ['ai-thread', 'assistant-response'],
         scope: EventScope.PUBLIC,
