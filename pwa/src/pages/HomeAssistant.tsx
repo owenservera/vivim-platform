@@ -16,7 +16,7 @@ import {
   Plus, Bot, RefreshCw, WifiOff, Database, AlertCircle, CloudOff,
   Search, Grid2x2, List, Pin, Archive, MessageSquare, LayoutList,
   BookOpen, Sparkles, X, SlidersHorizontal, Clock, BarChart2,
-  FileCode, ImageIcon, ChevronDown, ChevronUp, Sparkle
+  FileCode
 } from 'lucide-react';
 
 // Assistant UI & Tool UI
@@ -43,8 +43,6 @@ import { unifiedRepository } from '../lib/db/unified-repository';
 import { listConversationsForRecommendation, getForYouFeed } from '../lib/recommendation';
 import { logger } from '../lib/logger';
 import { apiClient } from '../lib/api';
-import { dataSyncService } from '../lib/data-sync-service';
-import { useAIChat } from '../hooks/useAI';
 import { useVivimAssistant } from '../hooks/useVivimAssistant';
 import { getSDK } from '../lib/vivim-sdk';
 import { VivimSDKTransport } from '@vivim/sdk';
@@ -54,7 +52,6 @@ import {
   IOSStories,
   IOSButton,
   IOSSkeletonList,
-  EmptyMessages,
   ShareDialog,
   AIActionsPanel,
   CircleManager,
@@ -74,7 +71,6 @@ import './Home.css';
 import { useHomeUIStore } from '../stores/useHomeUIStore';
 
 type FilterTab = 'all' | 'pinned' | 'archived' | 'recent';
-type ViewMode = 'list' | 'grid';
 type SortBy = 'date' | 'messages' | 'title';
 
 /* ─────────────────────────────────────────────────
@@ -254,10 +250,10 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
   onShare,
   onPinToggle,
   onArchiveToggle,
-  onDelete,
-  onFork,
-  onDuplicate,
-  onAIClick,
+  _onDelete,
+  _onFork,
+  _onDuplicate,
+  _onAIClick,
   isExpanded,
   onExpandToggle,
   overrideMessages,
@@ -697,7 +693,9 @@ export const HomeAssistant: React.FC = () => {
           const meta = await unifiedRepository.getMetadata(convo.id);
           if (meta?.isPinned) newPinnedIds.add(convo.id);
           if (meta?.isArchived) newArchivedIds.add(convo.id);
-        } catch {}
+        } catch (err) {
+          logger.warn('HOME_ASSISTANT', `Failed to load metadata for ${convo.id}: ${err}`);
+        }
       }));
 
       setPinnedIds(prev => new Set([...prev, ...newPinnedIds]));

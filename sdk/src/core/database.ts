@@ -185,10 +185,10 @@ export class IdentityStore {
   }
   
   async getAPIKey(id: string): Promise<Identity.APIKey | null> {
-    return this.apiKeys.get(id) }
+    return this.apiKeys.get(id) || null;
+  }
   
-  async getAPIKeysBy || null;
- User(userId: string): Promise<Identity.APIKey[]> {
+  async getAPIKeysByUser(userId: string): Promise<Identity.APIKey[]> {
     return Array.from(this.apiKeys.values()).filter(k => k.userId === userId);
   }
 }

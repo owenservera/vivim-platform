@@ -6,7 +6,6 @@
  */
 
 import { VivimAssistantRuntime } from '../core/assistant-runtime.js';
-import { SDKMessage } from '../core/assistant.js';
 
 /**
  * VivimSDKTransport

@@ -10,9 +10,7 @@ import { EventEmitter } from 'events';
 import type { VivimSDK } from './sdk.js';
 import { 
   SDKMessage, 
-  SDKContentPart, 
-  SDKThread,
-  ASSISTANT_EVENTS
+  SDKContentPart,
 } from './assistant.js';
 import { SDK_EVENTS } from './constants.js';
 
