@@ -12,7 +12,9 @@ import {
   OmniFeedApp,
   CircleEngineApp,
   AiDocumentationApp,
-  CryptoEngineApp
+  CryptoEngineApp,
+  AssistantEngineApp,
+  ToolEngineApp
 } from '../index.js';
 
 // Memory Event Storage locally for node execution
@@ -40,7 +42,7 @@ async function bootDecentralizedNode() {
 
   // 1. Networking Foundation
   const networkNode = new NetworkNode({
-    nodeType: 'agent',
+    nodeType: 'edge',
     roles: ['storage', 'agent', 'bootstrap'],
     enableDHT: true,
     enableWebRTC: false, // Node runs TCP/WS
@@ -70,6 +72,8 @@ async function bootDecentralizedNode() {
   const circleApp = new CircleEngineApp({ chainClient });
   const aiDocApp = new AiDocumentationApp({ chainClient, contentClient, networkNode });
   const cryptoApp = new CryptoEngineApp({ chainClient });
+  const assistantApp = new AssistantEngineApp({ chainClient });
+  const toolApp = new ToolEngineApp({ chainClient });
 
   // 3. Ignite Sequence
   await networkNode.start();
@@ -80,7 +84,9 @@ async function bootDecentralizedNode() {
     feedApp.start(),
     circleApp.start(),
     aiDocApp.start(),
-    cryptoApp.start()
+    cryptoApp.start(),
+    assistantApp.start(),
+    toolApp.start()
   ]);
 
   const peerId = networkNode.getNodeInfo().peerId;

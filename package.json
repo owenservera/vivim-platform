@@ -4,7 +4,7 @@
   "description": "VIVIM Monorepo - PWA, Server, Network Engine, and Admin Panel",
   "scripts": {
     "dev": "bun run dev:all",
-    "dev:all": "concurrently -k \"bun run dev:pwa\" \"bun run dev:server\" \"bun run dev:network:ws\" \"bun run dev:admin\"",
+    "dev:all": "concurrently -k \"bun run dev:pwa\" \"bun run dev:server\" \"bun run dev:network:ws\" \"bun run dev:admin\" \"bun run dev:dashboard\" \"bun run dev:agent\"",
     "dev:debug": "LOG_LEVEL=debug DEBUG=true bun run dev:all",
     "dev:pwa": "cd pwa && bun run dev",
     "dev:server": "cd server && bun run dev",
@@ -13,12 +13,14 @@
     "dev:server:debug": "cd server && LOG_LEVEL=debug bun run dev",
     "dev:network:debug": "cd network && LOG_LEVEL=debug bun run dev",
     "dev:admin": "cd admin-panel && bun run dev",
+    "dev:dashboard": "cd sdk/apps/public-dashboard && bun run dev",
+    "dev:agent": "cd sdk/apps/publishing-agent && bun run dev",
     "setup": "bun run setup:deps && bun run setup:db",
-    "setup:deps": "bun install && cd pwa && bun install && cd ../server && bun install && cd ../network && bun install && cd ../admin-panel && bun install && cd ..",
+    "setup:deps": "bun install && cd pwa && bun install && cd ../server && bun install && cd ../network && bun install && cd ../admin-panel && bun install && cd ../sdk && bun install && cd apps/public-dashboard && bun install && cd ../publishing-agent && bun install && cd ../../..",
     "setup:db": "cd server && bun run db:generate && bun run db:migrate && cd ../network && bun run db:generate",
     "start": "concurrently \"cd pwa && bun run preview\" \"cd server && bun run start\" \"cd network && bun run start\" \"cd admin-panel && bun run preview\"",
-    "build": "cd pwa && bun run build && cd ../server && bun run build && cd ../network && bun run build && cd ../admin-panel && bun run build",
-    "test": "cd pwa && bun run test & cd server && bun run test & cd network && bun run test & cd admin-panel && bun run test",
+    "build": "cd pwa && bun run build && cd ../server && bun run build && cd ../network && bun run build && cd ../admin-panel && bun run build && cd ../sdk && bun run build && cd apps/public-dashboard && bun run build",
+    "test": "cd pwa && bun run test & cd server && bun run test & cd network && bun run test & cd admin-panel && bun run test & cd sdk && bun run test",
     "dev:admin-standalone": "cd admin-panel && bun run dev"
   },
   "devDependencies": {
@@ -38,7 +40,9 @@
     "pwa",
     "server",
     "network",
-    "admin-panel"
+    "admin-panel",
+    "sdk",
+    "sdk/apps/*"
   ],
   "engines": {
     "bun": ">=1.0.0"

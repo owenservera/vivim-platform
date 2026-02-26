@@ -31,6 +31,10 @@ export * from './apps/crypto-engine/index.js';
 export * from './apps/acu-processor/index.js';
 export * from './apps/omni-feed/index.js';
 export * from './apps/circle-engine/index.js';
+export * from './apps/assistant-engine/index.js';
+export * from './apps/tool-engine/index.js';
+export * from './apps/public-dashboard/index.js';
+export * from './apps/publishing-agent/index.js';
 
 // Utilities
 export * from './utils/index.js';

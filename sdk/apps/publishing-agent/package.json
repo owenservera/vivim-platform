@@ -1,0 +1,19 @@
+{
+  "name": "@vivim/publishing-agent",
+  "version": "1.0.0",
+  "description": "VIVIM Publishing Agent App",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "dev": "bun run --watch src/index.ts"
+  },
+  "dependencies": {
+    "@vivim/sdk": "workspace:*",
+    "@vivim/network-engine": "workspace:*"
+  },
+  "devDependencies": {
+    "bun-types": "latest",
+    "typescript": "^5.0.0"
+  }
+}

@@ -3,7 +3,6 @@
  * Core P2P node implementation using libp2p
  */
 import { createLibp2p } from 'libp2p';
-import { webRTC } from '@libp2p/webrtc';
 import { webSockets } from '@libp2p/websockets';
 // import { tcp } from '@libp2p/tcp';
 import { noise } from '@libp2p/noise';
@@ -61,7 +60,7 @@ export class NetworkNode extends EventEmitter {
             log.info('Starting network node...');
             const options = {
                 // Transports
-                transports: this.buildTransports(),
+                transports: await this.buildTransports(),
                 // Connection encryption
                 // @ts-ignore - libp2p type compatibility issue
                 connectionEncryption: [noise()],
@@ -135,16 +134,22 @@ export class NetworkNode extends EventEmitter {
     /**
      * Build transport configuration
      */
-    buildTransports() {
+    async buildTransports() {
         const transports = [];
         // WebRTC for browser P2P
         if (this.config.enableWebRTC) {
-            transports.push(webRTC({
-            // iceServers: [
-            //   { urls: 'stun:stun.l.google.com:19302' },
-            //   { urls: 'stun:stun1.l.google.com:19302' }
-            // ]
-            }));
+            try {
+                const { webRTC } = await import('@libp2p/webrtc');
+                transports.push(webRTC({
+                // iceServers: [
+                //   { urls: 'stun:stun.l.google.com:19302' },
+                //   { urls: 'stun:stun1.l.google.com:19302' }
+                // ]
+                }));
+            }
+            catch (e) {
+                log.warn({ error: e.message }, 'WebRTC native module unavailable. Skipping WebRTC transport.');
+            }
         }
         // WebSockets for browser-to-server
         transports.push(webSockets());

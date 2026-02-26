@@ -4,7 +4,7 @@
 
 import * as ed from '@noble/ed25519';
 import { sha256 } from '@noble/hashes/sha256';
-import { bytesToHex, hexToBytes } from 'uint8arrays';
+import { bytesToHex, hexToBytes } from '@noble/hashes/utils';
 
 // ============================================
 // IDENTITY UTILITIES
@@ -118,7 +118,9 @@ export async function calculateCID(data: unknown): Promise<string> {
  * Encode message for signing/hashing
  */
 function encodeMessage(data: unknown): Uint8Array {
-  const json = JSON.stringify(data, Object.keys(data as object).sort);
+  // Sort keys for deterministic encoding
+  const replacer = typeof data === 'object' && data !== null ? Object.keys(data).sort() : undefined;
+  const json = JSON.stringify(data, replacer);
   return new TextEncoder().encode(json);
 }
 
@@ -135,7 +137,7 @@ function base58Encode(data: Uint8Array): string {
   while (num > 0n) {
     const remainder = num % 58n;
     num = num / 58n;
-    result = alphabet[Number(remainder)] + result;
+    result = alphabet.charAt(Number(remainder)) + result;
   }
   
   // Add leading 1s for leading zeros
@@ -158,7 +160,8 @@ function base58Decode(str: string): Uint8Array | null {
   const lookup: Record<string, number> = {};
   
   for (let i = 0; i < alphabet.length; i++) {
-    lookup[alphabet[i]] = i;
+    const char = alphabet.charAt(i);
+    lookup[char] = i;
   }
   
   let num = 0n;
