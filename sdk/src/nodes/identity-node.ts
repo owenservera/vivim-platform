@@ -5,9 +5,7 @@
 
 import type { VivimSDK } from '../core/sdk.js';
 import type { Identity, CreateIdentityOptions, LinkedIdentity } from '../core/types.js';
-import { generateKeyPair, publicKeyToDID, signData, verifySignature } from '../utils/crypto.js';
 import {
-  CommunicationProtocol,
   createCommunicationProtocol,
   type MessageEnvelope,
   type CommunicationEvent,
@@ -77,7 +75,7 @@ export type IdentityMessageType =
  */
 export class IdentityNode implements IdentityNodeAPI {
   private profile: Profile = {};
-  private communication: CommunicationProtocol;
+  private communication: ReturnType<typeof createCommunicationProtocol>;
   private eventUnsubscribe: (() => void)[] = [];
 
   constructor(private sdk: VivimSDK) {

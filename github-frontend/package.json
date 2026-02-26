@@ -1,7 +1,14 @@
 {
   "name": "vivim-github-frontend",
   "version": "1.0.0",
+  "description": "Modern GitHub-style frontend for VIVIM project",
   "private": true,
+  "author": "VIVIM Team",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/owenservera/vivim-app.git",
+    "directory": "github-frontend"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

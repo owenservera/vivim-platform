@@ -17,6 +17,10 @@
     "./nodes": {
       "import": "./dist/nodes/index.js",
       "types": "./dist/nodes/index.d.ts"
+    },
+    "./bun": {
+      "import": "./dist/bun/index.js",
+      "types": "./dist/bun/index.d.ts"
     }
   },
   "scripts": {

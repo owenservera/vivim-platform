@@ -582,8 +582,8 @@ export function recordOperation(type: SDKOperationType) {
   ) {
     const originalMethod = descriptor.value;
 
- async function (...args: unknown[]) {
-      const record    descriptor.value =Keeper = (this as any).recordKeeper as OnChainRecordKeeper;
+    descriptor.value = async function (...args: unknown[]) {
+      const recordKeeper = (this as any).recordKeeper as OnChainRecordKeeper;
       
       if (recordKeeper) {
         try {

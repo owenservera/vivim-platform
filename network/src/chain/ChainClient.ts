@@ -216,6 +216,7 @@ export class VivimChainClient extends EventEmitter {
       case EntityType.MEMORY: return EventType.MEMORY_CREATE;
       case EntityType.CIRCLE: return EventType.CIRCLE_CREATE;
       case EntityType.PROFILE: return EventType.IDENTITY_CREATE;
+      case 'post' as any: return EventType.MESSAGE_CREATE; // Mock post to MESSAGE_CREATE
       default: throw new Error(`Unknown entity type: ${type}`);
     }
   }

@@ -129,7 +129,7 @@ export interface AIChatNodeAPI {
   deleteConversation(id: string): Promise<void>;
 
   // Messages
-  sendMessage(conversationId: string, content: string, options?: MessageOptions): Promise<Message>;
+  sendChatMessage(conversationId: string, content: string, options?: MessageOptions): Promise<Message>;
   getMessages(conversationId: string, options?: PaginationOptions): Promise<Message[]>;
   editMessage(messageId: string, newContent: string): Promise<void>;
   deleteMessage(messageId: string): Promise<void>;
@@ -153,7 +153,7 @@ export interface AIChatNodeAPI {
   getNodeId(): string;
   getMetrics(): NodeMetrics;
   onCommunicationEvent(listener: (event: CommunicationEvent) => void): () => void;
-  sendMessage<T>(type: string, payload: T): Promise<MessageEnvelope>;
+  sendChatMessage<T>(type: string, payload: T): Promise<MessageEnvelope>;
   processMessage<T>(envelope: MessageEnvelope<T>): Promise<MessageEnvelope>;
 }
 
@@ -237,7 +237,7 @@ export class AIChatNode implements AIChatNodeAPI {
     return this.communication.onEvent('*', listener);
   }
 
-  async sendMessage<T>(type: string, payload: T): Promise<MessageEnvelope> {
+  async sendChatMessage<T>(type: string, payload: T): Promise<MessageEnvelope> {
     const envelope = this.communication.createEnvelope<T>(type, payload, {
       direction: 'outbound',
       priority: 'normal',
@@ -315,7 +315,7 @@ export class AIChatNode implements AIChatNodeAPI {
 
       case 'message_send':
         const { conversationId, content, options } = payload as { conversationId: string; content: string; options?: MessageOptions };
-        const message = await this.sendMessage(conversationId, content, options);
+        const message = await this.sendChatMessage(conversationId, content, options);
         return this.communication.createResponse(envelope, { message });
 
       case 'models_list':
@@ -352,7 +352,7 @@ export class AIChatNode implements AIChatNodeAPI {
       this.systemPrompts.set(conversation.id, options.systemPrompt);
     }
 
-    await this.sendMessage('conversation_create', { conversationId: conversation.id, title: conversation.title });
+    await this.sendChatMessage('conversation_create', { conversationId: conversation.id, title: conversation.title });
 
     return conversation;
   }
@@ -372,7 +372,7 @@ export class AIChatNode implements AIChatNodeAPI {
     const conversation = await this.getConversation(id);
     Object.assign(conversation, updates, { updatedAt: Date.now() });
     
-    await this.sendMessage('conversation_update', { conversationId: id, updates });
+    await this.sendChatMessage('conversation_update', { conversationId: id, updates });
   }
 
   async deleteConversation(id: string): Promise<void> {
@@ -382,14 +382,14 @@ export class AIChatNode implements AIChatNodeAPI {
     this.contextItems.delete(id);
     this.currentModels.delete(id);
     
-    await this.sendMessage('conversation_delete', { conversationId: id });
+    await this.sendChatMessage('conversation_delete', { conversationId: id });
   }
 
   // ============================================
   // MESSAGES
   // ============================================
 
-  async sendMessage(
+  async sendChatMessage(
     conversationId: string,
     content: string,
     options: MessageOptions = {}
@@ -410,7 +410,7 @@ export class AIChatNode implements AIChatNodeAPI {
     conversation.updatedAt = Date.now();
 
     // Send message event
-    await this.sendMessage('message_send', { 
+    await this.sendChatMessage('message_send', { 
       conversationId, 
       messageId: userMessage.id,
       role: userMessage.role 
@@ -452,7 +452,7 @@ export class AIChatNode implements AIChatNodeAPI {
       if (message) {
         message.content = newContent;
         
-        await this.sendMessage('message_edit', { messageId, newContent });
+        await this.sendChatMessage('message_edit', { messageId, newContent });
         return;
       }
     }
@@ -469,7 +469,7 @@ export class AIChatNode implements AIChatNodeAPI {
           conversation.messageCount = messages.length;
         }
         
-        await this.sendMessage('message_delete', { messageId });
+        await this.sendChatMessage('message_delete', { messageId });
         return;
       }
     }
@@ -486,10 +486,10 @@ export class AIChatNode implements AIChatNodeAPI {
     options: MessageOptions = {}
   ): AsyncIterable<MessageChunk> {
     // Send user message first
-    await this.sendMessage(conversationId, content, { ...options, stream: false });
+    await this.sendChatMessage(conversationId, content, { ...options, stream: false });
 
     // Emit streaming start event
-    await this.sendMessage('stream_start', { conversationId });
+    await this.sendChatMessage('stream_start', { conversationId });
 
     // Mock streaming response
     const response = `[SDK Mock Stream] Processing: "${content}"`;
@@ -509,7 +509,7 @@ export class AIChatNode implements AIChatNodeAPI {
     await this.getConversation(conversationId);
     this.systemPrompts.set(conversationId, prompt);
     
-    await this.sendMessage('system_prompt_set', { conversationId });
+    await this.sendChatMessage('system_prompt_set', { conversationId });
   }
 
   async addContext(conversationId: string, context: ContextItem): Promise<void> {
@@ -521,14 +521,14 @@ export class AIChatNode implements AIChatNodeAPI {
     
     this.contextItems.get(conversationId)!.push(context);
     
-    await this.sendMessage('context_add', { conversationId, contextType: context.type });
+    await this.sendChatMessage('context_add', { conversationId, contextType: context.type });
   }
 
   async clearContext(conversationId: string): Promise<void> {
     await this.getConversation(conversationId);
     this.contextItems.delete(conversationId);
     
-    await this.sendMessage('context_clear', { conversationId });
+    await this.sendChatMessage('context_clear', { conversationId });
   }
 
   // ============================================
@@ -536,7 +536,7 @@ export class AIChatNode implements AIChatNodeAPI {
   // ============================================
 
   async listModels(): Promise<ModelInfo[]> {
-    await this.sendMessage('models_list', {});
+    await this.sendChatMessage('models_list', {});
     
     return [
       {
@@ -575,7 +575,7 @@ export class AIChatNode implements AIChatNodeAPI {
     conversation.model = modelId;
     this.currentModels.set(conversationId, modelId);
     
-    await this.sendMessage('model_set', { conversationId, modelId });
+    await this.sendChatMessage('model_set', { conversationId, modelId });
   }
 
   // ============================================
@@ -600,7 +600,7 @@ export class AIChatNode implements AIChatNodeAPI {
       }
     }
 
-    await this.sendMessage('acu_extract', { conversationId, acuCount: acus.length });
+    await this.sendChatMessage('acu_extract', { conversationId, acuCount: acus.length });
 
     return {
       acus,
