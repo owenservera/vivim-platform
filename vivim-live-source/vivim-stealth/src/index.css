@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;700&family=Inter:wght@200;300;400;500&display=swap');
+
+:root {
+  --vivim-pink: #FF2D6E;
+  --vivim-cyan: #00D4E8;
+  --vivim-green: #00C786;
+  --vivim-navy: #1a1f3c;
+  --vivim-purple: #4a4e69;
+  --vivim-black: #050508; /* Deepest black with a hint of navy */
+  --glass-bg: rgba(26, 31, 60, 0.15);
+  --glass-border: rgba(255, 255, 255, 0.05);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  background-color: var(--vivim-black);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Subtle TV noise / film grain */
+.noise-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 100;
+  mix-blend-mode: overlay;
+}
+
+/* Subtle glowing ambient spheres */
+.ambient-sphere {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: 0;
+  opacity: 0.4;
+  animation: breathe 15s infinite alternate ease-in-out;
+}
+.sphere-1 {
+  width: 45vw; height: 45vw;
+  background: var(--vivim-navy);
+  top: -10vw; right: -15vw;
+}
+.sphere-2 {
+  width: 50vw; height: 50vw;
+  background: rgba(0, 212, 232, 0.08); /* Faint cyan */
+  bottom: -20vw; left: -10vw;
+  animation-duration: 25s;
+}
+.sphere-3 {
+  width: 30vw; height: 30vw;
+  background: rgba(255, 45, 110, 0.05); /* Faint pink */
+  top: 40%; left: 40%;
+  transform: translate(-50%, -50%);
+  animation-duration: 20s;
+}
+
+@keyframes breathe {
+  0% { transform: scale(1) translate(0, 0); opacity: 0.2; }
+  100% { transform: scale(1.1) translate(-2%, 2%); opacity: 0.5; }
+}
+
+/* Base styles for text */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+}
+
+/* Text glow */
+.text-glow {
+  text-shadow: 0 0 20px rgba(255,255,255,0.2), 0 0 40px rgba(0,212,232,0.2);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--vivim-cyan) 0%, #fff 50%, var(--vivim-pink) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}

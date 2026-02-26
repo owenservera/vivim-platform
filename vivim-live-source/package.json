@@ -1,0 +1,24 @@
+{
+  "name": "vivim-live",
+  "version": "1.0.0",
+  "description": "VIVIM Live - Sovereign AI Interface with Documentation",
+  "private": true,
+  "workspaces": ["github-frontend", "docs"],
+  "scripts": {
+    "dev": "concurrently \"bun run dev:web\" \"bun run dev:docs\"",
+    "dev:web": "cd github-frontend && bun run dev",
+    "dev:docs": "cd docs && bun run dev",
+    "build": "bun run build:web && bun run build:docs",
+    "build:web": "cd github-frontend && bun run build",
+    "build:docs": "cd docs && bun run build",
+    "install:all": "bun install && cd github-frontend && bun install && cd ../docs && bun install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/owenservera/vivim-app.git",
+    "directory": "vivim-live"
+  }
+}

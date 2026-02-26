@@ -1,0 +1,385 @@
+:root {
+  /* VIVIM Brand Palette */
+  --vivim-pink: #FF2D6E;
+  --vivim-cyan: #00D4E8;
+  --vivim-green: #00C786;
+  --vivim-navy: #1A1F3C;
+  --vivim-purple: #4A4E69;
+  --vivim-white: #FFFFFF;
+  --vivim-black: #0D0D0D;
+  --vivim-dark-gray: #343A40;
+  --vivim-medium-gray: #6C757D;
+  
+  /* Glassmorphism Tokens */
+  --glass-bg: rgba(26, 31, 60, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-highlight: rgba(255, 255, 255, 0.15);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  background-color: var(--vivim-black);
+  color: var(--vivim-white);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow: hidden;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Background Atmosphere --- */
+#ambient-canvas {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 0;
+  background: radial-gradient(circle at 50% 50%, var(--vivim-navy) 0%, var(--vivim-black) 90%);
+  overflow: hidden;
+}
+
+/* Animated glowing orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  animation: float 25s infinite ease-in-out;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 2s ease-in;
+}
+
+.orb.visible {
+  opacity: 0.5;
+}
+
+.orb-1 {
+  width: 50vw;
+  height: 50vw;
+  background: var(--vivim-pink);
+  top: -10vw;
+  left: -10vw;
+  animation-duration: 25s;
+}
+
+.orb-2 {
+  width: 60vw;
+  height: 60vw;
+  background: var(--vivim-cyan);
+  bottom: -20vw;
+  right: -10vw;
+  animation-duration: 30s;
+  animation-direction: reverse;
+}
+
+.orb-3 {
+  width: 40vw;
+  height: 40vw;
+  background: var(--vivim-purple);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-duration: 40s;
+  opacity: 0;
+}
+
+.orb-3.visible {
+  opacity: 0.3;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(5%, -5%) scale(1.1) rotate(10deg); }
+  66% { transform: translate(-5%, 5%) scale(0.9) rotate(-10deg); }
+}
+
+/* Noise overlay for cinematic texture */
+.noise-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 100;
+  mix-blend-mode: color-dodge;
+}
+
+/* Interactive cursor glow */
+.cursor-glow {
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(0, 212, 232, 0.12), transparent 60%);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  transition: opacity 0.3s;
+  mix-blend-mode: screen;
+}
+
+/* --- Layout & Typography --- */
+.stealth-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.logo-wrapper {
+  position: relative;
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  transform: translateY(-20px) perspective(1000px);
+  animation: fadeInDown 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-style: preserve-3d;
+}
+
+.vivim-logo {
+  width: 110px;
+  height: 110px;
+  border-radius: 28px;
+  object-fit: cover;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 0 0 1px var(--glass-highlight), 0 20px 40px rgba(0,0,0,0.6);
+  transition: box-shadow 0.4s;
+  /* 3D Transform is handled in JS */
+}
+
+.logo-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140px;
+  height: 140px;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, var(--vivim-pink), var(--vivim-cyan));
+  filter: blur(25px);
+  z-index: 1;
+  opacity: 0.4;
+  border-radius: 35px;
+  animation: pulse-glow 5s infinite alternate;
+}
+
+@keyframes pulse-glow {
+  0% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.9); }
+  100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+.motto {
+  font-family: 'Outfit', sans-serif;
+  font-size: 3.2rem;
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin-bottom: 1.5rem;
+  perspective: 1000px;
+}
+
+.word, .divider, .highlight, .subtitle, .action-wrapper, .footer-note {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: popIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.word { color: var(--vivim-white); font-weight: 400; }
+.divider { color: rgba(255,255,255,0.15); font-weight: 300; margin: 0 12px; }
+
+.highlight {
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--vivim-pink) 0%, var(--vivim-cyan) 55%, var(--vivim-white) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent; /* Fallback */
+  display: block;
+  margin-top: 8px;
+  font-size: 4.8rem;
+  letter-spacing: -2px;
+}
+
+@keyframes popIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDown {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: var(--vivim-light-gray);
+  margin-bottom: 3.5rem;
+  letter-spacing: 0px;
+  font-weight: 300;
+}
+
+/* --- Form & Interactive Elements --- */
+.action-wrapper {
+  width: 100%;
+  max-width: 460px;
+  position: relative;
+}
+
+.stealth-form {
+  display: flex;
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: 100px;
+  padding: 6px;
+  transition: border-color 0.4s, box-shadow 0.4s;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.stealth-form:focus-within {
+  border-color: rgba(0, 212, 232, 0.5);
+  box-shadow: 0 0 25px rgba(0, 212, 232, 0.15), 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.stealth-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 0 24px;
+  color: var(--vivim-white);
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  outline: none;
+}
+
+.stealth-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.stealth-button {
+  background: var(--vivim-white);
+  color: var(--vivim-navy);
+  border: none;
+  border-radius: 100px;
+  padding: 0 28px;
+  height: 52px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: transform 0.2s, background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+.stealth-button:hover {
+  background: var(--vivim-cyan);
+  color: var(--vivim-black);
+  transform: scale(1.02);
+  box-shadow: 0 0 15px rgba(0, 212, 232, 0.4);
+}
+
+.stealth-button:active {
+  transform: scale(0.98);
+}
+
+.arrow-icon {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stealth-button:hover .arrow-icon {
+  transform: translateX(6px);
+}
+
+/* Success State */
+.success-message {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-highlight);
+  border-radius: 100px;
+  color: var(--vivim-green);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 1.1rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.95);
+  transition: opacity 0.5s, transform 0.5s;
+}
+
+.stealth-form.submitted {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.stealth-form.submitted + .success-message {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: all;
+  box-shadow: 0 0 30px rgba(0, 199, 134, 0.2);
+}
+
+.footer-note {
+  margin-top: 4rem;
+  font-size: 0.85rem;
+  color: var(--vivim-medium-gray);
+  letter-spacing: 0.5px;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+  .stealth-container { padding: 1.5rem; }
+  .logo-wrapper { margin-bottom: 2rem; }
+  .vivim-logo { width: 90px; height: 90px; }
+  .logo-glow { width: 110px; height: 110px; }
+  
+  .motto { font-size: 2.2rem; }
+  .highlight { font-size: 3.2rem; }
+  .subtitle { font-size: 1.1rem; }
+  
+  .stealth-form {
+    flex-direction: column;
+    background: transparent;
+    border: none;
+    backdrop-filter: none;
+    box-shadow: none;
+    padding: 0;
+  }
+  
+  .stealth-input {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 100px;
+    height: 60px;
+    margin-bottom: 16px;
+    text-align: center;
+    padding: 0 20px;
+  }
+  
+  .stealth-button {
+    justify-content: center;
+    height: 60px;
+    width: 100%;
+  }
+  
+  .success-message {
+    border-radius: 20px;
+  }
+}

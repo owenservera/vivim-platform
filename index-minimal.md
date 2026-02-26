@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIVIM | Sovereign AI Interface</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="VIVIM is your sovereign AI layer. Own your data, share your insights, and earn a dividend. The interface layer is forming.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        .links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            margin-top: 24px;
+            opacity: 0.6;
+        }
+        .links a {
+            color: inherit;
+            text-decoration: none;
+            font-size: 13px;
+            transition: opacity 0.3s;
+        }
+        .links a:hover {
+            opacity: 0.7;
+            text-decoration: underline;
+        }
+        .footer-links {
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Abstract ambient background -->
+    <div id="ambient-canvas"></div>
+    
+    <!-- Custom glowing cursor -->
+    <div class="cursor-glow"></div>
+    
+    <main class="stealth-container">
+        <div class="logo-wrapper" id="tilt-wrapper">
+            <img src="./assets/v.jpg" alt="VIVIM Logo" class="vivim-logo" id="logo-img">
+            <div class="logo-glow"></div>
+        </div>
+        
+        <h1 class="motto">
+            <span class="word" style="--delay: 0.2s">OWN</span> <span class="divider" style="--delay: 0.3s">|</span> 
+            <span class="word" style="--delay: 0.4s">SHARE</span> <span class="divider" style="--delay: 0.5s">|</span> 
+            <span class="word" style="--delay: 0.6s">EVOLVE</span>
+            <br>
+            <span class="highlight" style="--delay: 0.8s">YOUR AI</span>
+        </h1>
+        
+        <p class="subtitle" style="--delay: 1.0s">The sovereign interface layer is forming.</p>
+        
+        <div class="action-wrapper" style="--delay: 1.2s">
+            <form class="stealth-form" id="invite-form">
+                <input type="email" placeholder="Enter coordinates (email)" required class="stealth-input" id="email-input">
+                <button type="submit" class="stealth-button">
+                    <span>Request Access</span>
+                    <svg class="arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+            </form>
+            <div class="success-message">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                Transmission received
+            </div>
+        </div>
+        
+        <div class="footer-note" style="--delay: 1.5s">
+            Opt-in contribution &middot; Your Memory Layer &middot; Profit-share dividend
+        </div>
+
+        <div class="footer-links" style="--delay: 1.6s">
+            <div class="links">
+                <a href="https://github.com/owenservera/vivim-app" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <a href="https://github.com/owenservera/vivim-live" target="_blank" rel="noopener noreferrer">vivim-live</a>
+                <a href="/docs" target="_blank">Docs</a>
+            </div>
+        </div>
+    </main>
+
+    <div class="noise-overlay"></div>
+
+    <script src="./script.js"></script>
+</body>
+</html>

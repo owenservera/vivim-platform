@@ -1,0 +1,367 @@
+.heroBanner {
+  padding: 6rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse 100% 80% at 50% 0%, rgba(166, 91, 240, 0.15) 0%, transparent 60%),
+              linear-gradient(180deg, rgba(0, 212, 255, 0.05) 0%, transparent 100%);
+}
+
+.heroBanner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(166, 91, 240, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 30%, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.heroContent {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.heroBadge {
+  display: inline-block;
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  color: #00d4ff;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.heroTitle {
+  font-size: 5rem !important;
+  font-weight: 800 !important;
+  background: linear-gradient(135deg, #fff 0%, #00d4ff 50%, #a65bf0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem !important;
+  letter-spacing: -0.03em;
+}
+
+.heroSubtitle {
+  font-size: 1.75rem !important;
+  color: #00d4ff !important;
+  font-weight: 500;
+  margin-bottom: 1rem !important;
+}
+
+.heroTagline {
+  font-size: 1.25rem !important;
+  color: #a0a0a0 !important;
+  max-width: 600px;
+  margin: 0 auto 2rem !important;
+  line-height: 1.6;
+}
+
+.heroStats {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.statNumber {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: #a0a0a0;
+  margin-top: 0.25rem;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.section {
+  padding: 5rem 0;
+}
+
+.sectionTitle {
+  text-align: center;
+  margin-bottom: 0.5rem !important;
+  font-size: 2.5rem !important;
+  color: #fff;
+}
+
+.sectionSubtitle {
+  text-align: center;
+  color: #a0a0a0;
+  font-size: 1.125rem;
+  margin-bottom: 3rem !important;
+}
+
+.problemCard, .featureCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 2rem;
+  height: 100%;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.problemCard:hover, .featureCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(166, 91, 240, 0.3);
+  box-shadow: 0 10px 30px rgba(166, 91, 240, 0.1);
+}
+
+.problemCard {
+  background: rgba(255, 0, 110, 0.03);
+  border-color: rgba(255, 0, 110, 0.1);
+}
+
+.problemCard:hover {
+  border-color: rgba(255, 0, 110, 0.3);
+  box-shadow: 0 10px 30px rgba(255, 0, 110, 0.1);
+}
+
+.problemIcon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.featureCardLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.featureCardLink:hover {
+  color: inherit;
+}
+
+.featureCard {
+  background: rgba(166, 91, 240, 0.03);
+  border-color: rgba(166, 91, 240, 0.1);
+}
+
+.featureIcon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.featureCard h3 {
+  color: #fff;
+  margin-bottom: 0.75rem !important;
+}
+
+.featureCard p {
+  color: #a0a0a0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* How It Works Section */
+.howItWorksSection {
+  padding: 5rem 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 212, 255, 0.03) 50%, transparent 100%);
+}
+
+.flowDiagram {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+
+.flowStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 150px;
+}
+
+.flowIcon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+  background: rgba(166, 91, 240, 0.1);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flowStep h4 {
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.flowStep p {
+  color: #a0a0a0;
+  font-size: 0.8rem;
+}
+
+.flowArrow {
+  font-size: 2rem;
+  color: rgba(166, 91, 240, 0.5);
+  margin-top: 1.5rem;
+}
+
+.flowDetails {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.flowDetailCard {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.flowDetailCard code {
+  color: #00d4ff;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.flowDetailCard span {
+  color: #a0a0a0;
+  font-size: 0.8rem;
+}
+
+/* Architecture Section */
+.architectureSection {
+  padding: 5rem 0;
+}
+
+.archGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.archCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.archCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 212, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 212, 255, 0.1);
+}
+
+.archIcon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.archCard h4 {
+  color: #fff;
+  margin-bottom: 0.5rem !important;
+}
+
+.archCard p {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  margin-bottom: 1rem !important;
+}
+
+.archCard a {
+  color: #00d4ff;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.ctaSection {
+  padding: 5rem 0;
+  text-align: center;
+  background: linear-gradient(180deg, transparent 0%, rgba(166, 91, 240, 0.1) 100%);
+}
+
+.ctaSection h2 {
+  font-size: 2.5rem !important;
+  color: #fff;
+  margin-bottom: 1rem !important;
+}
+
+.ctaSection p {
+  font-size: 1.25rem;
+  color: #a0a0a0;
+  margin-bottom: 2rem;
+}
+
+@media screen and (max-width: 966px) {
+  .heroBanner {
+    padding: 3rem 1rem;
+  }
+  
+  .heroTitle {
+    font-size: 3rem !important;
+  }
+  
+  .heroSubtitle {
+    font-size: 1.25rem !important;
+  }
+  
+  .heroStats {
+    gap: 1.5rem;
+  }
+  
+  .buttons {
+    flex-direction: column;
+  }
+  
+  .section {
+    padding: 3rem 0;
+  }
+  
+  .flowDiagram {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .flowArrow {
+    transform: rotate(90deg);
+    margin: 0;
+  }
+  
+  .flowStep {
+    max-width: 100%;
+  }
+}

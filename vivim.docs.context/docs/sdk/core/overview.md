@@ -1,316 +1,602 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
 
 # Core SDK
 
-The VIVIM Core SDK provides the foundation for all nodes and applications in the VIVIM ecosystem.
+The VIVIM SDK Core provides the foundation for all nodes and applications in the VIVIM ecosystem.
 
 ## Installation
 
 ```bash
-npm install @vivim/sdk
-# or
 bun add @vivim/sdk
 ```
 
 ## Quick Start
 
 ```typescript
-import { VivimSDK } from '@vivim/sdk/core';
+import { VivimSDK } from '@vivim/sdk';
 
 const sdk = new VivimSDK({
   identity: {
+    did: 'my-node-' + Math.random().toString(36).slice(2, 9),
     autoCreate: true,
   },
   network: {
     bootstrapNodes: ['https://bootstrap.vivim.live'],
+    enableP2P: true,
   },
   storage: {
     defaultLocation: 'local',
     encryption: true,
   },
+  nodes: {
+    autoLoad: true,
+  },
 });
 
 await sdk.initialize();
 ```
 
-## Configuration
+## VivimSDK Class
 
-### VivimSDKConfig
+### Constructor
+
+```typescript
+class VivimSDK {
+  constructor(config?: VivimSDKConfig)
+}
+```
+
+### Configuration
 
 ```typescript
 interface VivimSDKConfig {
-  // Identity configuration
   identity?: {
     did?: string;
     seed?: Uint8Array;
     autoCreate?: boolean;
   };
-
-  // Network configuration
+  
   network?: {
     bootstrapNodes?: string[];
     relays?: string[];
     listenAddresses?: string[];
+    enableP2P?: boolean;
   };
-
-  // Storage configuration
+  
   storage?: {
     defaultLocation?: 'local' | 'ipfs' | 'filecoin';
     ipfsGateway?: string;
     encryption?: boolean;
   };
-
-  // Nodes configuration
+  
   nodes?: {
     autoLoad?: boolean;
     registries?: string[];
     trustedPublishers?: string[];
   };
-}
-```
-
-## Core API
-
-### VivimSDK Class
-
-#### Initialization
-
-```typescript
-// Initialize the SDK
-await sdk.initialize();
-
-// Wait for network connection
-await sdk.waitForConnection();
-```
-
-#### Node Management
-
-```typescript
-// Load a node by ID
-const storageNode = await sdk.loadNode<StorageNode>('storage');
-
-// Register a custom node
-const nodeId = await sdk.registerNode(customNodeDefinition);
-
-// Unload a node
-await sdk.unloadNode(nodeId);
-```
-
-#### Identity Management
-
-```typescript
-// Get current identity
-const identity = sdk.identity.getCurrentIdentity();
-
-// Create new identity
-const newIdentity = await sdk.identity.create({
-  seed: crypto.getRandomValues(new Uint8Array(32)),
-});
-
-// Export identity
-const exported = await sdk.identity.export(identity);
-
-// Import identity
-const imported = await sdk.identity.import(exportedData, password);
-```
-
-## Core Modules
-
-### Identity Manager
-
-Handles decentralized identity (DID) creation and management.
-
-```typescript
-import { IdentityManager } from '@vivim/sdk/core';
-
-const identityManager = new IdentityManager({
-  autoCreate: true,
-});
-
-const identity = await identityManager.create();
-console.log(identity.did); // "did:vivim:..."
-```
-
-### Network Graph
-
-Manages the P2P network topology and node discovery.
-
-```typescript
-import { NetworkGraph } from '@vivim/sdk/core';
-
-const graph = new NetworkGraph();
-
-// Connect to peers
-await graph.connect(peerAddresses);
-
-// Discover nodes
-const nodes = await graph.discover('storage');
-
-// Get network stats
-const stats = graph.getStats();
-```
-
-### Node Registry
-
-Registers and manages available nodes.
-
-```typescript
-import { NodeRegistry } from '@vivim/sdk/core';
-
-const registry = new NodeRegistry();
-
-// Register a node
-await registry.register(nodeDefinition);
-
-// Get node by ID
-const node = await registry.get('storage');
-
-// List all nodes
-const allNodes = registry.list();
-```
-
-## Types
-
-### APINode
-
-Base interface for all API nodes:
-
-```typescript
-interface APINode {
-  id: string;
-  version: string;
-  capabilities: string[];
   
-  initialize(config: NodeConfig): Promise<void>;
-  destroy(): Promise<void>;
-  getCapabilities(): string[];
+  extensions?: {
+    autoLoad?: boolean;
+    directories?: string[];
+    registries?: string[];
+  };
 }
 ```
 
-### NodeDefinition
-
-Definition for registering a node:
+### Properties
 
 ```typescript
-interface NodeDefinition {
-  id: string;
-  name: string;
-  version: string;
-  type: 'api' | 'sdk' | 'network';
-  schema: ZodSchema;
-  factory: (config: NodeConfig) => APINode;
+class VivimSDK {
+  // Core Module Instances
+  public readonly recordKeeper: OnChainRecordKeeper;
+  public readonly anchor: AnchorProtocol;
+  public readonly selfDesign: SelfDesignModule;
+  public readonly assistant: VivimAssistantRuntime;
+  
+  // Identity (after initialization)
+  public identity: Identity | null;
+  
+  // Initialization status
+  public initialized: boolean;
 }
+```
+
+### Methods
+
+#### initialize()
+
+Initializes the SDK and creates identity if configured.
+
+```typescript
+await sdk.initialize();
+```
+
+#### loadNode()
+
+Load a node by ID.
+
+```typescript
+async loadNode<T>(nodeId: string): Promise<T>;
+
+// Example
+const storageNode = await sdk.loadNode<StorageNode>('storage');
+```
+
+#### registerNode()
+
+Register a custom node definition.
+
+```typescript
+async registerNode(definition: APINodeDefinition): Promise<string>;
+
+// Example
+const nodeId = await sdk.registerNode({
+  id: 'my-custom-node',
+  name: 'My Custom Node',
+  version: '1.0.0',
+  // ... node definition
+});
+```
+
+#### unloadNode()
+
+Unload a node.
+
+```typescript
+async unloadNode(nodeId: string): Promise<void>;
+```
+
+#### destroy()
+
+Clean up and destroy the SDK instance.
+
+```typescript
+await sdk.destroy();
+```
+
+### Core Module Accessors
+
+#### getRecordKeeper()
+
+Get the Record Keeper instance for on-chain operation recording.
+
+```typescript
+getRecordKeeper(): OnChainRecordKeeper;
+
+// Usage
+const rk = sdk.getRecordKeeper();
+const operation = await rk.recordOperation({...});
+```
+
+#### getAnchorProtocol()
+
+Get the Anchor Protocol instance for state anchoring.
+
+```typescript
+getAnchorProtocol(): AnchorProtocol;
+
+// Usage
+const anchor = sdk.getAnchorProtocol();
+const state = await anchor.getState();
+```
+
+#### getSelfDesign()
+
+Get the Self-Design module instance.
+
+```typescript
+getSelfDesign(): SelfDesignModule;
+
+// Usage
+const sd = sdk.getSelfDesign();
+await sd.applyModification({...});
+```
+
+#### getAssistant()
+
+Get the Assistant Runtime instance.
+
+```typescript
+getAssistant(): VivimAssistantRuntime;
+
+// Usage
+const assistant = sdk.getAssistant();
+const context = await assistant.processContext({...});
+```
+
+## Identity Management
+
+### Identity Interface
+
+```typescript
+interface Identity {
+  did: string;                    // Decentralized Identifier (did:key)
+  publicKey: string;              // Ed25519 public key (hex)
+  keyType: 'Ed25519' | 'secp256k1';
+  displayName?: string;
+  avatar?: string;                // CID to avatar
+  createdAt: number;
+  verificationLevel: number;
+}
+```
+
+### Creating Identity
+
+```typescript
+// Auto-create on initialize
+const sdk = new VivimSDK({
+  identity: {
+    autoCreate: true,
+  },
+});
+await sdk.initialize();
+console.log(sdk.identity?.did); // "did:vivim:..."
+
+// Or create manually with seed
+import { generateKeyPair } from '@vivim/sdk/utils';
+
+const seed = crypto.getRandomValues(new Uint8Array(32));
+const sdk = new VivimSDK({
+  identity: {
+    seed,
+    displayName: 'My Node',
+  },
+});
+```
+
+## RecordKeeper
+
+The On-Chain RecordKeeper provides a cryptographic audit trail for all SDK operations.
+
+### Operation Types
+
+```typescript
+type SDKOperationType =
+  | 'node:create'
+  | 'node:update'
+  | 'node:delete'
+  | 'node:register'
+  | 'node:load'
+  | 'extension:register'
+  | 'extension:activate'
+  | 'extension:deactivate'
+  | 'config:update'
+  | 'identity:create'
+  | 'storage:store'
+  | 'memory:create'
+  | 'content:create'
+  | 'social:follow'
+  | 'circle:create';
+```
+
+### Recording Operations
+
+```typescript
+const rk = sdk.getRecordKeeper();
+
+// Record an operation
+const operation = await rk.recordOperation({
+  type: 'node:create',
+  author: sdk.identity.did,
+  payload: {
+    nodeId: 'my-node',
+    nodeDefinition: {...},
+  },
+});
+
+console.log('Operation ID:', operation.id); // CID
+```
+
+### Getting Operation History
+
+```typescript
+// Get all operations by author
+const history = await rk.getOperationHistory(sdk.identity.did);
+
+// Get operations by type
+const nodeOps = await rk.getOperationsByType('node:create');
+
+// Get operation by ID
+const op = await rk.getOperation(operationId);
+```
+
+### Verifying Operations
+
+```typescript
+// Verify a single operation
+const verified = await rk.verifyOperation(operationId);
+
+// Verify entire operation chain
+const chainVerified = await rk.verifyOperationChain(operationId);
+
+// Get audit trail
+const audit = await rk.getAuditTrail(sdk.identity.did);
+```
+
+## Anchor Protocol
+
+The Anchor Protocol handles on-chain state anchoring and trust management.
+
+### Trust Levels
+
+```typescript
+enum TrustLevel {
+  GENESIS = 'genesis',         // Root anchor node
+  BOOTSTRAP = 'bootstrap',     // Bootstrap/relay nodes
+  PRIMARY = 'primary',         // Primary SDK instances
+  SECONDARY = 'secondary',     // Verified clones
+  UNVERIFIED = 'unverified',   // New/untrusted nodes
+  SUSPENDED = 'suspended'      // Revoked trust
+}
+```
+
+### Getting Anchor State
+
+```typescript
+const anchor = sdk.getAnchorProtocol();
+
+// Get current state
+const state = await anchor.getState();
+console.log('DID:', state.did);
+console.log('Trust Level:', state.trustLevel);
+console.log('Merkle Root:', state.merkleRoot);
+```
+
+### Anchoring State
+
+```typescript
+// Anchor current state to chain
+await anchor.anchorState();
+
+// Get anchor history
+const history = await anchor.getAnchorHistory();
+```
+
+### Trust Verification
+
+```typescript
+// Verify another node's trust
+const verified = await anchor.verifyTrust('did:vivim:...');
+
+// Get trust proofs
+const proofs = await anchor.getTrustProofs('did:vivim:...');
+
+// Add trust proof
+await anchor.addTrustProof({
+  type: 'attestation',
+  issuer: sdk.identity.did,
+  target: 'did:vivim:...',
+  payload: { trustLevel: TrustLevel.PRIMARY },
+});
+```
+
+## Self-Design Module
+
+Enables self-modification and evolution capabilities.
+
+### Applying Modifications
+
+```typescript
+const selfDesign = sdk.getSelfDesign();
+
+// Apply a modification
+await selfDesign.applyModification({
+  type: 'node:add',
+  nodeId: 'new-node',
+  definition: {...},
+});
+
+// Other modification types
+await selfDesign.applyModification({
+  type: 'node:remove',
+  nodeId: 'old-node',
+});
+
+await selfDesign.applyModification({
+  type: 'config:update',
+  key: 'network.bootstrapNodes',
+  value: ['https://new-bootstrap.vivim.live'],
+});
+```
+
+### Evolution History
+
+```typescript
+// Get evolution history
+const history = await selfDesign.getEvolutionHistory();
+
+// Get modifications by type
+const nodeMods = await selfDesign.getModificationsByType('node:add');
+```
+
+## Assistant Runtime
+
+AI assistant integration with context processing.
+
+### Processing Context
+
+```typescript
+const assistant = sdk.getAssistant();
+
+// Process context for a query
+const context = await assistant.processContext({
+  userId: 'user-123',
+  query: 'What did I ask about yesterday?',
+  options: {
+    includeMemories: true,
+    maxContextItems: 10,
+  },
+});
+```
+
+### Generating Responses
+
+```typescript
+// Generate response with context
+const response = await assistant.generateResponse(context, {
+  model: 'gpt-4',
+  temperature: 0.7,
+});
+
+// Stream response
+const stream = await assistant.streamResponse(context);
+for await (const chunk of stream) {
+  console.log(chunk);
+}
+```
+
+## Events
+
+The SDK extends EventEmitter and emits various events.
+
+### Event Types
+
+```typescript
+enum SDK_EVENTS {
+  NODE_LOADED = 'node:loaded',
+  NODE_UNLOADED = 'node:unloaded',
+  IDENTITY_CREATED = 'identity:created',
+  OPERATION_RECORDED = 'operation:recorded',
+  STATE_ANCHORED = 'state:anchored',
+  ERROR = 'error',
+  WARNING = 'warning',
+}
+```
+
+### Listening for Events
+
+```typescript
+import { SDK_EVENTS } from '@vivim/sdk';
+
+// Node events
+sdk.on(SDK_EVENTS.NODE_LOADED, (nodeInfo) => {
+  console.log('Node loaded:', nodeInfo);
+});
+
+// Identity events
+sdk.on(SDK_EVENTS.IDENTITY_CREATED, (identity) => {
+  console.log('Identity created:', identity.did);
+});
+
+// Error handling
+sdk.on(SDK_EVENTS.ERROR, (error) => {
+  console.error('SDK Error:', error);
+});
+
+// Operation events
+sdk.on(SDK_EVENTS.OPERATION_RECORDED, (operation) => {
+  console.log('Operation recorded:', operation.id);
+});
 ```
 
 ## Error Handling
 
+### Error Codes
+
 ```typescript
-import { SDKError, NodeError, NetworkError } from '@vivim/sdk/core';
+enum ERROR_CODES {
+  SDK_NOT_INITIALIZED = 'SDK_NOT_INITIALIZED',
+  NODE_NOT_FOUND = 'NODE_NOT_FOUND',
+  NODE_LOAD_FAILED = 'NODE_LOAD_FAILED',
+  IDENTITY_CREATION_FAILED = 'IDENTITY_CREATION_FAILED',
+  OPERATION_RECORD_FAILED = 'OPERATION_RECORD_FAILED',
+  ANCHOR_FAILED = 'ANCHOR_FAILED',
+  VALIDATION_ERROR = 'VALIDATION_ERROR',
+}
+```
+
+### Handling Errors
+
+```typescript
+import { VivimSDK } from '@vivim/sdk';
 
 try {
-  await sdk.loadNode('storage');
+  const sdk = new VivimSDK();
+  await sdk.initialize();
+  const node = await sdk.loadNode('storage');
 } catch (error) {
-  if (error instanceof NodeError) {
-    console.error('Node error:', error.message);
-  } else if (error instanceof NetworkError) {
-    console.error('Network error:', error.message);
+  if (error.code === ERROR_CODES.SDK_NOT_INITIALIZED) {
+    console.error('SDK not initialized');
+  } else if (error.code === ERROR_CODES.NODE_NOT_FOUND) {
+    console.error('Node not found');
   } else {
     console.error('Unknown error:', error);
   }
 }
 ```
 
-## Utilities
-
-### Cryptography
-
-```typescript
-import { crypto } from '@vivim/sdk/core';
-
-// Generate keypair
-const keypair = await crypto.generateKeyPair();
-
-// Sign data
-const signature = await crypto.sign(data, keypair.privateKey);
-
-// Verify signature
-const valid = await crypto.verify(data, signature, keypair.publicKey);
-
-// Hash data
-const hash = await crypto.hash(data);
-```
-
-### Encoding
-
-```typescript
-import { encoding } from '@vivim/sdk/core';
-
-// Encode to base64
-const base64 = encoding.toBase64(data);
-
-// Decode from base64
-const decoded = encoding.fromBase64(base64);
-
-// CID encoding
-const cid = encoding.toCID(data);
-```
-
 ## Examples
 
-### Basic Node Creation
+### Complete Setup Example
 
 ```typescript
-import { APINode, NodeConfig } from '@vivim/sdk/core';
-import { z } from 'zod';
+import { VivimSDK } from '@vivim/sdk';
 
-class MyCustomNode implements APINode {
-  id = 'my-custom-node';
-  version = '1.0.0';
-  capabilities = ['custom-operation'];
+async function main() {
+  // Create SDK instance
+  const sdk = new VivimSDK({
+    identity: {
+      autoCreate: true,
+      displayName: 'My First Node',
+    },
+    network: {
+      bootstrapNodes: ['https://bootstrap.vivim.live'],
+      enableP2P: true,
+    },
+    storage: {
+      defaultLocation: 'local',
+      encryption: true,
+    },
+    nodes: {
+      autoLoad: true,
+    },
+  });
 
-  private config?: NodeConfig;
+  // Initialize
+  await sdk.initialize();
+  console.log('SDK initialized with DID:', sdk.identity.did);
 
-  async initialize(config: NodeConfig) {
-    this.config = config;
-    console.log('Node initialized');
-  }
+  // Access core modules
+  const recordKeeper = sdk.getRecordKeeper();
+  const anchor = sdk.getAnchorProtocol();
+  
+  // Get anchor state
+  const state = await anchor.getState();
+  console.log('Trust level:', state.trustLevel);
 
-  async destroy() {
-    console.log('Node destroyed');
-  }
+  // Load a node
+  const storageNode = await sdk.loadNode('storage');
+  
+  // Save encrypted data
+  await storageNode.save({
+    key: 'my-first-data',
+    value: { hello: 'world' },
+    encrypt: true,
+  });
 
-  getCapabilities() {
-    return this.capabilities;
-  }
+  // Record the operation
+  await recordKeeper.recordOperation({
+    type: 'storage:store',
+    author: sdk.identity.did,
+    payload: { key: 'my-first-data' },
+  });
 
-  async customOperation(data: any) {
-    // Custom logic here
-    return { success: true, data };
-  }
+  // Clean up
+  await sdk.destroy();
 }
 
-// Register the node
-await sdk.registerNode({
-  id: 'my-custom-node',
-  name: 'My Custom Node',
-  version: '1.0.0',
-  type: 'api',
-  schema: z.object({}),
-  factory: (config) => new MyCustomNode(),
-});
+main().catch(console.error);
 ```
 
 ## Related
 
-- [API Nodes](../api-nodes/overview) - Official API nodes
-- [SDK Nodes](../sdk-nodes/overview) - Framework adapters
-- [Network](../network/overview) - P2P networking
+- [API Nodes](../api-nodes/overview) - Available API nodes
+- [Types](./types) - TypeScript type definitions
 - [Examples](../examples/basic) - Code examples
 
 ## Links
 
 - **GitHub Repository**: [github.com/vivim/vivim-sdk](https://github.com/vivim/vivim-sdk)
-- **Issues**: [Report a bug](https://github.com/vivim/vivim-sdk/issues)
 - **NPM Package**: [@vivim/sdk](https://www.npmjs.com/package/@vivim/sdk)

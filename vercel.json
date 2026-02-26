@@ -1,0 +1,31 @@
+{
+  "framework": "docusaurus",
+  "buildCommand": "cd docs && bun run build",
+  "outputDirectory": "docs/build",
+  "installCommand": "cd docs && bun install",
+  "rewrites": [
+    {
+      "source": "/docs/(.*)",
+      "destination": "/docs/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/docs/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
+  ]
+}

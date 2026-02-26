@@ -9,11 +9,11 @@ export class E2EEncryption extends EventEmitter {
     constructor(config = {}) {
         super();
         this.config = {
-            algorithm: 'secp256k1',
+            algorithm: 'prime256v1',
             cipher: 'aes-256-gcm',
             ...config,
         };
-        this.ecdh = createECDH(this.config.algorithm || 'secp256k1');
+        this.ecdh = createECDH(this.config.algorithm || 'prime256v1');
     }
     generateKeyPair() {
         this.ecdh.generateKeys();
@@ -31,7 +31,7 @@ export class E2EEncryption extends EventEmitter {
         if (!this.keyPair) {
             throw new Error('Key pair not initialized');
         }
-        const ephemeral = createECDH(this.config.algorithm || 'x25519');
+        const ephemeral = createECDH(this.config.algorithm || 'prime256v1');
         ephemeral.generateKeys();
         const sharedSecret = ephemeral.computeSecret(recipientPublicKey);
         const encryptionKey = this.deriveKey(sharedSecret, 'encryption');
@@ -52,7 +52,7 @@ export class E2EEncryption extends EventEmitter {
         if (!this.keyPair) {
             throw new Error('Key pair not initialized');
         }
-        const ephemeral = createECDH(this.config.algorithm || 'x25519');
+        const ephemeral = createECDH(this.config.algorithm || 'prime256v1');
         ephemeral.setPrivateKey(this.keyPair.privateKey);
         const sharedSecret = ephemeral.computeSecret(encrypted.ephemeralPublicKey);
         const decryptionKey = this.deriveKey(sharedSecret, 'decryption');

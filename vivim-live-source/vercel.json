@@ -1,0 +1,34 @@
+{
+  "buildCommand": "cd docs && bun run build",
+  "outputDirectory": "docs/build",
+  "installCommand": "bun install && cd docs && bun install",
+  "rewrites": [
+    {
+      "source": "/docs",
+      "destination": "/docs/index.html"
+    },
+    {
+      "source": "/docs/:path*",
+      "destination": "/docs/:path*"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/docs/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
+  ]
+}

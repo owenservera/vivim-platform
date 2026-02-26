@@ -1,0 +1,194 @@
+-- VIVIM Digital Twin Cost Database Configuration
+-- Database Setup and Configuration
+-- Version: 1.0.0
+
+-- ============================================================================
+-- DATABASE CREATION (run as superuser)
+-- ============================================================================
+
+-- CREATE DATABASE vivim_costs_db
+--     WITH 
+--     OWNER = vivim_admin
+--     ENCODING = 'UTF8'
+--     LC_COLLATE = 'en_US.UTF-8'
+--     LC_CTYPE = 'en_US.UTF-8'
+--     TABLESPACE = pg_default
+--     CONNECTION LIMIT = -1;
+
+-- ============================================================================
+-- EXTENSIONS
+-- ============================================================================
+
+-- Required extensions
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+-- Optional but recommended
+CREATE EXTENSION IF NOT EXISTS "pg_stat_statements";
+
+-- ============================================================================
+-- SCHEMA SETUP
+-- ============================================================================
+
+-- Create schemas for organization
+CREATE SCHEMA IF NOT EXISTS people;
+CREATE SCHEMA IF NOT EXISTS tools;
+CREATE SCHEMA IF NOT EXISTS users;
+CREATE SCHEMA IF NOT EXISTS governance;
+CREATE SCHEMA IF NOT EXISTS reporting;
+
+-- ============================================================================
+-- USER ROLES AND PERMISSIONS
+-- ============================================================================
+
+-- Create roles
+-- CREATE ROLE vivim_reader NOLOGIN;
+-- CREATE ROLE vivim_writer NOLOGIN;
+-- CREATE ROLE vivim_admin NOLOGIN;
+
+-- Grant permissions
+-- GRANT USAGE ON SCHEMA people, tools, users, governance, reporting TO vivim_reader;
+-- GRANT SELECT ON ALL TABLES IN SCHEMA people, tools, users, governance, reporting TO vivim_reader;
+
+-- GRANT USAGE ON SCHEMA people, tools, users, governance, reporting TO vivim_writer;
+-- GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA people, tools, users, governance, reporting TO vivim_writer;
+
+-- Admin has full access
+-- GRANT ALL PRIVILEGES ON DATABASE vivim_costs_db TO vivim_admin;
+
+-- ============================================================================
+-- PERFORMANCE CONFIGURATION
+-- ============================================================================
+
+-- Enable query logging for slow queries (adjust as needed)
+-- ALTER SYSTEM SET log_min_duration_statement = '1000';
+-- ALTER SYSTEM SET log_line_prefix = '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h ';
+
+-- Connection pool settings (if using pgbouncer)
+-- max_connections = 200
+-- shared_buffers = 256MB
+-- effective_cache_size = 1GB
+
+-- ============================================================================
+-- MAINTENANCE CONFIGURATION
+-- ============================================================================
+
+-- Auto-vacuum settings
+-- autovacuum = on
+-- autovacuum_max_workers = 3
+-- autovacuum_naptime = 1min
+
+-- ============================================================================
+-- VALIDATION RULES
+-- ============================================================================
+
+-- Ensure all schema files loaded successfully
+DO $$
+DECLARE
+    table_count INTEGER;
+    expected_count INTEGER := 50; -- Approximate expected table count
+BEGIN
+    SELECT COUNT(*) INTO table_count
+    FROM information_schema.tables
+    WHERE table_schema IN ('public', 'people', 'tools', 'users', 'governance');
+    
+    IF table_count < expected_count THEN
+        RAISE NOTICE 'Warning: Expected at least % tables, found %', expected_count, table_count;
+    ELSE
+        RAISE NOTICE 'Schema validation passed: % tables found', table_count;
+    END IF;
+END $$;
+
+-- Validate seed data loaded
+DO $$
+DECLARE
+    location_count INTEGER;
+    role_count INTEGER;
+    milestone_count INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO location_count FROM locations;
+    SELECT COUNT(*) INTO role_count FROM roles;
+    SELECT COUNT(*) INTO milestone_count FROM milestones;
+    
+    RAISE NOTICE 'Data validation:';
+    RAISE NOTICE '  - Locations: %', location_count;
+    RAISE NOTICE '  - Roles: %', role_count;
+    RAISE NOTICE '  - Milestones: %', milestone_count;
+    
+    IF location_count < 3 OR role_count < 10 OR milestone_count < 10 THEN
+        RAISE WARNING 'Some seed data may be missing!';
+    ELSE
+        RAISE NOTICE 'Seed data validation passed';
+    END IF;
+END $$;
+
+-- ============================================================================
+-- INDEX VERIFICATION
+-- ============================================================================
+
+-- Check for missing indexes on foreign keys (for performance)
+DO $$
+DECLARE
+    missing_index RECORD;
+BEGIN
+    FOR missing_index IN
+        SELECT
+            tc.table_name,
+            kcu.column_name
+        FROM information_schema.table_constraints tc
+        JOIN information_schema.key_column_usage kcu
+            ON tc.constraint_name = kcu.constraint_name
+        WHERE tc.constraint_type = 'FOREIGN KEY'
+        AND NOT EXISTS (
+            SELECT 1 FROM pg_indexes pi
+            WHERE pi.tablename = tc.table_name
+            AND pi.indexdef LIKE '%' || kcu.column_name || '%'
+        )
+    LOOP
+        RAISE NOTICE 'Consider adding index on %.%', 
+            missing_index.table_name, 
+            missing_index.column_name;
+    END LOOP;
+END $$;
+
+-- ============================================================================
+-- BACKUP CONFIGURATION
+-- ============================================================================
+
+-- Recommended backup strategy:
+-- 1. Daily pg_dump at 2 AM
+-- 2. Weekly full backup on Sundays
+-- 3. Point-in-time recovery enabled (if using WAL archiving)
+
+-- Example backup command:
+-- pg_dump -Fc -Z9 vivim_costs_db > vivim_costs_db_$(date +%Y%m%d).dump
+
+-- ============================================================================
+-- MONITORING QUERIES
+-- ============================================================================
+
+-- Table sizes
+-- SELECT 
+--     schemaname,
+--     tablename,
+--     pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as size
+-- FROM pg_tables
+-- WHERE schemaname IN ('public', 'people', 'tools', 'users', 'governance')
+-- ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
+
+-- Active connections
+-- SELECT count(*) as active_connections 
+-- FROM pg_stat_activity 
+-- WHERE state = 'active';
+
+-- Slow queries
+-- SELECT query, calls, mean_time, total_time
+-- FROM pg_stat_statements
+-- ORDER BY mean_time DESC
+-- LIMIT 10;
+
+-- ============================================================================
+-- DOCUMENTATION
+-- ============================================================================
+
+COMMENT ON DATABASE current_database() IS 'VIVIM Digital Twin Cost Database - Complete cost structure for People, Tools, Users, and Governance';
