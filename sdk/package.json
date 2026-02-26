@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "VIVIM SDK - Open-Source E2E Self-Contained Toolkit for Decentralized Applications",
   "type": "module",
+  "bin": {
+    "vivim": "src/cli/vivim-git.ts"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {

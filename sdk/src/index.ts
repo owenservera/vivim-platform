@@ -26,6 +26,8 @@ export * from './extension/index.js';
 
 // Apps
 export * from './apps/ai-documentation/index.js';
+export * from './apps/ai-git/index.js';
+export * from './apps/crypto-engine/index.js';
 
 // Utilities
 export * from './utils/index.js';
