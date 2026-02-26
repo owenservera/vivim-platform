@@ -28,6 +28,9 @@ export * from './extension/index.js';
 export * from './apps/ai-documentation/index.js';
 export * from './apps/ai-git/index.js';
 export * from './apps/crypto-engine/index.js';
+export * from './apps/acu-processor/index.js';
+export * from './apps/omni-feed/index.js';
+export * from './apps/circle-engine/index.js';
 
 // Utilities
 export * from './utils/index.js';
