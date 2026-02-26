@@ -13,10 +13,7 @@ export * from './omni-api';
 
 // Services
 export { featureService } from './feature-service';
-export { syncManager } from './sync-manager';
 export { dbSync } from './db-sync';
-export { syncService } from './sync-service';
-export { webrtcManager } from './webrtc-manager';
 export { logger } from './logger';
 export { queryClient } from './query-client';
 // Stores (re-export for backward compatibility)

@@ -583,6 +583,12 @@ adminWsService.initialize(server);
 logger.info('🔌 Admin WebSocket service ready for real-time updates');
 
 // ============================================================================
+// P2P NETWORK INDEXER NODE
+// ============================================================================
+import { networkService } from './services/network.js';
+networkService.initialize();
+
+// ============================================================================
 // GRACEFUL SHUTDOWN
 // ============================================================================
 

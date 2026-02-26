@@ -1,9 +1,17 @@
 /**
  * AI Chat Node - API Node for AI conversations
+ * Enhanced with Communication Protocol
  */
 
 import type { VivimSDK } from '../core/sdk.js';
 import { generateId } from '../utils/crypto.js';
+import {
+  CommunicationProtocol,
+  createCommunicationProtocol,
+  type MessageEnvelope,
+  type CommunicationEvent,
+  type NodeMetrics,
+} from '../core/communication.js';
 
 /**
  * Conversation
@@ -140,6 +148,13 @@ export interface AIChatNodeAPI {
 
   // ACU Extraction
   extractACUs(conversationId: string): Promise<ACUExtractionResult>;
+
+  // Communication Protocol
+  getNodeId(): string;
+  getMetrics(): NodeMetrics;
+  onCommunicationEvent(listener: (event: CommunicationEvent) => void): () => void;
+  sendMessage<T>(type: string, payload: T): Promise<MessageEnvelope>;
+  processMessage<T>(envelope: MessageEnvelope<T>): Promise<MessageEnvelope>;
 }
 
 /**
@@ -165,15 +180,151 @@ export interface ExtractedACU {
  * AI Chat Node Implementation
  */
 export class AIChatNode implements AIChatNodeAPI {
-  private sdk: VivimSDK;
   private conversations: Map<string, Conversation> = new Map();
   private messages: Map<string, Message[]> = new Map();
   private systemPrompts: Map<string, string> = new Map();
   private contextItems: Map<string, ContextItem[]> = new Map();
   private currentModels: Map<string, string> = new Map();
+  
+  private communication: CommunicationProtocol;
+  private eventUnsubscribe: (() => void)[] = [];
 
-  constructor(sdk: VivimSDK) {
-    this.sdk = sdk;
+  constructor(private sdk: VivimSDK) {
+    this.communication = createCommunicationProtocol('ai-chat-node');
+    this.setupEventListeners();
+  }
+
+  private setupEventListeners(): void {
+    const unsubSent = this.communication.onEvent('message_sent', (event) => {
+      console.log(`[AIChatNode] Message sent: ${event.messageId}`);
+    });
+    this.eventUnsubscribe.push(unsubSent);
+
+    const unsubProcessed = this.communication.onEvent('message_processed', (event) => {
+      console.log(`[AIChatNode] Message processed: ${event.messageId}`);
+    });
+    this.eventUnsubscribe.push(unsubProcessed);
+  }
+
+  getNodeId(): string {
+    return 'ai-chat-node';
+  }
+
+  getMetrics(): NodeMetrics {
+    return this.communication.getMetrics() || {
+      nodeId: 'ai-chat-node',
+      messagesSent: 0,
+      messagesReceived: 0,
+      messagesProcessed: 0,
+      messagesFailed: 0,
+      averageLatency: 0,
+      maxLatency: 0,
+      minLatency: 0,
+      lastMessageAt: 0,
+      uptime: Date.now(),
+      errorsByType: {},
+      requestsByPriority: {
+        critical: 0,
+        high: 0,
+        normal: 0,
+        low: 0,
+        background: 0,
+      },
+    };
+  }
+
+  onCommunicationEvent(listener: (event: CommunicationEvent) => void): () => void {
+    return this.communication.onEvent('*', listener);
+  }
+
+  async sendMessage<T>(type: string, payload: T): Promise<MessageEnvelope> {
+    const envelope = this.communication.createEnvelope<T>(type, payload, {
+      direction: 'outbound',
+      priority: 'normal',
+    });
+
+    const startTime = Date.now();
+    
+    try {
+      const processed = await this.communication.executeHooks('before_send', envelope);
+      this.communication.recordMessageSent(envelope.header.priority);
+      
+      this.communication.emitEvent({
+        type: 'message_sent',
+        nodeId: this.getNodeId(),
+        messageId: envelope.header.id,
+        timestamp: Date.now(),
+      });
+
+      const latency = Date.now() - startTime;
+      this.communication.recordMessageProcessed(latency);
+
+      return processed;
+    } catch (error) {
+      this.communication.recordMessageError(String(error));
+      throw error;
+    }
+  }
+
+  async processMessage<T>(envelope: MessageEnvelope<T>): Promise<MessageEnvelope> {
+    const startTime = Date.now();
+    
+    try {
+      this.communication.recordMessageReceived();
+      let processed = await this.communication.executeHooks('before_receive', envelope);
+      processed = await this.communication.executeHooks('before_process', processed);
+      
+      const response = await this.handleMessage(processed);
+      const final = await this.communication.executeHooks('after_process', response);
+      
+      const latency = Date.now() - startTime;
+      this.communication.recordMessageProcessed(latency);
+
+      this.communication.emitEvent({
+        type: 'message_processed',
+        nodeId: this.getNodeId(),
+        messageId: envelope.header.id,
+        timestamp: Date.now(),
+      });
+
+      return final;
+    } catch (error) {
+      this.communication.recordMessageError(String(error));
+      this.communication.emitEvent({
+        type: 'message_error',
+        nodeId: this.getNodeId(),
+        messageId: envelope.header.id,
+        timestamp: Date.now(),
+        error: String(error),
+      });
+      throw error;
+    }
+  }
+
+  private async handleMessage<T>(envelope: MessageEnvelope<T>): Promise<MessageEnvelope> {
+    const { header, payload } = envelope;
+
+    switch (header.type) {
+      case 'conversation_create':
+        const conv = await this.createConversation(payload as ConversationOptions);
+        return this.communication.createResponse(envelope, { conversation: conv });
+
+      case 'conversation_list':
+        const conversations = await this.listConversations();
+        return this.communication.createResponse(envelope, { conversations });
+
+      case 'message_send':
+        const { conversationId, content, options } = payload as { conversationId: string; content: string; options?: MessageOptions };
+        const message = await this.sendMessage(conversationId, content, options);
+        return this.communication.createResponse(envelope, { message });
+
+      case 'models_list':
+        const models = await this.listModels();
+        return this.communication.createResponse(envelope, { models });
+
+      default:
+        return this.communication.createResponse(envelope, { error: 'Unknown message type' });
+    }
   }
 
   // ============================================
@@ -201,6 +352,8 @@ export class AIChatNode implements AIChatNodeAPI {
       this.systemPrompts.set(conversation.id, options.systemPrompt);
     }
 
+    await this.sendMessage('conversation_create', { conversationId: conversation.id, title: conversation.title });
+
     return conversation;
   }
 
@@ -218,6 +371,8 @@ export class AIChatNode implements AIChatNodeAPI {
   async updateConversation(id: string, updates: Partial<Conversation>): Promise<void> {
     const conversation = await this.getConversation(id);
     Object.assign(conversation, updates, { updatedAt: Date.now() });
+    
+    await this.sendMessage('conversation_update', { conversationId: id, updates });
   }
 
   async deleteConversation(id: string): Promise<void> {
@@ -226,6 +381,8 @@ export class AIChatNode implements AIChatNodeAPI {
     this.systemPrompts.delete(id);
     this.contextItems.delete(id);
     this.currentModels.delete(id);
+    
+    await this.sendMessage('conversation_delete', { conversationId: id });
   }
 
   // ============================================
@@ -251,6 +408,13 @@ export class AIChatNode implements AIChatNodeAPI {
     this.messages.get(conversationId)?.push(userMessage);
     conversation.messageCount++;
     conversation.updatedAt = Date.now();
+
+    // Send message event
+    await this.sendMessage('message_send', { 
+      conversationId, 
+      messageId: userMessage.id,
+      role: userMessage.role 
+    });
 
     // In a real implementation, this would call the AI provider
     // For now, return a mock assistant response
@@ -287,6 +451,8 @@ export class AIChatNode implements AIChatNodeAPI {
       const message = messages.find(m => m.id === messageId);
       if (message) {
         message.content = newContent;
+        
+        await this.sendMessage('message_edit', { messageId, newContent });
         return;
       }
     }
@@ -302,6 +468,8 @@ export class AIChatNode implements AIChatNodeAPI {
         if (conversation) {
           conversation.messageCount = messages.length;
         }
+        
+        await this.sendMessage('message_delete', { messageId });
         return;
       }
     }
@@ -320,6 +488,9 @@ export class AIChatNode implements AIChatNodeAPI {
     // Send user message first
     await this.sendMessage(conversationId, content, { ...options, stream: false });
 
+    // Emit streaming start event
+    await this.sendMessage('stream_start', { conversationId });
+
     // Mock streaming response
     const response = `[SDK Mock Stream] Processing: "${content}"`;
     
@@ -337,6 +508,8 @@ export class AIChatNode implements AIChatNodeAPI {
   async setSystemPrompt(conversationId: string, prompt: string): Promise<void> {
     await this.getConversation(conversationId);
     this.systemPrompts.set(conversationId, prompt);
+    
+    await this.sendMessage('system_prompt_set', { conversationId });
   }
 
   async addContext(conversationId: string, context: ContextItem): Promise<void> {
@@ -347,11 +520,15 @@ export class AIChatNode implements AIChatNodeAPI {
     }
     
     this.contextItems.get(conversationId)!.push(context);
+    
+    await this.sendMessage('context_add', { conversationId, contextType: context.type });
   }
 
   async clearContext(conversationId: string): Promise<void> {
     await this.getConversation(conversationId);
     this.contextItems.delete(conversationId);
+    
+    await this.sendMessage('context_clear', { conversationId });
   }
 
   // ============================================
@@ -359,6 +536,8 @@ export class AIChatNode implements AIChatNodeAPI {
   // ============================================
 
   async listModels(): Promise<ModelInfo[]> {
+    await this.sendMessage('models_list', {});
+    
     return [
       {
         id: 'gpt-4',
@@ -395,6 +574,8 @@ export class AIChatNode implements AIChatNodeAPI {
     const conversation = await this.getConversation(conversationId);
     conversation.model = modelId;
     this.currentModels.set(conversationId, modelId);
+    
+    await this.sendMessage('model_set', { conversationId, modelId });
   }
 
   // ============================================
@@ -419,9 +600,16 @@ export class AIChatNode implements AIChatNodeAPI {
       }
     }
 
+    await this.sendMessage('acu_extract', { conversationId, acuCount: acus.length });
+
     return {
       acus,
       extractedAt: Date.now(),
     };
+  }
+
+  destroy(): void {
+    this.eventUnsubscribe.forEach(unsub => unsub());
+    this.eventUnsubscribe = [];
   }
 }

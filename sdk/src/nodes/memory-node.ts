@@ -1,9 +1,17 @@
 /**
  * Memory Node - API Node for knowledge/memory management
+ * Enhanced with Communication Protocol
  */
 
 import type { VivimSDK } from '../core/sdk.js';
 import { generateId } from '../utils/crypto.js';
+import {
+  CommunicationProtocol,
+  createCommunicationProtocol,
+  type MessageEnvelope,
+  type CommunicationEvent,
+  type NodeMetrics,
+} from '../core/communication.js';
 
 /**
  * Memory type
@@ -154,6 +162,13 @@ export interface MemoryNodeAPI {
 
   // Statistics
   getStats(): Promise<MemoryStats>;
+
+  // Communication Protocol
+  getNodeId(): string;
+  getMetrics(): NodeMetrics;
+  onCommunicationEvent(listener: (event: CommunicationEvent) => void): () => void;
+  sendMessage<T>(type: string, payload: T): Promise<MessageEnvelope>;
+  processMessage<T>(envelope: MessageEnvelope<T>): Promise<MessageEnvelope>;
 }
 
 /**
@@ -188,13 +203,152 @@ export interface MemoryStats {
  * Memory Node Implementation
  */
 export class MemoryNode implements MemoryNodeAPI {
-  private sdk: VivimSDK;
   private memories: Map<string, Memory> = new Map();
   private relations: Map<string, MemoryRelation> = new Map();
   private memoryIndex: Map<string, Set<string>> = new Map(); // type -> ids
+  
+  private communication: CommunicationProtocol;
+  private eventUnsubscribe: (() => void)[] = [];
 
-  constructor(sdk: VivimSDK) {
-    this.sdk = sdk;
+  constructor(private sdk: VivimSDK) {
+    this.communication = createCommunicationProtocol('memory-node');
+    this.setupEventListeners();
+  }
+
+  private setupEventListeners(): void {
+    const unsubSent = this.communication.onEvent('message_sent', (event) => {
+      console.log(`[MemoryNode] Message sent: ${event.messageId}`);
+    });
+    this.eventUnsubscribe.push(unsubSent);
+
+    const unsubProcessed = this.communication.onEvent('message_processed', (event) => {
+      console.log(`[MemoryNode] Message processed: ${event.messageId}`);
+    });
+    this.eventUnsubscribe.push(unsubProcessed);
+  }
+
+  getNodeId(): string {
+    return 'memory-node';
+  }
+
+  getMetrics(): NodeMetrics {
+    return this.communication.getMetrics() || {
+      nodeId: 'memory-node',
+      messagesSent: 0,
+      messagesReceived: 0,
+      messagesProcessed: 0,
+      messagesFailed: 0,
+      averageLatency: 0,
+      maxLatency: 0,
+      minLatency: 0,
+      lastMessageAt: 0,
+      uptime: Date.now(),
+      errorsByType: {},
+      requestsByPriority: {
+        critical: 0,
+        high: 0,
+        normal: 0,
+        low: 0,
+        background: 0,
+      },
+    };
+  }
+
+  onCommunicationEvent(listener: (event: CommunicationEvent) => void): () => void {
+    return this.communication.onEvent('*', listener);
+  }
+
+  async sendMessage<T>(type: string, payload: T): Promise<MessageEnvelope> {
+    const envelope = this.communication.createEnvelope<T>(type, payload, {
+      direction: 'outbound',
+      priority: 'normal',
+    });
+
+    const startTime = Date.now();
+    
+    try {
+      const processed = await this.communication.executeHooks('before_send', envelope);
+      this.communication.recordMessageSent(envelope.header.priority);
+      
+      this.communication.emitEvent({
+        type: 'message_sent',
+        nodeId: this.getNodeId(),
+        messageId: envelope.header.id,
+        timestamp: Date.now(),
+      });
+
+      const latency = Date.now() - startTime;
+      this.communication.recordMessageProcessed(latency);
+
+      return processed;
+    } catch (error) {
+      this.communication.recordMessageError(String(error));
+      throw error;
+    }
+  }
+
+  async processMessage<T>(envelope: MessageEnvelope<T>): Promise<MessageEnvelope> {
+    const startTime = Date.now();
+    
+    try {
+      this.communication.recordMessageReceived();
+      let processed = await this.communication.executeHooks('before_receive', envelope);
+      processed = await this.communication.executeHooks('before_process', processed);
+      
+      const response = await this.handleMessage(processed);
+      const final = await this.communication.executeHooks('after_process', response);
+      
+      const latency = Date.now() - startTime;
+      this.communication.recordMessageProcessed(latency);
+
+      this.communication.emitEvent({
+        type: 'message_processed',
+        nodeId: this.getNodeId(),
+        messageId: envelope.header.id,
+        timestamp: Date.now(),
+      });
+
+      return final;
+    } catch (error) {
+      this.communication.recordMessageError(String(error));
+      throw error;
+    }
+  }
+
+  private async handleMessage<T>(envelope: MessageEnvelope<T>): Promise<MessageEnvelope> {
+    const { header, payload } = envelope;
+
+    switch (header.type) {
+      case 'memory_get':
+        try {
+          const memory = await this.get((payload as { id: string }).id);
+          return this.communication.createResponse(envelope, { memory });
+        } catch (error) {
+          return this.communication.createResponse(envelope, { error: String(error) });
+        }
+
+      case 'memory_search':
+        const results = await this.search(payload as MemoryQuery);
+        return this.communication.createResponse(envelope, { results });
+
+      case 'memory_semantic_search':
+        const semanticResults = await this.semanticSearch(
+          (payload as { query: string }).query,
+          (payload as { limit?: number }).limit
+        );
+        return this.communication.createResponse(envelope, { results: semanticResults });
+
+      case 'memory_stats':
+        const stats = await this.getStats();
+        return this.communication.createResponse(envelope, { stats });
+
+      case 'knowledge_graph':
+        const graph = await this.getKnowledgeGraph(payload as GraphOptions);
+        return this.communication.createResponse(envelope, { graph });
+
+      default:
+        return this.communication.createResponse(envelope, { error: 'Unknown message type' });
+    }
   }
 
   // ============================================
@@ -237,6 +391,9 @@ export class MemoryNode implements MemoryNodeAPI {
     }
     this.memoryIndex.get(data.memoryType)!.add(id);
 
+    // Send creation event
+    await this.sendMessage('memory_create', { id, memoryType: data.memoryType });
+
     return memory;
   }
 
@@ -256,6 +413,8 @@ export class MemoryNode implements MemoryNodeAPI {
       updatedAt: Date.now(),
     });
 
+    await this.sendMessage('memory_update', { id, updates });
+
     return memory;
   }
 
@@ -274,6 +433,8 @@ export class MemoryNode implements MemoryNodeAPI {
         this.relations.delete(relationId);
       }
     }
+
+    await this.sendMessage('memory_delete', { id });
   }
 
   // ============================================
@@ -326,6 +487,8 @@ export class MemoryNode implements MemoryNodeAPI {
       results = results.slice(0, query.limit);
     }
 
+    await this.sendMessage('memory_search', { query, resultCount: results.length });
+
     return results;
   }
 
@@ -357,6 +520,7 @@ export class MemoryNode implements MemoryNodeAPI {
   async semanticSearch(query: string, limit = 10): Promise<Memory[]> {
     // In production, this would use vector similarity with embeddings
     // For now, fall back to text search
+    await this.sendMessage('memory_semantic_search', { query, limit });
     return this.search({ text: query, limit });
   }
 
@@ -378,12 +542,16 @@ export class MemoryNode implements MemoryNodeAPI {
     };
 
     this.relations.set(relation.id, relation);
+
+    await this.sendMessage('memory_link', { sourceId, targetId, relationType });
   }
 
   async unlink(sourceId: string, targetId: string): Promise<void> {
     for (const [id, relation] of this.relations.entries()) {
       if (relation.sourceId === sourceId && relation.targetId === targetId) {
         this.relations.delete(id);
+        
+        await this.sendMessage('memory_unlink', { sourceId, targetId });
         return;
       }
     }
@@ -436,6 +604,8 @@ export class MemoryNode implements MemoryNodeAPI {
         strength: relation.strength,
       });
     }
+
+    await this.sendMessage('knowledge_graph_get', { nodeCount: nodes.length, edgeCount: edges.length });
 
     return { nodes, edges };
   }
@@ -506,6 +676,8 @@ export class MemoryNode implements MemoryNodeAPI {
       provenanceId: conversationId,
     });
 
+    await this.sendMessage('memory_extract', { conversationId, memoryId: memory.id });
+
     return [memory];
   }
 
@@ -517,6 +689,8 @@ export class MemoryNode implements MemoryNodeAPI {
         memory.updatedAt = Date.now();
       }
     }
+
+    await this.sendMessage('memory_consolidate', { processedCount: this.memories.size });
   }
 
   // ============================================
@@ -550,7 +724,7 @@ export class MemoryNode implements MemoryNodeAPI {
     const sorted = Array.from(this.memories.values())
       .sort((a, b) => b.updatedAt - a.updatedAt);
 
-    return {
+    const stats: MemoryStats = {
       totalCount: this.memories.size,
       byType,
       byCategory,
@@ -558,5 +732,14 @@ export class MemoryNode implements MemoryNodeAPI {
       averageAge,
       lastUpdated: sorted[0]?.updatedAt || 0,
     };
+
+    await this.sendMessage('memory_stats', stats);
+
+    return stats;
+  }
+
+  destroy(): void {
+    this.eventUnsubscribe.forEach(unsub => unsub());
+    this.eventUnsubscribe = [];
   }
 }

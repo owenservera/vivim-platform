@@ -1,9 +1,17 @@
 /**
  * Storage Node - API Node for distributed storage
+ * Enhanced with Communication Protocol
  */
 
 import type { VivimSDK } from '../core/sdk.js';
 import { calculateCID } from '../utils/crypto.js';
+import {
+  CommunicationProtocol,
+  createCommunicationProtocol,
+  type MessageEnvelope,
+  type CommunicationEvent,
+  type NodeMetrics,
+} from '../core/communication.js';
 
 /**
  * Storage options
@@ -115,6 +123,13 @@ export interface StorageNodeAPI {
 
   // Status
   getStatus(): Promise<StorageStatus>;
+
+  // Communication Protocol
+  getNodeId(): string;
+  getMetrics(): NodeMetrics;
+  onCommunicationEvent(listener: (event: CommunicationEvent) => void): () => void;
+  sendMessage<T>(type: string, payload: T): Promise<MessageEnvelope>;
+  processMessage<T>(envelope: MessageEnvelope<T>): Promise<MessageEnvelope>;
 }
 
 export interface DealOptions {
@@ -128,13 +143,160 @@ export interface DealOptions {
  * Storage Node Implementation
  */
 export class StorageNode implements StorageNodeAPI {
-  private sdk: VivimSDK;
   private storage: Map<string, { data: Uint8Array; metadata: StorageResult }> = new Map();
   private pins: Map<string, PinInfo> = new Map();
   private deals: Map<string, StorageDeal> = new Map();
+  
+  private communication: CommunicationProtocol;
+  private eventUnsubscribe: (() => void)[] = [];
 
-  constructor(sdk: VivimSDK) {
-    this.sdk = sdk;
+  constructor(private sdk: VivimSDK) {
+    this.communication = createCommunicationProtocol('storage-node');
+    this.setupEventListeners();
+  }
+
+  private setupEventListeners(): void {
+    const unsubSent = this.communication.onEvent('message_sent', (event) => {
+      console.log(`[StorageNode] Message sent: ${event.messageId}`);
+    });
+    this.eventUnsubscribe.push(unsubSent);
+
+    const unsubError = this.communication.onEvent('message_error', (event) => {
+      console.error(`[StorageNode] Message error: ${event.error}`);
+    });
+    this.eventUnsubscribe.push(unsubError);
+  }
+
+  getNodeId(): string {
+    return 'storage-node';
+  }
+
+  getMetrics(): NodeMetrics {
+    return this.communication.getMetrics() || {
+      nodeId: 'storage-node',
+      messagesSent: 0,
+      messagesReceived: 0,
+      messagesProcessed: 0,
+      messagesFailed: 0,
+      averageLatency: 0,
+      maxLatency: 0,
+      minLatency: 0,
+      lastMessageAt: 0,
+      uptime: Date.now(),
+      errorsByType: {},
+      requestsByPriority: {
+        critical: 0,
+        high: 0,
+        normal: 0,
+        low: 0,
+        background: 0,
+      },
+    };
+  }
+
+  onCommunicationEvent(listener: (event: CommunicationEvent) => void): () => void {
+    return this.communication.onEvent('*', listener);
+  }
+
+  async sendMessage<T>(type: string, payload: T): Promise<MessageEnvelope> {
+    const envelope = this.communication.createEnvelope<T>(type, payload, {
+      direction: 'outbound',
+      priority: 'normal',
+    });
+
+    const startTime = Date.now();
+    
+    try {
+      const processed = await this.communication.executeHooks('before_send', envelope);
+      this.communication.recordMessageSent(envelope.header.priority);
+      
+      this.communication.emitEvent({
+        type: 'message_sent',
+        nodeId: this.getNodeId(),
+        messageId: envelope.header.id,
+        timestamp: Date.now(),
+      });
+
+      const latency = Date.now() - startTime;
+      this.communication.recordMessageProcessed(latency);
+
+      return processed;
+    } catch (error) {
+      this.communication.recordMessageError(String(error));
+      throw error;
+    }
+  }
+
+  async processMessage<T>(envelope: MessageEnvelope<T>): Promise<MessageEnvelope> {
+    const startTime = Date.now();
+    
+    try {
+      this.communication.recordMessageReceived();
+      let processed = await this.communication.executeHooks('before_receive', envelope);
+      processed = await this.communication.executeHooks('before_process', processed);
+      
+      const response = await this.handleMessage(processed);
+      const final = await this.communication.executeHooks('after_process', response);
+      
+      const latency = Date.now() - startTime;
+      this.communication.recordMessageProcessed(latency);
+
+      this.communication.emitEvent({
+        type: 'message_processed',
+        nodeId: this.getNodeId(),
+        messageId: envelope.header.id,
+        timestamp: Date.now(),
+      });
+
+      return final;
+    } catch (error) {
+      this.communication.recordMessageError(String(error));
+      this.communication.emitEvent({
+        type: 'message_error',
+        nodeId: this.getNodeId(),
+        messageId: envelope.header.id,
+        timestamp: Date.now(),
+        error: String(error),
+      });
+      throw error;
+    }
+  }
+
+  private async handleMessage<T>(envelope: MessageEnvelope<T>): Promise<MessageEnvelope> {
+    const { header, payload } = envelope;
+
+    switch (header.type) {
+      case 'storage_store':
+        const result = await this.store(payload as unknown as Uint8Array | object);
+        return this.communication.createResponse(envelope, { result });
+
+      case 'storage_retrieve':
+        try {
+          const data = await this.retrieve((payload as { cid: string }).cid);
+          return this.communication.createResponse(envelope, { data: Array.from(data) });
+        } catch (error) {
+          return this.communication.createResponse(envelope, { error: String(error) });
+        }
+
+      case 'storage_exists':
+        const exists = await this.exists((payload as { cid: string }).cid);
+        return this.communication.createResponse(envelope, { exists });
+
+      case 'storage_status':
+        const status = await this.getStatus();
+        return this.communication.createResponse(envelope, { status });
+
+      case 'storage_deals':
+        const deals = await this.listDeals();
+        return this.communication.createResponse(envelope, { deals });
+
+      case 'storage_providers':
+        const providers = await this.findProviders(payload as ProviderSearchOptions);
+        return this.communication.createResponse(envelope, { providers });
+
+      default:
+        return this.communication.createResponse(envelope, { error: 'Unknown message type' });
+    }
   }
 
   async store(data: Uint8Array | object, options: StoreOptions = {}): Promise<StorageResult> {
@@ -155,6 +317,9 @@ export class StorageNode implements StorageNodeAPI {
       await this.pin(cid);
     }
 
+    // Send storage event
+    await this.sendMessage('storage_store', { cid, size: bytes.length, pinned: !!options.pin });
+
     return result;
   }
 
@@ -163,6 +328,9 @@ export class StorageNode implements StorageNodeAPI {
     if (!stored) {
       throw new Error(`Content not found: ${cid}`);
     }
+
+    await this.sendMessage('storage_retrieve', { cid, success: true });
+
     return stored.data;
   }
 
@@ -180,10 +348,14 @@ export class StorageNode implements StorageNodeAPI {
       pinnedAt: Date.now(),
       size: this.storage.get(cid)!.metadata.size,
     });
+
+    await this.sendMessage('storage_pin', { cid });
   }
 
   async unpin(cid: string): Promise<void> {
     this.pins.delete(cid);
+    
+    await this.sendMessage('storage_unpin', { cid });
   }
 
   async getPins(): Promise<PinInfo[]> {
@@ -205,6 +377,9 @@ export class StorageNode implements StorageNodeAPI {
     };
 
     this.deals.set(dealId, deal);
+
+    await this.sendMessage('storage_deal_create', { dealId, cid, provider: deal.provider });
+
     return deal;
   }
 
@@ -221,6 +396,8 @@ export class StorageNode implements StorageNodeAPI {
   }
 
   async findProviders(_options: ProviderSearchOptions = {}): Promise<ProviderInfo[]> {
+    await this.sendMessage('storage_providers_search', {});
+
     // In production, this would query the DHT/network
     return [
       {
@@ -234,6 +411,8 @@ export class StorageNode implements StorageNodeAPI {
   }
 
   async getProviderReputation(providerId: string): Promise<ProviderReputation> {
+    await this.sendMessage('storage_reputation_query', { providerId });
+
     // In production, this would query the reputation system
     return {
       score: 95,
@@ -245,11 +424,23 @@ export class StorageNode implements StorageNodeAPI {
   }
 
   async getStatus(): Promise<StorageStatus> {
-    return {
+    const status: StorageStatus = {
       localPinned: true,
       ipfsProviders: [],
-      filecoinDeals: [],
-      availability: 100,
+      filecoinDeals: Array.from(this.deals.values()),
+      availability: this.storage.size > 0 ? 100 : 0,
     };
+
+    await this.sendMessage('storage_status', { 
+      localPinned: status.localPinned, 
+      contentCount: this.storage.size 
+    });
+
+    return status;
+  }
+
+  destroy(): void {
+    this.eventUnsubscribe.forEach(unsub => unsub());
+    this.eventUnsubscribe = [];
   }
 }
