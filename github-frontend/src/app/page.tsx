@@ -152,6 +152,17 @@ export default function HomePage() {
                     </a>
                   </Button>
                 </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button size="lg" variant="ghost" className="gap-2" asChild>
+                    <a href="https://github.com/vivim/vivim-sdk" target="_blank" rel="noopener noreferrer">
+                      <Star className="h-5 w-5" />
+                      SDK on GitHub
+                    </a>
+                  </Button>
+                </motion.div>
               </div>
 
               {/* Stats */}
