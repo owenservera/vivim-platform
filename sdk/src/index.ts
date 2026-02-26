@@ -24,6 +24,9 @@ export * from './registry/index.js';
 // Extension
 export * from './extension/index.js';
 
+// Apps
+export * from './apps/ai-documentation/index.js';
+
 // Utilities
 export * from './utils/index.js';
 
