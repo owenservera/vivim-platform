@@ -76,7 +76,8 @@
     "tweetnacl-util": "^0.15.1",
     "uuid": "^13.0.0",
     "yamljs": "^0.3.0",
-    "zod": "^4.3.6"
+    "zod": "^4.3.6",
+    "@vivim/network-engine": "workspace:*"
   },
   "devDependencies": {
     "@types/compression": "^1.7.5",

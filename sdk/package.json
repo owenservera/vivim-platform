@@ -46,7 +46,8 @@
     "uint8arrays": "^5.0.0",
     "eventemitter3": "^5.0.1",
     "zod": "^3.22.4",
-    "debug": "^4.3.4"
+    "debug": "^4.3.4",
+    "yjs": "^13.6.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.12",

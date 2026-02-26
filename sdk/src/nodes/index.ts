@@ -84,3 +84,34 @@ export {
   type MemoryStats,
   type ConsolidationStatus,
 } from './memory-node.js';
+
+// ChatLink Nexus - Multi-Provider AI Shared Chat Link Import
+export {
+  ChatLinkNexus,
+  type ChatLinkNexusAPI,
+  type SupportedProvider,
+  type ProviderConfig,
+  type ChatLinkImportOptions,
+  type ExtractedMessage,
+  type ImportedConversation as ChatLinkImportedConversation,
+  type ImportStatus as ChatLinkImportStatus,
+  type ProviderDetection,
+} from './chatlink-nexus-node.js';
+
+// ChatVault Archiver - Multi-Provider AI Chat History Bulk Importer
+export {
+  ChatVaultArchiver,
+  type ChatVaultArchiverAPI,
+  type ExportFormat,
+  type ImportSourceType,
+  type ImportJobStatus,
+  type ExportFormatConfig,
+  type ChatHistoryImportOptions,
+  type ExtractedConversation as VaultExtractedConversation,
+  type ExportedMessage,
+  type ToolCall as VaultToolCall,
+  type ImportJob as ChatHistoryImportJob,
+  type ImportSummary as ChatHistoryImportSummary,
+  type ImportedConversation as ChatVaultImportedConversation,
+  type ParseResult,
+} from './chatvault-archiver-node.js';

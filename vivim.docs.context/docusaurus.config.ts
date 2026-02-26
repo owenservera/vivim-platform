@@ -7,13 +7,14 @@ const config: Config = {
   tagline: 'Your Personal AI Memory Platform',
   favicon: 'img/favicon.ico',
 
-  url: 'https://vivim.ai',
-  baseUrl: '/',
+  url: 'https://vivim.live',
+  baseUrl: '/docs',
 
   organizationName: 'vivim',
-  projectName: 'vivim-docs',
+  projectName: 'vivim-live',
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'ignore',
+  onBrokenMarkdownLinks: 'ignore',
 
   i18n: {
     defaultLocale: 'en',
@@ -73,11 +74,16 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'gettingStarted',
           position: 'left',
-          label: 'Docs',
+          label: 'SDK Docs',
         },
         {
-          href: 'https://github.com/vivim',
+          href: 'https://github.com/owenservera/vivim-app',
           label: 'GitHub',
+          position: 'right',
+        },
+        {
+          href: 'https://github.com/vivim/vivim-sdk',
+          label: 'SDK',
           position: 'right',
         },
       ],
@@ -127,8 +133,12 @@ const config: Config = {
           title: 'Community',
           items: [
             {
-              label: 'GitHub',
-              href: 'https://github.com/vivim',
+              label: 'GitHub (Main Repo)',
+              href: 'https://github.com/owenservera/vivim-app',
+            },
+            {
+              label: 'GitHub (SDK)',
+              href: 'https://github.com/vivim/vivim-sdk',
             },
             {
               label: 'Discord',

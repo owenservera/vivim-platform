@@ -1,18 +1,18 @@
 /**
  * L0 Core Storage - Roadmap Entry
- * 
+ *
  * This module implements the L0 (Layer 0) Core Storage entry for the VIVIM SDK.
  * Per the "1st on Chain Rule", L0.STORAGE is REQUIRED for any node to participate
  * in or connect to the VIVIM Chain of Trust.
- * 
+ *
  * This serves as the foundational document containing the development roadmap
  * that all nodes must have access to.
- * 
+ *
  * @packageDocumentation
  */
 
 import { sha256 } from '@noble/hashes/sha256';
-import { bytesToHex } from 'uint8arrays';
+import { bytesToHex } from '@noble/hashes/utils';
 import type { VivimSDK } from './sdk.js';
 import { SDK_VERSION } from './constants.js';
 import type { TrustLevel } from './anchor.js';

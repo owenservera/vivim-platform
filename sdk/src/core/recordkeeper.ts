@@ -1,13 +1,13 @@
 /**
  * VIVIM SDK - On-Chain Recordkeeping System
- * 
+ *
  * Provides cryptographic audit trail for all SDK operations.
  * Each SDK edit/modification is recorded on-chain for verification.
  */
 
 import { EventEmitter } from 'events';
 import { sha256 } from '@noble/hashes/sha256';
-import { bytesToHex, hexToBytes } from 'uint8arrays';
+import { bytesToHex, hexToBytes } from '@noble/hashes/utils';
 import type { VivimSDK } from '../core/sdk.js';
 import { generateId, signData, verifySignature, publicKeyToDID, calculateCID } from '../utils/crypto.js';
 

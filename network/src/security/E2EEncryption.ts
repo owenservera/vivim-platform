@@ -17,7 +17,7 @@ export interface EncryptedMessage {
 }
 
 export interface E2EConfig {
-  algorithm?: 'x25519' | 'secp256k1';
+  algorithm?: 'x25519' | 'secp256k1' | 'prime256v1';
   cipher?: 'aes-256-gcm' | 'chacha20-poly1305';
 }
 

@@ -9,6 +9,11 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'doc',
+      id: 'sdk/overview',
+      label: 'SDK Overview',
+    },
+    {
+      type: 'doc',
       id: 'user/getting-started',
       label: 'Quick Start Guide',
     },
@@ -21,6 +26,80 @@ const sidebars: SidebarsConfig = {
       type: 'doc',
       id: 'deployment/guide',
       label: 'Deployment',
+    },
+  ],
+
+  sdk: [
+    {
+      type: 'doc',
+      id: 'sdk/overview',
+      label: '📦 Overview',
+    },
+    {
+      type: 'category',
+      label: '🔧 Core SDK',
+      link: {
+        type: 'doc',
+        id: 'sdk/core/overview',
+      },
+      items: [
+        'sdk/core/overview',
+      ],
+    },
+    {
+      type: 'category',
+      label: '🔌 API Nodes',
+      link: {
+        type: 'doc',
+        id: 'sdk/api-nodes/overview',
+      },
+      items: [
+        'sdk/api-nodes/overview',
+      ],
+    },
+    {
+      type: 'category',
+      label: '🎨 SDK Nodes',
+      link: {
+        type: 'doc',
+        id: 'sdk/sdk-nodes/overview',
+      },
+      items: [
+        'sdk/sdk-nodes/overview',
+      ],
+    },
+    {
+      type: 'category',
+      label: '🌐 Network',
+      link: {
+        type: 'doc',
+        id: 'sdk/network/overview',
+      },
+      items: [
+        'sdk/network/overview',
+      ],
+    },
+    {
+      type: 'category',
+      label: '📚 Guides',
+      link: {
+        type: 'doc',
+        id: 'sdk/guides/getting-started',
+      },
+      items: [
+        'sdk/guides/getting-started',
+      ],
+    },
+    {
+      type: 'category',
+      label: '💡 Examples',
+      link: {
+        type: 'doc',
+        id: 'sdk/examples/basic',
+      },
+      items: [
+        'sdk/examples/basic',
+      ],
     },
   ],
   
