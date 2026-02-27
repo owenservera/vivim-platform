@@ -1,0 +1,73 @@
+{
+  "project": {
+    "name": "VIVIM",
+    "tagline": "The Sovereign Foundation Layer for AI",
+    "description": "The first sovereign foundational layer for AI content - building a user-owned knowledge graph distributed on your personal blockchain.",
+    "version": "1.0.0",
+    "license": "MIT"
+  },
+  "vision": {
+    "core": "Your Knowledge. Your Rules. Your Chain.",
+    "principles": [
+      "User Ownership - Your data belongs to you",
+      "Privacy First - End-to-end encryption",
+      "Decentralization - P2P sync and federated architecture",
+      "Universal Capture - Multiple AI providers support"
+    ]
+  },
+  "technology_stack": {
+    "frontend": ["React 19", "TypeScript", "TailwindCSS", "Vite 7", "Zustand", "TanStack Query"],
+    "backend": ["Bun", "Express 5", "Prisma", "PostgreSQL", "Redis", "Socket.IO"],
+    "network": ["LibP2P", "Yjs CRDT", "WebRTC", "@noble/crypto"]
+  },
+  "components": {
+    "pwa": {
+      "path": "/docs/pwa/overview",
+      "features": ["80+ components", "18 hooks", "Offline-first", "PWA"]
+    },
+    "network": {
+      "path": "/docs/network/overview",
+      "features": ["P2P networking", "CRDT sync", "DHT", "PubSub", "Federation"]
+    },
+    "server": {
+      "path": "/docs/api/overview",
+      "features": ["300+ endpoints", "WebSocket", "Context Engine", "Capture Service"]
+    },
+    "sdk": {
+      "path": "/docs/sdk/overview",
+      "features": ["TypeScript", "API Nodes", "CLI", "Bun integration"]
+    }
+  },
+  "documentation": {
+    "getting_started": "/docs/getting-started/introduction",
+    "architecture": "/docs/architecture/overview",
+    "api_reference": "/docs/api/overview",
+    "features": {
+      "inventory": "/docs/ATOMIC_FEATURE_INVENTORY",
+      "roadmap": "/docs/ROADMAP/FEATURE_ROADMAP",
+      "gap_analysis": "/docs/SDK_GAP_ANALYSIS"
+    }
+  },
+  "statistics": {
+    "total_features": 930,
+    "complete": 815,
+    "in_progress": 80,
+    "planned": 35,
+    "overall_completion": "88%"
+  },
+  "phases": {
+    "genesis": {"status": "completed", "features": 30},
+    "foundation": {"status": "completed", "features": 550},
+    "expansion": {"status": "in_progress", "features": 147},
+    "decentralization": {"status": "planned", "features": 70},
+    "ecosystem": {"status": "future", "features": 95}
+  },
+  "links": {
+    "github": "https://github.com/owenservera/vivim-app",
+    "sdk": "https://github.com/vivim/vivim-sdk",
+    "discord": "https://discord.gg/vivim"
+  },
+  "ai_compatible": true,
+  "llms_txt": "/llms.txt",
+  "generated_at": "2026-02-27"
+}

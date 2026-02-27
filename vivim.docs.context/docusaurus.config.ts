@@ -37,6 +37,50 @@ const config: Config = {
     ],
   ],
 
+  plugins: [
+    [
+      '@docusaurus/plugin-pwa',
+      {
+        debug: false,
+        offlineModeActivationStrategies: ['always', 'standalone', 'mobile'],
+        pwaHead: [
+          {
+            tagName: 'meta',
+            name: 'theme-color',
+            content: '#a65bf0',
+          },
+          {
+            tagName: 'meta',
+            name: 'description',
+            content: 'VIVIM - The Sovereign Foundation Layer for AI. User-owned knowledge graph on your personal blockchain.',
+          },
+          {
+            tagName: 'link',
+            rel: 'icon',
+            href: '/docs/img/favicon.ico',
+          },
+          {
+            tagName: 'link',
+            rel: 'apple-touch-icon',
+            href: '/docs/img/logo.svg',
+          },
+          {
+            tagName: 'meta',
+            name: 'apple-mobile-web-app-capable',
+            content: 'yes',
+          },
+          {
+            tagName: 'meta',
+            name: 'apple-mobile-web-app-status-bar-style',
+            content: 'black-translucent',
+          },
+        ],
+      },
+    ],
+  ],
+
+
+
   themes: ['@docusaurus/theme-mermaid'],
 
   markdown: {
@@ -76,6 +120,13 @@ const config: Config = {
           position: 'left',
           label: 'SDK Docs',
         },
+        {
+          type: 'docSidebar',
+          sidebarId: 'featureDocumentation',
+          position: 'left',
+          label: '📊 Features',
+        },
+
         {
           href: 'https://github.com/owenservera/vivim-app',
           label: 'GitHub',

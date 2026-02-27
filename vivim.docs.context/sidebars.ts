@@ -37,6 +37,17 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: '🏗️ Architecture',
+      link: {
+        type: 'doc',
+        id: 'sdk/architecture/data-flow',
+      },
+      items: [
+        'sdk/architecture/data-flow',
+      ],
+    },
+    {
+      type: 'category',
       label: '🔧 Core SDK',
       link: {
         type: 'doc',
@@ -46,6 +57,29 @@ const sidebars: SidebarsConfig = {
         'sdk/core/overview',
         'sdk/core/communication',
         'sdk/core/utilities',
+        'sdk/core/self-design',
+      ],
+    },
+    {
+      type: 'category',
+      label: '💻 CLI',
+      link: {
+        type: 'doc',
+        id: 'sdk/cli/overview',
+      },
+      items: [
+        'sdk/cli/overview',
+      ],
+    },
+    {
+      type: 'category',
+      label: '🔌 Extension System',
+      link: {
+        type: 'doc',
+        id: 'sdk/extension/overview',
+      },
+      items: [
+        'sdk/extension/overview',
       ],
     },
     {
@@ -68,6 +102,7 @@ const sidebars: SidebarsConfig = {
       },
       items: [
         'sdk/api-nodes/overview',
+        'sdk/api-nodes/additional-nodes',
       ],
     },
     {
@@ -103,6 +138,7 @@ const sidebars: SidebarsConfig = {
       },
       items: [
         'sdk/apps/overview',
+        'sdk/apps/additional-apps',
       ],
     },
     {
@@ -114,6 +150,10 @@ const sidebars: SidebarsConfig = {
       },
       items: [
         'sdk/guides/getting-started',
+        'sdk/guides/testing',
+        'sdk/guides/migration',
+        'sdk/guides/performance',
+        'sdk/guides/troubleshooting',
       ],
     },
     {
@@ -125,6 +165,8 @@ const sidebars: SidebarsConfig = {
       },
       items: [
         'sdk/examples/basic',
+        'sdk/examples/intermediate',
+        'sdk/examples/advanced',
       ],
     },
   ],
@@ -308,6 +350,32 @@ const sidebars: SidebarsConfig = {
       type: 'doc',
       id: 'reference/types',
       label: 'TypeScript Types',
+    },
+  ],
+
+  // Feature Documentation - NEW
+  featureDocumentation: [
+    {
+      type: 'category',
+      label: '📊 Feature Documentation',
+      collapsed: false,
+      items: [
+        {
+          type: 'doc',
+          id: 'ATOMIC_FEATURE_INVENTORY',
+          label: 'Atomic Feature Inventory',
+        },
+        {
+          type: 'doc',
+          id: 'ROADMAP/FEATURE_ROADMAP',
+          label: 'Feature Roadmap',
+        },
+        {
+          type: 'doc',
+          id: 'SDK_GAP_ANALYSIS',
+          label: 'SDK Gap Analysis',
+        },
+      ],
     },
   ],
 };

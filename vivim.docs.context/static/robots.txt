@@ -1,0 +1,27 @@
+# VIVIM Robots.txt
+
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://vivim.live/docs/sitemap.xml
+Sitemap: https://vivim.live/docs/llms.txt
+
+# AI Bots
+User-agent: GPTBot
+Allow: /docs/
+
+User-agent: ChatGPT-User
+Allow: /docs/
+
+User-agent: Google-Extended
+Allow: /docs/
+
+User-agent: Anthropic-AI
+Allow: /docs/
+
+User-agent: Bytespider
+Allow: /docs/
+
+User-agent: GoogleOther
+Allow: /docs/

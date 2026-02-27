@@ -1,0 +1,150 @@
+# VIVIM Documentation
+
+## Project Overview
+
+**VIVIM** is the first sovereign foundational layer for AI content — building a user-owned knowledge graph distributed on a user-owned blockchain.
+
+### Vision
+- Your Knowledge. Your Rules. Your Chain.
+- Reclaim ownership of your AI interactions
+- Build your second brain
+- Control your digital destiny
+
+### Core Principles
+1. **User Ownership** - Your data belongs to you, not the AI providers
+2. **Privacy First** - End-to-end encryption and isolated user contexts
+3. **Decentralization** - P2P sync and federated architecture
+4. **Universal Capture** - Support for multiple AI providers (ChatGPT, Claude, Gemini, etc.)
+
+## Technology Stack
+
+### Frontend Layer
+- React 19, TypeScript, TailwindCSS, Vite 7
+- Framer Motion, Zustand, TanStack Query
+- Progressive Web App (PWA) with offline support
+
+### Backend Layer
+- Bun Runtime, Express 5, Prisma ORM, PostgreSQL
+- Redis for caching and pub/sub
+- Socket.IO for real-time communication
+- AI SDK (OpenAI, Anthropic)
+
+### Decentralized Layer
+- LibP2P for P2P networking
+- Yjs CRDT for conflict-free data synchronization
+- WebRTC for peer-to-peer communication
+- @noble/crypto for encryption
+
+## Architecture Components
+
+### 1. PWA Frontend (`/docs/pwa/overview`)
+- Component library with 80+ components
+- 18 custom hooks for state management
+- Offline-first architecture with IndexedDB
+- Service worker for caching and offline access
+
+### 2. Network Engine (`/docs/network/overview`)
+- LibP2P integration for P2P networking
+- CRDT synchronization (Yjs)
+- DHT for content discovery
+- PubSub system for real-time messaging
+- Federation support
+
+### 3. Server API (`/docs/api/overview`)
+- RESTful API with 300+ endpoints
+- WebSocket support for real-time updates
+- Dynamic Context Engine with 8-layer pipeline
+- Capture Service for AI conversation import
+
+### 4. SDK Core (`/docs/sdk/overview`)
+- TypeScript SDK for building VIVIM-compatible apps
+- API Nodes for extensible functionality
+- CLI for project management
+- Bun integration for runtime
+
+## Key Features
+
+### Storage V2 (`/docs/pwa/storage-v2`)
+- Content-addressed DAG storage
+- Cryptographic verification
+- Efficient deduplication
+
+### BYOK (`/docs/pwa/byok`)
+- Bring Your Own Key
+- Use your own API keys for privacy
+- Complete data sovereignty
+
+### Context Pipeline (`/docs/architecture/pipeline`)
+- 8-layer parallel processing pipeline
+- Hyper-optimized streaming context
+- ACU (Attention, Context, Understanding) extraction
+
+### Security (`/docs/security/overview`)
+- End-to-end encryption
+- Per-user isolated contexts
+- Quantum-resistant cryptography
+
+## Documentation Structure
+
+### Getting Started
+- `/docs/getting-started/introduction` - Welcome & overview
+- `/docs/development/guide` - Local setup and development
+- `/docs/deployment/guide` - Production deployment
+
+### Architecture
+- `/docs/architecture/overview` - System design
+- `/docs/architecture/context` - Dynamic Context System
+- `/docs/architecture/pipeline` - Parallel processing
+- `/docs/architecture/user-context` - Per-user isolation
+- `/docs/architecture/assembler` - Context assembly
+- `/docs/architecture/sync` - Offline-first sync
+
+### API Reference
+- `/docs/api/overview` - REST API endpoints and patterns
+
+### Feature Documentation
+- `/docs/ATOMIC_FEATURE_INVENTORY` - Complete feature breakdown (930+ features)
+- `/docs/ROADMAP/FEATURE_ROADMAP` - Development roadmap with timeline
+- `/docs/SDK_GAP_ANALYSIS` - SDK implementation coverage analysis
+
+## Development Commands
+
+```bash
+# Install dependencies
+bun run setup:deps
+
+# Generate database clients
+bun run setup:db
+
+# Run all services concurrently
+bun run dev
+
+# Or run individual services
+bun run dev:pwa        # PWA frontend
+bun run dev:server     # API server
+bun run dev:network   # Network engine
+
+# Build all packages
+bun run build
+```
+
+## Ports
+
+| Service | Port | Description |
+|---------|------|-------------|
+| PWA | 5173 | Frontend development server |
+| Server | 3333 | API server |
+| Network WS | 1235 | WebSocket server |
+| Network P2P | 9000 | P2P connections |
+| Admin | 5174 | Admin panel |
+
+## Community
+
+- GitHub: https://github.com/owenservera/vivim-app
+- SDK: https://github.com/vivim/vivim-sdk
+- Discord: https://discord.gg/vivim
+- Twitter: https://twitter.com/vivim
+
+## License
+
+MIT License - Copyright (c) 2025 VIVIM Team
