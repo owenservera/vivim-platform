@@ -457,11 +457,19 @@ stateDiagram-v2
     Synced --> Syncing: New changes
     Synced --> Offline: Network lost
     Offline --> [*]
-```
+---
+
+## Next Steps
+
+- [Security Overview](/docs/network/security) - Network security details
 
 ---
 
 ## Next Steps
+
+- [Security Overview](/docs/network/security) - Network security details
+
+- [Security Overview](/docs/network/security) - Network security details
 
 - [P2P Protocols](/docs/network/protocols) - Detailed protocol documentation
 - [CRDT Implementation](/docs/network/crdt) - Conflict resolution strategies

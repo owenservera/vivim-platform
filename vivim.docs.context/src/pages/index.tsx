@@ -14,44 +14,44 @@ function HeroSection() {
         <div className={styles.heroContent}>
           <div className={styles.visionBadge}>
             <span className={styles.badgeDot} />
-            The Sovereign AI Layer
+            The Sovereign AI Ecosystem
           </div>
           <Heading as="h1" className={styles.heroTitle}>
-            Your Knowledge.<br />
-            <span className={styles.gradientText}>Your Rules.</span><br />
-            <span className={styles.outlinedText}>Your Chain.</span>
+            Tokenize Your Mind.<br />
+            <span className={styles.gradientText}>Atomic Chat Units.</span><br />
+            <span className={styles.outlinedText}>Open Data Highway.</span>
           </Heading>
           <p className={styles.heroVision}>
-            VIVIM is the <strong>first sovereign foundational layer</strong> for AI content—building a user-owned knowledge graph distributed on your personal blockchain.
+            VIVIM provides the <strong>ultimate SDK and foundational layer</strong> to build user-owned AI applications. Transform interactions into <strong>Atomic Chat Units (ACUs)</strong>—tokenized, local-first assets on a personal blockchain.
           </p>
           <p className={styles.heroSubtitle}>
-            Reclaim ownership of your AI interactions. Build your second brain. Control your digital destiny.
+            Build sovereign AI experiences where users own their data, context, and destiny.
           </p>
           <div className={styles.heroStats}>
             <div className={styles.stat}>
-              <span className={styles.statNumber}>930+</span>
-              <span className={styles.statLabel}>Features Built</span>
+              <span className={styles.statNumber}>1 SDK</span>
+              <span className={styles.statLabel}>Infinite Apps</span>
             </div>
             <div className={styles.stat}>
-              <span className={styles.statNumber}>88%</span>
-              <span className={styles.statLabel}>Platform Complete</span>
+              <span className={styles.statNumber}>100%</span>
+              <span className={styles.statLabel}>User Owned</span>
             </div>
             <div className={styles.stat}>
-              <span className={styles.statNumber}>4</span>
-              <span className={styles.statLabel}>Core Packages</span>
+              <span className={styles.statNumber}>P2P</span>
+              <span className={styles.statLabel}>Data Highway</span>
             </div>
           </div>
           <div className={styles.buttons}>
             <Link
               className="button button--primary button--lg"
-              to="/docs/getting-started/introduction"
+              to="/docs/sdk/overview"
               style={{marginRight: '1rem'}}>
-              🔮 Join the Movement
+              📦 Explore the SDK
             </Link>
             <Link
               className="button button--secondary button--lg"
-              to="/docs/ROADMAP/FEATURE_ROADMAP">
-              📊 View Roadmap
+              to="/docs/getting-started/introduction">
+              📖 Read the Docs
             </Link>
           </div>
         </div>
@@ -64,24 +64,24 @@ function VisionPillars() {
   return (
     <section className={styles.visionSection}>
       <div className="container">
-        <Heading as="h2" className={styles.sectionTitle}>Why VIVIM Exists</Heading>
-        <p className={styles.sectionSubtitle}>The world is generating knowledge through AI. Who owns it?</p>
+        <Heading as="h2" className={styles.sectionTitle}>The VIVIM Paradigm</Heading>
+        <p className={styles.sectionSubtitle}>Moving from centralized silos to an open, tokenized AI data highway.</p>
         
         <div className={styles.pillarGrid}>
           <div className={styles.pillarCard}>
-            <div className={styles.pillarIcon}>🏛️</div>
-            <Heading as="h3">Sovereign Infrastructure</Heading>
-            <p>The first foundational layer that puts <strong>you</strong> at the center of the AI revolution. Not the corporations. Not the platforms. <strong>You.</strong></p>
+            <div className={styles.pillarIcon}>💎</div>
+            <Heading as="h3">Tokenization of ACUs</Heading>
+            <p>Every interaction, insight, and memory is distilled into <strong>Atomic Chat Units (ACUs)</strong>—cryptographically secured tokens on your personal blockchain. Turn ephemeral chats into permanent, transferable assets.</p>
           </div>
           <div className={styles.pillarCard}>
-            <div className={styles.pillarIcon}>🔗</div>
-            <Heading as="h3">User-Owned Blockchain</Heading>
-            <p>Every interaction, every memory, every insight—cryptographically secured on <strong>your personal blockchain</strong>. Transferable. Verifiable. Yours.</p>
+            <div className={styles.pillarIcon}>🧩</div>
+            <Heading as="h3">Sovereign Components</Heading>
+            <p>A rich library of local-first, privacy-preserving UI and system components that snap together to create fully autonomous, user-centric AI applications.</p>
           </div>
           <div className={styles.pillarCard}>
-            <div className={styles.pillarIcon}>🌐</div>
-            <Heading as="h3">Distributed & Decentralized</Heading>
-            <p>No central servers. No data silos. Pure P2P architecture with CRDT synchronization. <strong>Your data goes where you go.</strong></p>
+            <div className={styles.pillarIcon}>🛣️</div>
+            <Heading as="h3">Open Data Highway</Heading>
+            <p>A decentralized P2P network powered by LibP2P and CRDTs. Seamlessly synchronize your tokenized knowledge graph across devices without central servers or corporate data brokers.</p>
           </div>
         </div>
       </div>
@@ -89,36 +89,33 @@ function VisionPillars() {
   );
 }
 
-function TheProblem() {
+function EcosystemSection() {
   return (
     <section className={styles.problemSection}>
       <div className="container">
-        <Heading as="h2" className={styles.sectionTitle}>The Current State of AI</Heading>
+        <Heading as="h2" className={styles.sectionTitle}>The "VIVIM Apps" Ecosystem</Heading>
+        <p className={styles.sectionSubtitle} style={{textAlign: 'center', marginBottom: '2rem'}}>A growing suite of modular tools built on the unique VIVIM SDK.</p>
         <div className={styles.problemGrid}>
           <div className={styles.problemCard}>
-            <div className={styles.problemNumber}>01</div>
-            <Heading as="h4">Your Knowledge, Their Servers</Heading>
-            <p>Every prompt you send to ChatGPT, Claude, or Gemini lives on <em>their</em> infrastructure. You're just renting access.</p>
+            <div className={styles.problemNumber}>✨</div>
+            <Heading as="h4">Assistant-UI Toolkit</Heading>
+            <p>Ready-to-use React components natively wired to the VIVIM backend. Build rich, context-aware AI chat interfaces in minutes while retaining strict local-first sovereignty.</p>
           </div>
           <div className={styles.problemCard}>
-            <div className={styles.problemNumber}>02</div>
-            <Heading as="h4">Context Windows Expire</Heading>
-            <p>60K tokens. 200K tokens. It doesn't matter—the window eventually closes. Your knowledge evaporates.</p>
+            <div className={styles.problemNumber}>📥</div>
+            <Heading as="h4">Universal Chat Importer</Heading>
+            <p><em>(Coming Soon)</em> A bulk importing utility that ingests ChatGPT `.zip` exports and automatically tokenizes them into the user's sovereign local-first database, fully wired into the VIVIM architecture.</p>
           </div>
           <div className={styles.problemCard}>
-            <div className={styles.problemNumber}>03</div>
-            <Heading as="h4">No Portability</Heading>
-            <p>You can't export your AI memory. Can't transfer it. Can't sell it. You're locked in forever.</p>
+            <div className={styles.problemNumber}>🤝</div>
+            <Heading as="h4">Social Sharing Primitives</Heading>
+            <p>Decentralized sharing components allowing users to securely broadcast their tokenized AI memories via ActivityPub and Fediverse networks without losing ownership or encryption.</p>
           </div>
           <div className={styles.problemCard}>
-            <div className={styles.problemNumber}>04</div>
-            <Heading as="h4">They Profit, You Don't</Heading>
-            <p>Your interactions train their models. Your knowledge improves their AI. They benefit, you get nothing.</p>
+            <div className={styles.problemNumber}>🛠️</div>
+            <Heading as="h4">The Unique VIVIM SDK</Heading>
+            <p>The foundational layer powering it all. A comprehensive TypeScript SDK for managing MCP connections, distributed storage, and personal blockchain synchronization.</p>
           </div>
-        </div>
-        <div className={styles.solutionCallout}>
-          <Heading as="h3">VIVIM changes this equation.</Heading>
-          <p>We built the infrastructure for <strong>user-owned AI memory</strong>. Your knowledge, monetized on your terms.</p>
         </div>
       </div>
     </section>
@@ -129,33 +126,33 @@ function TechStack() {
   return (
     <section className={styles.techSection}>
       <div className="container">
-        <Heading as="h2" className={styles.sectionTitle}>Built on Sovereign Tech</Heading>
-        <p className={styles.sectionSubtitle}>Every component designed for ownership, privacy, and decentralization</p>
+        <Heading as="h2" className={styles.sectionTitle}>Powered by the VIVIM SDK</Heading>
+        <p className={styles.sectionSubtitle}>Everything you need to build the next generation of AI apps</p>
         
         <div className={styles.techGrid}>
           <div className={styles.techCard}>
             <div className={styles.techIcon}>📱</div>
-            <h4>PWA Frontend</h4>
-            <p>React + TypeScript with offline-first architecture. 250+ features. 92% complete.</p>
-            <Link to="/docs/pwa/overview">Explore →</Link>
+            <h4>Local-First PWA Base</h4>
+            <p>Offline-capable React architectures designed for true data ownership and seamless context injection.</p>
+            <Link to="/docs/pwa/overview">Explore PWA →</Link>
           </div>
           <div className={styles.techCard}>
             <div className={styles.techIcon}>🌐</div>
-            <h4>Network Engine</h4>
-            <p>LibP2P + CRDT + DHT. P2P sync with no central servers. 78% complete.</p>
-            <Link to="/docs/network/overview">Explore →</Link>
+            <h4>P2P Network Engine</h4>
+            <p>Embedded LibP2P nodes allowing direct device-to-device CRDT synchronization.</p>
+            <Link to="/docs/network/overview">Explore Network →</Link>
           </div>
           <div className={styles.techCard}>
             <div className={styles.techIcon}>🔧</div>
-            <h4>Server API</h4>
-            <p>Express + Bun + Prisma. 300+ endpoints. 93% complete.</p>
-            <Link to="/docs/api/overview">Explore →</Link>
+            <h4>Sovereign API</h4>
+            <p>A unified backend service managing extraction, vectorization, and local embeddings.</p>
+            <Link to="/docs/api/overview">Explore API →</Link>
           </div>
           <div className={styles.techCard}>
             <div className={styles.techIcon}>📦</div>
-            <h4>SDK Core</h4>
-            <p>TypeScript SDK for building VIVIM-compatible apps. 83% complete.</p>
-            <Link to="/docs/sdk/overview">Explore →</Link>
+            <h4>Model Context Protocol</h4>
+            <p>Native MCP integration ensuring AI models can securely access your personal knowledge graph.</p>
+            <Link to="/docs/sdk/mcp/overview">Explore MCP →</Link>
           </div>
         </div>
       </div>
@@ -229,7 +226,7 @@ function CTASection() {
       <div className="container">
         <div className={styles.ctaGlow} />
         <Heading as="h2">Own Your AI. Own Your Future.</Heading>
-        <p>Join the movement to reclaim digital sovereignty. Your knowledge is valuable. Keep it that way.</p>
+        <p>Join the movement to reclaim digital sovereignty. Build on the open data highway.</p>
         <div className={styles.buttons}>
           <Link
             className="button button--primary button--lg"
@@ -238,8 +235,8 @@ function CTASection() {
           </Link>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/ATOMIC_FEATURE_INVENTORY">
-            💎 View Features
+            to="/docs/sdk/overview">
+            📦 View the SDK
           </Link>
         </div>
       </div>
@@ -251,11 +248,11 @@ export default function Home() {
   return (
     <Layout
       title="VIVIM - The Sovereign Foundation Layer for AI"
-      description="VIVIM is the first sovereign foundational layer for AI content—building a user-owned knowledge graph distributed on your personal blockchain.">
+      description="VIVIM provides the ultimate SDK and foundational layer to build user-owned AI applications and tokenize chat histories on a personal blockchain.">
       <HeroSection />
       <main>
         <VisionPillars />
-        <TheProblem />
+        <EcosystemSection />
         <TechStack />
         <RoadmapPreview />
         <CTASection />

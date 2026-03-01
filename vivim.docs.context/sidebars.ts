@@ -1,4 +1,6 @@
 import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
+// @ts-ignore
+import apiSidebar from './docs/api/reference/sidebar';
 
 const sidebars: SidebarsConfig = {
   gettingStarted: [
@@ -44,6 +46,50 @@ const sidebars: SidebarsConfig = {
       },
       items: [
         'sdk/architecture/data-flow',
+      ],
+    },
+    {
+      type: 'category',
+      label: '🤖 MCP',
+      link: {
+        type: 'doc',
+        id: 'sdk/mcp/overview',
+      },
+      items: [
+        'sdk/mcp/overview',
+      ],
+    },
+    {
+      type: 'category',
+      label: '🛡️ Protocols',
+      link: {
+        type: 'doc',
+        id: 'sdk/protocols/overview',
+      },
+      items: [
+        'sdk/protocols/overview',
+      ],
+    },
+    {
+      type: 'category',
+      label: '⚙️ Services',
+      link: {
+        type: 'doc',
+        id: 'sdk/services/overview',
+      },
+      items: [
+        'sdk/services/overview',
+      ],
+    },
+    {
+      type: 'category',
+      label: '💎 Tokens',
+      link: {
+        type: 'doc',
+        id: 'sdk/tokens/overview',
+      },
+      items: [
+        'sdk/tokens/overview',
       ],
     },
     {
@@ -225,7 +271,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'doc',
       id: 'user/context-components',
-      label: 'Context Components (ACUs)',
+      label: 'Atomic Chat Units (ACUs)',
     },
     {
       type: 'doc',
@@ -265,7 +311,12 @@ const sidebars: SidebarsConfig = {
     {
       type: 'doc',
       id: 'api/overview',
-      label: 'REST API',
+      label: 'REST API Overview',
+    },
+    {
+      type: 'category',
+      label: 'Reference',
+      items: apiSidebar,
     },
   ],
   
@@ -290,6 +341,21 @@ const sidebars: SidebarsConfig = {
       id: 'pwa/content-renderer',
       label: 'Content Renderer',
     },
+    {
+      type: 'doc',
+      id: 'pwa/api',
+      label: 'PWA API',
+    },
+    {
+      type: 'doc',
+      id: 'pwa/components',
+      label: 'UI Components',
+    },
+    {
+      type: 'doc',
+      id: 'pwa/state',
+      label: 'State Management',
+    },
   ],
   
   network: [
@@ -302,6 +368,21 @@ const sidebars: SidebarsConfig = {
       type: 'doc',
       id: 'network/security',
       label: 'Security',
+    },
+    {
+      type: 'doc',
+      id: 'network/protocols',
+      label: 'Protocols',
+    },
+    {
+      type: 'doc',
+      id: 'network/federation',
+      label: 'Federation',
+    },
+    {
+      type: 'doc',
+      id: 'network/crdt',
+      label: 'CRDT Sync',
     },
   ],
   
