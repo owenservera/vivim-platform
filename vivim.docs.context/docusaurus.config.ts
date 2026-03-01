@@ -8,7 +8,7 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
   url: 'https://vivim.live',
-  baseUrl: '/docs',
+  baseUrl: '/docs/',
 
   organizationName: 'vivim',
   projectName: 'vivim-live',
