@@ -44,13 +44,13 @@ function HeroSection() {
           <div className={styles.buttons}>
             <Link
               className="button button--primary button--lg"
-              to="/docs/sdk/overview"
+              to="/sdk/overview"
               style={{marginRight: '1rem'}}>
               📦 Explore the SDK
             </Link>
             <Link
               className="button button--secondary button--lg"
-              to="/docs/getting-started/introduction">
+              to="/getting-started/introduction">
               📖 Read the Docs
             </Link>
           </div>
@@ -134,25 +134,25 @@ function TechStack() {
             <div className={styles.techIcon}>📱</div>
             <h4>Local-First PWA Base</h4>
             <p>Offline-capable React architectures designed for true data ownership and seamless context injection.</p>
-            <Link to="/docs/pwa/overview">Explore PWA →</Link>
+            <Link to="/pwa/overview">Explore PWA →</Link>
           </div>
           <div className={styles.techCard}>
             <div className={styles.techIcon}>🌐</div>
             <h4>P2P Network Engine</h4>
             <p>Embedded LibP2P nodes allowing direct device-to-device CRDT synchronization.</p>
-            <Link to="/docs/network/overview">Explore Network →</Link>
+            <Link to="/network/overview">Explore Network →</Link>
           </div>
           <div className={styles.techCard}>
             <div className={styles.techIcon}>🔧</div>
             <h4>Sovereign API</h4>
             <p>A unified backend service managing extraction, vectorization, and local embeddings.</p>
-            <Link to="/docs/api/overview">Explore API →</Link>
+            <Link to="/api/overview">Explore API →</Link>
           </div>
           <div className={styles.techCard}>
             <div className={styles.techIcon}>📦</div>
             <h4>Model Context Protocol</h4>
             <p>Native MCP integration ensuring AI models can securely access your personal knowledge graph.</p>
-            <Link to="/docs/sdk/mcp/overview">Explore MCP →</Link>
+            <Link to="/sdk/mcp/overview">Explore MCP →</Link>
           </div>
         </div>
       </div>
@@ -211,7 +211,7 @@ function RoadmapPreview() {
         </div>
         
         <div className={styles.roadmapCTA}>
-          <Link to="/docs/ROADMAP/FEATURE_ROADMAP" className="button button--primary button--lg">
+          <Link to="/ROADMAP/FEATURE_ROADMAP" className="button button--primary button--lg">
             📋 Full Roadmap
           </Link>
         </div>
@@ -230,12 +230,12 @@ function CTASection() {
         <div className={styles.buttons}>
           <Link
             className="button button--primary button--lg"
-            to="/docs/getting-started/introduction">
+            to="/getting-started/introduction">
             🚀 Start Building
           </Link>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/sdk/overview">
+            to="/sdk/overview">
             📦 View the SDK
           </Link>
         </div>

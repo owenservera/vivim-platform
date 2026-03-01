@@ -7,4 +7,4 @@ description: Cross-instance Communication
 
 Federation protocol documentation coming soon.
 
-For user-facing documentation, see the [User Guide](/docs/user/getting-started).
+For user-facing documentation, see the [User Guide](/user/getting-started).

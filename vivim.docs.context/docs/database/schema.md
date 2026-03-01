@@ -410,6 +410,6 @@ erDiagram
 
 ## Next Steps
 
-- [API Routes](/docs/api/overview) - How to interact with the database
-- [Context Engine](/docs/architecture/context) - Using ACUs in context
-- [Social Features](/docs/social/overview) - Circles and sharing
+- [API Routes](/api/overview) - How to interact with the database
+- [Context Engine](/architecture/context) - Using ACUs in context
+- [Social Features](/social/overview) - Circles and sharing

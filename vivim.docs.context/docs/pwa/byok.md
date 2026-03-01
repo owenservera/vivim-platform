@@ -299,6 +299,6 @@ console.log(displayKey); // "sk-pr••••••••f456"
 
 ## Related Documentation
 
-- [Security Overview](/docs/security/overview) - Authentication and encryption
-- [PWA Architecture](/docs/pwa/overview) - Frontend architecture
-- [API Overview](/docs/api/overview) - REST API endpoints
+- [Security Overview](/security/overview) - Authentication and encryption
+- [PWA Architecture](/pwa/overview) - Frontend architecture
+- [API Overview](/api/overview) - REST API endpoints

@@ -404,6 +404,6 @@ graph TD
 
 ## Related Documentation
 
-- [Network Overview](/docs/network/overview) - P2P networking
-- [Sync Architecture](/docs/architecture/sync) - Secure sync
-- [Security Overview](/docs/security/overview) - Authentication
+- [Network Overview](/network/overview) - P2P networking
+- [Sync Architecture](/architecture/sync) - Secure sync
+- [Security Overview](/security/overview) - Authentication

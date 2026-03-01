@@ -340,16 +340,16 @@ interface ContextTelemetry {
 
 ## Next Steps
 
-- [Context Pipeline Details](/docs/architecture/pipeline) - Deep dive into parallel processing
-- [Database Schema](/docs/database/schema) - ACU and memory models
+- [Context Pipeline Details](/architecture/pipeline) - Deep dive into parallel processing
+- [Database Schema](/database/schema) - ACU and memory models
 
 ---
 
 ## Next Steps
 
-- [Context Pipeline Details](/docs/architecture/pipeline) - Deep dive into parallel processing
-- [Database Schema](/docs/database/schema) - ACU and memory models
+- [Context Pipeline Details](/architecture/pipeline) - Deep dive into parallel processing
+- [Database Schema](/database/schema) - ACU and memory models
 
-- [Context Pipeline Details](/docs/architecture/pipeline) - Deep dive into parallel processing
-- [Memory System](/docs/architecture/memory) - User memory management
-- [Database Schema](/docs/database/schema) - ACU and memory models
+- [Context Pipeline Details](/architecture/pipeline) - Deep dive into parallel processing
+- [Memory System](/architecture/memory) - User memory management
+- [Database Schema](/database/schema) - ACU and memory models

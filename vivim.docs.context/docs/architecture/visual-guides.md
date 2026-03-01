@@ -295,8 +295,8 @@ flowchart LR
 
 | Guide | Description |
 |-------|-------------|
-| [Architecture Overview](/docs/architecture/overview) | Full system architecture |
-| [Context Engine](/docs/architecture/context) | Deep dive into context pipeline |
-| [Network Overview](/docs/network/overview) | P2P networking details |
-| [Database Schema](/docs/database/schema) | Data models |
-| [Sync Architecture](/docs/architecture/sync) | Synchronization details |
+| [Architecture Overview](/architecture/overview) | Full system architecture |
+| [Context Engine](/architecture/context) | Deep dive into context pipeline |
+| [Network Overview](/network/overview) | P2P networking details |
+| [Database Schema](/database/schema) | Data models |
+| [Sync Architecture](/architecture/sync) | Synchronization details |

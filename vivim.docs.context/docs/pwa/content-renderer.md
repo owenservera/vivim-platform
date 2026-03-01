@@ -508,6 +508,6 @@ registry.setFallbackRenderer(FallbackRenderer);
 
 ## Related Documentation
 
-- [Context Engine](/docs/architecture/context) - How content is processed
-- [PWA Architecture](/docs/pwa/overview) - Frontend rendering
-- [Storage V2](/docs/pwa/storage-v2) - Content storage
+- [Context Engine](/architecture/context) - How content is processed
+- [PWA Architecture](/pwa/overview) - Frontend rendering
+- [Storage V2](/pwa/storage-v2) - Content storage

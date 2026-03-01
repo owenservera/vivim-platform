@@ -26,7 +26,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          routeBasePath: 'docs',
+          routeBasePath: '/',
           docItemComponent: "@theme/ApiItem", // Derived from docusaurus-theme-openapi-docs
         },
         blog: false,
@@ -57,12 +57,12 @@ const config: Config = {
           {
             tagName: 'link',
             rel: 'icon',
-            href: '/docs/img/favicon.ico',
+            href: '/img/favicon.ico',
           },
           {
             tagName: 'link',
             rel: 'apple-touch-icon',
-            href: '/docs/img/logo.svg',
+            href: '/img/logo.svg',
           },
           {
             tagName: 'meta',
@@ -175,15 +175,15 @@ const config: Config = {
           items: [
             {
               label: 'Getting Started',
-              to: '/docs/getting-started/introduction',
+              to: '/getting-started/introduction',
             },
             {
               label: 'Architecture',
-              to: '/docs/architecture/overview',
+              to: '/architecture/overview',
             },
             {
               label: 'API Reference',
-              to: '/docs/api/overview',
+              to: '/api/overview',
             },
           ],
         },
@@ -192,19 +192,19 @@ const config: Config = {
           items: [
             {
               label: 'Context Pipeline',
-              to: '/docs/architecture/pipeline',
+              to: '/architecture/pipeline',
             },
             {
               label: 'Storage V2',
-              to: '/docs/pwa/storage-v2',
+              to: '/pwa/storage-v2',
             },
             {
               label: 'BYOK',
-              to: '/docs/pwa/byok',
+              to: '/pwa/byok',
             },
             {
               label: 'Network Security',
-              to: '/docs/network/security',
+              to: '/network/security',
             },
           ],
         },

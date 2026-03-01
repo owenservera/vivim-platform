@@ -116,5 +116,5 @@ For most users:
 
 ## Related
 
-- [Context Recipes](/docs/user/context-recipes) - Customize settings
-- [Context Components](/docs/user/context-components) - Browse ACUs
+- [Context Recipes](/user/context-recipes) - Customize settings
+- [Context Components](/user/context-components) - Browse ACUs

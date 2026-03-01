@@ -98,4 +98,4 @@ When using AI Chat:
 - Context from your library is included
 - VIVIM doesn't store conversations (unless you capture them)
 
-See [Security & Privacy](/docs/security/overview) for details.
+See [Security & Privacy](/security/overview) for details.

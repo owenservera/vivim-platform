@@ -7,4 +7,4 @@ description: PWA State Management
 
 This section documents the state management patterns in the VIVIM PWA.
 
-For user-facing documentation, see the [User Guide](/docs/user/getting-started).
+For user-facing documentation, see the [User Guide](/user/getting-started).

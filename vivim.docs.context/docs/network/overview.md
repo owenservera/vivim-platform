@@ -461,16 +461,16 @@ stateDiagram-v2
 
 ## Next Steps
 
-- [Security Overview](/docs/network/security) - Network security details
+- [Security Overview](/network/security) - Network security details
 
 ---
 
 ## Next Steps
 
-- [Security Overview](/docs/network/security) - Network security details
+- [Security Overview](/network/security) - Network security details
 
-- [Security Overview](/docs/network/security) - Network security details
+- [Security Overview](/network/security) - Network security details
 
-- [P2P Protocols](/docs/network/protocols) - Detailed protocol documentation
-- [CRDT Implementation](/docs/network/crdt) - Conflict resolution strategies
-- [Federation Protocol](/docs/network/federation) - Cross-instance communication
+- [P2P Protocols](/network/protocols) - Detailed protocol documentation
+- [CRDT Implementation](/network/crdt) - Conflict resolution strategies
+- [Federation Protocol](/network/federation) - Cross-instance communication
