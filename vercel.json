@@ -1,12 +1,12 @@
 {
   "framework": "docusaurus",
-  "buildCommand": "cd docs && bun run build",
-  "outputDirectory": "docs/build",
-  "installCommand": "cd docs && bun install",
+  "buildCommand": "cd vivim.docs.context && bun run build",
+  "outputDirectory": "vivim.docs.context/build",
+  "installCommand": "cd vivim.docs.context && bun install",
   "rewrites": [
     {
       "source": "/docs/(.*)",
-      "destination": "/docs/$1"
+      "destination": "/$1"
     }
   ],
   "headers": [
