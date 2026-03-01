@@ -8,7 +8,7 @@ import {
   Plus, Bot, RefreshCw, WifiOff, Database, AlertCircle, CloudOff,
   Search, Grid2x2, List, Pin, Archive, MessageSquare, LayoutList,
   BookOpen, Sparkles, X, SlidersHorizontal, Clock, BarChart2,
-  FileCode, ImageIcon, ChevronDown, ChevronUp
+  FileCode, ImageIcon, ChevronDown, ChevronUp, GitBranch
 } from 'lucide-react';
 import { conversationService } from '../lib/service/conversation-service';
 import { unifiedRepository } from '../lib/db/unified-repository';
@@ -41,9 +41,12 @@ import type { AIResult, AIAction } from '../types/features';
 import './Home.css';
 
 import { useHomeUIStore } from '../stores/useHomeUIStore';
+import { TrustSeal } from '../components/sovereignty/TrustSeal';
+import { Sentinel } from '../components/sovereignty/Sentinel';
+import { KnowledgeGraph } from '../components/sovereignty/KnowledgeGraph';
 
 type FilterTab = 'all' | 'pinned' | 'archived' | 'recent';
-type ViewMode = 'list' | 'grid';
+type ViewMode = 'list' | 'grid' | 'graph';
 type SortBy = 'date' | 'messages' | 'title';
 
 /* ─────────────────────────────────────────────────
@@ -223,7 +226,7 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
         <div className={`conv-card-accent ${prov}`} />
 
         <div className="conv-card-body">
-          {/* Top row: provider chip + time + new badge */}
+          {/* Top row: provider chip + time + new badge + trust seal */}
           <div className="flex items-center gap-2 mb-2">
             <span className={`conv-provider-chip ${providerColor[prov] || providerColor.default}`}>
               {providerEmoji[prov] || '💬'} {prov}
@@ -231,6 +234,10 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
             {isNewConvo && (
               <span className="conv-new-badge">✦ New</span>
             )}
+            <TrustSeal 
+              status={convo.metadata?.tampered ? 'tampered' : (convo.id ? 'verified' : 'unverified')} 
+              className="ml-1"
+            />
             <span className="ml-auto text-[11px] text-gray-400 dark:text-gray-600 flex-shrink-0">
               {formatDate(convo.createdAt)}
             </span>
@@ -273,6 +280,12 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
               <span className="conv-mini-stat">
                 <FileCode className="w-[11px] h-[11px]" />
                 {codeBlocks}
+              </span>
+            )}
+            {convo.metadata?.forkCount && (
+              <span className="conv-mini-stat text-indigo-500">
+                <GitBranch className="w-[11px] h-[11px]" />
+                {convo.metadata.forkCount}
               </span>
             )}
           </div>
@@ -878,18 +891,24 @@ export const Home: React.FC = () => {
       {/* ── Sticky Header (Search + View Toggle + Filters) ── */}
       {conversations.length > 0 && (
         <div className="sticky top-0 z-50 bg-[#f8f9fb]/85 dark:bg-[#0a0a0f]/85 backdrop-blur-md pb-1 border-b border-gray-200 dark:border-gray-800 transition-colors">
-          <div className="home-search-row">
-          <div className="home-search-input-wrap">
-            <Search className="search-icon" />
-            <input
-              type="search"
-              placeholder="Search conversations…"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="home-search-input"
-              id="home-search-input"
-            />
+          <div className="flex items-center justify-between px-4 pt-2 mb-1">
+             <Sentinel 
+               storageLocation={apiSource === 'api' ? 'ipfs' : 'local'} 
+               syncStatus={navigator.onLine ? 'connected' : 'offline'} 
+             />
           </div>
+          <div className="home-search-row">
+            <div className="home-search-input-wrap">
+              <Search className="search-icon" />
+              <input
+                type="search"
+                placeholder="Search conversations…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="home-search-input"
+                id="home-search-input"
+              />
+            </div>
 
           {/* Sort button */}
           <div className="relative">
@@ -923,6 +942,13 @@ export const Home: React.FC = () => {
               title="Grid view"
             >
               <Grid2x2 className="w-4 h-4" />
+            </button>
+            <button
+              className={`home-view-toggle-btn ${viewMode === 'graph' ? 'active' : ''}`}
+              onClick={() => setViewMode('graph')}
+              title="Graph view"
+            >
+              <Sparkles className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -1031,6 +1057,18 @@ export const Home: React.FC = () => {
               Clear filters
             </button>
           </div>
+        ) : viewMode === 'graph' ? (
+          /* ── Graph View ── */
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="px-4 pt-4"
+          >
+            <KnowledgeGraph 
+              conversations={filteredConversations} 
+              onNodeClick={(id) => navigate(`/ai/conversation/${id}`)} 
+            />
+          </motion.div>
         ) : (
           /* ── Feed ── */
           <>

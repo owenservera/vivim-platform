@@ -1,0 +1,621 @@
+{
+  "documentId": "sdk-network-graph-registry",
+  "title": "sdk-network-graph-registry",
+  "tree": {
+    "title": "sdk-network-graph-registry",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 22,
+    "summary": "Documentation for sdk-network-graph-registry",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "Graph & Registry",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about Graph & Registry",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Network Graph",
+        "node_id": "001",
+        "start_index": 1,
+        "end_index": 2,
+        "summary": "Section about Network Graph",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Architecture",
+        "node_id": "002",
+        "start_index": 2,
+        "end_index": 3,
+        "summary": "Section about Architecture",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Graph Structure",
+        "node_id": "003",
+        "start_index": 3,
+        "end_index": 4,
+        "summary": "Section about Graph Structure",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Node Operations",
+        "node_id": "004",
+        "start_index": 4,
+        "end_index": 5,
+        "summary": "Section about Node Operations",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Edge Operations",
+        "node_id": "005",
+        "start_index": 5,
+        "end_index": 6,
+        "summary": "Section about Edge Operations",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Capability Discovery",
+        "node_id": "006",
+        "start_index": 6,
+        "end_index": 7,
+        "summary": "Section about Capability Discovery",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Graph Events",
+        "node_id": "007",
+        "start_index": 7,
+        "end_index": 8,
+        "summary": "Section about Graph Events",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Graph Serialization",
+        "node_id": "008",
+        "start_index": 8,
+        "end_index": 9,
+        "summary": "Section about Graph Serialization",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Node Registry",
+        "node_id": "009",
+        "start_index": 9,
+        "end_index": 10,
+        "summary": "Section about Node Registry",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Architecture",
+        "node_id": "010",
+        "start_index": 10,
+        "end_index": 11,
+        "summary": "Section about Architecture",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Registry Interface",
+        "node_id": "011",
+        "start_index": 11,
+        "end_index": 12,
+        "summary": "Section about Registry Interface",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Local Discovery",
+        "node_id": "012",
+        "start_index": 12,
+        "end_index": 13,
+        "summary": "Section about Local Discovery",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Remote Discovery",
+        "node_id": "013",
+        "start_index": 13,
+        "end_index": 14,
+        "summary": "Section about Remote Discovery",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Publishing Nodes",
+        "node_id": "014",
+        "start_index": 14,
+        "end_index": 15,
+        "summary": "Section about Publishing Nodes",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Installing Nodes",
+        "node_id": "015",
+        "start_index": 15,
+        "end_index": 16,
+        "summary": "Section about Installing Nodes",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Verification",
+        "node_id": "016",
+        "start_index": 16,
+        "end_index": 17,
+        "summary": "Section about Verification",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Trusted Publishers",
+        "node_id": "017",
+        "start_index": 17,
+        "end_index": 18,
+        "summary": "Section about Trusted Publishers",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Node Packages",
+        "node_id": "018",
+        "start_index": 18,
+        "end_index": 19,
+        "summary": "Section about Node Packages",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Complete Example",
+        "node_id": "019",
+        "start_index": 19,
+        "end_index": 20,
+        "summary": "Section about Complete Example",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Related",
+        "node_id": "020",
+        "start_index": 20,
+        "end_index": 21,
+        "summary": "Section about Related",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Links",
+        "node_id": "021",
+        "start_index": 21,
+        "end_index": 22,
+        "summary": "Section about Links",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "sdk-network-graph-registry",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 22,
+      "summary": "Documentation for sdk-network-graph-registry",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "Graph & Registry",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about Graph & Registry",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Network Graph",
+          "node_id": "001",
+          "start_index": 1,
+          "end_index": 2,
+          "summary": "Section about Network Graph",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Architecture",
+          "node_id": "002",
+          "start_index": 2,
+          "end_index": 3,
+          "summary": "Section about Architecture",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Graph Structure",
+          "node_id": "003",
+          "start_index": 3,
+          "end_index": 4,
+          "summary": "Section about Graph Structure",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Node Operations",
+          "node_id": "004",
+          "start_index": 4,
+          "end_index": 5,
+          "summary": "Section about Node Operations",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Edge Operations",
+          "node_id": "005",
+          "start_index": 5,
+          "end_index": 6,
+          "summary": "Section about Edge Operations",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Capability Discovery",
+          "node_id": "006",
+          "start_index": 6,
+          "end_index": 7,
+          "summary": "Section about Capability Discovery",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Graph Events",
+          "node_id": "007",
+          "start_index": 7,
+          "end_index": 8,
+          "summary": "Section about Graph Events",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Graph Serialization",
+          "node_id": "008",
+          "start_index": 8,
+          "end_index": 9,
+          "summary": "Section about Graph Serialization",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Node Registry",
+          "node_id": "009",
+          "start_index": 9,
+          "end_index": 10,
+          "summary": "Section about Node Registry",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Architecture",
+          "node_id": "010",
+          "start_index": 10,
+          "end_index": 11,
+          "summary": "Section about Architecture",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Registry Interface",
+          "node_id": "011",
+          "start_index": 11,
+          "end_index": 12,
+          "summary": "Section about Registry Interface",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Local Discovery",
+          "node_id": "012",
+          "start_index": 12,
+          "end_index": 13,
+          "summary": "Section about Local Discovery",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Remote Discovery",
+          "node_id": "013",
+          "start_index": 13,
+          "end_index": 14,
+          "summary": "Section about Remote Discovery",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Publishing Nodes",
+          "node_id": "014",
+          "start_index": 14,
+          "end_index": 15,
+          "summary": "Section about Publishing Nodes",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Installing Nodes",
+          "node_id": "015",
+          "start_index": 15,
+          "end_index": 16,
+          "summary": "Section about Installing Nodes",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Verification",
+          "node_id": "016",
+          "start_index": 16,
+          "end_index": 17,
+          "summary": "Section about Verification",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Trusted Publishers",
+          "node_id": "017",
+          "start_index": 17,
+          "end_index": 18,
+          "summary": "Section about Trusted Publishers",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Node Packages",
+          "node_id": "018",
+          "start_index": 18,
+          "end_index": 19,
+          "summary": "Section about Node Packages",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Complete Example",
+          "node_id": "019",
+          "start_index": 19,
+          "end_index": 20,
+          "summary": "Section about Complete Example",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Related",
+          "node_id": "020",
+          "start_index": 20,
+          "end_index": 21,
+          "summary": "Section about Related",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Links",
+          "node_id": "021",
+          "start_index": 21,
+          "end_index": 22,
+          "summary": "Section about Links",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "Graph & Registry",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about Graph & Registry",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Network Graph",
+      "node_id": "001",
+      "start_index": 1,
+      "end_index": 2,
+      "summary": "Section about Network Graph",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Architecture",
+      "node_id": "002",
+      "start_index": 2,
+      "end_index": 3,
+      "summary": "Section about Architecture",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Graph Structure",
+      "node_id": "003",
+      "start_index": 3,
+      "end_index": 4,
+      "summary": "Section about Graph Structure",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Node Operations",
+      "node_id": "004",
+      "start_index": 4,
+      "end_index": 5,
+      "summary": "Section about Node Operations",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Edge Operations",
+      "node_id": "005",
+      "start_index": 5,
+      "end_index": 6,
+      "summary": "Section about Edge Operations",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Capability Discovery",
+      "node_id": "006",
+      "start_index": 6,
+      "end_index": 7,
+      "summary": "Section about Capability Discovery",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Graph Events",
+      "node_id": "007",
+      "start_index": 7,
+      "end_index": 8,
+      "summary": "Section about Graph Events",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Graph Serialization",
+      "node_id": "008",
+      "start_index": 8,
+      "end_index": 9,
+      "summary": "Section about Graph Serialization",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Node Registry",
+      "node_id": "009",
+      "start_index": 9,
+      "end_index": 10,
+      "summary": "Section about Node Registry",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Architecture",
+      "node_id": "010",
+      "start_index": 10,
+      "end_index": 11,
+      "summary": "Section about Architecture",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Registry Interface",
+      "node_id": "011",
+      "start_index": 11,
+      "end_index": 12,
+      "summary": "Section about Registry Interface",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Local Discovery",
+      "node_id": "012",
+      "start_index": 12,
+      "end_index": 13,
+      "summary": "Section about Local Discovery",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Remote Discovery",
+      "node_id": "013",
+      "start_index": 13,
+      "end_index": 14,
+      "summary": "Section about Remote Discovery",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Publishing Nodes",
+      "node_id": "014",
+      "start_index": 14,
+      "end_index": 15,
+      "summary": "Section about Publishing Nodes",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Installing Nodes",
+      "node_id": "015",
+      "start_index": 15,
+      "end_index": 16,
+      "summary": "Section about Installing Nodes",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Verification",
+      "node_id": "016",
+      "start_index": 16,
+      "end_index": 17,
+      "summary": "Section about Verification",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Trusted Publishers",
+      "node_id": "017",
+      "start_index": 17,
+      "end_index": 18,
+      "summary": "Section about Trusted Publishers",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Node Packages",
+      "node_id": "018",
+      "start_index": 18,
+      "end_index": 19,
+      "summary": "Section about Node Packages",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Complete Example",
+      "node_id": "019",
+      "start_index": 19,
+      "end_index": 20,
+      "summary": "Section about Complete Example",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Related",
+      "node_id": "020",
+      "start_index": 20,
+      "end_index": 21,
+      "summary": "Section about Related",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Links",
+      "node_id": "021",
+      "start_index": 21,
+      "end_index": 22,
+      "summary": "Section about Links",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:52:56.790Z"
+}

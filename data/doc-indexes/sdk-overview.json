@@ -1,0 +1,648 @@
+{
+  "documentId": "sdk-overview",
+  "title": "sdk-overview",
+  "tree": {
+    "title": "sdk-overview",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 23,
+    "summary": "Documentation for sdk-overview",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "VIVIM SDK Overview",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about VIVIM SDK Overview",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "📦 Package Information",
+        "node_id": "001",
+        "start_index": 1,
+        "end_index": 2,
+        "summary": "Section about 📦 Package Information",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "✨ Key Features",
+        "node_id": "002",
+        "start_index": 2,
+        "end_index": 3,
+        "summary": "Section about ✨ Key Features",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "🏗 Architecture Overview",
+        "node_id": "003",
+        "start_index": 3,
+        "end_index": 4,
+        "summary": "Section about 🏗 Architecture Overview",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "📚 Documentation Structure",
+        "node_id": "004",
+        "start_index": 4,
+        "end_index": 5,
+        "summary": "Section about 📚 Documentation Structure",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Core SDK",
+        "node_id": "005",
+        "start_index": 5,
+        "end_index": 6,
+        "summary": "Section about Core SDK",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "API Nodes",
+        "node_id": "006",
+        "start_index": 6,
+        "end_index": 7,
+        "summary": "Section about API Nodes",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Network",
+        "node_id": "007",
+        "start_index": 7,
+        "end_index": 8,
+        "summary": "Section about Network",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "🚀 Quick Start",
+        "node_id": "008",
+        "start_index": 8,
+        "end_index": 9,
+        "summary": "Section about 🚀 Quick Start",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Installation",
+        "node_id": "009",
+        "start_index": 9,
+        "end_index": 10,
+        "summary": "Section about Installation",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Using Bun (recommended)",
+        "node_id": "010",
+        "start_index": 10,
+        "end_index": 11,
+        "summary": "Section about Using Bun (recommended)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Using npm",
+        "node_id": "011",
+        "start_index": 11,
+        "end_index": 12,
+        "summary": "Section about Using npm",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Using yarn",
+        "node_id": "012",
+        "start_index": 12,
+        "end_index": 13,
+        "summary": "Section about Using yarn",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Basic Usage",
+        "node_id": "013",
+        "start_index": 13,
+        "end_index": 14,
+        "summary": "Section about Basic Usage",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "🔧 Core Modules",
+        "node_id": "014",
+        "start_index": 14,
+        "end_index": 15,
+        "summary": "Section about 🔧 Core Modules",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "VivimSDK Class",
+        "node_id": "015",
+        "start_index": 15,
+        "end_index": 16,
+        "summary": "Section about VivimSDK Class",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "RecordKeeper",
+        "node_id": "016",
+        "start_index": 16,
+        "end_index": 17,
+        "summary": "Section about RecordKeeper",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Anchor Protocol",
+        "node_id": "017",
+        "start_index": 17,
+        "end_index": 18,
+        "summary": "Section about Anchor Protocol",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Self-Design Module",
+        "node_id": "018",
+        "start_index": 18,
+        "end_index": 19,
+        "summary": "Section about Self-Design Module",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Assistant Runtime",
+        "node_id": "019",
+        "start_index": 19,
+        "end_index": 20,
+        "summary": "Section about Assistant Runtime",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "📊 SDK Events",
+        "node_id": "020",
+        "start_index": 20,
+        "end_index": 21,
+        "summary": "Section about 📊 SDK Events",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "🔗 GitHub Repositories",
+        "node_id": "021",
+        "start_index": 21,
+        "end_index": 22,
+        "summary": "Section about 🔗 GitHub Repositories",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "📄 License",
+        "node_id": "022",
+        "start_index": 22,
+        "end_index": 23,
+        "summary": "Section about 📄 License",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "sdk-overview",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 23,
+      "summary": "Documentation for sdk-overview",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "VIVIM SDK Overview",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about VIVIM SDK Overview",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "📦 Package Information",
+          "node_id": "001",
+          "start_index": 1,
+          "end_index": 2,
+          "summary": "Section about 📦 Package Information",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "✨ Key Features",
+          "node_id": "002",
+          "start_index": 2,
+          "end_index": 3,
+          "summary": "Section about ✨ Key Features",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "🏗 Architecture Overview",
+          "node_id": "003",
+          "start_index": 3,
+          "end_index": 4,
+          "summary": "Section about 🏗 Architecture Overview",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "📚 Documentation Structure",
+          "node_id": "004",
+          "start_index": 4,
+          "end_index": 5,
+          "summary": "Section about 📚 Documentation Structure",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Core SDK",
+          "node_id": "005",
+          "start_index": 5,
+          "end_index": 6,
+          "summary": "Section about Core SDK",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "API Nodes",
+          "node_id": "006",
+          "start_index": 6,
+          "end_index": 7,
+          "summary": "Section about API Nodes",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Network",
+          "node_id": "007",
+          "start_index": 7,
+          "end_index": 8,
+          "summary": "Section about Network",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "🚀 Quick Start",
+          "node_id": "008",
+          "start_index": 8,
+          "end_index": 9,
+          "summary": "Section about 🚀 Quick Start",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Installation",
+          "node_id": "009",
+          "start_index": 9,
+          "end_index": 10,
+          "summary": "Section about Installation",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Using Bun (recommended)",
+          "node_id": "010",
+          "start_index": 10,
+          "end_index": 11,
+          "summary": "Section about Using Bun (recommended)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Using npm",
+          "node_id": "011",
+          "start_index": 11,
+          "end_index": 12,
+          "summary": "Section about Using npm",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Using yarn",
+          "node_id": "012",
+          "start_index": 12,
+          "end_index": 13,
+          "summary": "Section about Using yarn",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Basic Usage",
+          "node_id": "013",
+          "start_index": 13,
+          "end_index": 14,
+          "summary": "Section about Basic Usage",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "🔧 Core Modules",
+          "node_id": "014",
+          "start_index": 14,
+          "end_index": 15,
+          "summary": "Section about 🔧 Core Modules",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "VivimSDK Class",
+          "node_id": "015",
+          "start_index": 15,
+          "end_index": 16,
+          "summary": "Section about VivimSDK Class",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "RecordKeeper",
+          "node_id": "016",
+          "start_index": 16,
+          "end_index": 17,
+          "summary": "Section about RecordKeeper",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Anchor Protocol",
+          "node_id": "017",
+          "start_index": 17,
+          "end_index": 18,
+          "summary": "Section about Anchor Protocol",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Self-Design Module",
+          "node_id": "018",
+          "start_index": 18,
+          "end_index": 19,
+          "summary": "Section about Self-Design Module",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Assistant Runtime",
+          "node_id": "019",
+          "start_index": 19,
+          "end_index": 20,
+          "summary": "Section about Assistant Runtime",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "📊 SDK Events",
+          "node_id": "020",
+          "start_index": 20,
+          "end_index": 21,
+          "summary": "Section about 📊 SDK Events",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "🔗 GitHub Repositories",
+          "node_id": "021",
+          "start_index": 21,
+          "end_index": 22,
+          "summary": "Section about 🔗 GitHub Repositories",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "📄 License",
+          "node_id": "022",
+          "start_index": 22,
+          "end_index": 23,
+          "summary": "Section about 📄 License",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "VIVIM SDK Overview",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about VIVIM SDK Overview",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "📦 Package Information",
+      "node_id": "001",
+      "start_index": 1,
+      "end_index": 2,
+      "summary": "Section about 📦 Package Information",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "✨ Key Features",
+      "node_id": "002",
+      "start_index": 2,
+      "end_index": 3,
+      "summary": "Section about ✨ Key Features",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "🏗 Architecture Overview",
+      "node_id": "003",
+      "start_index": 3,
+      "end_index": 4,
+      "summary": "Section about 🏗 Architecture Overview",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "📚 Documentation Structure",
+      "node_id": "004",
+      "start_index": 4,
+      "end_index": 5,
+      "summary": "Section about 📚 Documentation Structure",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Core SDK",
+      "node_id": "005",
+      "start_index": 5,
+      "end_index": 6,
+      "summary": "Section about Core SDK",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "API Nodes",
+      "node_id": "006",
+      "start_index": 6,
+      "end_index": 7,
+      "summary": "Section about API Nodes",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Network",
+      "node_id": "007",
+      "start_index": 7,
+      "end_index": 8,
+      "summary": "Section about Network",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "🚀 Quick Start",
+      "node_id": "008",
+      "start_index": 8,
+      "end_index": 9,
+      "summary": "Section about 🚀 Quick Start",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Installation",
+      "node_id": "009",
+      "start_index": 9,
+      "end_index": 10,
+      "summary": "Section about Installation",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Using Bun (recommended)",
+      "node_id": "010",
+      "start_index": 10,
+      "end_index": 11,
+      "summary": "Section about Using Bun (recommended)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Using npm",
+      "node_id": "011",
+      "start_index": 11,
+      "end_index": 12,
+      "summary": "Section about Using npm",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Using yarn",
+      "node_id": "012",
+      "start_index": 12,
+      "end_index": 13,
+      "summary": "Section about Using yarn",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Basic Usage",
+      "node_id": "013",
+      "start_index": 13,
+      "end_index": 14,
+      "summary": "Section about Basic Usage",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "🔧 Core Modules",
+      "node_id": "014",
+      "start_index": 14,
+      "end_index": 15,
+      "summary": "Section about 🔧 Core Modules",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "VivimSDK Class",
+      "node_id": "015",
+      "start_index": 15,
+      "end_index": 16,
+      "summary": "Section about VivimSDK Class",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "RecordKeeper",
+      "node_id": "016",
+      "start_index": 16,
+      "end_index": 17,
+      "summary": "Section about RecordKeeper",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Anchor Protocol",
+      "node_id": "017",
+      "start_index": 17,
+      "end_index": 18,
+      "summary": "Section about Anchor Protocol",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Self-Design Module",
+      "node_id": "018",
+      "start_index": 18,
+      "end_index": 19,
+      "summary": "Section about Self-Design Module",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Assistant Runtime",
+      "node_id": "019",
+      "start_index": 19,
+      "end_index": 20,
+      "summary": "Section about Assistant Runtime",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "📊 SDK Events",
+      "node_id": "020",
+      "start_index": 20,
+      "end_index": 21,
+      "summary": "Section about 📊 SDK Events",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "🔗 GitHub Repositories",
+      "node_id": "021",
+      "start_index": 21,
+      "end_index": 22,
+      "summary": "Section about 🔗 GitHub Repositories",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "📄 License",
+      "node_id": "022",
+      "start_index": 22,
+      "end_index": 23,
+      "summary": "Section about 📄 License",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:47:17.812Z"
+}

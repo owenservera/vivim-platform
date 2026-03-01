@@ -1,0 +1,675 @@
+{
+  "documentId": "pwa-overview",
+  "title": "pwa-overview",
+  "tree": {
+    "title": "pwa-overview",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 24,
+    "summary": "Documentation for pwa-overview",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "PWA Frontend Architecture",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about PWA Frontend Architecture",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Technology Stack",
+        "node_id": "001",
+        "start_index": 1,
+        "end_index": 2,
+        "summary": "Section about Technology Stack",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Application Structure",
+        "node_id": "002",
+        "start_index": 2,
+        "end_index": 3,
+        "summary": "Section about Application Structure",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Page Routes",
+        "node_id": "003",
+        "start_index": 3,
+        "end_index": 4,
+        "summary": "Section about Page Routes",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Key Pages",
+        "node_id": "004",
+        "start_index": 4,
+        "end_index": 5,
+        "summary": "Section about Key Pages",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Home Page (`/`)",
+        "node_id": "005",
+        "start_index": 5,
+        "end_index": 6,
+        "summary": "Section about Home Page (`/`)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Conversation View (`/conversation/:id`)",
+        "node_id": "006",
+        "start_index": 6,
+        "end_index": 7,
+        "summary": "Section about Conversation View (`/conversation/:id`)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Capture Page (`/capture`)",
+        "node_id": "007",
+        "start_index": 7,
+        "end_index": 8,
+        "summary": "Section about Capture Page (`/capture`)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "State Management",
+        "node_id": "008",
+        "start_index": 8,
+        "end_index": 9,
+        "summary": "Section about State Management",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Zustand Stores",
+        "node_id": "009",
+        "start_index": 9,
+        "end_index": 10,
+        "summary": "Section about Zustand Stores",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "React Query Integration",
+        "node_id": "010",
+        "start_index": 10,
+        "end_index": 11,
+        "summary": "Section about React Query Integration",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Local Storage (Dexie/IndexedDB)",
+        "node_id": "011",
+        "start_index": 11,
+        "end_index": 12,
+        "summary": "Section about Local Storage (Dexie/IndexedDB)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Database Schema",
+        "node_id": "012",
+        "start_index": 12,
+        "end_index": 13,
+        "summary": "Section about Database Schema",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Authentication Flow",
+        "node_id": "013",
+        "start_index": 13,
+        "end_index": 14,
+        "summary": "Section about Authentication Flow",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Sync Service",
+        "node_id": "014",
+        "start_index": 14,
+        "end_index": 15,
+        "summary": "Section about Sync Service",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Offline-First Architecture",
+        "node_id": "015",
+        "start_index": 15,
+        "end_index": 16,
+        "summary": "Section about Offline-First Architecture",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Sync Implementation",
+        "node_id": "016",
+        "start_index": 16,
+        "end_index": 17,
+        "summary": "Section about Sync Implementation",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Content Rendering",
+        "node_id": "017",
+        "start_index": 17,
+        "end_index": 18,
+        "summary": "Section about Content Rendering",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Rich Content Types",
+        "node_id": "018",
+        "start_index": 18,
+        "end_index": 19,
+        "summary": "Section about Rich Content Types",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Supported Content Types",
+        "node_id": "019",
+        "start_index": 19,
+        "end_index": 20,
+        "summary": "Section about Supported Content Types",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "PWA Features",
+        "node_id": "020",
+        "start_index": 20,
+        "end_index": 21,
+        "summary": "Section about PWA Features",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Service Worker",
+        "node_id": "021",
+        "start_index": 21,
+        "end_index": 22,
+        "summary": "Section about Service Worker",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Next Steps",
+        "node_id": "022",
+        "start_index": 22,
+        "end_index": 23,
+        "summary": "Section about Next Steps",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Next Steps",
+        "node_id": "023",
+        "start_index": 23,
+        "end_index": 24,
+        "summary": "Section about Next Steps",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "pwa-overview",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 24,
+      "summary": "Documentation for pwa-overview",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "PWA Frontend Architecture",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about PWA Frontend Architecture",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Technology Stack",
+          "node_id": "001",
+          "start_index": 1,
+          "end_index": 2,
+          "summary": "Section about Technology Stack",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Application Structure",
+          "node_id": "002",
+          "start_index": 2,
+          "end_index": 3,
+          "summary": "Section about Application Structure",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Page Routes",
+          "node_id": "003",
+          "start_index": 3,
+          "end_index": 4,
+          "summary": "Section about Page Routes",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Key Pages",
+          "node_id": "004",
+          "start_index": 4,
+          "end_index": 5,
+          "summary": "Section about Key Pages",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Home Page (`/`)",
+          "node_id": "005",
+          "start_index": 5,
+          "end_index": 6,
+          "summary": "Section about Home Page (`/`)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Conversation View (`/conversation/:id`)",
+          "node_id": "006",
+          "start_index": 6,
+          "end_index": 7,
+          "summary": "Section about Conversation View (`/conversation/:id`)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Capture Page (`/capture`)",
+          "node_id": "007",
+          "start_index": 7,
+          "end_index": 8,
+          "summary": "Section about Capture Page (`/capture`)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "State Management",
+          "node_id": "008",
+          "start_index": 8,
+          "end_index": 9,
+          "summary": "Section about State Management",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Zustand Stores",
+          "node_id": "009",
+          "start_index": 9,
+          "end_index": 10,
+          "summary": "Section about Zustand Stores",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "React Query Integration",
+          "node_id": "010",
+          "start_index": 10,
+          "end_index": 11,
+          "summary": "Section about React Query Integration",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Local Storage (Dexie/IndexedDB)",
+          "node_id": "011",
+          "start_index": 11,
+          "end_index": 12,
+          "summary": "Section about Local Storage (Dexie/IndexedDB)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Database Schema",
+          "node_id": "012",
+          "start_index": 12,
+          "end_index": 13,
+          "summary": "Section about Database Schema",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Authentication Flow",
+          "node_id": "013",
+          "start_index": 13,
+          "end_index": 14,
+          "summary": "Section about Authentication Flow",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Sync Service",
+          "node_id": "014",
+          "start_index": 14,
+          "end_index": 15,
+          "summary": "Section about Sync Service",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Offline-First Architecture",
+          "node_id": "015",
+          "start_index": 15,
+          "end_index": 16,
+          "summary": "Section about Offline-First Architecture",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Sync Implementation",
+          "node_id": "016",
+          "start_index": 16,
+          "end_index": 17,
+          "summary": "Section about Sync Implementation",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Content Rendering",
+          "node_id": "017",
+          "start_index": 17,
+          "end_index": 18,
+          "summary": "Section about Content Rendering",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Rich Content Types",
+          "node_id": "018",
+          "start_index": 18,
+          "end_index": 19,
+          "summary": "Section about Rich Content Types",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Supported Content Types",
+          "node_id": "019",
+          "start_index": 19,
+          "end_index": 20,
+          "summary": "Section about Supported Content Types",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "PWA Features",
+          "node_id": "020",
+          "start_index": 20,
+          "end_index": 21,
+          "summary": "Section about PWA Features",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Service Worker",
+          "node_id": "021",
+          "start_index": 21,
+          "end_index": 22,
+          "summary": "Section about Service Worker",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Next Steps",
+          "node_id": "022",
+          "start_index": 22,
+          "end_index": 23,
+          "summary": "Section about Next Steps",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Next Steps",
+          "node_id": "023",
+          "start_index": 23,
+          "end_index": 24,
+          "summary": "Section about Next Steps",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "PWA Frontend Architecture",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about PWA Frontend Architecture",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Technology Stack",
+      "node_id": "001",
+      "start_index": 1,
+      "end_index": 2,
+      "summary": "Section about Technology Stack",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Application Structure",
+      "node_id": "002",
+      "start_index": 2,
+      "end_index": 3,
+      "summary": "Section about Application Structure",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Page Routes",
+      "node_id": "003",
+      "start_index": 3,
+      "end_index": 4,
+      "summary": "Section about Page Routes",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Key Pages",
+      "node_id": "004",
+      "start_index": 4,
+      "end_index": 5,
+      "summary": "Section about Key Pages",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Home Page (`/`)",
+      "node_id": "005",
+      "start_index": 5,
+      "end_index": 6,
+      "summary": "Section about Home Page (`/`)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Conversation View (`/conversation/:id`)",
+      "node_id": "006",
+      "start_index": 6,
+      "end_index": 7,
+      "summary": "Section about Conversation View (`/conversation/:id`)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Capture Page (`/capture`)",
+      "node_id": "007",
+      "start_index": 7,
+      "end_index": 8,
+      "summary": "Section about Capture Page (`/capture`)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "State Management",
+      "node_id": "008",
+      "start_index": 8,
+      "end_index": 9,
+      "summary": "Section about State Management",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Zustand Stores",
+      "node_id": "009",
+      "start_index": 9,
+      "end_index": 10,
+      "summary": "Section about Zustand Stores",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "React Query Integration",
+      "node_id": "010",
+      "start_index": 10,
+      "end_index": 11,
+      "summary": "Section about React Query Integration",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Local Storage (Dexie/IndexedDB)",
+      "node_id": "011",
+      "start_index": 11,
+      "end_index": 12,
+      "summary": "Section about Local Storage (Dexie/IndexedDB)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Database Schema",
+      "node_id": "012",
+      "start_index": 12,
+      "end_index": 13,
+      "summary": "Section about Database Schema",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Authentication Flow",
+      "node_id": "013",
+      "start_index": 13,
+      "end_index": 14,
+      "summary": "Section about Authentication Flow",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Sync Service",
+      "node_id": "014",
+      "start_index": 14,
+      "end_index": 15,
+      "summary": "Section about Sync Service",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Offline-First Architecture",
+      "node_id": "015",
+      "start_index": 15,
+      "end_index": 16,
+      "summary": "Section about Offline-First Architecture",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Sync Implementation",
+      "node_id": "016",
+      "start_index": 16,
+      "end_index": 17,
+      "summary": "Section about Sync Implementation",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Content Rendering",
+      "node_id": "017",
+      "start_index": 17,
+      "end_index": 18,
+      "summary": "Section about Content Rendering",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Rich Content Types",
+      "node_id": "018",
+      "start_index": 18,
+      "end_index": 19,
+      "summary": "Section about Rich Content Types",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Supported Content Types",
+      "node_id": "019",
+      "start_index": 19,
+      "end_index": 20,
+      "summary": "Section about Supported Content Types",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "PWA Features",
+      "node_id": "020",
+      "start_index": 20,
+      "end_index": 21,
+      "summary": "Section about PWA Features",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Service Worker",
+      "node_id": "021",
+      "start_index": 21,
+      "end_index": 22,
+      "summary": "Section about Service Worker",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Next Steps",
+      "node_id": "022",
+      "start_index": 22,
+      "end_index": 23,
+      "summary": "Section about Next Steps",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Next Steps",
+      "node_id": "023",
+      "start_index": 23,
+      "end_index": 24,
+      "summary": "Section about Next Steps",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:48:06.564Z"
+}

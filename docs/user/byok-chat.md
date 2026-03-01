@@ -141,4 +141,4 @@ You can combine BYOK with VIVIM's context system:
 - Use Context Recipes
 - Get personalized responses
 
-See [Context Recipes](/docs/user/context-recipes) for details.
+See [Context Recipes](/user/context-recipes) for details.

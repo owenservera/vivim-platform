@@ -16,7 +16,7 @@ import {
   Plus, Bot, RefreshCw, WifiOff, Database, AlertCircle, CloudOff,
   Search, Grid2x2, List, Pin, Archive, MessageSquare, LayoutList,
   BookOpen, Sparkles, X, SlidersHorizontal, Clock, BarChart2,
-  FileCode
+  FileCode, ImageIcon, ChevronDown, ChevronUp
 } from 'lucide-react';
 
 // Assistant UI & Tool UI
@@ -26,7 +26,7 @@ import {
   Tools,
   useChatRuntime,
   Thread,
-  } from "@assistant-ui/react";
+} from "@assistant-ui/react";
 import { AssistantChatTransport } from "@assistant-ui/react-ai-sdk";
 import { LinkPreview } from '../components/tool-ui/link-preview/link-preview';
 import { safeParseSerializableLinkPreview } from '../components/tool-ui/link-preview/schema';
@@ -43,11 +43,10 @@ import { unifiedRepository } from '../lib/db/unified-repository';
 import { listConversationsForRecommendation, getForYouFeed } from '../lib/recommendation';
 import { logger } from '../lib/logger';
 import { apiClient } from '../lib/api';
-import { useVivimAssistant } from '../hooks/useVivimAssistant';
+import { dataSyncService } from '../lib/data-sync-service';
 import { getSDK } from '../lib/vivim-sdk';
 import { VivimSDKTransport } from '@vivim/sdk';
 
-import { ChatInputBox } from '../components/ChatInputBox';
 import {
   IOSStories,
   IOSButton,
@@ -60,7 +59,6 @@ import {
   toast,
 } from '../components/ios';
 import { ErrorBoundary } from '../components/ErrorBoundary';
-import { ContentRenderer } from '../components/content/ContentRenderer';
 import { useCircles } from '../lib/feature-hooks';
 import { featureService } from '../lib/feature-service';
 import type { RecommendationItem } from '../lib/recommendation/types';
@@ -98,7 +96,6 @@ const isNew = (dateString: string | undefined) => {
 
 const getPreviewText = (convo: Conversation): string => {
   if (!convo.messages?.length) return '';
-  // Try the last user-message content
   const msgs = [...convo.messages].reverse();
   for (const msg of msgs) {
     if (msg.role === 'user' || msg.role === 'assistant') {
@@ -156,9 +153,6 @@ const getHeaders = () => {
   return headers;
 };
 
-/* ─────────────────────────────────────────────────
-   Compute stats helper
-────────────────────────────────────────────────- */
 const computeStats = (convos: Conversation[]) => {
   const total = convos.length;
   const totalMessages = convos.reduce((s, c) => s + (c.stats?.totalMessages ?? c.messages?.length ?? 0), 0);
@@ -201,7 +195,7 @@ const ExpandedAssistantView: React.FC<{ conversationId: string; aui: any }> = ({
 
   if (!transport) {
     return (
-      <div className="h-[600px] flex items-center justify-center bg-gray-50/50 dark:bg-gray-950/50">
+      <div className="flex-1 flex items-center justify-center bg-transparent">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
           <span className="text-xs font-medium text-gray-500">Initializing VIVIM Core...</span>
@@ -212,7 +206,7 @@ const ExpandedAssistantView: React.FC<{ conversationId: string; aui: any }> = ({
 
   return (
     <AssistantRuntimeProvider runtime={runtime} aui={aui} key={conversationId}>
-      <div className="h-[600px] flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-white dark:bg-[#09090b]">
         <Thread welcome={false} />
       </div>
     </AssistantRuntimeProvider>
@@ -227,7 +221,7 @@ interface FeedItemCardProps {
   isPinned: boolean;
   isArchived: boolean;
   gridMode?: boolean;
-  onContinue: (id: string, messages?: any[]) => void;
+  onContinue: (id: string) => void;
   onShare: (id: string) => void;
   onPinToggle: (id: string, pinned: boolean) => void;
   onArchiveToggle: (id: string, archived: boolean) => void;
@@ -237,8 +231,6 @@ interface FeedItemCardProps {
   onAIClick: (action: AIAction, id: string) => void;
   isExpanded?: boolean;
   onExpandToggle?: (id: string) => void;
-  overrideMessages?: any[];
-  isLoadingAI?: boolean;
 }
 
 const FeedItemCard: React.FC<FeedItemCardProps> = ({
@@ -250,14 +242,12 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
   onShare,
   onPinToggle,
   onArchiveToggle,
-  _onDelete,
-  _onFork,
-  _onDuplicate,
-  _onAIClick,
+  onDelete,
+  onFork,
+  onDuplicate,
+  onAIClick,
   isExpanded,
   onExpandToggle,
-  overrideMessages,
-  isLoadingAI,
 }) => {
   const navigate = useNavigate();
   const prov = convo.provider || 'default';
@@ -268,34 +258,13 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
   const codeBlocks = convo.stats?.totalCodeBlocks ?? 0;
   const isNewConvo = isNew(convo.createdAt);
 
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const userScrolledUp = useRef(false);
 
   useEffect(() => {
-    if (!scrollContainerRef.current) return;
-    const scrollEl = scrollContainerRef.current;
-    const handleScroll = () => {
-      const isNearBottom = scrollEl.scrollHeight - scrollEl.scrollTop - scrollEl.clientHeight < 50;
-      userScrolledUp.current = !isNearBottom;
-    };
-    scrollEl.addEventListener('scroll', handleScroll);
-    return () => scrollEl.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (isExpanded && scrollContainerRef.current) {
-      if (userScrolledUp.current) return;
-      const container = scrollContainerRef.current;
-      container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    if (isExpanded && cardRef.current) {
+       cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }, [overrideMessages, isLoadingAI, isExpanded]);
-
-  useEffect(() => {
-    if (isExpanded && overrideMessages && cardRef.current) {
-       cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-  }, [overrideMessages, isLoadingAI, isExpanded]);
+  }, [isExpanded]);
 
   const aui = useAui({
     tools: Tools({
@@ -386,12 +355,12 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
           </h3>
 
           {/* Preview snippet */}
-          {!gridMode && previewText && (
+          {!gridMode && !isExpanded && previewText && (
             <p className="conv-preview-text mt-1">{previewText}</p>
           )}
 
           {/* Tags */}
-          {tags.length > 0 && (
+          {tags.length > 0 && !isExpanded && (
             <div className="conv-tags">
               {tags.map((tag) => (
                 <span key={tag} className="conv-tag">#{tag}</span>
@@ -400,26 +369,28 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
           )}
 
           {/* Mini stats */}
-          <div className="conv-mini-stats mt-2">
-            {msgCount > 0 && (
-              <span className="conv-mini-stat">
-                <MessageSquare className="w-[11px] h-[11px]" />
-                {msgCount}
-              </span>
-            )}
-            {wordCount > 0 && (
-              <span className="conv-mini-stat">
-                <LayoutList className="w-[11px] h-[11px]" />
-                {wordCount >= 1000 ? `${(wordCount / 1000).toFixed(1)}k` : wordCount}w
-              </span>
-            )}
-            {codeBlocks > 0 && (
-              <span className="conv-mini-stat">
-                <FileCode className="w-[11px] h-[11px]" />
-                {codeBlocks}
-              </span>
-            )}
-          </div>
+          {!isExpanded && (
+            <div className="conv-mini-stats mt-2">
+              {msgCount > 0 && (
+                <span className="conv-mini-stat">
+                  <MessageSquare className="w-[11px] h-[11px]" />
+                  {msgCount}
+                </span>
+              )}
+              {wordCount > 0 && (
+                <span className="conv-mini-stat">
+                  <LayoutList className="w-[11px] h-[11px]" />
+                  {wordCount >= 1000 ? `${(wordCount / 1000).toFixed(1)}k` : wordCount}w
+                </span>
+              )}
+              {codeBlocks > 0 && (
+                <span className="conv-mini-stat">
+                  <FileCode className="w-[11px] h-[11px]" />
+                  {codeBlocks}
+                </span>
+              )}
+            </div>
+          )}
 
           {/* Action strip */}
           {!gridMode && (
@@ -428,11 +399,11 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
               onClick={(e) => e.stopPropagation()}
             >
               <button
-                onClick={(e) => { e.stopPropagation(); onContinue(convo.id, convo.messages); }}
+                onClick={(e) => { e.stopPropagation(); onContinue(convo.id); }}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 active:scale-95 transition-all shadow-sm"
               >
                 <Sparkles className="w-3 h-3" />
-                Continue with AI
+                {isExpanded ? 'Collapse' : 'Continue with AI'}
               </button>
               <button
                 onClick={(e) => { e.stopPropagation(); onShare(convo.id); }}
@@ -445,8 +416,7 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  const prev = isPinned;
-                  onPinToggle(convo.id, !prev);
+                  onPinToggle(convo.id, !isPinned);
                 }}
                 className={`p-1.5 rounded-lg transition-colors ${isPinned ? 'text-indigo-500 bg-indigo-50 dark:bg-indigo-950/40' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}`}
                 title={isPinned ? 'Unpin' : 'Pin'}
@@ -456,8 +426,7 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  const prev = isArchived;
-                  onArchiveToggle(convo.id, !prev);
+                  onArchiveToggle(convo.id, !isArchived);
                 }}
                 className={`p-1.5 rounded-lg transition-colors ${isArchived ? 'text-amber-500 bg-amber-50 dark:bg-amber-950/40' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}`}
                 title={isArchived ? 'Unarchive' : 'Archive'}
@@ -477,70 +446,18 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
             </button>
           )}
 
-          {/* Full Conversation Expansion */}
+          {/* Full Conversation Expansion mapped to Assistant UI */}
           {isExpanded && !gridMode && (
             <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 space-y-4" onClick={(e) => e.stopPropagation()}>
               <div className="flex justify-between items-center mb-2">
-                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Full Conversation</span>
+                <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
+                  <Sparkles className="w-3 h-3 animate-pulse" /> Assistant Live Mode
+                </span>
+                <button onClick={() => navigate(`/ai/conversation/${convo.id}`)} className="text-[10px] font-bold text-gray-400 hover:text-indigo-500 transition-colors uppercase tracking-widest flex items-center gap-1">
+                  Full View <LayoutList className="w-3 h-3" />
+                </button>
               </div>
-              <div 
-                ref={scrollContainerRef}
-                className="max-h-[600px] overflow-y-auto pr-2 space-y-6 custom-scrollbar flex flex-col items-stretch"
-              >
-                {(overrideMessages || convo.messages || []).map((msg: any, i: number) => {
-                  const parts = msg.parts || msg.content;
-                  if (!parts) return null;
-                  
-                  return (
-                    <div key={msg.id || i} className={`group relative flex flex-col w-full ${msg.role === 'user' ? 'items-end user-message-entry' : 'items-start assistant-message-entry'}`}>
-                      <div className={`relative px-4 py-3 text-[13px] rounded-2xl ${
-                        msg.role === 'user' 
-                          ? 'bg-indigo-600 text-white rounded-br-sm md:max-w-[75%] max-w-[85%] shadow-md' 
-                          : 'bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-gray-100 rounded-bl-sm w-full border border-gray-100 dark:border-white/5 shadow-sm'
-                      } overflow-x-hidden transition-all hover:shadow-lg`}>
-                        {msg.role === 'user' ? (
-                           <div className="whitespace-pre-wrap leading-relaxed">{typeof parts === 'string' ? parts : Array.isArray(parts) ? parts.map((p: any) => p.text || p.content || '').join('') : ''}</div>
-                        ) : (
-                          <ContentRenderer content={parts} />
-                        )}
-                        
-                        {!overrideMessages && msg.role === 'user' && (
-                        <div className={`absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-10 flex right-[calc(100%+0.75rem)]`}>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onContinue(convo.id, convo.messages.slice(0, i + 1));
-                            }}
-                            className="bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 rounded-full p-2 text-indigo-600 dark:text-indigo-400 hover:scale-110 active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap group/btn"
-                            title="Branch conversation from here"
-                          >
-                            <Sparkles className="w-3.5 h-3.5 group-hover/btn:animate-pulse" />
-                            <span className="text-[10px] font-bold pr-1">Branch</span>
-                          </button>
-                        </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-                {isLoadingAI && (
-                  <div className="flex flex-col items-start w-full assistant-message-entry">
-                    <div className="px-5 py-3 bg-gray-50 dark:bg-gray-900/50 rounded-2xl rounded-bl-sm flex items-center gap-1.5 border border-gray-100 dark:border-white/5 shadow-sm">
-                       <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                       <div className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                       <div className="w-1.5 h-1.5 bg-pink-500 rounded-full animate-bounce"></div>
-                       <span className="text-[10px] ml-2 font-bold text-gray-400 dark:text-gray-500 tracking-widest uppercase">Thinking</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Assistant Live Mode */}
-              <div className="flex justify-between items-center mb-2 px-1 mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
-                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest flex items-center gap-1.5"><Sparkles className="w-3 h-3 animate-pulse" /> Assistant Live Mode</span>
-                <button onClick={() => navigate(`/ai/conversation/${convo.id}`)} className="text-[10px] font-bold text-gray-400 hover:text-indigo-500 transition-colors uppercase tracking-widest flex items-center gap-1">Full History <LayoutList className="w-3 h-3" /></button>
-              </div>
-              <div className="bg-white dark:bg-gray-950 rounded-xl border border-gray-200 dark:border-white/10 shadow-xl overflow-hidden min-h-[500px] mt-2 ring-1 ring-black/5">
+              <div className="bg-white dark:bg-[#09090b] rounded-xl border border-gray-200 dark:border-gray-800/80 shadow-lg overflow-hidden h-[500px] flex flex-col ring-1 ring-black/5">
                 <ExpandedAssistantView conversationId={convo.id} aui={aui} />
               </div>
             </div>
@@ -555,21 +472,10 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
    HomeAssistant Page
 ────────────────────────────────────────────────- */
 export const HomeAssistant: React.FC = () => {
-  const {
-    messages: aiMessages,
-    isLoading: aiLoading,
-    sendMessage: sendAIMessage,
-    setMessages: setAIMessages,
-    setExistingThread,
-    stop: stopAI,
-    reset: clearAIMessages
-  } = useVivimAssistant();
-
   const { toast: showToast } = useIOSToast();
   const { filterTab, viewMode, searchQuery, sortBy, fabExpanded, setFilterTab, setViewMode, setSearchQuery, setSortBy, setFabExpanded } = useHomeUIStore();
   
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [recommendations, setRecommendations] = useState<RecommendationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -803,34 +709,13 @@ export const HomeAssistant: React.FC = () => {
   }, [loading, page, loadConversations]);
 
   /* ── Handlers ── */
-  const handleContinue = useCallback((id: string, messages?: any[]) => {
-    setActiveChatId(id);
-    setExpandedId(id);
-    setExistingThread(id);
-
-    if (messages && messages.length > 0) {
-      setAIMessages(messages.map(m => {
-        let text = '';
-        if (Array.isArray(m.parts || m.content)) {
-          text = (m.parts || m.content).map((p: any) => p?.text || p?.content || p).join('');
-        } else {
-          text = m.content;
-        }
-        return { 
-          id: m.id || Math.random().toString(36).slice(2, 11),
-          role: m.role, 
-          content: [{ type: 'text', text }],
-          createdAt: m.createdAt ? new Date(m.createdAt).getTime() : Date.now(),
-          threadId: id
-        };
-      }) as any);
+  const handleContinue = useCallback((id: string) => {
+    if (expandedId === id) {
+      setExpandedId(null);
     } else {
-      setAIMessages([]);
+      setExpandedId(id);
     }
-    setTimeout(() => {
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }, 100);
-  }, [setAIMessages, setActiveChatId, setExistingThread]);
+  }, [expandedId]);
 
   const handleFork = useCallback((id: string, forkId: string) => {
     logger.info('HOME_ASSISTANT', `Conversation forked from ${id} → ${forkId}`);
@@ -882,7 +767,6 @@ export const HomeAssistant: React.FC = () => {
   const allSorted = useMemo(() => {
     const list = [...conversations];
 
-    // sort
     if (sortBy === 'date') {
       list.sort((a, b) => {
         const aPinned = pinnedIds.has(a.id), bPinned = pinnedIds.has(b.id);
@@ -902,12 +786,10 @@ export const HomeAssistant: React.FC = () => {
   const filteredConversations = useMemo(() => {
     let list = allSorted;
 
-    // filter tab
     if (filterTab === 'pinned')   list = list.filter(c => pinnedIds.has(c.id));
     if (filterTab === 'archived') list = list.filter(c => archivedIds.has(c.id));
     if (filterTab === 'recent')   list = list.filter(c => isNew(c.createdAt));
 
-    // search query
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       list = list.filter(c =>
@@ -936,7 +818,7 @@ export const HomeAssistant: React.FC = () => {
   });
 
   return (
-    <div className={`home-feed-wrapper flex flex-col min-h-full ${activeChatId ? 'pb-[180px]' : 'pb-20'}`}>
+    <div className={`home-feed-wrapper flex flex-col min-h-full pb-20`}>
 
       {/* ── For You Stories ── */}
       {recommendations.length > 0 && (
@@ -1221,27 +1103,7 @@ export const HomeAssistant: React.FC = () => {
                       onDuplicate={handleDuplicate}
                       onAIClick={handleAIClick}
                       isExpanded={expandedId === convo.id}
-                      overrideMessages={activeChatId === convo.id ? aiMessages : undefined}
-                      isLoadingAI={activeChatId === convo.id ? aiLoading : false}
-                      onExpandToggle={async (id) => {
-                        if (expandedId === id) {
-                          setExpandedId(null);
-                          setActiveChatId(null);
-                        } else {
-                          setExpandedId(id);
-                          const targetConvo = conversations.find(c => c.id === id);
-                          if (targetConvo && (!targetConvo.messages || targetConvo.messages.length === 0)) {
-                            try {
-                              const fullConvo = await unifiedRepository.getConversation(id);
-                              if (fullConvo && fullConvo.messages && fullConvo.messages.length > 0) {
-                                setConversations(prev => prev.map(c => c.id === id ? { ...c, messages: fullConvo.messages } : c));
-                              }
-                            } catch (err) {
-                              logger.warn('HOME_ASSISTANT', `Failed to load messages for expansion: ${err}`);
-                            }
-                          }
-                        }
-                      }}
+                      onExpandToggle={handleContinue}
                     />
                   </div>
                 );
@@ -1427,27 +1289,6 @@ export const HomeAssistant: React.FC = () => {
         </>
       )}
 
-      {/* ── Chat Input ── */}
-      {activeChatId && (
-        <div className="fixed bottom-0 left-0 right-0 z-[1040]">
-          <ChatInputBox 
-            onSend={async (message) => {
-              if (activeChatId) {
-                try {
-                  await sendAIMessage(message);
-                } catch(e) { console.error(e); }
-              }
-            }}
-            isLoading={aiLoading}
-            onStop={stopAI}
-            onClose={() => {
-              setActiveChatId(null);
-              setExpandedId(null);
-              clearAIMessages();
-            }}
-          />
-        </div>
-      )}
     </div>
   );
 };

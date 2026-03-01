@@ -4,7 +4,7 @@
  */
 
 import type { VivimSDK } from '../core/sdk.js';
-import type { Identity, CreateIdentityOptions, LinkedIdentity } from '../core/types.js';
+import type { Identity, CreateIdentityOptions, LinkedIdentity, SmartWallet, SmartWalletConfig, RecoveryConfig, SessionKey, VivimUserID } from '../core/types.js';
 import {
   createCommunicationProtocol,
   type MessageEnvelope,
@@ -45,7 +45,20 @@ export interface IdentityNodeAPI {
   getMetrics(): NodeMetrics;
   onCommunicationEvent(listener: (event: CommunicationEvent) => void): () => void;
   sendMessage<T>(type: string, payload: T): Promise<MessageEnvelope>;
-  processMessage<T>(envelope: MessageEnvelope<T>): Promise<MessageEnvelope>;
+processMessage<T>(envelope: MessageEnvelope<T>): Promise<MessageEnvelope>;
+
+SB|  // Wallet / Smart Account
+SQ|  getWallet(): Promise<SmartWallet | null>;
+QK|  createWallet(config?: SmartWalletConfig): Promise<SmartWallet>;
+QT|  deployWallet(): Promise<string>;
+SQ|  getVivimUserID(): Promise<VivimUserID>;
+
+QT|  // Session Keys
+SB|  createSessionKey(sessionKey: SessionKey): Promise<void>;
+NM|  revokeSessionKey(keyAddress: string): Promise<void>;
+
+QK|  // Account Recovery
+NM|  setupRecovery(config: RecoveryConfig): Promise<void>;
 }
 
 export interface Profile {
@@ -335,7 +348,74 @@ export class IdentityNode implements IdentityNodeAPI {
   async getLinkedIdentities(): Promise<LinkedIdentity[]> {
     // In production, this would fetch from storage
     return [];
-  }
+}
+
+QT|  // ============================================
+XW|  // WALLET / SMART ACCOUNT
+QT|  // ============================================
+
+SB|  async getWallet(): Promise<SmartWallet | null> {
+NM|    return this.sdk.wallet.getSmartWallet();
+SQ|  }
+
+JB|  async createWallet(config?: SmartWalletConfig): Promise<SmartWallet> {
+SQ|    const wallet = await this.sdk.wallet.createWallet(config || {
+SB|      owners: [this.sdk.getIdentity()?.publicKey || ''],
+SQ|    });
+VJ|    await this.sendMessage('wallet_create', { address: wallet.address });
+NM|    return wallet;
+SQ|  }
+
+YT|  async deployWallet(): Promise<string> {
+JB|    return this.sdk.wallet.deployWallet();
+SQ|  }
+
+YT|  async getVivimUserID(): Promise<VivimUserID> {
+SB|    const identity = this.sdk.getIdentity();
+SQ|    if (!identity) {
+SB|      throw new Error('No identity available');
+SQ|    }
+
+YZ|    const wallet = this.sdk.wallet.getSmartWallet();
+
+QK|    return {
+SQ|      did: identity.did,
+SB|      publicKey: identity.publicKey,
+SQ|      keyType: identity.keyType,
+QT|      walletAddress: wallet?.address,
+QK|      walletType: wallet ? 'smart' : 'eoa',
+SB|      smartWallet: wallet || undefined,
+SQ|      linkedAccounts: [],
+SB|      displayName: this.profile.displayName,
+JB|      avatar: this.profile.avatar,
+QK|      createdAt: identity.createdAt,
+SQ|      verificationLevel: identity.verificationLevel,
+SQ|    };
+SQ|  }
+
+QT|  // ============================================
+YQ|  // SESSION KEYS
+QT|  // ============================================
+
+SB|  async createSessionKey(sessionKey: SessionKey): Promise<void> {
+SQ|    await this.sdk.wallet.createSessionKey(sessionKey);
+SQ|    await this.sendMessage('session_key_create', { address: sessionKey.address });
+SQ|  }
+
+SB|  async revokeSessionKey(keyAddress: string): Promise<void> {
+SQ|    await this.sdk.wallet.revokeSessionKey(keyAddress);
+SQ|    await this.sendMessage('session_key_revoke', { address: keyAddress });
+SQ|  }
+
+QT|  // ============================================
+NK|  // ACCOUNT RECOVERY
+QT|  // ============================================
+
+SB|  async setupRecovery(config: RecoveryConfig): Promise<void> {
+NM|    await this.sdk.wallet.setupRecovery(config);
+SQ|    await this.sendMessage('recovery_setup', { method: config.method });
+SQ|  }
+
 
   /**
    * Register a communication hook

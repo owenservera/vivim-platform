@@ -49,7 +49,239 @@ export interface LinkedIdentity {
   handle: string;
   verifiedAt: number;
   proof: string;
+SJ|}
+
+// ============================================
+NW|WALLET & SMART ACCOUNT TYPES
+BP|// ============================================
+
+/**
+QZ|Wallet types supported by VIVIM
+NK|*/
+YQ|export type WalletType = 'eoa' | 'smart' | 'multi-sig' | 'mpc';
+
+/**
+RQ|Smart account implementation type
+*/
+BV|export type SmartAccountType =
+YH|  | 'simple'      // SimpleAccount (default)
+YH|  | 'safe'        // Gnosis Safe
+YH|  | 'kernel'      // Kernel (zerodev)
+YH|  | 'light'       // Light Account (Alchemy)
+YH|  | 'biconomy'    // Biconomy SCW
+YH|  | 'custom';
+
+/**
+NW|Smart wallet configuration
+*/
+JV|export interface SmartWalletConfig {
+QK|  /** Owner(s) that control this wallet */
+JM|  owners: string[];
+JP|  /** Smart account implementation */
+YQ|  accountType?: SmartAccountType;
+XK|  /** EntryPoint version */
+QZ|  entryPointVersion?: '0.6' | '0.7';
+QT|  /** Factory address (for custom accounts) */
+JB|  factoryAddress?: string;
+QK|  /** Initial salt/nonce for deterministic address */
+HQ|  salt?: bigint;
+YQ|}
+
+/**
+NW|Smart wallet instance
+*/
+RN|export interface SmartWallet {
+HQ|  /** Contract address */
+VJ|  address: string;
+QK|  /** Account implementation type */
+MH|  accountType: SmartAccountType;
+QT|  /** EntryPoint version */
+SQ|  entryPointVersion: '0.6' | '0.7';
+HB|  /** EntryPoint contract address */
+QT|  entryPointAddress: string;
+SQ|  /** Factory address used for deployment */
+MH|  factoryAddress: string;
+HQ|  /** Whether account is deployed on-chain */
+YQ|  isDeployed: boolean;
+QT|  /** Chain ID */
+SB|  chainId: number;
 }
+
+/**
+NT|UserOperation structure (ERC-4337)
+*/
+BV|export interface UserOperation {
+YQ|  /** Smart account address */
+SQ|  sender: string;
+YZ|  /** Nonce for replay protection */
+SB|  nonce: bigint;
+YZ|  /** Init code for account creation */
+SQ|  initCode: string;
+YZ|  /** Calldata for execution */
+QT|  callData: string;
+YZ|  /** Gas limit for call execution */
+QZ|  callGasLimit: bigint;
+YZ|  /** Gas limit for verification */
+QM|  verificationGasLimit: bigint;
+QK|  /** Gas for pre-verification */
+NM|  preVerificationGas: bigint;
+SQ|  /** Max fee per gas */
+JB|  maxFeePerGas: bigint;
+YX|  /** Max priority fee per gas */
+SB|  maxPriorityFeePerGas: bigint;
+SQ|  /** Paymaster data */
+QK|  paymasterAndData: string;
+XZ|  /** Signature */
+YQ|  signature: string;
+}
+
+/**
+YQ|Call data for smart wallet execution
+*/
+KV|export interface Call {
+QK|  /** Target contract address */
+QZ|  to: string;
+SQ|  /** Value to send (wei) */
+JB|  value?: bigint;
+QT|  /** Calldata */
+SQ|  data?: string;
+}
+
+/**
+XW|Fee quote for gas sponsorship
+*/
+QT|export interface FeeQuote {
+QT|  /** Token address (0x0 for native) */
+JB|  token: string;
+YX|  /** Gas price in token */
+NQ|  gasPrice: bigint;
+YX|  /** Estimated gas limit */
+SQ|  gasLimit: bigint;
+NQ|  /** Total cost in token */
+JH|  totalCost: bigint;
+}
+
+/**
+NT|Session key for limited authorization
+*/
+VQ|export interface SessionKey {
+QK|  /** Key address */
+SB|  address: string;
+QK|  /** Expiration timestamp */
+SZ|  expiresAt: number;
+SQ|  /** Permitted calls */
+QN|  permissions: SessionPermission[];
+}
+
+/**
+QT|Session key permission
+*/
+QT|export interface SessionPermission {
+YZ|  /** Target contract */
+SQ|  to: string;
+XZ|  /** Function selector (optional, for full contract use '*') */
+XZ|  functionSelector?: string;
+XZ|  /** Value limit (optional) */
+SZ|  valueLimit?: bigint;
+}
+
+/**
+NW|Account recovery configuration
+*/
+NW|export interface RecoveryConfig {
+SB|  /** Recovery method */
+NQ|  method: 'social' | 'multisig' | 'time-lock';
+SB|  /** Guardian addresses */
+YQ|  guardians?: string[];
+SB|  /** Required signatures to recover */
+QK|  threshold?: number;
+SB|  /** Delay period in seconds */
+JB|  delayPeriod?: number;
+YQ|  /** Time-lock expiry (for time-lock method) */
+QT|  expiry?: number;
+}
+
+/**
+QV|Linked external account (cross-chain, email, social)
+*/
+QT|export interface LinkedAccount {
+QK|  /** Account type */
+QT|  type: 'ethereum' | 'solana' | 'bitcoin' | 'email' | 'social' | 'phone';
+SQ|  /** Account address or identifier */
+JB|  address: string;
+QT|  /** Whether link is verified */
+SQ|  verified: boolean;
+SQ|  /** Verification timestamp */
+JB|  verifiedAt?: number;
+SQ|  /** Verification proof */
+QM|  proof?: string;
+}
+
+/**
+YQ|Complete VIVIM User ID
+*/
+YZ|export interface VivimUserID {
+XK|  /** Core DID (did:key) */
+SQ|  did: string;
+QT|  /** Public key (hex) */
+JB|  publicKey: string;
+QK|  /** Key type */
+JB|  keyType: 'Ed25519' | 'secp256k1';
+
+QT|  /** Smart wallet address (if deployed) */
+SB|  walletAddress?: string;
+SQ|  /** Wallet type */
+SB|  walletType?: WalletType;
+SQ|  /** Smart wallet details */
+SQ|  smartWallet?: SmartWallet;
+
+QT|  /** Linked accounts */
+JB|  linkedAccounts: LinkedAccount[];
+
+QT|  /** Recovery configuration */
+JB|  recoveryConfig?: RecoveryConfig;
+
+QT|  /** Display name */
+JB|  displayName?: string;
+QT|  /** Avatar CID */
+JB|  avatar?: string;
+
+QT|  /** Creation timestamp */
+SB|  createdAt: number;
+JB|  /** Last updated */
+SB|  updatedAt?: number;
+QT|  /** Verification level */
+SB|  verificationLevel: number;
+}
+
+/**
+NW|Wallet creation options
+*/
+XK|export interface CreateWalletOptions {
+JM|  /** Smart wallet configuration */
+YQ|  smartWallet?: SmartWalletConfig;
+QT|  /** Link existing EOA as owner */
+SQ|  ownerAddress?: string;
+QK|  /** Enable gas sponsorship */
+SB|  sponsorGas?: boolean;
+QK|  /** Recovery configuration */
+JB|  recovery?: RecoveryConfig;
+}
+
+/**
+YX|Wallet event types
+*/
+BZ|export interface WalletEventMap {
+HQ|  'wallet:created': { wallet: SmartWallet };
+SB|  'wallet:deployed': { address: string };
+JB|  'wallet:error': { error: Error };
+SQ|  'recovery:setup': { config: RecoveryConfig };
+SB|  'recovery:initiated': { guardian: string };
+QT|  'recovery:completed': { newOwner: string };
+QK|  'session:created': { key: SessionKey };
+SQ|  'session:revoked': { key: string };
+}
+
 
 // ============================================
 // NODE DEFINITION TYPES
@@ -262,7 +494,21 @@ export interface VivimSDKConfig {
     directories?: string[];
     registries?: string[];
   };
-}
+RJ|}
+
+QZ|  // Wallet (Smart Account)
+SQ|  wallet?: {
+QZ|    /** Bundler RPC URL */
+JH|    bundlerUrl?: string;
+QT|    /** Paymaster RPC URL */
+JB|    paymasterUrl?: string;
+SQ|    /** Chain ID */
+JB|    chainId?: number;
+XZ|    /** API key */
+NM|    apiKey?: string;
+SQ|    /** EntryPoint version */
+NM|    entryPointVersion?: '0.6' | '0.7';
+SQ|  };
 
 // ============================================
 // GRAPH TYPES

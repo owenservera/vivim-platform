@@ -300,6 +300,6 @@ const rateLimitConfig = {
 
 ## Next Steps
 
-- [Context Engine Deep Dive](/docs/architecture/context) - Full context system documentation
-- [API Reference](/docs/api/overview) - Complete endpoint documentation
-- [Database Schema](/docs/database/schema) - Data models
+- [Context Engine Deep Dive](/architecture/context) - Full context system documentation
+- [API Reference](/api/overview) - Complete endpoint documentation
+- [Database Schema](/database/schema) - Data models

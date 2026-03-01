@@ -1,0 +1,1674 @@
+{
+  "documentId": "SDK_GAP_ANALYSIS",
+  "title": "SDK_GAP_ANALYSIS",
+  "tree": {
+    "title": "SDK_GAP_ANALYSIS",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 61,
+    "summary": "Documentation for SDK_GAP_ANALYSIS",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "VIVIM SDK Gap Analysis",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about VIVIM SDK Gap Analysis",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Executive Summary",
+        "node_id": "001",
+        "start_index": 1,
+        "end_index": 2,
+        "summary": "Section about Executive Summary",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Key Findings",
+        "node_id": "002",
+        "start_index": 2,
+        "end_index": 3,
+        "summary": "Section about Key Findings",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Coverage by Category",
+        "node_id": "003",
+        "start_index": 3,
+        "end_index": 4,
+        "summary": "Section about Coverage by Category",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "1. CRITICAL GAPS (Must Have for Decentralization)",
+        "node_id": "004",
+        "start_index": 4,
+        "end_index": 5,
+        "summary": "Section about 1. CRITICAL GAPS (Must Have for Decentralization)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "1.1 Federation Layer (67% Gap)",
+        "node_id": "005",
+        "start_index": 5,
+        "end_index": 6,
+        "summary": "Section about 1.1 Federation Layer (67% Gap)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "1.2 Sharing & Privacy Layer (60% Gap)",
+        "node_id": "006",
+        "start_index": 6,
+        "end_index": 7,
+        "summary": "Section about 1.2 Sharing & Privacy Layer (60% Gap)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "1.3 Admin & Monitoring Layer (67% Gap)",
+        "node_id": "007",
+        "start_index": 7,
+        "end_index": 8,
+        "summary": "Section about 1.3 Admin & Monitoring Layer (67% Gap)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "2. HIGH PRIORITY GAPS",
+        "node_id": "008",
+        "start_index": 8,
+        "end_index": 9,
+        "summary": "Section about 2. HIGH PRIORITY GAPS",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "2.1 P2P Networking Layer (47% Gap)",
+        "node_id": "009",
+        "start_index": 9,
+        "end_index": 10,
+        "summary": "Section about 2.1 P2P Networking Layer (47% Gap)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "2.2 Context Engine (50% Gap)",
+        "node_id": "010",
+        "start_index": 10,
+        "end_index": 11,
+        "summary": "Section about 2.2 Context Engine (50% Gap)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "2.3 Advanced CRDT Features (28% Gap)",
+        "node_id": "011",
+        "start_index": 11,
+        "end_index": 12,
+        "summary": "Section about 2.3 Advanced CRDT Features (28% Gap)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "3. MEDIUM PRIORITY GAPS",
+        "node_id": "012",
+        "start_index": 12,
+        "end_index": 13,
+        "summary": "Section about 3. MEDIUM PRIORITY GAPS",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "3.1 Social Features (28% Gap)",
+        "node_id": "013",
+        "start_index": 13,
+        "end_index": 14,
+        "summary": "Section about 3.1 Social Features (28% Gap)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "3.2 Memory/Second Brain (25% Gap)",
+        "node_id": "014",
+        "start_index": 14,
+        "end_index": 15,
+        "summary": "Section about 3.2 Memory/Second Brain (25% Gap)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "3.3 Storage Layer (25% Gap)",
+        "node_id": "015",
+        "start_index": 15,
+        "end_index": 16,
+        "summary": "Section about 3.3 Storage Layer (25% Gap)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "3.4 Error Handling (40% Gap)",
+        "node_id": "016",
+        "start_index": 16,
+        "end_index": 17,
+        "summary": "Section about 3.4 Error Handling (40% Gap)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "4. LOW PRIORITY GAPS (Nice to Have)",
+        "node_id": "017",
+        "start_index": 17,
+        "end_index": 18,
+        "summary": "Section about 4. LOW PRIORITY GAPS (Nice to Have)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "4.1 Security Enhancements",
+        "node_id": "018",
+        "start_index": 18,
+        "end_index": 19,
+        "summary": "Section about 4.1 Security Enhancements",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "4.2 SDK Apps",
+        "node_id": "019",
+        "start_index": 19,
+        "end_index": 20,
+        "summary": "Section about 4.2 SDK Apps",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "5. IMPLEMENTATION ROADMAP",
+        "node_id": "020",
+        "start_index": 20,
+        "end_index": 21,
+        "summary": "Section about 5. IMPLEMENTATION ROADMAP",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Phase 1: Critical Gaps (Q2 2026)",
+        "node_id": "021",
+        "start_index": 21,
+        "end_index": 22,
+        "summary": "Section about Phase 1: Critical Gaps (Q2 2026)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Week 1-4: Federation Foundation",
+        "node_id": "022",
+        "start_index": 22,
+        "end_index": 23,
+        "summary": "Section about Week 1-4: Federation Foundation",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Week 5-8: Sharing & Privacy",
+        "node_id": "023",
+        "start_index": 23,
+        "end_index": 24,
+        "summary": "Section about Week 5-8: Sharing & Privacy",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Week 9-12: Admin & Monitoring",
+        "node_id": "024",
+        "start_index": 24,
+        "end_index": 25,
+        "summary": "Section about Week 9-12: Admin & Monitoring",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Phase 2: High Priority Gaps (Q3 2026)",
+        "node_id": "025",
+        "start_index": 25,
+        "end_index": 26,
+        "summary": "Section about Phase 2: High Priority Gaps (Q3 2026)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Week 1-4: P2P Enhancements",
+        "node_id": "026",
+        "start_index": 26,
+        "end_index": 27,
+        "summary": "Section about Week 1-4: P2P Enhancements",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Week 5-8: Context Engine",
+        "node_id": "027",
+        "start_index": 27,
+        "end_index": 28,
+        "summary": "Section about Week 5-8: Context Engine",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Week 9-12: Advanced CRDT",
+        "node_id": "028",
+        "start_index": 28,
+        "end_index": 29,
+        "summary": "Section about Week 9-12: Advanced CRDT",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Week 13-14: Integration Testing",
+        "node_id": "029",
+        "start_index": 29,
+        "end_index": 30,
+        "summary": "Section about Week 13-14: Integration Testing",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Phase 3: Medium Priority Gaps (Q4 2026)",
+        "node_id": "030",
+        "start_index": 30,
+        "end_index": 31,
+        "summary": "Section about Phase 3: Medium Priority Gaps (Q4 2026)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Week 1-3: Social Features",
+        "node_id": "031",
+        "start_index": 31,
+        "end_index": 32,
+        "summary": "Section about Week 1-3: Social Features",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Week 4-6: Memory Enhancements",
+        "node_id": "032",
+        "start_index": 32,
+        "end_index": 33,
+        "summary": "Section about Week 4-6: Memory Enhancements",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Week 7-8: Storage Layer",
+        "node_id": "033",
+        "start_index": 33,
+        "end_index": 34,
+        "summary": "Section about Week 7-8: Storage Layer",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Week 9-10: Error Handling",
+        "node_id": "034",
+        "start_index": 34,
+        "end_index": 35,
+        "summary": "Section about Week 9-10: Error Handling",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Phase 4: Low Priority Gaps (Q1 2027)",
+        "node_id": "035",
+        "start_index": 35,
+        "end_index": 36,
+        "summary": "Section about Phase 4: Low Priority Gaps (Q1 2027)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Week 1-2: Security Enhancements",
+        "node_id": "036",
+        "start_index": 36,
+        "end_index": 37,
+        "summary": "Section about Week 1-2: Security Enhancements",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Week 3-6: SDK Apps",
+        "node_id": "037",
+        "start_index": 37,
+        "end_index": 38,
+        "summary": "Section about Week 3-6: SDK Apps",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Week 7-8: Polish & Documentation",
+        "node_id": "038",
+        "start_index": 38,
+        "end_index": 39,
+        "summary": "Section about Week 7-8: Polish & Documentation",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "6. DEPENDENCY ANALYSIS",
+        "node_id": "039",
+        "start_index": 39,
+        "end_index": 40,
+        "summary": "Section about 6. DEPENDENCY ANALYSIS",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "6.1 Internal Dependencies",
+        "node_id": "040",
+        "start_index": 40,
+        "end_index": 41,
+        "summary": "Section about 6.1 Internal Dependencies",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "6.2 External Dependencies",
+        "node_id": "041",
+        "start_index": 41,
+        "end_index": 42,
+        "summary": "Section about 6.2 External Dependencies",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "7. RISK ASSESSMENT",
+        "node_id": "042",
+        "start_index": 42,
+        "end_index": 43,
+        "summary": "Section about 7. RISK ASSESSMENT",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Technical Risks",
+        "node_id": "043",
+        "start_index": 43,
+        "end_index": 44,
+        "summary": "Section about Technical Risks",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Business Risks",
+        "node_id": "044",
+        "start_index": 44,
+        "end_index": 45,
+        "summary": "Section about Business Risks",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "8. SUCCESS METRICS",
+        "node_id": "045",
+        "start_index": 45,
+        "end_index": 46,
+        "summary": "Section about 8. SUCCESS METRICS",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Development Metrics",
+        "node_id": "046",
+        "start_index": 46,
+        "end_index": 47,
+        "summary": "Section about Development Metrics",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Adoption Metrics",
+        "node_id": "047",
+        "start_index": 47,
+        "end_index": 48,
+        "summary": "Section about Adoption Metrics",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "9. ACTION ITEMS",
+        "node_id": "048",
+        "start_index": 48,
+        "end_index": 49,
+        "summary": "Section about 9. ACTION ITEMS",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Immediate (This Week)",
+        "node_id": "049",
+        "start_index": 49,
+        "end_index": 50,
+        "summary": "Section about Immediate (This Week)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Short-term (This Month)",
+        "node_id": "050",
+        "start_index": 50,
+        "end_index": 51,
+        "summary": "Section about Short-term (This Month)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Medium-term (This Quarter)",
+        "node_id": "051",
+        "start_index": 51,
+        "end_index": 52,
+        "summary": "Section about Medium-term (This Quarter)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Long-term (This Year)",
+        "node_id": "052",
+        "start_index": 52,
+        "end_index": 53,
+        "summary": "Section about Long-term (This Year)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "10. APPENDIX",
+        "node_id": "053",
+        "start_index": 53,
+        "end_index": 54,
+        "summary": "Section about 10. APPENDIX",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "A. Feature Tracking Spreadsheet",
+        "node_id": "054",
+        "start_index": 54,
+        "end_index": 55,
+        "summary": "Section about A. Feature Tracking Spreadsheet",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "B. API Compatibility Matrix",
+        "node_id": "055",
+        "start_index": 55,
+        "end_index": 56,
+        "summary": "Section about B. API Compatibility Matrix",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "C. Migration Guide",
+        "node_id": "056",
+        "start_index": 56,
+        "end_index": 57,
+        "summary": "Section about C. Migration Guide",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "D. Testing Checklist",
+        "node_id": "057",
+        "start_index": 57,
+        "end_index": 58,
+        "summary": "Section about D. Testing Checklist",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "11. CONCLUSION",
+        "node_id": "058",
+        "start_index": 58,
+        "end_index": 59,
+        "summary": "Section about 11. CONCLUSION",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Key Takeaways",
+        "node_id": "059",
+        "start_index": 59,
+        "end_index": 60,
+        "summary": "Section about Key Takeaways",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Next Steps",
+        "node_id": "060",
+        "start_index": 60,
+        "end_index": 61,
+        "summary": "Section about Next Steps",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "SDK_GAP_ANALYSIS",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 61,
+      "summary": "Documentation for SDK_GAP_ANALYSIS",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "VIVIM SDK Gap Analysis",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about VIVIM SDK Gap Analysis",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Executive Summary",
+          "node_id": "001",
+          "start_index": 1,
+          "end_index": 2,
+          "summary": "Section about Executive Summary",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Key Findings",
+          "node_id": "002",
+          "start_index": 2,
+          "end_index": 3,
+          "summary": "Section about Key Findings",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Coverage by Category",
+          "node_id": "003",
+          "start_index": 3,
+          "end_index": 4,
+          "summary": "Section about Coverage by Category",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "1. CRITICAL GAPS (Must Have for Decentralization)",
+          "node_id": "004",
+          "start_index": 4,
+          "end_index": 5,
+          "summary": "Section about 1. CRITICAL GAPS (Must Have for Decentralization)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "1.1 Federation Layer (67% Gap)",
+          "node_id": "005",
+          "start_index": 5,
+          "end_index": 6,
+          "summary": "Section about 1.1 Federation Layer (67% Gap)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "1.2 Sharing & Privacy Layer (60% Gap)",
+          "node_id": "006",
+          "start_index": 6,
+          "end_index": 7,
+          "summary": "Section about 1.2 Sharing & Privacy Layer (60% Gap)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "1.3 Admin & Monitoring Layer (67% Gap)",
+          "node_id": "007",
+          "start_index": 7,
+          "end_index": 8,
+          "summary": "Section about 1.3 Admin & Monitoring Layer (67% Gap)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "2. HIGH PRIORITY GAPS",
+          "node_id": "008",
+          "start_index": 8,
+          "end_index": 9,
+          "summary": "Section about 2. HIGH PRIORITY GAPS",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "2.1 P2P Networking Layer (47% Gap)",
+          "node_id": "009",
+          "start_index": 9,
+          "end_index": 10,
+          "summary": "Section about 2.1 P2P Networking Layer (47% Gap)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "2.2 Context Engine (50% Gap)",
+          "node_id": "010",
+          "start_index": 10,
+          "end_index": 11,
+          "summary": "Section about 2.2 Context Engine (50% Gap)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "2.3 Advanced CRDT Features (28% Gap)",
+          "node_id": "011",
+          "start_index": 11,
+          "end_index": 12,
+          "summary": "Section about 2.3 Advanced CRDT Features (28% Gap)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "3. MEDIUM PRIORITY GAPS",
+          "node_id": "012",
+          "start_index": 12,
+          "end_index": 13,
+          "summary": "Section about 3. MEDIUM PRIORITY GAPS",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "3.1 Social Features (28% Gap)",
+          "node_id": "013",
+          "start_index": 13,
+          "end_index": 14,
+          "summary": "Section about 3.1 Social Features (28% Gap)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "3.2 Memory/Second Brain (25% Gap)",
+          "node_id": "014",
+          "start_index": 14,
+          "end_index": 15,
+          "summary": "Section about 3.2 Memory/Second Brain (25% Gap)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "3.3 Storage Layer (25% Gap)",
+          "node_id": "015",
+          "start_index": 15,
+          "end_index": 16,
+          "summary": "Section about 3.3 Storage Layer (25% Gap)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "3.4 Error Handling (40% Gap)",
+          "node_id": "016",
+          "start_index": 16,
+          "end_index": 17,
+          "summary": "Section about 3.4 Error Handling (40% Gap)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "4. LOW PRIORITY GAPS (Nice to Have)",
+          "node_id": "017",
+          "start_index": 17,
+          "end_index": 18,
+          "summary": "Section about 4. LOW PRIORITY GAPS (Nice to Have)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "4.1 Security Enhancements",
+          "node_id": "018",
+          "start_index": 18,
+          "end_index": 19,
+          "summary": "Section about 4.1 Security Enhancements",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "4.2 SDK Apps",
+          "node_id": "019",
+          "start_index": 19,
+          "end_index": 20,
+          "summary": "Section about 4.2 SDK Apps",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "5. IMPLEMENTATION ROADMAP",
+          "node_id": "020",
+          "start_index": 20,
+          "end_index": 21,
+          "summary": "Section about 5. IMPLEMENTATION ROADMAP",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Phase 1: Critical Gaps (Q2 2026)",
+          "node_id": "021",
+          "start_index": 21,
+          "end_index": 22,
+          "summary": "Section about Phase 1: Critical Gaps (Q2 2026)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Week 1-4: Federation Foundation",
+          "node_id": "022",
+          "start_index": 22,
+          "end_index": 23,
+          "summary": "Section about Week 1-4: Federation Foundation",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Week 5-8: Sharing & Privacy",
+          "node_id": "023",
+          "start_index": 23,
+          "end_index": 24,
+          "summary": "Section about Week 5-8: Sharing & Privacy",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Week 9-12: Admin & Monitoring",
+          "node_id": "024",
+          "start_index": 24,
+          "end_index": 25,
+          "summary": "Section about Week 9-12: Admin & Monitoring",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Phase 2: High Priority Gaps (Q3 2026)",
+          "node_id": "025",
+          "start_index": 25,
+          "end_index": 26,
+          "summary": "Section about Phase 2: High Priority Gaps (Q3 2026)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Week 1-4: P2P Enhancements",
+          "node_id": "026",
+          "start_index": 26,
+          "end_index": 27,
+          "summary": "Section about Week 1-4: P2P Enhancements",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Week 5-8: Context Engine",
+          "node_id": "027",
+          "start_index": 27,
+          "end_index": 28,
+          "summary": "Section about Week 5-8: Context Engine",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Week 9-12: Advanced CRDT",
+          "node_id": "028",
+          "start_index": 28,
+          "end_index": 29,
+          "summary": "Section about Week 9-12: Advanced CRDT",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Week 13-14: Integration Testing",
+          "node_id": "029",
+          "start_index": 29,
+          "end_index": 30,
+          "summary": "Section about Week 13-14: Integration Testing",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Phase 3: Medium Priority Gaps (Q4 2026)",
+          "node_id": "030",
+          "start_index": 30,
+          "end_index": 31,
+          "summary": "Section about Phase 3: Medium Priority Gaps (Q4 2026)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Week 1-3: Social Features",
+          "node_id": "031",
+          "start_index": 31,
+          "end_index": 32,
+          "summary": "Section about Week 1-3: Social Features",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Week 4-6: Memory Enhancements",
+          "node_id": "032",
+          "start_index": 32,
+          "end_index": 33,
+          "summary": "Section about Week 4-6: Memory Enhancements",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Week 7-8: Storage Layer",
+          "node_id": "033",
+          "start_index": 33,
+          "end_index": 34,
+          "summary": "Section about Week 7-8: Storage Layer",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Week 9-10: Error Handling",
+          "node_id": "034",
+          "start_index": 34,
+          "end_index": 35,
+          "summary": "Section about Week 9-10: Error Handling",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Phase 4: Low Priority Gaps (Q1 2027)",
+          "node_id": "035",
+          "start_index": 35,
+          "end_index": 36,
+          "summary": "Section about Phase 4: Low Priority Gaps (Q1 2027)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Week 1-2: Security Enhancements",
+          "node_id": "036",
+          "start_index": 36,
+          "end_index": 37,
+          "summary": "Section about Week 1-2: Security Enhancements",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Week 3-6: SDK Apps",
+          "node_id": "037",
+          "start_index": 37,
+          "end_index": 38,
+          "summary": "Section about Week 3-6: SDK Apps",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Week 7-8: Polish & Documentation",
+          "node_id": "038",
+          "start_index": 38,
+          "end_index": 39,
+          "summary": "Section about Week 7-8: Polish & Documentation",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "6. DEPENDENCY ANALYSIS",
+          "node_id": "039",
+          "start_index": 39,
+          "end_index": 40,
+          "summary": "Section about 6. DEPENDENCY ANALYSIS",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "6.1 Internal Dependencies",
+          "node_id": "040",
+          "start_index": 40,
+          "end_index": 41,
+          "summary": "Section about 6.1 Internal Dependencies",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "6.2 External Dependencies",
+          "node_id": "041",
+          "start_index": 41,
+          "end_index": 42,
+          "summary": "Section about 6.2 External Dependencies",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "7. RISK ASSESSMENT",
+          "node_id": "042",
+          "start_index": 42,
+          "end_index": 43,
+          "summary": "Section about 7. RISK ASSESSMENT",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Technical Risks",
+          "node_id": "043",
+          "start_index": 43,
+          "end_index": 44,
+          "summary": "Section about Technical Risks",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Business Risks",
+          "node_id": "044",
+          "start_index": 44,
+          "end_index": 45,
+          "summary": "Section about Business Risks",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "8. SUCCESS METRICS",
+          "node_id": "045",
+          "start_index": 45,
+          "end_index": 46,
+          "summary": "Section about 8. SUCCESS METRICS",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Development Metrics",
+          "node_id": "046",
+          "start_index": 46,
+          "end_index": 47,
+          "summary": "Section about Development Metrics",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Adoption Metrics",
+          "node_id": "047",
+          "start_index": 47,
+          "end_index": 48,
+          "summary": "Section about Adoption Metrics",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "9. ACTION ITEMS",
+          "node_id": "048",
+          "start_index": 48,
+          "end_index": 49,
+          "summary": "Section about 9. ACTION ITEMS",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Immediate (This Week)",
+          "node_id": "049",
+          "start_index": 49,
+          "end_index": 50,
+          "summary": "Section about Immediate (This Week)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Short-term (This Month)",
+          "node_id": "050",
+          "start_index": 50,
+          "end_index": 51,
+          "summary": "Section about Short-term (This Month)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Medium-term (This Quarter)",
+          "node_id": "051",
+          "start_index": 51,
+          "end_index": 52,
+          "summary": "Section about Medium-term (This Quarter)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Long-term (This Year)",
+          "node_id": "052",
+          "start_index": 52,
+          "end_index": 53,
+          "summary": "Section about Long-term (This Year)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "10. APPENDIX",
+          "node_id": "053",
+          "start_index": 53,
+          "end_index": 54,
+          "summary": "Section about 10. APPENDIX",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "A. Feature Tracking Spreadsheet",
+          "node_id": "054",
+          "start_index": 54,
+          "end_index": 55,
+          "summary": "Section about A. Feature Tracking Spreadsheet",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "B. API Compatibility Matrix",
+          "node_id": "055",
+          "start_index": 55,
+          "end_index": 56,
+          "summary": "Section about B. API Compatibility Matrix",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "C. Migration Guide",
+          "node_id": "056",
+          "start_index": 56,
+          "end_index": 57,
+          "summary": "Section about C. Migration Guide",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "D. Testing Checklist",
+          "node_id": "057",
+          "start_index": 57,
+          "end_index": 58,
+          "summary": "Section about D. Testing Checklist",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "11. CONCLUSION",
+          "node_id": "058",
+          "start_index": 58,
+          "end_index": 59,
+          "summary": "Section about 11. CONCLUSION",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Key Takeaways",
+          "node_id": "059",
+          "start_index": 59,
+          "end_index": 60,
+          "summary": "Section about Key Takeaways",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Next Steps",
+          "node_id": "060",
+          "start_index": 60,
+          "end_index": 61,
+          "summary": "Section about Next Steps",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "VIVIM SDK Gap Analysis",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about VIVIM SDK Gap Analysis",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Executive Summary",
+      "node_id": "001",
+      "start_index": 1,
+      "end_index": 2,
+      "summary": "Section about Executive Summary",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Key Findings",
+      "node_id": "002",
+      "start_index": 2,
+      "end_index": 3,
+      "summary": "Section about Key Findings",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Coverage by Category",
+      "node_id": "003",
+      "start_index": 3,
+      "end_index": 4,
+      "summary": "Section about Coverage by Category",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "1. CRITICAL GAPS (Must Have for Decentralization)",
+      "node_id": "004",
+      "start_index": 4,
+      "end_index": 5,
+      "summary": "Section about 1. CRITICAL GAPS (Must Have for Decentralization)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "1.1 Federation Layer (67% Gap)",
+      "node_id": "005",
+      "start_index": 5,
+      "end_index": 6,
+      "summary": "Section about 1.1 Federation Layer (67% Gap)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "1.2 Sharing & Privacy Layer (60% Gap)",
+      "node_id": "006",
+      "start_index": 6,
+      "end_index": 7,
+      "summary": "Section about 1.2 Sharing & Privacy Layer (60% Gap)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "1.3 Admin & Monitoring Layer (67% Gap)",
+      "node_id": "007",
+      "start_index": 7,
+      "end_index": 8,
+      "summary": "Section about 1.3 Admin & Monitoring Layer (67% Gap)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "2. HIGH PRIORITY GAPS",
+      "node_id": "008",
+      "start_index": 8,
+      "end_index": 9,
+      "summary": "Section about 2. HIGH PRIORITY GAPS",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "2.1 P2P Networking Layer (47% Gap)",
+      "node_id": "009",
+      "start_index": 9,
+      "end_index": 10,
+      "summary": "Section about 2.1 P2P Networking Layer (47% Gap)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "2.2 Context Engine (50% Gap)",
+      "node_id": "010",
+      "start_index": 10,
+      "end_index": 11,
+      "summary": "Section about 2.2 Context Engine (50% Gap)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "2.3 Advanced CRDT Features (28% Gap)",
+      "node_id": "011",
+      "start_index": 11,
+      "end_index": 12,
+      "summary": "Section about 2.3 Advanced CRDT Features (28% Gap)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "3. MEDIUM PRIORITY GAPS",
+      "node_id": "012",
+      "start_index": 12,
+      "end_index": 13,
+      "summary": "Section about 3. MEDIUM PRIORITY GAPS",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "3.1 Social Features (28% Gap)",
+      "node_id": "013",
+      "start_index": 13,
+      "end_index": 14,
+      "summary": "Section about 3.1 Social Features (28% Gap)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "3.2 Memory/Second Brain (25% Gap)",
+      "node_id": "014",
+      "start_index": 14,
+      "end_index": 15,
+      "summary": "Section about 3.2 Memory/Second Brain (25% Gap)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "3.3 Storage Layer (25% Gap)",
+      "node_id": "015",
+      "start_index": 15,
+      "end_index": 16,
+      "summary": "Section about 3.3 Storage Layer (25% Gap)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "3.4 Error Handling (40% Gap)",
+      "node_id": "016",
+      "start_index": 16,
+      "end_index": 17,
+      "summary": "Section about 3.4 Error Handling (40% Gap)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "4. LOW PRIORITY GAPS (Nice to Have)",
+      "node_id": "017",
+      "start_index": 17,
+      "end_index": 18,
+      "summary": "Section about 4. LOW PRIORITY GAPS (Nice to Have)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "4.1 Security Enhancements",
+      "node_id": "018",
+      "start_index": 18,
+      "end_index": 19,
+      "summary": "Section about 4.1 Security Enhancements",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "4.2 SDK Apps",
+      "node_id": "019",
+      "start_index": 19,
+      "end_index": 20,
+      "summary": "Section about 4.2 SDK Apps",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "5. IMPLEMENTATION ROADMAP",
+      "node_id": "020",
+      "start_index": 20,
+      "end_index": 21,
+      "summary": "Section about 5. IMPLEMENTATION ROADMAP",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Phase 1: Critical Gaps (Q2 2026)",
+      "node_id": "021",
+      "start_index": 21,
+      "end_index": 22,
+      "summary": "Section about Phase 1: Critical Gaps (Q2 2026)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Week 1-4: Federation Foundation",
+      "node_id": "022",
+      "start_index": 22,
+      "end_index": 23,
+      "summary": "Section about Week 1-4: Federation Foundation",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Week 5-8: Sharing & Privacy",
+      "node_id": "023",
+      "start_index": 23,
+      "end_index": 24,
+      "summary": "Section about Week 5-8: Sharing & Privacy",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Week 9-12: Admin & Monitoring",
+      "node_id": "024",
+      "start_index": 24,
+      "end_index": 25,
+      "summary": "Section about Week 9-12: Admin & Monitoring",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Phase 2: High Priority Gaps (Q3 2026)",
+      "node_id": "025",
+      "start_index": 25,
+      "end_index": 26,
+      "summary": "Section about Phase 2: High Priority Gaps (Q3 2026)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Week 1-4: P2P Enhancements",
+      "node_id": "026",
+      "start_index": 26,
+      "end_index": 27,
+      "summary": "Section about Week 1-4: P2P Enhancements",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Week 5-8: Context Engine",
+      "node_id": "027",
+      "start_index": 27,
+      "end_index": 28,
+      "summary": "Section about Week 5-8: Context Engine",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Week 9-12: Advanced CRDT",
+      "node_id": "028",
+      "start_index": 28,
+      "end_index": 29,
+      "summary": "Section about Week 9-12: Advanced CRDT",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Week 13-14: Integration Testing",
+      "node_id": "029",
+      "start_index": 29,
+      "end_index": 30,
+      "summary": "Section about Week 13-14: Integration Testing",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Phase 3: Medium Priority Gaps (Q4 2026)",
+      "node_id": "030",
+      "start_index": 30,
+      "end_index": 31,
+      "summary": "Section about Phase 3: Medium Priority Gaps (Q4 2026)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Week 1-3: Social Features",
+      "node_id": "031",
+      "start_index": 31,
+      "end_index": 32,
+      "summary": "Section about Week 1-3: Social Features",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Week 4-6: Memory Enhancements",
+      "node_id": "032",
+      "start_index": 32,
+      "end_index": 33,
+      "summary": "Section about Week 4-6: Memory Enhancements",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Week 7-8: Storage Layer",
+      "node_id": "033",
+      "start_index": 33,
+      "end_index": 34,
+      "summary": "Section about Week 7-8: Storage Layer",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Week 9-10: Error Handling",
+      "node_id": "034",
+      "start_index": 34,
+      "end_index": 35,
+      "summary": "Section about Week 9-10: Error Handling",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Phase 4: Low Priority Gaps (Q1 2027)",
+      "node_id": "035",
+      "start_index": 35,
+      "end_index": 36,
+      "summary": "Section about Phase 4: Low Priority Gaps (Q1 2027)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Week 1-2: Security Enhancements",
+      "node_id": "036",
+      "start_index": 36,
+      "end_index": 37,
+      "summary": "Section about Week 1-2: Security Enhancements",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Week 3-6: SDK Apps",
+      "node_id": "037",
+      "start_index": 37,
+      "end_index": 38,
+      "summary": "Section about Week 3-6: SDK Apps",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Week 7-8: Polish & Documentation",
+      "node_id": "038",
+      "start_index": 38,
+      "end_index": 39,
+      "summary": "Section about Week 7-8: Polish & Documentation",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "6. DEPENDENCY ANALYSIS",
+      "node_id": "039",
+      "start_index": 39,
+      "end_index": 40,
+      "summary": "Section about 6. DEPENDENCY ANALYSIS",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "6.1 Internal Dependencies",
+      "node_id": "040",
+      "start_index": 40,
+      "end_index": 41,
+      "summary": "Section about 6.1 Internal Dependencies",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "6.2 External Dependencies",
+      "node_id": "041",
+      "start_index": 41,
+      "end_index": 42,
+      "summary": "Section about 6.2 External Dependencies",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "7. RISK ASSESSMENT",
+      "node_id": "042",
+      "start_index": 42,
+      "end_index": 43,
+      "summary": "Section about 7. RISK ASSESSMENT",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Technical Risks",
+      "node_id": "043",
+      "start_index": 43,
+      "end_index": 44,
+      "summary": "Section about Technical Risks",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Business Risks",
+      "node_id": "044",
+      "start_index": 44,
+      "end_index": 45,
+      "summary": "Section about Business Risks",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "8. SUCCESS METRICS",
+      "node_id": "045",
+      "start_index": 45,
+      "end_index": 46,
+      "summary": "Section about 8. SUCCESS METRICS",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Development Metrics",
+      "node_id": "046",
+      "start_index": 46,
+      "end_index": 47,
+      "summary": "Section about Development Metrics",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Adoption Metrics",
+      "node_id": "047",
+      "start_index": 47,
+      "end_index": 48,
+      "summary": "Section about Adoption Metrics",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "9. ACTION ITEMS",
+      "node_id": "048",
+      "start_index": 48,
+      "end_index": 49,
+      "summary": "Section about 9. ACTION ITEMS",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Immediate (This Week)",
+      "node_id": "049",
+      "start_index": 49,
+      "end_index": 50,
+      "summary": "Section about Immediate (This Week)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Short-term (This Month)",
+      "node_id": "050",
+      "start_index": 50,
+      "end_index": 51,
+      "summary": "Section about Short-term (This Month)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Medium-term (This Quarter)",
+      "node_id": "051",
+      "start_index": 51,
+      "end_index": 52,
+      "summary": "Section about Medium-term (This Quarter)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Long-term (This Year)",
+      "node_id": "052",
+      "start_index": 52,
+      "end_index": 53,
+      "summary": "Section about Long-term (This Year)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "10. APPENDIX",
+      "node_id": "053",
+      "start_index": 53,
+      "end_index": 54,
+      "summary": "Section about 10. APPENDIX",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "A. Feature Tracking Spreadsheet",
+      "node_id": "054",
+      "start_index": 54,
+      "end_index": 55,
+      "summary": "Section about A. Feature Tracking Spreadsheet",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "B. API Compatibility Matrix",
+      "node_id": "055",
+      "start_index": 55,
+      "end_index": 56,
+      "summary": "Section about B. API Compatibility Matrix",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "C. Migration Guide",
+      "node_id": "056",
+      "start_index": 56,
+      "end_index": 57,
+      "summary": "Section about C. Migration Guide",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "D. Testing Checklist",
+      "node_id": "057",
+      "start_index": 57,
+      "end_index": 58,
+      "summary": "Section about D. Testing Checklist",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "11. CONCLUSION",
+      "node_id": "058",
+      "start_index": 58,
+      "end_index": 59,
+      "summary": "Section about 11. CONCLUSION",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Key Takeaways",
+      "node_id": "059",
+      "start_index": 59,
+      "end_index": 60,
+      "summary": "Section about Key Takeaways",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Next Steps",
+      "node_id": "060",
+      "start_index": 60,
+      "end_index": 61,
+      "summary": "Section about Next Steps",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:44:22.263Z"
+}

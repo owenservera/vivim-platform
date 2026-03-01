@@ -492,6 +492,6 @@ await downloadFallback(conversationId);
 
 ## Related Documentation
 
-- [Security Overview](/docs/security/overview) - E2E encryption
-- [PWA Architecture](/docs/pwa/overview) - Frontend storage
-- [Sync Architecture](/docs/architecture/sync) - Offline-first sync
+- [Security Overview](/security/overview) - E2E encryption
+- [PWA Architecture](/pwa/overview) - Frontend storage
+- [Sync Architecture](/architecture/sync) - Offline-first sync

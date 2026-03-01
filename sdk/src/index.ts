@@ -40,9 +40,8 @@ export * from './apps/roadmap-engine/index.js';
 // Utilities
 export * from './utils/index.js';
 
-// Protocols (Exit Node, Sync)
+// Protocols (Exit Node, Sync, Chat, Storage)
 export * from './protocols/index.js';
-export * from './utils/index.js';
 
 // Assistant & Tool UI standard types
 export * from './core/assistant.js';
@@ -56,7 +55,32 @@ export type {
   APINodeDefinition,
   NodeInfo,
   SDKEventMap,
-} from './core/types.js';
+
+  // Wallet types
+  SmartWallet,
+  SmartWalletConfig,
+  UserOperation,
+  Call,
+  FeeQuote,
+  SessionKey,
+  RecoveryConfig,
+  LinkedAccount,
+  VivimUserID,
+  WalletType,
+  SmartAccountType,
+  WalletEventMap,
+  CreateWalletOptions,
+  WalletServiceConfig,
+} from './core/index.js';
 
 // Version
 export const SDK_VERSION = '1.0.0';
+
+// MCP Server for AI Agent Integration
+export * from './mcp/index.js';
+
+// Skills for AI Agent Workflows
+export * from './skills/index.js';
+
+// Token Infrastructure for Tokenization Platform
+export * from './tokens/index.js';

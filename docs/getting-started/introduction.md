@@ -227,12 +227,12 @@ flowchart TB
 - **[Examples](../sdk/examples/basic)** - Code examples
 
 ### Application Documentation
-- **[Context Pipeline](/docs/architecture/pipeline)** - Hyper-optimized streaming context
-- **[Storage V2](/docs/pwa/storage-v2)** - Content-addressed DAG storage
-- **[BYOK](/docs/pwa/byok)** - Bring Your Own Key
-- **[Security](/docs/network/security)** - E2E encryption & capabilities
-- **[Development Guide](/docs/development/guide)** - Local setup
-- **[Deployment](/docs/deployment/guide)** - Production deployment
+- **[Context Pipeline](/architecture/pipeline)** - Hyper-optimized streaming context
+- **[Storage V2](/pwa/storage-v2)** - Content-addressed DAG storage
+- **[BYOK](/pwa/byok)** - Bring Your Own Key
+- **[Security](/network/security)** - E2E encryption & capabilities
+- **[Development Guide](/development/guide)** - Local setup
+- **[Deployment](/deployment/guide)** - Production deployment
 
 ### GitHub Repositories
 - **[Main Application](https://github.com/owenservera/vivim-app)** - Full-stack app

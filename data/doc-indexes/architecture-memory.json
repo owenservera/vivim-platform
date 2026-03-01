@@ -1,0 +1,54 @@
+{
+  "documentId": "architecture-memory",
+  "title": "architecture-memory",
+  "tree": {
+    "title": "architecture-memory",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 1,
+    "summary": "Documentation for architecture-memory",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "Memory System",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about Memory System",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "architecture-memory",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Documentation for architecture-memory",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "Memory System",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about Memory System",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "Memory System",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about Memory System",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:49:37.565Z"
+}

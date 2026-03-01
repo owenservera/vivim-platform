@@ -1,0 +1,432 @@
+{
+  "documentId": "user-error-dashboard",
+  "title": "user-error-dashboard",
+  "tree": {
+    "title": "user-error-dashboard",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 15,
+    "summary": "Documentation for user-error-dashboard",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "Error Dashboard",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about Error Dashboard",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Accessing Error Dashboard",
+        "node_id": "001",
+        "start_index": 1,
+        "end_index": 2,
+        "summary": "Section about Accessing Error Dashboard",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "What It Shows",
+        "node_id": "002",
+        "start_index": 2,
+        "end_index": 3,
+        "summary": "Section about What It Shows",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Error Statistics",
+        "node_id": "003",
+        "start_index": 3,
+        "end_index": 4,
+        "summary": "Section about Error Statistics",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Recent Errors List",
+        "node_id": "004",
+        "start_index": 4,
+        "end_index": 5,
+        "summary": "Section about Recent Errors List",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Filtering",
+        "node_id": "005",
+        "start_index": 5,
+        "end_index": 6,
+        "summary": "Section about Filtering",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Understanding Errors",
+        "node_id": "006",
+        "start_index": 6,
+        "end_index": 7,
+        "summary": "Section about Understanding Errors",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Common Error Types",
+        "node_id": "007",
+        "start_index": 7,
+        "end_index": 8,
+        "summary": "Section about Common Error Types",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Severity Levels",
+        "node_id": "008",
+        "start_index": 8,
+        "end_index": 9,
+        "summary": "Section about Severity Levels",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "For Developers",
+        "node_id": "009",
+        "start_index": 9,
+        "end_index": 10,
+        "summary": "Section about For Developers",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Troubleshooting Tips",
+        "node_id": "010",
+        "start_index": 10,
+        "end_index": 11,
+        "summary": "Section about Troubleshooting Tips",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "If You See Errors",
+        "node_id": "011",
+        "start_index": 11,
+        "end_index": 12,
+        "summary": "Section about If You See Errors",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Persistent Errors",
+        "node_id": "012",
+        "start_index": 12,
+        "end_index": 13,
+        "summary": "Section about Persistent Errors",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Privacy",
+        "node_id": "013",
+        "start_index": 13,
+        "end_index": 14,
+        "summary": "Section about Privacy",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "For Most Users",
+        "node_id": "014",
+        "start_index": 14,
+        "end_index": 15,
+        "summary": "Section about For Most Users",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "user-error-dashboard",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 15,
+      "summary": "Documentation for user-error-dashboard",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "Error Dashboard",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about Error Dashboard",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Accessing Error Dashboard",
+          "node_id": "001",
+          "start_index": 1,
+          "end_index": 2,
+          "summary": "Section about Accessing Error Dashboard",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "What It Shows",
+          "node_id": "002",
+          "start_index": 2,
+          "end_index": 3,
+          "summary": "Section about What It Shows",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Error Statistics",
+          "node_id": "003",
+          "start_index": 3,
+          "end_index": 4,
+          "summary": "Section about Error Statistics",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Recent Errors List",
+          "node_id": "004",
+          "start_index": 4,
+          "end_index": 5,
+          "summary": "Section about Recent Errors List",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Filtering",
+          "node_id": "005",
+          "start_index": 5,
+          "end_index": 6,
+          "summary": "Section about Filtering",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Understanding Errors",
+          "node_id": "006",
+          "start_index": 6,
+          "end_index": 7,
+          "summary": "Section about Understanding Errors",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Common Error Types",
+          "node_id": "007",
+          "start_index": 7,
+          "end_index": 8,
+          "summary": "Section about Common Error Types",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Severity Levels",
+          "node_id": "008",
+          "start_index": 8,
+          "end_index": 9,
+          "summary": "Section about Severity Levels",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "For Developers",
+          "node_id": "009",
+          "start_index": 9,
+          "end_index": 10,
+          "summary": "Section about For Developers",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Troubleshooting Tips",
+          "node_id": "010",
+          "start_index": 10,
+          "end_index": 11,
+          "summary": "Section about Troubleshooting Tips",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "If You See Errors",
+          "node_id": "011",
+          "start_index": 11,
+          "end_index": 12,
+          "summary": "Section about If You See Errors",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Persistent Errors",
+          "node_id": "012",
+          "start_index": 12,
+          "end_index": 13,
+          "summary": "Section about Persistent Errors",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Privacy",
+          "node_id": "013",
+          "start_index": 13,
+          "end_index": 14,
+          "summary": "Section about Privacy",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "For Most Users",
+          "node_id": "014",
+          "start_index": 14,
+          "end_index": 15,
+          "summary": "Section about For Most Users",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "Error Dashboard",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about Error Dashboard",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Accessing Error Dashboard",
+      "node_id": "001",
+      "start_index": 1,
+      "end_index": 2,
+      "summary": "Section about Accessing Error Dashboard",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "What It Shows",
+      "node_id": "002",
+      "start_index": 2,
+      "end_index": 3,
+      "summary": "Section about What It Shows",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Error Statistics",
+      "node_id": "003",
+      "start_index": 3,
+      "end_index": 4,
+      "summary": "Section about Error Statistics",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Recent Errors List",
+      "node_id": "004",
+      "start_index": 4,
+      "end_index": 5,
+      "summary": "Section about Recent Errors List",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Filtering",
+      "node_id": "005",
+      "start_index": 5,
+      "end_index": 6,
+      "summary": "Section about Filtering",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Understanding Errors",
+      "node_id": "006",
+      "start_index": 6,
+      "end_index": 7,
+      "summary": "Section about Understanding Errors",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Common Error Types",
+      "node_id": "007",
+      "start_index": 7,
+      "end_index": 8,
+      "summary": "Section about Common Error Types",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Severity Levels",
+      "node_id": "008",
+      "start_index": 8,
+      "end_index": 9,
+      "summary": "Section about Severity Levels",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "For Developers",
+      "node_id": "009",
+      "start_index": 9,
+      "end_index": 10,
+      "summary": "Section about For Developers",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Troubleshooting Tips",
+      "node_id": "010",
+      "start_index": 10,
+      "end_index": 11,
+      "summary": "Section about Troubleshooting Tips",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "If You See Errors",
+      "node_id": "011",
+      "start_index": 11,
+      "end_index": 12,
+      "summary": "Section about If You See Errors",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Persistent Errors",
+      "node_id": "012",
+      "start_index": 12,
+      "end_index": 13,
+      "summary": "Section about Persistent Errors",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Privacy",
+      "node_id": "013",
+      "start_index": 13,
+      "end_index": 14,
+      "summary": "Section about Privacy",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "For Most Users",
+      "node_id": "014",
+      "start_index": 14,
+      "end_index": 15,
+      "summary": "Section about For Most Users",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:46:05.176Z"
+}

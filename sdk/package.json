@@ -1,10 +1,11 @@
 {
   "name": "@vivim/sdk",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "VIVIM SDK - Open-Source E2E Self-Contained Toolkit for Decentralized Applications",
   "type": "module",
   "bin": {
-    "vivim": "src/cli/vivim-git.ts",
+    "vivim": "src/cli/vivim-cli.ts",
+    "vivim-git": "src/cli/vivim-git.ts",
     "vivim-node": "src/cli/vivim-node.ts"
   },
   "main": "dist/index.js",
@@ -22,6 +23,18 @@
       "import": "./dist/nodes/index.js",
       "types": "./dist/nodes/index.d.ts"
     },
+    "./services": {
+      "import": "./dist/services/index.js",
+      "types": "./dist/services/index.d.ts"
+    },
+    "./protocols": {
+      "import": "./dist/protocols/index.js",
+      "types": "./dist/protocols/index.d.ts"
+    },
+    "./utils": {
+      "import": "./dist/utils/index.js",
+      "types": "./dist/utils/index.d.ts"
+    },
     "./bun": {
       "import": "./dist/bun/index.js",
       "types": "./dist/bun/index.d.ts"
@@ -38,16 +51,23 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@vivim/network-engine": "workspace:*",
+    "@helia/car": "^5.3.9",
+    "@helia/dag-cbor": "^5.0.7",
+    "@helia/ipns": "^9.1.9",
+    "@helia/remote-pinning": "^2.0.4",
+    "@helia/unixfs": "^7.0.4",
+    "@ipld/dag-cbor": "^9.2.5",
+    "@noble/ciphers": "^0.4.0",
     "@noble/ed25519": "^2.0.0",
     "@noble/hashes": "^1.3.0",
-    "@noble/ciphers": "^0.4.0",
+    "@vivim/network-engine": "workspace:*",
+    "debug": "^4.3.4",
+    "eventemitter3": "^5.0.1",
+    "helia": "^6.0.20",
     "multiformats": "^13.0.0",
     "uint8arrays": "^5.0.0",
-    "eventemitter3": "^5.0.1",
-    "zod": "^3.22.4",
-    "debug": "^4.3.4",
-    "yjs": "^13.6.0"
+    "yjs": "^13.6.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/debug": "^4.1.12",

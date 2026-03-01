@@ -57,6 +57,33 @@ export type { GraphNode, GraphEdge, SubGraph, GraphMetrics } from './context-gra
 // --- Enhancement 10: Memory System (Second Brain) ---
 export * from './memory';
 
+// --- Enhancement 11: Cortex Phase 1 (Adaptive Intelligence) ---
+export {
+  SituationDetector,
+  AdaptiveContextAssembler,
+  MemoryCompressionService,
+  SITUATION_ARCHETYPES,
+  quantizeToInt8,
+  dequantizeFromInt8,
+  binaryQuantize,
+  hammingDistance,
+  simHash,
+} from './cortex';
+export type {
+  SituationArchetype,
+  DetectedSituation,
+  SituationSignal,
+  ContextOverride,
+  AdaptiveAssemblyResult,
+  ModelProfile,
+  CompressionTier,
+  CompressedMemory,
+  MemoryEmbedding,
+  CompressedMemoryMeta,
+  TierStats,
+  CompressionConfig,
+} from './cortex';
+
 // --- Utilities ---
 export { SimpleTokenEstimator } from './utils/token-estimator';
 export { EmbeddingService, MockEmbeddingService } from './utils/embedding-service';

@@ -1,0 +1,54 @@
+{
+  "documentId": "network-crdt",
+  "title": "network-crdt",
+  "tree": {
+    "title": "network-crdt",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 1,
+    "summary": "Documentation for network-crdt",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "CRDT Implementation",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about CRDT Implementation",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "network-crdt",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Documentation for network-crdt",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "CRDT Implementation",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about CRDT Implementation",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "CRDT Implementation",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about CRDT Implementation",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:48:19.530Z"
+}

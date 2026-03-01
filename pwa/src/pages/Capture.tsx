@@ -16,6 +16,7 @@ import {
   useIOSToast,
 } from '../components/ios';
 import { Loader2, CheckCircle, Download, Shield, Fingerprint, Activity, Clock, Zap, AlertCircle, List, Send } from 'lucide-react';
+import { DAGMaterializer } from '../components/sovereignty/DAGMaterializer';
 
 type CaptureStatus = 'idle' | 'extracting' | 'signing' | 'saving' | 'success' | 'error';
 
@@ -467,6 +468,11 @@ export const Capture: React.FC = () => {
               <p className="text-gray-500 dark:text-gray-400 mb-6">
                 {bulkResults ? `Processing ${bulkResults.length} conversations...` : `Processing ${targetUrl ? (targetUrl.length > 30 ? targetUrl.substring(0, 30) + '...' : targetUrl) : 'source'}`}
               </p>
+
+              {/* DAG Materializer Visualization */}
+              {!bulkResults && (
+                <DAGMaterializer progress={progress} status={status === 'extracting' ? 'Extracting' : status === 'signing' ? 'Signing' : 'Saving'} />
+              )}
 
               {/* Progress Bar */}
               <div className="w-full mb-6">

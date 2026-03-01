@@ -1,0 +1,513 @@
+{
+  "documentId": "security-overview",
+  "title": "security-overview",
+  "tree": {
+    "title": "security-overview",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 18,
+    "summary": "Documentation for security-overview",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "Security Architecture",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about Security Architecture",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Security Layers",
+        "node_id": "001",
+        "start_index": 1,
+        "end_index": 2,
+        "summary": "Section about Security Layers",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Authentication",
+        "node_id": "002",
+        "start_index": 2,
+        "end_index": 3,
+        "summary": "Section about Authentication",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Methods",
+        "node_id": "003",
+        "start_index": 3,
+        "end_index": 4,
+        "summary": "Section about Methods",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "OAuth Flow",
+        "node_id": "004",
+        "start_index": 4,
+        "end_index": 5,
+        "summary": "Section about OAuth Flow",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Authorization",
+        "node_id": "005",
+        "start_index": 5,
+        "end_index": 6,
+        "summary": "Section about Authorization",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Permission Model",
+        "node_id": "006",
+        "start_index": 6,
+        "end_index": 7,
+        "summary": "Section about Permission Model",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Roles",
+        "node_id": "007",
+        "start_index": 7,
+        "end_index": 8,
+        "summary": "Section about Roles",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Encryption",
+        "node_id": "008",
+        "start_index": 8,
+        "end_index": 9,
+        "summary": "Section about Encryption",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "End-to-End Encryption",
+        "node_id": "009",
+        "start_index": 9,
+        "end_index": 10,
+        "summary": "Section about End-to-End Encryption",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Data at Rest",
+        "node_id": "010",
+        "start_index": 10,
+        "end_index": 11,
+        "summary": "Section about Data at Rest",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Input Validation",
+        "node_id": "011",
+        "start_index": 11,
+        "end_index": 12,
+        "summary": "Section about Input Validation",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Validation Pipeline",
+        "node_id": "012",
+        "start_index": 12,
+        "end_index": 13,
+        "summary": "Section about Validation Pipeline",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Allowed Patterns",
+        "node_id": "013",
+        "start_index": 13,
+        "end_index": 14,
+        "summary": "Section about Allowed Patterns",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Security Headers",
+        "node_id": "014",
+        "start_index": 14,
+        "end_index": 15,
+        "summary": "Section about Security Headers",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Audit Logging",
+        "node_id": "015",
+        "start_index": 15,
+        "end_index": 16,
+        "summary": "Section about Audit Logging",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Events Logged",
+        "node_id": "016",
+        "start_index": 16,
+        "end_index": 17,
+        "summary": "Section about Events Logged",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Log Format",
+        "node_id": "017",
+        "start_index": 17,
+        "end_index": 18,
+        "summary": "Section about Log Format",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "security-overview",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 18,
+      "summary": "Documentation for security-overview",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "Security Architecture",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about Security Architecture",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Security Layers",
+          "node_id": "001",
+          "start_index": 1,
+          "end_index": 2,
+          "summary": "Section about Security Layers",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Authentication",
+          "node_id": "002",
+          "start_index": 2,
+          "end_index": 3,
+          "summary": "Section about Authentication",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Methods",
+          "node_id": "003",
+          "start_index": 3,
+          "end_index": 4,
+          "summary": "Section about Methods",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "OAuth Flow",
+          "node_id": "004",
+          "start_index": 4,
+          "end_index": 5,
+          "summary": "Section about OAuth Flow",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Authorization",
+          "node_id": "005",
+          "start_index": 5,
+          "end_index": 6,
+          "summary": "Section about Authorization",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Permission Model",
+          "node_id": "006",
+          "start_index": 6,
+          "end_index": 7,
+          "summary": "Section about Permission Model",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Roles",
+          "node_id": "007",
+          "start_index": 7,
+          "end_index": 8,
+          "summary": "Section about Roles",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Encryption",
+          "node_id": "008",
+          "start_index": 8,
+          "end_index": 9,
+          "summary": "Section about Encryption",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "End-to-End Encryption",
+          "node_id": "009",
+          "start_index": 9,
+          "end_index": 10,
+          "summary": "Section about End-to-End Encryption",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Data at Rest",
+          "node_id": "010",
+          "start_index": 10,
+          "end_index": 11,
+          "summary": "Section about Data at Rest",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Input Validation",
+          "node_id": "011",
+          "start_index": 11,
+          "end_index": 12,
+          "summary": "Section about Input Validation",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Validation Pipeline",
+          "node_id": "012",
+          "start_index": 12,
+          "end_index": 13,
+          "summary": "Section about Validation Pipeline",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Allowed Patterns",
+          "node_id": "013",
+          "start_index": 13,
+          "end_index": 14,
+          "summary": "Section about Allowed Patterns",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Security Headers",
+          "node_id": "014",
+          "start_index": 14,
+          "end_index": 15,
+          "summary": "Section about Security Headers",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Audit Logging",
+          "node_id": "015",
+          "start_index": 15,
+          "end_index": 16,
+          "summary": "Section about Audit Logging",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Events Logged",
+          "node_id": "016",
+          "start_index": 16,
+          "end_index": 17,
+          "summary": "Section about Events Logged",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Log Format",
+          "node_id": "017",
+          "start_index": 17,
+          "end_index": 18,
+          "summary": "Section about Log Format",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "Security Architecture",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about Security Architecture",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Security Layers",
+      "node_id": "001",
+      "start_index": 1,
+      "end_index": 2,
+      "summary": "Section about Security Layers",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Authentication",
+      "node_id": "002",
+      "start_index": 2,
+      "end_index": 3,
+      "summary": "Section about Authentication",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Methods",
+      "node_id": "003",
+      "start_index": 3,
+      "end_index": 4,
+      "summary": "Section about Methods",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "OAuth Flow",
+      "node_id": "004",
+      "start_index": 4,
+      "end_index": 5,
+      "summary": "Section about OAuth Flow",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Authorization",
+      "node_id": "005",
+      "start_index": 5,
+      "end_index": 6,
+      "summary": "Section about Authorization",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Permission Model",
+      "node_id": "006",
+      "start_index": 6,
+      "end_index": 7,
+      "summary": "Section about Permission Model",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Roles",
+      "node_id": "007",
+      "start_index": 7,
+      "end_index": 8,
+      "summary": "Section about Roles",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Encryption",
+      "node_id": "008",
+      "start_index": 8,
+      "end_index": 9,
+      "summary": "Section about Encryption",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "End-to-End Encryption",
+      "node_id": "009",
+      "start_index": 9,
+      "end_index": 10,
+      "summary": "Section about End-to-End Encryption",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Data at Rest",
+      "node_id": "010",
+      "start_index": 10,
+      "end_index": 11,
+      "summary": "Section about Data at Rest",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Input Validation",
+      "node_id": "011",
+      "start_index": 11,
+      "end_index": 12,
+      "summary": "Section about Input Validation",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Validation Pipeline",
+      "node_id": "012",
+      "start_index": 12,
+      "end_index": 13,
+      "summary": "Section about Validation Pipeline",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Allowed Patterns",
+      "node_id": "013",
+      "start_index": 13,
+      "end_index": 14,
+      "summary": "Section about Allowed Patterns",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Security Headers",
+      "node_id": "014",
+      "start_index": 14,
+      "end_index": 15,
+      "summary": "Section about Security Headers",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Audit Logging",
+      "node_id": "015",
+      "start_index": 15,
+      "end_index": 16,
+      "summary": "Section about Audit Logging",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Events Logged",
+      "node_id": "016",
+      "start_index": 16,
+      "end_index": 17,
+      "summary": "Section about Events Logged",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Log Format",
+      "node_id": "017",
+      "start_index": 17,
+      "end_index": 18,
+      "summary": "Section about Log Format",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:47:08.792Z"
+}

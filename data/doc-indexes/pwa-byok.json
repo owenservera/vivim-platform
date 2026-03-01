@@ -1,0 +1,513 @@
+{
+  "documentId": "pwa-byok",
+  "title": "pwa-byok",
+  "tree": {
+    "title": "pwa-byok",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 18,
+    "summary": "Documentation for pwa-byok",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "BYOK - Bring Your Own Key",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about BYOK - Bring Your Own Key",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Supported Providers",
+        "node_id": "001",
+        "start_index": 1,
+        "end_index": 2,
+        "summary": "Section about Supported Providers",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Provider Support Matrix",
+        "node_id": "002",
+        "start_index": 2,
+        "end_index": 3,
+        "summary": "Section about Provider Support Matrix",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Architecture",
+        "node_id": "003",
+        "start_index": 3,
+        "end_index": 4,
+        "summary": "Section about Architecture",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Core Components",
+        "node_id": "004",
+        "start_index": 4,
+        "end_index": 5,
+        "summary": "Section about Core Components",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "API Key Management",
+        "node_id": "005",
+        "start_index": 5,
+        "end_index": 6,
+        "summary": "Section about API Key Management",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Key Storage Security",
+        "node_id": "006",
+        "start_index": 6,
+        "end_index": 7,
+        "summary": "Section about Key Storage Security",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Key Derivation",
+        "node_id": "007",
+        "start_index": 7,
+        "end_index": 8,
+        "summary": "Section about Key Derivation",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Usage Examples",
+        "node_id": "008",
+        "start_index": 8,
+        "end_index": 9,
+        "summary": "Section about Usage Examples",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Adding an API Key",
+        "node_id": "009",
+        "start_index": 9,
+        "end_index": 10,
+        "summary": "Section about Adding an API Key",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Streaming Chat",
+        "node_id": "010",
+        "start_index": 10,
+        "end_index": 11,
+        "summary": "Section about Streaming Chat",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Cost Calculation",
+        "node_id": "011",
+        "start_index": 11,
+        "end_index": 12,
+        "summary": "Section about Cost Calculation",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Pricing Models",
+        "node_id": "012",
+        "start_index": 12,
+        "end_index": 13,
+        "summary": "Section about Pricing Models",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Token Pricing (USD per 1K tokens)",
+        "node_id": "013",
+        "start_index": 13,
+        "end_index": 14,
+        "summary": "Section about Token Pricing (USD per 1K tokens)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Error Handling",
+        "node_id": "014",
+        "start_index": 14,
+        "end_index": 15,
+        "summary": "Section about Error Handling",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Error Codes",
+        "node_id": "015",
+        "start_index": 15,
+        "end_index": 16,
+        "summary": "Section about Error Codes",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Best Practices",
+        "node_id": "016",
+        "start_index": 16,
+        "end_index": 17,
+        "summary": "Section about Best Practices",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Related Documentation",
+        "node_id": "017",
+        "start_index": 17,
+        "end_index": 18,
+        "summary": "Section about Related Documentation",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "pwa-byok",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 18,
+      "summary": "Documentation for pwa-byok",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "BYOK - Bring Your Own Key",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about BYOK - Bring Your Own Key",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Supported Providers",
+          "node_id": "001",
+          "start_index": 1,
+          "end_index": 2,
+          "summary": "Section about Supported Providers",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Provider Support Matrix",
+          "node_id": "002",
+          "start_index": 2,
+          "end_index": 3,
+          "summary": "Section about Provider Support Matrix",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Architecture",
+          "node_id": "003",
+          "start_index": 3,
+          "end_index": 4,
+          "summary": "Section about Architecture",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Core Components",
+          "node_id": "004",
+          "start_index": 4,
+          "end_index": 5,
+          "summary": "Section about Core Components",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "API Key Management",
+          "node_id": "005",
+          "start_index": 5,
+          "end_index": 6,
+          "summary": "Section about API Key Management",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Key Storage Security",
+          "node_id": "006",
+          "start_index": 6,
+          "end_index": 7,
+          "summary": "Section about Key Storage Security",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Key Derivation",
+          "node_id": "007",
+          "start_index": 7,
+          "end_index": 8,
+          "summary": "Section about Key Derivation",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Usage Examples",
+          "node_id": "008",
+          "start_index": 8,
+          "end_index": 9,
+          "summary": "Section about Usage Examples",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Adding an API Key",
+          "node_id": "009",
+          "start_index": 9,
+          "end_index": 10,
+          "summary": "Section about Adding an API Key",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Streaming Chat",
+          "node_id": "010",
+          "start_index": 10,
+          "end_index": 11,
+          "summary": "Section about Streaming Chat",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Cost Calculation",
+          "node_id": "011",
+          "start_index": 11,
+          "end_index": 12,
+          "summary": "Section about Cost Calculation",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Pricing Models",
+          "node_id": "012",
+          "start_index": 12,
+          "end_index": 13,
+          "summary": "Section about Pricing Models",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Token Pricing (USD per 1K tokens)",
+          "node_id": "013",
+          "start_index": 13,
+          "end_index": 14,
+          "summary": "Section about Token Pricing (USD per 1K tokens)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Error Handling",
+          "node_id": "014",
+          "start_index": 14,
+          "end_index": 15,
+          "summary": "Section about Error Handling",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Error Codes",
+          "node_id": "015",
+          "start_index": 15,
+          "end_index": 16,
+          "summary": "Section about Error Codes",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Best Practices",
+          "node_id": "016",
+          "start_index": 16,
+          "end_index": 17,
+          "summary": "Section about Best Practices",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Related Documentation",
+          "node_id": "017",
+          "start_index": 17,
+          "end_index": 18,
+          "summary": "Section about Related Documentation",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "BYOK - Bring Your Own Key",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about BYOK - Bring Your Own Key",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Supported Providers",
+      "node_id": "001",
+      "start_index": 1,
+      "end_index": 2,
+      "summary": "Section about Supported Providers",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Provider Support Matrix",
+      "node_id": "002",
+      "start_index": 2,
+      "end_index": 3,
+      "summary": "Section about Provider Support Matrix",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Architecture",
+      "node_id": "003",
+      "start_index": 3,
+      "end_index": 4,
+      "summary": "Section about Architecture",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Core Components",
+      "node_id": "004",
+      "start_index": 4,
+      "end_index": 5,
+      "summary": "Section about Core Components",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "API Key Management",
+      "node_id": "005",
+      "start_index": 5,
+      "end_index": 6,
+      "summary": "Section about API Key Management",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Key Storage Security",
+      "node_id": "006",
+      "start_index": 6,
+      "end_index": 7,
+      "summary": "Section about Key Storage Security",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Key Derivation",
+      "node_id": "007",
+      "start_index": 7,
+      "end_index": 8,
+      "summary": "Section about Key Derivation",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Usage Examples",
+      "node_id": "008",
+      "start_index": 8,
+      "end_index": 9,
+      "summary": "Section about Usage Examples",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Adding an API Key",
+      "node_id": "009",
+      "start_index": 9,
+      "end_index": 10,
+      "summary": "Section about Adding an API Key",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Streaming Chat",
+      "node_id": "010",
+      "start_index": 10,
+      "end_index": 11,
+      "summary": "Section about Streaming Chat",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Cost Calculation",
+      "node_id": "011",
+      "start_index": 11,
+      "end_index": 12,
+      "summary": "Section about Cost Calculation",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Pricing Models",
+      "node_id": "012",
+      "start_index": 12,
+      "end_index": 13,
+      "summary": "Section about Pricing Models",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Token Pricing (USD per 1K tokens)",
+      "node_id": "013",
+      "start_index": 13,
+      "end_index": 14,
+      "summary": "Section about Token Pricing (USD per 1K tokens)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Error Handling",
+      "node_id": "014",
+      "start_index": 14,
+      "end_index": 15,
+      "summary": "Section about Error Handling",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Error Codes",
+      "node_id": "015",
+      "start_index": 15,
+      "end_index": 16,
+      "summary": "Section about Error Codes",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Best Practices",
+      "node_id": "016",
+      "start_index": 16,
+      "end_index": 17,
+      "summary": "Section about Best Practices",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Related Documentation",
+      "node_id": "017",
+      "start_index": 17,
+      "end_index": 18,
+      "summary": "Section about Related Documentation",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:47:46.748Z"
+}

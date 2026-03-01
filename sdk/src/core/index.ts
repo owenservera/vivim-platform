@@ -172,3 +172,8 @@ export {
   MemoryStore,
   ChainStore,
 } from './database.js';
+
+
+// Wallet Service
+export { WalletService, createWalletService } from './wallet-service.js';
+export type { WalletServiceConfig } from './wallet-service.js';

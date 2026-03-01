@@ -1,0 +1,594 @@
+{
+  "documentId": "getting-started-introduction",
+  "title": "getting-started-introduction",
+  "tree": {
+    "title": "getting-started-introduction",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 21,
+    "summary": "Documentation for getting-started-introduction",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "VIVIM",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about VIVIM",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Your Personal AI Memory Platform",
+        "node_id": "001",
+        "start_index": 1,
+        "end_index": 2,
+        "summary": "Section about Your Personal AI Memory Platform",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "🚀 Open Source",
+        "node_id": "002",
+        "start_index": 2,
+        "end_index": 3,
+        "summary": "Section about 🚀 Open Source",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "GitHub Links",
+        "node_id": "003",
+        "start_index": 3,
+        "end_index": 4,
+        "summary": "Section about GitHub Links",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "📦 VIVIM SDK",
+        "node_id": "004",
+        "start_index": 4,
+        "end_index": 5,
+        "summary": "Section about 📦 VIVIM SDK",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "SDK Architecture",
+        "node_id": "005",
+        "start_index": 5,
+        "end_index": 6,
+        "summary": "Section about SDK Architecture",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "SDK Quick Start",
+        "node_id": "006",
+        "start_index": 6,
+        "end_index": 7,
+        "summary": "Section about SDK Quick Start",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Install the SDK",
+        "node_id": "007",
+        "start_index": 7,
+        "end_index": 8,
+        "summary": "Section about Install the SDK",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "or",
+        "node_id": "008",
+        "start_index": 8,
+        "end_index": 9,
+        "summary": "Section about or",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "SDK Documentation",
+        "node_id": "009",
+        "start_index": 9,
+        "end_index": 10,
+        "summary": "Section about SDK Documentation",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "The Problem",
+        "node_id": "010",
+        "start_index": 10,
+        "end_index": 11,
+        "summary": "Section about The Problem",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "The VIVIM Solution",
+        "node_id": "011",
+        "start_index": 11,
+        "end_index": 12,
+        "summary": "Section about The VIVIM Solution",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "🦾 Universal Capture",
+        "node_id": "012",
+        "start_index": 12,
+        "end_index": 13,
+        "summary": "Section about 🦾 Universal Capture",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "🧠 Dynamic Context",
+        "node_id": "013",
+        "start_index": 13,
+        "end_index": 14,
+        "summary": "Section about 🧠 Dynamic Context",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Core Features",
+        "node_id": "014",
+        "start_index": 14,
+        "end_index": 15,
+        "summary": "Section about Core Features",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Architecture Overview",
+        "node_id": "015",
+        "start_index": 15,
+        "end_index": 16,
+        "summary": "Section about Architecture Overview",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Tech Stack",
+        "node_id": "016",
+        "start_index": 16,
+        "end_index": 17,
+        "summary": "Section about Tech Stack",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Quick Links",
+        "node_id": "017",
+        "start_index": 17,
+        "end_index": 18,
+        "summary": "Section about Quick Links",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "SDK Documentation (NEW!)",
+        "node_id": "018",
+        "start_index": 18,
+        "end_index": 19,
+        "summary": "Section about SDK Documentation (NEW!)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Application Documentation",
+        "node_id": "019",
+        "start_index": 19,
+        "end_index": 20,
+        "summary": "Section about Application Documentation",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "GitHub Repositories",
+        "node_id": "020",
+        "start_index": 20,
+        "end_index": 21,
+        "summary": "Section about GitHub Repositories",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "getting-started-introduction",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 21,
+      "summary": "Documentation for getting-started-introduction",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "VIVIM",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about VIVIM",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Your Personal AI Memory Platform",
+          "node_id": "001",
+          "start_index": 1,
+          "end_index": 2,
+          "summary": "Section about Your Personal AI Memory Platform",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "🚀 Open Source",
+          "node_id": "002",
+          "start_index": 2,
+          "end_index": 3,
+          "summary": "Section about 🚀 Open Source",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "GitHub Links",
+          "node_id": "003",
+          "start_index": 3,
+          "end_index": 4,
+          "summary": "Section about GitHub Links",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "📦 VIVIM SDK",
+          "node_id": "004",
+          "start_index": 4,
+          "end_index": 5,
+          "summary": "Section about 📦 VIVIM SDK",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "SDK Architecture",
+          "node_id": "005",
+          "start_index": 5,
+          "end_index": 6,
+          "summary": "Section about SDK Architecture",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "SDK Quick Start",
+          "node_id": "006",
+          "start_index": 6,
+          "end_index": 7,
+          "summary": "Section about SDK Quick Start",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Install the SDK",
+          "node_id": "007",
+          "start_index": 7,
+          "end_index": 8,
+          "summary": "Section about Install the SDK",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "or",
+          "node_id": "008",
+          "start_index": 8,
+          "end_index": 9,
+          "summary": "Section about or",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "SDK Documentation",
+          "node_id": "009",
+          "start_index": 9,
+          "end_index": 10,
+          "summary": "Section about SDK Documentation",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "The Problem",
+          "node_id": "010",
+          "start_index": 10,
+          "end_index": 11,
+          "summary": "Section about The Problem",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "The VIVIM Solution",
+          "node_id": "011",
+          "start_index": 11,
+          "end_index": 12,
+          "summary": "Section about The VIVIM Solution",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "🦾 Universal Capture",
+          "node_id": "012",
+          "start_index": 12,
+          "end_index": 13,
+          "summary": "Section about 🦾 Universal Capture",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "🧠 Dynamic Context",
+          "node_id": "013",
+          "start_index": 13,
+          "end_index": 14,
+          "summary": "Section about 🧠 Dynamic Context",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Core Features",
+          "node_id": "014",
+          "start_index": 14,
+          "end_index": 15,
+          "summary": "Section about Core Features",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Architecture Overview",
+          "node_id": "015",
+          "start_index": 15,
+          "end_index": 16,
+          "summary": "Section about Architecture Overview",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Tech Stack",
+          "node_id": "016",
+          "start_index": 16,
+          "end_index": 17,
+          "summary": "Section about Tech Stack",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Quick Links",
+          "node_id": "017",
+          "start_index": 17,
+          "end_index": 18,
+          "summary": "Section about Quick Links",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "SDK Documentation (NEW!)",
+          "node_id": "018",
+          "start_index": 18,
+          "end_index": 19,
+          "summary": "Section about SDK Documentation (NEW!)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Application Documentation",
+          "node_id": "019",
+          "start_index": 19,
+          "end_index": 20,
+          "summary": "Section about Application Documentation",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "GitHub Repositories",
+          "node_id": "020",
+          "start_index": 20,
+          "end_index": 21,
+          "summary": "Section about GitHub Repositories",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "VIVIM",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about VIVIM",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Your Personal AI Memory Platform",
+      "node_id": "001",
+      "start_index": 1,
+      "end_index": 2,
+      "summary": "Section about Your Personal AI Memory Platform",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "🚀 Open Source",
+      "node_id": "002",
+      "start_index": 2,
+      "end_index": 3,
+      "summary": "Section about 🚀 Open Source",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "GitHub Links",
+      "node_id": "003",
+      "start_index": 3,
+      "end_index": 4,
+      "summary": "Section about GitHub Links",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "📦 VIVIM SDK",
+      "node_id": "004",
+      "start_index": 4,
+      "end_index": 5,
+      "summary": "Section about 📦 VIVIM SDK",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "SDK Architecture",
+      "node_id": "005",
+      "start_index": 5,
+      "end_index": 6,
+      "summary": "Section about SDK Architecture",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "SDK Quick Start",
+      "node_id": "006",
+      "start_index": 6,
+      "end_index": 7,
+      "summary": "Section about SDK Quick Start",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Install the SDK",
+      "node_id": "007",
+      "start_index": 7,
+      "end_index": 8,
+      "summary": "Section about Install the SDK",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "or",
+      "node_id": "008",
+      "start_index": 8,
+      "end_index": 9,
+      "summary": "Section about or",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "SDK Documentation",
+      "node_id": "009",
+      "start_index": 9,
+      "end_index": 10,
+      "summary": "Section about SDK Documentation",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "The Problem",
+      "node_id": "010",
+      "start_index": 10,
+      "end_index": 11,
+      "summary": "Section about The Problem",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "The VIVIM Solution",
+      "node_id": "011",
+      "start_index": 11,
+      "end_index": 12,
+      "summary": "Section about The VIVIM Solution",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "🦾 Universal Capture",
+      "node_id": "012",
+      "start_index": 12,
+      "end_index": 13,
+      "summary": "Section about 🦾 Universal Capture",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "🧠 Dynamic Context",
+      "node_id": "013",
+      "start_index": 13,
+      "end_index": 14,
+      "summary": "Section about 🧠 Dynamic Context",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Core Features",
+      "node_id": "014",
+      "start_index": 14,
+      "end_index": 15,
+      "summary": "Section about Core Features",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Architecture Overview",
+      "node_id": "015",
+      "start_index": 15,
+      "end_index": 16,
+      "summary": "Section about Architecture Overview",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Tech Stack",
+      "node_id": "016",
+      "start_index": 16,
+      "end_index": 17,
+      "summary": "Section about Tech Stack",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Quick Links",
+      "node_id": "017",
+      "start_index": 17,
+      "end_index": 18,
+      "summary": "Section about Quick Links",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "SDK Documentation (NEW!)",
+      "node_id": "018",
+      "start_index": 18,
+      "end_index": 19,
+      "summary": "Section about SDK Documentation (NEW!)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Application Documentation",
+      "node_id": "019",
+      "start_index": 19,
+      "end_index": 20,
+      "summary": "Section about Application Documentation",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "GitHub Repositories",
+      "node_id": "020",
+      "start_index": 20,
+      "end_index": 21,
+      "summary": "Section about GitHub Repositories",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:48:50.390Z"
+}

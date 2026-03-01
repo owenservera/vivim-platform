@@ -5,6 +5,7 @@ import { getAccountInfo, requestAccountDeletion, cancelAccountDeletion, type Acc
 import { IOSButton, IOSSettingsGroup, IOSSettingsSection, IOSSettingsAction } from '../components/ios';
 import { AccountLoadingScreen, LoadingButton } from '../components/auth';
 import { toast } from '../components/ios';
+import { Totem } from '../components/sovereignty/Totem';
 
 export function AccountPage() {
   const navigate = useNavigate();
@@ -115,9 +116,11 @@ export function AccountPage() {
               className="w-20 h-20 rounded-full border-4 border-white/20"
             />
           ) : (
-            <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-3xl font-bold border-4 border-white/20">
-              {(account.displayName || account.email).charAt(0).toUpperCase()}
-            </div>
+            <Totem 
+              did={account.did || 'unknown'} 
+              size={80} 
+              className="border-4 border-white/20" 
+            />
           )}
           
           <div>

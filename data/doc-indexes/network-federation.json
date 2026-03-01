@@ -1,0 +1,54 @@
+{
+  "documentId": "network-federation",
+  "title": "network-federation",
+  "tree": {
+    "title": "network-federation",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 1,
+    "summary": "Documentation for network-federation",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "Federation Protocol",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about Federation Protocol",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "network-federation",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Documentation for network-federation",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "Federation Protocol",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about Federation Protocol",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "Federation Protocol",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about Federation Protocol",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:48:21.337Z"
+}

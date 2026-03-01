@@ -1,0 +1,918 @@
+{
+  "documentId": "deployment-guide",
+  "title": "deployment-guide",
+  "tree": {
+    "title": "deployment-guide",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 33,
+    "summary": "Documentation for deployment-guide",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "Deployment Guide",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about Deployment Guide",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Architecture",
+        "node_id": "001",
+        "start_index": 1,
+        "end_index": 2,
+        "summary": "Section about Architecture",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Prerequisites",
+        "node_id": "002",
+        "start_index": 2,
+        "end_index": 3,
+        "summary": "Section about Prerequisites",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Configuration",
+        "node_id": "003",
+        "start_index": 3,
+        "end_index": 4,
+        "summary": "Section about Configuration",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Environment Variables",
+        "node_id": "004",
+        "start_index": 4,
+        "end_index": 5,
+        "summary": "Section about Environment Variables",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Required",
+        "node_id": "005",
+        "start_index": 5,
+        "end_index": 6,
+        "summary": "Section about Required",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Optional",
+        "node_id": "006",
+        "start_index": 6,
+        "end_index": 7,
+        "summary": "Section about Optional",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Docker Images",
+        "node_id": "007",
+        "start_index": 7,
+        "end_index": 8,
+        "summary": "Section about Docker Images",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "API Server",
+        "node_id": "008",
+        "start_index": 8,
+        "end_index": 9,
+        "summary": "Section about API Server",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Network Engine",
+        "node_id": "009",
+        "start_index": 9,
+        "end_index": 10,
+        "summary": "Section about Network Engine",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Kubernetes Deployment",
+        "node_id": "010",
+        "start_index": 10,
+        "end_index": 11,
+        "summary": "Section about Kubernetes Deployment",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "API Deployment",
+        "node_id": "011",
+        "start_index": 11,
+        "end_index": 12,
+        "summary": "Section about API Deployment",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Horizontal Pod Autoscaling",
+        "node_id": "012",
+        "start_index": 12,
+        "end_index": 13,
+        "summary": "Section about Horizontal Pod Autoscaling",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Database Setup",
+        "node_id": "013",
+        "start_index": 13,
+        "end_index": 14,
+        "summary": "Section about Database Setup",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Monitoring",
+        "node_id": "014",
+        "start_index": 14,
+        "end_index": 15,
+        "summary": "Section about Monitoring",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Prometheus Metrics",
+        "node_id": "015",
+        "start_index": 15,
+        "end_index": 16,
+        "summary": "Section about Prometheus Metrics",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Key Metrics",
+        "node_id": "016",
+        "start_index": 16,
+        "end_index": 17,
+        "summary": "Section about Key Metrics",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Logging",
+        "node_id": "017",
+        "start_index": 17,
+        "end_index": 18,
+        "summary": "Section about Logging",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Backup & Recovery",
+        "node_id": "018",
+        "start_index": 18,
+        "end_index": 19,
+        "summary": "Section about Backup & Recovery",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Database Backup",
+        "node_id": "019",
+        "start_index": 19,
+        "end_index": 20,
+        "summary": "Section about Database Backup",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Daily backup",
+        "node_id": "020",
+        "start_index": 20,
+        "end_index": 21,
+        "summary": "Section about Daily backup",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Point-in-time recovery",
+        "node_id": "021",
+        "start_index": 21,
+        "end_index": 22,
+        "summary": "Section about Point-in-time recovery",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "S3 Backup",
+        "node_id": "022",
+        "start_index": 22,
+        "end_index": 23,
+        "summary": "Section about S3 Backup",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Enable versioning",
+        "node_id": "023",
+        "start_index": 23,
+        "end_index": 24,
+        "summary": "Section about Enable versioning",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Lifecycle policy",
+        "node_id": "024",
+        "start_index": 24,
+        "end_index": 25,
+        "summary": "Section about Lifecycle policy",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Health Checks",
+        "node_id": "025",
+        "start_index": 25,
+        "end_index": 26,
+        "summary": "Section about Health Checks",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Liveness Probe",
+        "node_id": "026",
+        "start_index": 26,
+        "end_index": 27,
+        "summary": "Section about Liveness Probe",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Readiness Probe",
+        "node_id": "027",
+        "start_index": 27,
+        "end_index": 28,
+        "summary": "Section about Readiness Probe",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "SSL/TLS",
+        "node_id": "028",
+        "start_index": 28,
+        "end_index": 29,
+        "summary": "Section about SSL/TLS",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Disaster Recovery",
+        "node_id": "029",
+        "start_index": 29,
+        "end_index": 30,
+        "summary": "Section about Disaster Recovery",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "RTO/RPO Targets",
+        "node_id": "030",
+        "start_index": 30,
+        "end_index": 31,
+        "summary": "Section about RTO/RPO Targets",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Failover Procedure",
+        "node_id": "031",
+        "start_index": 31,
+        "end_index": 32,
+        "summary": "Section about Failover Procedure",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Scaling Guidelines",
+        "node_id": "032",
+        "start_index": 32,
+        "end_index": 33,
+        "summary": "Section about Scaling Guidelines",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "deployment-guide",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 33,
+      "summary": "Documentation for deployment-guide",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "Deployment Guide",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about Deployment Guide",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Architecture",
+          "node_id": "001",
+          "start_index": 1,
+          "end_index": 2,
+          "summary": "Section about Architecture",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Prerequisites",
+          "node_id": "002",
+          "start_index": 2,
+          "end_index": 3,
+          "summary": "Section about Prerequisites",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Configuration",
+          "node_id": "003",
+          "start_index": 3,
+          "end_index": 4,
+          "summary": "Section about Configuration",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Environment Variables",
+          "node_id": "004",
+          "start_index": 4,
+          "end_index": 5,
+          "summary": "Section about Environment Variables",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Required",
+          "node_id": "005",
+          "start_index": 5,
+          "end_index": 6,
+          "summary": "Section about Required",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Optional",
+          "node_id": "006",
+          "start_index": 6,
+          "end_index": 7,
+          "summary": "Section about Optional",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Docker Images",
+          "node_id": "007",
+          "start_index": 7,
+          "end_index": 8,
+          "summary": "Section about Docker Images",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "API Server",
+          "node_id": "008",
+          "start_index": 8,
+          "end_index": 9,
+          "summary": "Section about API Server",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Network Engine",
+          "node_id": "009",
+          "start_index": 9,
+          "end_index": 10,
+          "summary": "Section about Network Engine",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Kubernetes Deployment",
+          "node_id": "010",
+          "start_index": 10,
+          "end_index": 11,
+          "summary": "Section about Kubernetes Deployment",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "API Deployment",
+          "node_id": "011",
+          "start_index": 11,
+          "end_index": 12,
+          "summary": "Section about API Deployment",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Horizontal Pod Autoscaling",
+          "node_id": "012",
+          "start_index": 12,
+          "end_index": 13,
+          "summary": "Section about Horizontal Pod Autoscaling",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Database Setup",
+          "node_id": "013",
+          "start_index": 13,
+          "end_index": 14,
+          "summary": "Section about Database Setup",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Monitoring",
+          "node_id": "014",
+          "start_index": 14,
+          "end_index": 15,
+          "summary": "Section about Monitoring",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Prometheus Metrics",
+          "node_id": "015",
+          "start_index": 15,
+          "end_index": 16,
+          "summary": "Section about Prometheus Metrics",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Key Metrics",
+          "node_id": "016",
+          "start_index": 16,
+          "end_index": 17,
+          "summary": "Section about Key Metrics",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Logging",
+          "node_id": "017",
+          "start_index": 17,
+          "end_index": 18,
+          "summary": "Section about Logging",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Backup & Recovery",
+          "node_id": "018",
+          "start_index": 18,
+          "end_index": 19,
+          "summary": "Section about Backup & Recovery",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Database Backup",
+          "node_id": "019",
+          "start_index": 19,
+          "end_index": 20,
+          "summary": "Section about Database Backup",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Daily backup",
+          "node_id": "020",
+          "start_index": 20,
+          "end_index": 21,
+          "summary": "Section about Daily backup",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Point-in-time recovery",
+          "node_id": "021",
+          "start_index": 21,
+          "end_index": 22,
+          "summary": "Section about Point-in-time recovery",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "S3 Backup",
+          "node_id": "022",
+          "start_index": 22,
+          "end_index": 23,
+          "summary": "Section about S3 Backup",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Enable versioning",
+          "node_id": "023",
+          "start_index": 23,
+          "end_index": 24,
+          "summary": "Section about Enable versioning",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Lifecycle policy",
+          "node_id": "024",
+          "start_index": 24,
+          "end_index": 25,
+          "summary": "Section about Lifecycle policy",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Health Checks",
+          "node_id": "025",
+          "start_index": 25,
+          "end_index": 26,
+          "summary": "Section about Health Checks",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Liveness Probe",
+          "node_id": "026",
+          "start_index": 26,
+          "end_index": 27,
+          "summary": "Section about Liveness Probe",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Readiness Probe",
+          "node_id": "027",
+          "start_index": 27,
+          "end_index": 28,
+          "summary": "Section about Readiness Probe",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "SSL/TLS",
+          "node_id": "028",
+          "start_index": 28,
+          "end_index": 29,
+          "summary": "Section about SSL/TLS",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Disaster Recovery",
+          "node_id": "029",
+          "start_index": 29,
+          "end_index": 30,
+          "summary": "Section about Disaster Recovery",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "RTO/RPO Targets",
+          "node_id": "030",
+          "start_index": 30,
+          "end_index": 31,
+          "summary": "Section about RTO/RPO Targets",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Failover Procedure",
+          "node_id": "031",
+          "start_index": 31,
+          "end_index": 32,
+          "summary": "Section about Failover Procedure",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Scaling Guidelines",
+          "node_id": "032",
+          "start_index": 32,
+          "end_index": 33,
+          "summary": "Section about Scaling Guidelines",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "Deployment Guide",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about Deployment Guide",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Architecture",
+      "node_id": "001",
+      "start_index": 1,
+      "end_index": 2,
+      "summary": "Section about Architecture",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Prerequisites",
+      "node_id": "002",
+      "start_index": 2,
+      "end_index": 3,
+      "summary": "Section about Prerequisites",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Configuration",
+      "node_id": "003",
+      "start_index": 3,
+      "end_index": 4,
+      "summary": "Section about Configuration",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Environment Variables",
+      "node_id": "004",
+      "start_index": 4,
+      "end_index": 5,
+      "summary": "Section about Environment Variables",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Required",
+      "node_id": "005",
+      "start_index": 5,
+      "end_index": 6,
+      "summary": "Section about Required",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Optional",
+      "node_id": "006",
+      "start_index": 6,
+      "end_index": 7,
+      "summary": "Section about Optional",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Docker Images",
+      "node_id": "007",
+      "start_index": 7,
+      "end_index": 8,
+      "summary": "Section about Docker Images",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "API Server",
+      "node_id": "008",
+      "start_index": 8,
+      "end_index": 9,
+      "summary": "Section about API Server",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Network Engine",
+      "node_id": "009",
+      "start_index": 9,
+      "end_index": 10,
+      "summary": "Section about Network Engine",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Kubernetes Deployment",
+      "node_id": "010",
+      "start_index": 10,
+      "end_index": 11,
+      "summary": "Section about Kubernetes Deployment",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "API Deployment",
+      "node_id": "011",
+      "start_index": 11,
+      "end_index": 12,
+      "summary": "Section about API Deployment",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Horizontal Pod Autoscaling",
+      "node_id": "012",
+      "start_index": 12,
+      "end_index": 13,
+      "summary": "Section about Horizontal Pod Autoscaling",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Database Setup",
+      "node_id": "013",
+      "start_index": 13,
+      "end_index": 14,
+      "summary": "Section about Database Setup",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Monitoring",
+      "node_id": "014",
+      "start_index": 14,
+      "end_index": 15,
+      "summary": "Section about Monitoring",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Prometheus Metrics",
+      "node_id": "015",
+      "start_index": 15,
+      "end_index": 16,
+      "summary": "Section about Prometheus Metrics",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Key Metrics",
+      "node_id": "016",
+      "start_index": 16,
+      "end_index": 17,
+      "summary": "Section about Key Metrics",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Logging",
+      "node_id": "017",
+      "start_index": 17,
+      "end_index": 18,
+      "summary": "Section about Logging",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Backup & Recovery",
+      "node_id": "018",
+      "start_index": 18,
+      "end_index": 19,
+      "summary": "Section about Backup & Recovery",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Database Backup",
+      "node_id": "019",
+      "start_index": 19,
+      "end_index": 20,
+      "summary": "Section about Database Backup",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Daily backup",
+      "node_id": "020",
+      "start_index": 20,
+      "end_index": 21,
+      "summary": "Section about Daily backup",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Point-in-time recovery",
+      "node_id": "021",
+      "start_index": 21,
+      "end_index": 22,
+      "summary": "Section about Point-in-time recovery",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "S3 Backup",
+      "node_id": "022",
+      "start_index": 22,
+      "end_index": 23,
+      "summary": "Section about S3 Backup",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Enable versioning",
+      "node_id": "023",
+      "start_index": 23,
+      "end_index": 24,
+      "summary": "Section about Enable versioning",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Lifecycle policy",
+      "node_id": "024",
+      "start_index": 24,
+      "end_index": 25,
+      "summary": "Section about Lifecycle policy",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Health Checks",
+      "node_id": "025",
+      "start_index": 25,
+      "end_index": 26,
+      "summary": "Section about Health Checks",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Liveness Probe",
+      "node_id": "026",
+      "start_index": 26,
+      "end_index": 27,
+      "summary": "Section about Liveness Probe",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Readiness Probe",
+      "node_id": "027",
+      "start_index": 27,
+      "end_index": 28,
+      "summary": "Section about Readiness Probe",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "SSL/TLS",
+      "node_id": "028",
+      "start_index": 28,
+      "end_index": 29,
+      "summary": "Section about SSL/TLS",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Disaster Recovery",
+      "node_id": "029",
+      "start_index": 29,
+      "end_index": 30,
+      "summary": "Section about Disaster Recovery",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "RTO/RPO Targets",
+      "node_id": "030",
+      "start_index": 30,
+      "end_index": 31,
+      "summary": "Section about RTO/RPO Targets",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Failover Procedure",
+      "node_id": "031",
+      "start_index": 31,
+      "end_index": 32,
+      "summary": "Section about Failover Procedure",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Scaling Guidelines",
+      "node_id": "032",
+      "start_index": 32,
+      "end_index": 33,
+      "summary": "Section about Scaling Guidelines",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:49:08.197Z"
+}

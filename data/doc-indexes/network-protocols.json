@@ -1,0 +1,54 @@
+{
+  "documentId": "network-protocols",
+  "title": "network-protocols",
+  "tree": {
+    "title": "network-protocols",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 1,
+    "summary": "Documentation for network-protocols",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "P2P Protocols",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about P2P Protocols",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "network-protocols",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Documentation for network-protocols",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "P2P Protocols",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about P2P Protocols",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "P2P Protocols",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about P2P Protocols",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:48:32.146Z"
+}

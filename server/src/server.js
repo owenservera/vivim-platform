@@ -66,6 +66,7 @@ import adminCrdtRouter from './routes/admin/crdt.js';
 import adminPubsubRouter from './routes/admin/pubsub.js';
 import adminDataflowRouter from './routes/admin/dataflow.js';
 import contextEngineRouter from './routes/context-engine.ts';
+import docSearchRouter from './routes/doc-search.ts';
 import { bootContextSystem } from './services/context-startup.ts';
 
 // Validate configuration on startup
@@ -470,6 +471,9 @@ app.use('/api/admin/dataflow', adminDataflowRouter);
 
 // Enhanced Dynamic Context Engine routes
 app.use('/api/v2/context-engine', contextEngineRouter);
+
+// Documentation Search (PageIndex-style)
+app.use('/api/docs', docSearchRouter);
 
 // API Documentation (Swagger)
 if (config.enableSwagger) {

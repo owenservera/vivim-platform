@@ -287,11 +287,11 @@ Ready to dive deeper? Here's your path:
 
 | If you want to... | Start here |
 |-------------------|------------|
-| Understand context pipeline | [Context Engine](/docs/architecture/context) |
-| See how sync works | [Sync Architecture](/docs/architecture/sync) |
-| Learn about storage | [Database Schema](/docs/database/schema) |
-| Explore P2P networking | [Network Overview](/docs/network/overview) |
-| Set up development | [Development Guide](/docs/development/guide) |
+| Understand context pipeline | [Context Engine](/architecture/context) |
+| See how sync works | [Sync Architecture](/architecture/sync) |
+| Learn about storage | [Database Schema](/database/schema) |
+| Explore P2P networking | [Network Overview](/network/overview) |
+| Set up development | [Development Guide](/development/guide) |
 
 ---
 

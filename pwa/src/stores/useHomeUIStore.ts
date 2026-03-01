@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 type FilterTab = 'all' | 'pinned' | 'archived' | 'recent';
-type ViewMode = 'list' | 'grid';
+type ViewMode = 'list' | 'grid' | 'graph';
 type SortBy = 'date' | 'messages' | 'title';
 
 interface HomeUIState {

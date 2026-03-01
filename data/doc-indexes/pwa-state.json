@@ -1,0 +1,54 @@
+{
+  "documentId": "pwa-state",
+  "title": "pwa-state",
+  "tree": {
+    "title": "pwa-state",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 1,
+    "summary": "Documentation for pwa-state",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "State Management",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about State Management",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "pwa-state",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Documentation for pwa-state",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "State Management",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about State Management",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "State Management",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about State Management",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:48:08.302Z"
+}

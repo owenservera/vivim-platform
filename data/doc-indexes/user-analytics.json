@@ -1,0 +1,486 @@
+{
+  "documentId": "user-analytics",
+  "title": "user-analytics",
+  "tree": {
+    "title": "user-analytics",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 17,
+    "summary": "Documentation for user-analytics",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "Analytics",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about Analytics",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Accessing Analytics",
+        "node_id": "001",
+        "start_index": 1,
+        "end_index": 2,
+        "summary": "Section about Accessing Analytics",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Overview Metrics",
+        "node_id": "002",
+        "start_index": 2,
+        "end_index": 3,
+        "summary": "Section about Overview Metrics",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Total Feeds",
+        "node_id": "003",
+        "start_index": 3,
+        "end_index": 4,
+        "summary": "Section about Total Feeds",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Impressions",
+        "node_id": "004",
+        "start_index": 4,
+        "end_index": 5,
+        "summary": "Section about Impressions",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Clicks",
+        "node_id": "005",
+        "start_index": 5,
+        "end_index": 6,
+        "summary": "Section about Clicks",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Dismissals",
+        "node_id": "006",
+        "start_index": 6,
+        "end_index": 7,
+        "summary": "Section about Dismissals",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Click-Through Rate (CTR)",
+        "node_id": "007",
+        "start_index": 7,
+        "end_index": 8,
+        "summary": "Section about Click-Through Rate (CTR)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Activity Feed",
+        "node_id": "008",
+        "start_index": 8,
+        "end_index": 9,
+        "summary": "Section about Activity Feed",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Source Distribution",
+        "node_id": "009",
+        "start_index": 9,
+        "end_index": 10,
+        "summary": "Section about Source Distribution",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Managing Analytics",
+        "node_id": "010",
+        "start_index": 10,
+        "end_index": 11,
+        "summary": "Section about Managing Analytics",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Clear Data",
+        "node_id": "011",
+        "start_index": 11,
+        "end_index": 12,
+        "summary": "Section about Clear Data",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Refresh",
+        "node_id": "012",
+        "start_index": 12,
+        "end_index": 13,
+        "summary": "Section about Refresh",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Privacy",
+        "node_id": "013",
+        "start_index": 13,
+        "end_index": 14,
+        "summary": "Section about Privacy",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Use Cases",
+        "node_id": "014",
+        "start_index": 14,
+        "end_index": 15,
+        "summary": "Section about Use Cases",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Understanding Usage",
+        "node_id": "015",
+        "start_index": 15,
+        "end_index": 16,
+        "summary": "Section about Understanding Usage",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Optimization",
+        "node_id": "016",
+        "start_index": 16,
+        "end_index": 17,
+        "summary": "Section about Optimization",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "user-analytics",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 17,
+      "summary": "Documentation for user-analytics",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "Analytics",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about Analytics",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Accessing Analytics",
+          "node_id": "001",
+          "start_index": 1,
+          "end_index": 2,
+          "summary": "Section about Accessing Analytics",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Overview Metrics",
+          "node_id": "002",
+          "start_index": 2,
+          "end_index": 3,
+          "summary": "Section about Overview Metrics",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Total Feeds",
+          "node_id": "003",
+          "start_index": 3,
+          "end_index": 4,
+          "summary": "Section about Total Feeds",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Impressions",
+          "node_id": "004",
+          "start_index": 4,
+          "end_index": 5,
+          "summary": "Section about Impressions",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Clicks",
+          "node_id": "005",
+          "start_index": 5,
+          "end_index": 6,
+          "summary": "Section about Clicks",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Dismissals",
+          "node_id": "006",
+          "start_index": 6,
+          "end_index": 7,
+          "summary": "Section about Dismissals",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Click-Through Rate (CTR)",
+          "node_id": "007",
+          "start_index": 7,
+          "end_index": 8,
+          "summary": "Section about Click-Through Rate (CTR)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Activity Feed",
+          "node_id": "008",
+          "start_index": 8,
+          "end_index": 9,
+          "summary": "Section about Activity Feed",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Source Distribution",
+          "node_id": "009",
+          "start_index": 9,
+          "end_index": 10,
+          "summary": "Section about Source Distribution",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Managing Analytics",
+          "node_id": "010",
+          "start_index": 10,
+          "end_index": 11,
+          "summary": "Section about Managing Analytics",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Clear Data",
+          "node_id": "011",
+          "start_index": 11,
+          "end_index": 12,
+          "summary": "Section about Clear Data",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Refresh",
+          "node_id": "012",
+          "start_index": 12,
+          "end_index": 13,
+          "summary": "Section about Refresh",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Privacy",
+          "node_id": "013",
+          "start_index": 13,
+          "end_index": 14,
+          "summary": "Section about Privacy",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Use Cases",
+          "node_id": "014",
+          "start_index": 14,
+          "end_index": 15,
+          "summary": "Section about Use Cases",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Understanding Usage",
+          "node_id": "015",
+          "start_index": 15,
+          "end_index": 16,
+          "summary": "Section about Understanding Usage",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Optimization",
+          "node_id": "016",
+          "start_index": 16,
+          "end_index": 17,
+          "summary": "Section about Optimization",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "Analytics",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about Analytics",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Accessing Analytics",
+      "node_id": "001",
+      "start_index": 1,
+      "end_index": 2,
+      "summary": "Section about Accessing Analytics",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Overview Metrics",
+      "node_id": "002",
+      "start_index": 2,
+      "end_index": 3,
+      "summary": "Section about Overview Metrics",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Total Feeds",
+      "node_id": "003",
+      "start_index": 3,
+      "end_index": 4,
+      "summary": "Section about Total Feeds",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Impressions",
+      "node_id": "004",
+      "start_index": 4,
+      "end_index": 5,
+      "summary": "Section about Impressions",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Clicks",
+      "node_id": "005",
+      "start_index": 5,
+      "end_index": 6,
+      "summary": "Section about Clicks",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Dismissals",
+      "node_id": "006",
+      "start_index": 6,
+      "end_index": 7,
+      "summary": "Section about Dismissals",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Click-Through Rate (CTR)",
+      "node_id": "007",
+      "start_index": 7,
+      "end_index": 8,
+      "summary": "Section about Click-Through Rate (CTR)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Activity Feed",
+      "node_id": "008",
+      "start_index": 8,
+      "end_index": 9,
+      "summary": "Section about Activity Feed",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Source Distribution",
+      "node_id": "009",
+      "start_index": 9,
+      "end_index": 10,
+      "summary": "Section about Source Distribution",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Managing Analytics",
+      "node_id": "010",
+      "start_index": 10,
+      "end_index": 11,
+      "summary": "Section about Managing Analytics",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Clear Data",
+      "node_id": "011",
+      "start_index": 11,
+      "end_index": 12,
+      "summary": "Section about Clear Data",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Refresh",
+      "node_id": "012",
+      "start_index": 12,
+      "end_index": 13,
+      "summary": "Section about Refresh",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Privacy",
+      "node_id": "013",
+      "start_index": 13,
+      "end_index": 14,
+      "summary": "Section about Privacy",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Use Cases",
+      "node_id": "014",
+      "start_index": 14,
+      "end_index": 15,
+      "summary": "Section about Use Cases",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Understanding Usage",
+      "node_id": "015",
+      "start_index": 15,
+      "end_index": 16,
+      "summary": "Section about Understanding Usage",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Optimization",
+      "node_id": "016",
+      "start_index": 16,
+      "end_index": 17,
+      "summary": "Section about Optimization",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:44:50.324Z"
+}

@@ -129,4 +129,4 @@ For even more detail, visit **Context Cockpit** to see:
 - Token allocation in real-time
 - Assembly performance metrics
 
-See [Context Cockpit](/docs/user/context-cockpit) for details.
+See [Context Cockpit](/user/context-cockpit) for details.

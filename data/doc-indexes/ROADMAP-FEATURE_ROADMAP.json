@@ -1,0 +1,2538 @@
+{
+  "documentId": "ROADMAP-FEATURE_ROADMAP",
+  "title": "ROADMAP-FEATURE_ROADMAP",
+  "tree": {
+    "title": "ROADMAP-FEATURE_ROADMAP",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 93,
+    "summary": "Documentation for ROADMAP-FEATURE_ROADMAP",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "VIVIM Feature Roadmap",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about VIVIM Feature Roadmap",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "📋 Table of Contents",
+        "node_id": "001",
+        "start_index": 1,
+        "end_index": 2,
+        "summary": "Section about 📋 Table of Contents",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Vision",
+        "node_id": "002",
+        "start_index": 2,
+        "end_index": 3,
+        "summary": "Section about Vision",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Roadmap Phases",
+        "node_id": "003",
+        "start_index": 3,
+        "end_index": 4,
+        "summary": "Section about Roadmap Phases",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Phase 0: Genesis (Completed ✅)",
+        "node_id": "004",
+        "start_index": 4,
+        "end_index": 5,
+        "summary": "Section about Phase 0: Genesis (Completed ✅)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Objectives",
+        "node_id": "005",
+        "start_index": 5,
+        "end_index": 6,
+        "summary": "Section about Objectives",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Delivered Features",
+        "node_id": "006",
+        "start_index": 6,
+        "end_index": 7,
+        "summary": "Section about Delivered Features",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Server & API (15 features)",
+        "node_id": "007",
+        "start_index": 7,
+        "end_index": 8,
+        "summary": "Section about Server & API (15 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "PWA Frontend (10 features)",
+        "node_id": "008",
+        "start_index": 8,
+        "end_index": 9,
+        "summary": "Section about PWA Frontend (10 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Infrastructure (5 features)",
+        "node_id": "009",
+        "start_index": 9,
+        "end_index": 10,
+        "summary": "Section about Infrastructure (5 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Phase 1: Foundation (Completed ✅)",
+        "node_id": "010",
+        "start_index": 10,
+        "end_index": 11,
+        "summary": "Section about Phase 1: Foundation (Completed ✅)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Objectives",
+        "node_id": "011",
+        "start_index": 11,
+        "end_index": 12,
+        "summary": "Section about Objectives",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Delivered Features",
+        "node_id": "012",
+        "start_index": 12,
+        "end_index": 13,
+        "summary": "Section about Delivered Features",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "1.1 Network Engine (120 features)",
+        "node_id": "013",
+        "start_index": 13,
+        "end_index": 14,
+        "summary": "Section about 1.1 Network Engine (120 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "P2P Networking (15 features)",
+        "node_id": "014",
+        "start_index": 14,
+        "end_index": 15,
+        "summary": "Section about P2P Networking (15 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "CRDT Synchronization (25 features)",
+        "node_id": "015",
+        "start_index": 15,
+        "end_index": 16,
+        "summary": "Section about CRDT Synchronization (25 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Blockchain Chain Layer (30 features)",
+        "node_id": "016",
+        "start_index": 16,
+        "end_index": 17,
+        "summary": "Section about Blockchain Chain Layer (30 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "DHT & Content Discovery (12 features)",
+        "node_id": "017",
+        "start_index": 17,
+        "end_index": 18,
+        "summary": "Section about DHT & Content Discovery (12 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "PubSub System (10 features)",
+        "node_id": "018",
+        "start_index": 18,
+        "end_index": 19,
+        "summary": "Section about PubSub System (10 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Federation (15 features)",
+        "node_id": "019",
+        "start_index": 19,
+        "end_index": 20,
+        "summary": "Section about Federation (15 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Security (18 features)",
+        "node_id": "020",
+        "start_index": 20,
+        "end_index": 21,
+        "summary": "Section about Security (18 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Error Handling (20 features)",
+        "node_id": "021",
+        "start_index": 21,
+        "end_index": 22,
+        "summary": "Section about Error Handling (20 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "1.2 Server API (180 features)",
+        "node_id": "022",
+        "start_index": 22,
+        "end_index": 23,
+        "summary": "Section about 1.2 Server API (180 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Core APIs (150 endpoints)",
+        "node_id": "023",
+        "start_index": 23,
+        "end_index": 24,
+        "summary": "Section about Core APIs (150 endpoints)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Services (30 features)",
+        "node_id": "024",
+        "start_index": 24,
+        "end_index": 25,
+        "summary": "Section about Services (30 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Middleware (10 features)",
+        "node_id": "025",
+        "start_index": 25,
+        "end_index": 26,
+        "summary": "Section about Middleware (10 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Database Models (35 features)",
+        "node_id": "026",
+        "start_index": 26,
+        "end_index": 27,
+        "summary": "Section about Database Models (35 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "1.3 PWA Frontend (150 features)",
+        "node_id": "027",
+        "start_index": 27,
+        "end_index": 28,
+        "summary": "Section about 1.3 PWA Frontend (150 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Pages (24 features)",
+        "node_id": "028",
+        "start_index": 28,
+        "end_index": 29,
+        "summary": "Section about Pages (24 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Components (80+ features)",
+        "node_id": "029",
+        "start_index": 29,
+        "end_index": 30,
+        "summary": "Section about Components (80+ features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Hooks (18 features)",
+        "node_id": "030",
+        "start_index": 30,
+        "end_index": 31,
+        "summary": "Section about Hooks (18 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "State Management (10 features)",
+        "node_id": "031",
+        "start_index": 31,
+        "end_index": 32,
+        "summary": "Section about State Management (10 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Services (25 features)",
+        "node_id": "032",
+        "start_index": 32,
+        "end_index": 33,
+        "summary": "Section about Services (25 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Storage (15 features)",
+        "node_id": "033",
+        "start_index": 33,
+        "end_index": 34,
+        "summary": "Section about Storage (15 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Recommendation Engine (15 features)",
+        "node_id": "034",
+        "start_index": 34,
+        "end_index": 35,
+        "summary": "Section about Recommendation Engine (15 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "BYOK (8 features)",
+        "node_id": "035",
+        "start_index": 35,
+        "end_index": 36,
+        "summary": "Section about BYOK (8 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "1.4 SDK Foundation (100 features)",
+        "node_id": "036",
+        "start_index": 36,
+        "end_index": 37,
+        "summary": "Section about 1.4 SDK Foundation (100 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Core SDK (20 features)",
+        "node_id": "037",
+        "start_index": 37,
+        "end_index": 38,
+        "summary": "Section about Core SDK (20 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "API Nodes (8 features)",
+        "node_id": "038",
+        "start_index": 38,
+        "end_index": 39,
+        "summary": "Section about API Nodes (8 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Protocols (15 features)",
+        "node_id": "039",
+        "start_index": 39,
+        "end_index": 40,
+        "summary": "Section about Protocols (15 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Extension System (10 features)",
+        "node_id": "040",
+        "start_index": 40,
+        "end_index": 41,
+        "summary": "Section about Extension System (10 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Graph & Registry (12 features)",
+        "node_id": "041",
+        "start_index": 41,
+        "end_index": 42,
+        "summary": "Section about Graph & Registry (12 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "CLI (15 features)",
+        "node_id": "042",
+        "start_index": 42,
+        "end_index": 43,
+        "summary": "Section about CLI (15 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Bun Integration (5 features)",
+        "node_id": "043",
+        "start_index": 43,
+        "end_index": 44,
+        "summary": "Section about Bun Integration (5 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Utilities (15 features)",
+        "node_id": "044",
+        "start_index": 44,
+        "end_index": 45,
+        "summary": "Section about Utilities (15 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Phase 2: Expansion (In Progress 🚧)",
+        "node_id": "045",
+        "start_index": 45,
+        "end_index": 46,
+        "summary": "Section about Phase 2: Expansion (In Progress 🚧)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Objectives",
+        "node_id": "046",
+        "start_index": 46,
+        "end_index": 47,
+        "summary": "Section about Objectives",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "In Progress Features",
+        "node_id": "047",
+        "start_index": 47,
+        "end_index": 48,
+        "summary": "Section about In Progress Features",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "2.1 Network Enhancements (25 features)",
+        "node_id": "048",
+        "start_index": 48,
+        "end_index": 49,
+        "summary": "Section about 2.1 Network Enhancements (25 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "2.2 SDK Advanced Nodes (3 features)",
+        "node_id": "049",
+        "start_index": 49,
+        "end_index": 50,
+        "summary": "Section about 2.2 SDK Advanced Nodes (3 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "2.3 SDK Apps (8 features)",
+        "node_id": "050",
+        "start_index": 50,
+        "end_index": 51,
+        "summary": "Section about 2.3 SDK Apps (8 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "2.4 Error Handling & Monitoring (5 features)",
+        "node_id": "051",
+        "start_index": 51,
+        "end_index": 52,
+        "summary": "Section about 2.4 Error Handling & Monitoring (5 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "2.5 PWA Enhancements (5 features)",
+        "node_id": "052",
+        "start_index": 52,
+        "end_index": 53,
+        "summary": "Section about 2.5 PWA Enhancements (5 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "2.6 Server Enhancements (5 features)",
+        "node_id": "053",
+        "start_index": 53,
+        "end_index": 54,
+        "summary": "Section about 2.6 Server Enhancements (5 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Phase 2 Deliverables",
+        "node_id": "054",
+        "start_index": 54,
+        "end_index": 55,
+        "summary": "Section about Phase 2 Deliverables",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Phase 2 Timeline",
+        "node_id": "055",
+        "start_index": 55,
+        "end_index": 56,
+        "summary": "Section about Phase 2 Timeline",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Phase 3: Decentralization (Planned ⏳)",
+        "node_id": "056",
+        "start_index": 56,
+        "end_index": 57,
+        "summary": "Section about Phase 3: Decentralization (Planned ⏳)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Objectives",
+        "node_id": "057",
+        "start_index": 57,
+        "end_index": 58,
+        "summary": "Section about Objectives",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Planned Features",
+        "node_id": "058",
+        "start_index": 58,
+        "end_index": 59,
+        "summary": "Section about Planned Features",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "3.1 Full Federation (20 features)",
+        "node_id": "059",
+        "start_index": 59,
+        "end_index": 60,
+        "summary": "Section about 3.1 Full Federation (20 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "3.2 Decentralized Identity (15 features)",
+        "node_id": "060",
+        "start_index": 60,
+        "end_index": 61,
+        "summary": "Section about 3.2 Decentralized Identity (15 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "3.3 Governance (10 features)",
+        "node_id": "061",
+        "start_index": 61,
+        "end_index": 62,
+        "summary": "Section about 3.3 Governance (10 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "3.4 Token Economics (Optional) (10 features)",
+        "node_id": "062",
+        "start_index": 62,
+        "end_index": 63,
+        "summary": "Section about 3.4 Token Economics (Optional) (10 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "3.5 Advanced P2P (15 features)",
+        "node_id": "063",
+        "start_index": 63,
+        "end_index": 64,
+        "summary": "Section about 3.5 Advanced P2P (15 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Phase 3 Deliverables",
+        "node_id": "064",
+        "start_index": 64,
+        "end_index": 65,
+        "summary": "Section about Phase 3 Deliverables",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Phase 4: Ecosystem (Future 🔮)",
+        "node_id": "065",
+        "start_index": 65,
+        "end_index": 66,
+        "summary": "Section about Phase 4: Ecosystem (Future 🔮)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Objectives",
+        "node_id": "066",
+        "start_index": 66,
+        "end_index": 67,
+        "summary": "Section about Objectives",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Vision Features",
+        "node_id": "067",
+        "start_index": 67,
+        "end_index": 68,
+        "summary": "Section about Vision Features",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "4.1 Developer Ecosystem (25 features)",
+        "node_id": "068",
+        "start_index": 68,
+        "end_index": 69,
+        "summary": "Section about 4.1 Developer Ecosystem (25 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "4.2 Enterprise Features (20 features)",
+        "node_id": "069",
+        "start_index": 69,
+        "end_index": 70,
+        "summary": "Section about 4.2 Enterprise Features (20 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "4.3 AI Advancements (20 features)",
+        "node_id": "070",
+        "start_index": 70,
+        "end_index": 71,
+        "summary": "Section about 4.3 AI Advancements (20 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "4.4 Social & Community (15 features)",
+        "node_id": "071",
+        "start_index": 71,
+        "end_index": 72,
+        "summary": "Section about 4.4 Social & Community (15 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "4.5 Global Scale (15 features)",
+        "node_id": "072",
+        "start_index": 72,
+        "end_index": 73,
+        "summary": "Section about 4.5 Global Scale (15 features)",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Phase 4 Deliverables",
+        "node_id": "073",
+        "start_index": 73,
+        "end_index": 74,
+        "summary": "Section about Phase 4 Deliverables",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Feature Status Legend",
+        "node_id": "074",
+        "start_index": 74,
+        "end_index": 75,
+        "summary": "Section about Feature Status Legend",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Timeline Visualization",
+        "node_id": "075",
+        "start_index": 75,
+        "end_index": 76,
+        "summary": "Section about Timeline Visualization",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Overall Progress",
+        "node_id": "076",
+        "start_index": 76,
+        "end_index": 77,
+        "summary": "Section about Overall Progress",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Feature Status Distribution",
+        "node_id": "077",
+        "start_index": 77,
+        "end_index": 78,
+        "summary": "Section about Feature Status Distribution",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Completion by Component",
+        "node_id": "078",
+        "start_index": 78,
+        "end_index": 79,
+        "summary": "Section about Completion by Component",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Key Milestones",
+        "node_id": "079",
+        "start_index": 79,
+        "end_index": 80,
+        "summary": "Section about Key Milestones",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "2025 Milestones",
+        "node_id": "080",
+        "start_index": 80,
+        "end_index": 81,
+        "summary": "Section about 2025 Milestones",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "2026 Milestones",
+        "node_id": "081",
+        "start_index": 81,
+        "end_index": 82,
+        "summary": "Section about 2026 Milestones",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "2027 Milestones",
+        "node_id": "082",
+        "start_index": 82,
+        "end_index": 83,
+        "summary": "Section about 2027 Milestones",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Risk Assessment",
+        "node_id": "083",
+        "start_index": 83,
+        "end_index": 84,
+        "summary": "Section about Risk Assessment",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "High Priority Risks",
+        "node_id": "084",
+        "start_index": 84,
+        "end_index": 85,
+        "summary": "Section about High Priority Risks",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Medium Priority Risks",
+        "node_id": "085",
+        "start_index": 85,
+        "end_index": 86,
+        "summary": "Section about Medium Priority Risks",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Success Metrics",
+        "node_id": "086",
+        "start_index": 86,
+        "end_index": 87,
+        "summary": "Section about Success Metrics",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Technical Metrics",
+        "node_id": "087",
+        "start_index": 87,
+        "end_index": 88,
+        "summary": "Section about Technical Metrics",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "User Metrics",
+        "node_id": "088",
+        "start_index": 88,
+        "end_index": 89,
+        "summary": "Section about User Metrics",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Business Metrics",
+        "node_id": "089",
+        "start_index": 89,
+        "end_index": 90,
+        "summary": "Section about Business Metrics",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Contributing to the Roadmap",
+        "node_id": "090",
+        "start_index": 90,
+        "end_index": 91,
+        "summary": "Section about Contributing to the Roadmap",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Roadmap Governance",
+        "node_id": "091",
+        "start_index": 91,
+        "end_index": 92,
+        "summary": "Section about Roadmap Governance",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Contact & Updates",
+        "node_id": "092",
+        "start_index": 92,
+        "end_index": 93,
+        "summary": "Section about Contact & Updates",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "ROADMAP-FEATURE_ROADMAP",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 93,
+      "summary": "Documentation for ROADMAP-FEATURE_ROADMAP",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "VIVIM Feature Roadmap",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about VIVIM Feature Roadmap",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "📋 Table of Contents",
+          "node_id": "001",
+          "start_index": 1,
+          "end_index": 2,
+          "summary": "Section about 📋 Table of Contents",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Vision",
+          "node_id": "002",
+          "start_index": 2,
+          "end_index": 3,
+          "summary": "Section about Vision",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Roadmap Phases",
+          "node_id": "003",
+          "start_index": 3,
+          "end_index": 4,
+          "summary": "Section about Roadmap Phases",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Phase 0: Genesis (Completed ✅)",
+          "node_id": "004",
+          "start_index": 4,
+          "end_index": 5,
+          "summary": "Section about Phase 0: Genesis (Completed ✅)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Objectives",
+          "node_id": "005",
+          "start_index": 5,
+          "end_index": 6,
+          "summary": "Section about Objectives",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Delivered Features",
+          "node_id": "006",
+          "start_index": 6,
+          "end_index": 7,
+          "summary": "Section about Delivered Features",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Server & API (15 features)",
+          "node_id": "007",
+          "start_index": 7,
+          "end_index": 8,
+          "summary": "Section about Server & API (15 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "PWA Frontend (10 features)",
+          "node_id": "008",
+          "start_index": 8,
+          "end_index": 9,
+          "summary": "Section about PWA Frontend (10 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Infrastructure (5 features)",
+          "node_id": "009",
+          "start_index": 9,
+          "end_index": 10,
+          "summary": "Section about Infrastructure (5 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Phase 1: Foundation (Completed ✅)",
+          "node_id": "010",
+          "start_index": 10,
+          "end_index": 11,
+          "summary": "Section about Phase 1: Foundation (Completed ✅)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Objectives",
+          "node_id": "011",
+          "start_index": 11,
+          "end_index": 12,
+          "summary": "Section about Objectives",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Delivered Features",
+          "node_id": "012",
+          "start_index": 12,
+          "end_index": 13,
+          "summary": "Section about Delivered Features",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "1.1 Network Engine (120 features)",
+          "node_id": "013",
+          "start_index": 13,
+          "end_index": 14,
+          "summary": "Section about 1.1 Network Engine (120 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "P2P Networking (15 features)",
+          "node_id": "014",
+          "start_index": 14,
+          "end_index": 15,
+          "summary": "Section about P2P Networking (15 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "CRDT Synchronization (25 features)",
+          "node_id": "015",
+          "start_index": 15,
+          "end_index": 16,
+          "summary": "Section about CRDT Synchronization (25 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Blockchain Chain Layer (30 features)",
+          "node_id": "016",
+          "start_index": 16,
+          "end_index": 17,
+          "summary": "Section about Blockchain Chain Layer (30 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "DHT & Content Discovery (12 features)",
+          "node_id": "017",
+          "start_index": 17,
+          "end_index": 18,
+          "summary": "Section about DHT & Content Discovery (12 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "PubSub System (10 features)",
+          "node_id": "018",
+          "start_index": 18,
+          "end_index": 19,
+          "summary": "Section about PubSub System (10 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Federation (15 features)",
+          "node_id": "019",
+          "start_index": 19,
+          "end_index": 20,
+          "summary": "Section about Federation (15 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Security (18 features)",
+          "node_id": "020",
+          "start_index": 20,
+          "end_index": 21,
+          "summary": "Section about Security (18 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Error Handling (20 features)",
+          "node_id": "021",
+          "start_index": 21,
+          "end_index": 22,
+          "summary": "Section about Error Handling (20 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "1.2 Server API (180 features)",
+          "node_id": "022",
+          "start_index": 22,
+          "end_index": 23,
+          "summary": "Section about 1.2 Server API (180 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Core APIs (150 endpoints)",
+          "node_id": "023",
+          "start_index": 23,
+          "end_index": 24,
+          "summary": "Section about Core APIs (150 endpoints)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Services (30 features)",
+          "node_id": "024",
+          "start_index": 24,
+          "end_index": 25,
+          "summary": "Section about Services (30 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Middleware (10 features)",
+          "node_id": "025",
+          "start_index": 25,
+          "end_index": 26,
+          "summary": "Section about Middleware (10 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Database Models (35 features)",
+          "node_id": "026",
+          "start_index": 26,
+          "end_index": 27,
+          "summary": "Section about Database Models (35 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "1.3 PWA Frontend (150 features)",
+          "node_id": "027",
+          "start_index": 27,
+          "end_index": 28,
+          "summary": "Section about 1.3 PWA Frontend (150 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Pages (24 features)",
+          "node_id": "028",
+          "start_index": 28,
+          "end_index": 29,
+          "summary": "Section about Pages (24 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Components (80+ features)",
+          "node_id": "029",
+          "start_index": 29,
+          "end_index": 30,
+          "summary": "Section about Components (80+ features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Hooks (18 features)",
+          "node_id": "030",
+          "start_index": 30,
+          "end_index": 31,
+          "summary": "Section about Hooks (18 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "State Management (10 features)",
+          "node_id": "031",
+          "start_index": 31,
+          "end_index": 32,
+          "summary": "Section about State Management (10 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Services (25 features)",
+          "node_id": "032",
+          "start_index": 32,
+          "end_index": 33,
+          "summary": "Section about Services (25 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Storage (15 features)",
+          "node_id": "033",
+          "start_index": 33,
+          "end_index": 34,
+          "summary": "Section about Storage (15 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Recommendation Engine (15 features)",
+          "node_id": "034",
+          "start_index": 34,
+          "end_index": 35,
+          "summary": "Section about Recommendation Engine (15 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "BYOK (8 features)",
+          "node_id": "035",
+          "start_index": 35,
+          "end_index": 36,
+          "summary": "Section about BYOK (8 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "1.4 SDK Foundation (100 features)",
+          "node_id": "036",
+          "start_index": 36,
+          "end_index": 37,
+          "summary": "Section about 1.4 SDK Foundation (100 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Core SDK (20 features)",
+          "node_id": "037",
+          "start_index": 37,
+          "end_index": 38,
+          "summary": "Section about Core SDK (20 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "API Nodes (8 features)",
+          "node_id": "038",
+          "start_index": 38,
+          "end_index": 39,
+          "summary": "Section about API Nodes (8 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Protocols (15 features)",
+          "node_id": "039",
+          "start_index": 39,
+          "end_index": 40,
+          "summary": "Section about Protocols (15 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Extension System (10 features)",
+          "node_id": "040",
+          "start_index": 40,
+          "end_index": 41,
+          "summary": "Section about Extension System (10 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Graph & Registry (12 features)",
+          "node_id": "041",
+          "start_index": 41,
+          "end_index": 42,
+          "summary": "Section about Graph & Registry (12 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "CLI (15 features)",
+          "node_id": "042",
+          "start_index": 42,
+          "end_index": 43,
+          "summary": "Section about CLI (15 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Bun Integration (5 features)",
+          "node_id": "043",
+          "start_index": 43,
+          "end_index": 44,
+          "summary": "Section about Bun Integration (5 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Utilities (15 features)",
+          "node_id": "044",
+          "start_index": 44,
+          "end_index": 45,
+          "summary": "Section about Utilities (15 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Phase 2: Expansion (In Progress 🚧)",
+          "node_id": "045",
+          "start_index": 45,
+          "end_index": 46,
+          "summary": "Section about Phase 2: Expansion (In Progress 🚧)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Objectives",
+          "node_id": "046",
+          "start_index": 46,
+          "end_index": 47,
+          "summary": "Section about Objectives",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "In Progress Features",
+          "node_id": "047",
+          "start_index": 47,
+          "end_index": 48,
+          "summary": "Section about In Progress Features",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "2.1 Network Enhancements (25 features)",
+          "node_id": "048",
+          "start_index": 48,
+          "end_index": 49,
+          "summary": "Section about 2.1 Network Enhancements (25 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "2.2 SDK Advanced Nodes (3 features)",
+          "node_id": "049",
+          "start_index": 49,
+          "end_index": 50,
+          "summary": "Section about 2.2 SDK Advanced Nodes (3 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "2.3 SDK Apps (8 features)",
+          "node_id": "050",
+          "start_index": 50,
+          "end_index": 51,
+          "summary": "Section about 2.3 SDK Apps (8 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "2.4 Error Handling & Monitoring (5 features)",
+          "node_id": "051",
+          "start_index": 51,
+          "end_index": 52,
+          "summary": "Section about 2.4 Error Handling & Monitoring (5 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "2.5 PWA Enhancements (5 features)",
+          "node_id": "052",
+          "start_index": 52,
+          "end_index": 53,
+          "summary": "Section about 2.5 PWA Enhancements (5 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "2.6 Server Enhancements (5 features)",
+          "node_id": "053",
+          "start_index": 53,
+          "end_index": 54,
+          "summary": "Section about 2.6 Server Enhancements (5 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Phase 2 Deliverables",
+          "node_id": "054",
+          "start_index": 54,
+          "end_index": 55,
+          "summary": "Section about Phase 2 Deliverables",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Phase 2 Timeline",
+          "node_id": "055",
+          "start_index": 55,
+          "end_index": 56,
+          "summary": "Section about Phase 2 Timeline",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Phase 3: Decentralization (Planned ⏳)",
+          "node_id": "056",
+          "start_index": 56,
+          "end_index": 57,
+          "summary": "Section about Phase 3: Decentralization (Planned ⏳)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Objectives",
+          "node_id": "057",
+          "start_index": 57,
+          "end_index": 58,
+          "summary": "Section about Objectives",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Planned Features",
+          "node_id": "058",
+          "start_index": 58,
+          "end_index": 59,
+          "summary": "Section about Planned Features",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "3.1 Full Federation (20 features)",
+          "node_id": "059",
+          "start_index": 59,
+          "end_index": 60,
+          "summary": "Section about 3.1 Full Federation (20 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "3.2 Decentralized Identity (15 features)",
+          "node_id": "060",
+          "start_index": 60,
+          "end_index": 61,
+          "summary": "Section about 3.2 Decentralized Identity (15 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "3.3 Governance (10 features)",
+          "node_id": "061",
+          "start_index": 61,
+          "end_index": 62,
+          "summary": "Section about 3.3 Governance (10 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "3.4 Token Economics (Optional) (10 features)",
+          "node_id": "062",
+          "start_index": 62,
+          "end_index": 63,
+          "summary": "Section about 3.4 Token Economics (Optional) (10 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "3.5 Advanced P2P (15 features)",
+          "node_id": "063",
+          "start_index": 63,
+          "end_index": 64,
+          "summary": "Section about 3.5 Advanced P2P (15 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Phase 3 Deliverables",
+          "node_id": "064",
+          "start_index": 64,
+          "end_index": 65,
+          "summary": "Section about Phase 3 Deliverables",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Phase 4: Ecosystem (Future 🔮)",
+          "node_id": "065",
+          "start_index": 65,
+          "end_index": 66,
+          "summary": "Section about Phase 4: Ecosystem (Future 🔮)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Objectives",
+          "node_id": "066",
+          "start_index": 66,
+          "end_index": 67,
+          "summary": "Section about Objectives",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Vision Features",
+          "node_id": "067",
+          "start_index": 67,
+          "end_index": 68,
+          "summary": "Section about Vision Features",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "4.1 Developer Ecosystem (25 features)",
+          "node_id": "068",
+          "start_index": 68,
+          "end_index": 69,
+          "summary": "Section about 4.1 Developer Ecosystem (25 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "4.2 Enterprise Features (20 features)",
+          "node_id": "069",
+          "start_index": 69,
+          "end_index": 70,
+          "summary": "Section about 4.2 Enterprise Features (20 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "4.3 AI Advancements (20 features)",
+          "node_id": "070",
+          "start_index": 70,
+          "end_index": 71,
+          "summary": "Section about 4.3 AI Advancements (20 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "4.4 Social & Community (15 features)",
+          "node_id": "071",
+          "start_index": 71,
+          "end_index": 72,
+          "summary": "Section about 4.4 Social & Community (15 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "4.5 Global Scale (15 features)",
+          "node_id": "072",
+          "start_index": 72,
+          "end_index": 73,
+          "summary": "Section about 4.5 Global Scale (15 features)",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Phase 4 Deliverables",
+          "node_id": "073",
+          "start_index": 73,
+          "end_index": 74,
+          "summary": "Section about Phase 4 Deliverables",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Feature Status Legend",
+          "node_id": "074",
+          "start_index": 74,
+          "end_index": 75,
+          "summary": "Section about Feature Status Legend",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Timeline Visualization",
+          "node_id": "075",
+          "start_index": 75,
+          "end_index": 76,
+          "summary": "Section about Timeline Visualization",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Overall Progress",
+          "node_id": "076",
+          "start_index": 76,
+          "end_index": 77,
+          "summary": "Section about Overall Progress",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Feature Status Distribution",
+          "node_id": "077",
+          "start_index": 77,
+          "end_index": 78,
+          "summary": "Section about Feature Status Distribution",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Completion by Component",
+          "node_id": "078",
+          "start_index": 78,
+          "end_index": 79,
+          "summary": "Section about Completion by Component",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Key Milestones",
+          "node_id": "079",
+          "start_index": 79,
+          "end_index": 80,
+          "summary": "Section about Key Milestones",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "2025 Milestones",
+          "node_id": "080",
+          "start_index": 80,
+          "end_index": 81,
+          "summary": "Section about 2025 Milestones",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "2026 Milestones",
+          "node_id": "081",
+          "start_index": 81,
+          "end_index": 82,
+          "summary": "Section about 2026 Milestones",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "2027 Milestones",
+          "node_id": "082",
+          "start_index": 82,
+          "end_index": 83,
+          "summary": "Section about 2027 Milestones",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Risk Assessment",
+          "node_id": "083",
+          "start_index": 83,
+          "end_index": 84,
+          "summary": "Section about Risk Assessment",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "High Priority Risks",
+          "node_id": "084",
+          "start_index": 84,
+          "end_index": 85,
+          "summary": "Section about High Priority Risks",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Medium Priority Risks",
+          "node_id": "085",
+          "start_index": 85,
+          "end_index": 86,
+          "summary": "Section about Medium Priority Risks",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Success Metrics",
+          "node_id": "086",
+          "start_index": 86,
+          "end_index": 87,
+          "summary": "Section about Success Metrics",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Technical Metrics",
+          "node_id": "087",
+          "start_index": 87,
+          "end_index": 88,
+          "summary": "Section about Technical Metrics",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "User Metrics",
+          "node_id": "088",
+          "start_index": 88,
+          "end_index": 89,
+          "summary": "Section about User Metrics",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Business Metrics",
+          "node_id": "089",
+          "start_index": 89,
+          "end_index": 90,
+          "summary": "Section about Business Metrics",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Contributing to the Roadmap",
+          "node_id": "090",
+          "start_index": 90,
+          "end_index": 91,
+          "summary": "Section about Contributing to the Roadmap",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Roadmap Governance",
+          "node_id": "091",
+          "start_index": 91,
+          "end_index": 92,
+          "summary": "Section about Roadmap Governance",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Contact & Updates",
+          "node_id": "092",
+          "start_index": 92,
+          "end_index": 93,
+          "summary": "Section about Contact & Updates",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "VIVIM Feature Roadmap",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about VIVIM Feature Roadmap",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "📋 Table of Contents",
+      "node_id": "001",
+      "start_index": 1,
+      "end_index": 2,
+      "summary": "Section about 📋 Table of Contents",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Vision",
+      "node_id": "002",
+      "start_index": 2,
+      "end_index": 3,
+      "summary": "Section about Vision",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Roadmap Phases",
+      "node_id": "003",
+      "start_index": 3,
+      "end_index": 4,
+      "summary": "Section about Roadmap Phases",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Phase 0: Genesis (Completed ✅)",
+      "node_id": "004",
+      "start_index": 4,
+      "end_index": 5,
+      "summary": "Section about Phase 0: Genesis (Completed ✅)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Objectives",
+      "node_id": "005",
+      "start_index": 5,
+      "end_index": 6,
+      "summary": "Section about Objectives",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Delivered Features",
+      "node_id": "006",
+      "start_index": 6,
+      "end_index": 7,
+      "summary": "Section about Delivered Features",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Server & API (15 features)",
+      "node_id": "007",
+      "start_index": 7,
+      "end_index": 8,
+      "summary": "Section about Server & API (15 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "PWA Frontend (10 features)",
+      "node_id": "008",
+      "start_index": 8,
+      "end_index": 9,
+      "summary": "Section about PWA Frontend (10 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Infrastructure (5 features)",
+      "node_id": "009",
+      "start_index": 9,
+      "end_index": 10,
+      "summary": "Section about Infrastructure (5 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Phase 1: Foundation (Completed ✅)",
+      "node_id": "010",
+      "start_index": 10,
+      "end_index": 11,
+      "summary": "Section about Phase 1: Foundation (Completed ✅)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Objectives",
+      "node_id": "011",
+      "start_index": 11,
+      "end_index": 12,
+      "summary": "Section about Objectives",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Delivered Features",
+      "node_id": "012",
+      "start_index": 12,
+      "end_index": 13,
+      "summary": "Section about Delivered Features",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "1.1 Network Engine (120 features)",
+      "node_id": "013",
+      "start_index": 13,
+      "end_index": 14,
+      "summary": "Section about 1.1 Network Engine (120 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "P2P Networking (15 features)",
+      "node_id": "014",
+      "start_index": 14,
+      "end_index": 15,
+      "summary": "Section about P2P Networking (15 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "CRDT Synchronization (25 features)",
+      "node_id": "015",
+      "start_index": 15,
+      "end_index": 16,
+      "summary": "Section about CRDT Synchronization (25 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Blockchain Chain Layer (30 features)",
+      "node_id": "016",
+      "start_index": 16,
+      "end_index": 17,
+      "summary": "Section about Blockchain Chain Layer (30 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "DHT & Content Discovery (12 features)",
+      "node_id": "017",
+      "start_index": 17,
+      "end_index": 18,
+      "summary": "Section about DHT & Content Discovery (12 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "PubSub System (10 features)",
+      "node_id": "018",
+      "start_index": 18,
+      "end_index": 19,
+      "summary": "Section about PubSub System (10 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Federation (15 features)",
+      "node_id": "019",
+      "start_index": 19,
+      "end_index": 20,
+      "summary": "Section about Federation (15 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Security (18 features)",
+      "node_id": "020",
+      "start_index": 20,
+      "end_index": 21,
+      "summary": "Section about Security (18 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Error Handling (20 features)",
+      "node_id": "021",
+      "start_index": 21,
+      "end_index": 22,
+      "summary": "Section about Error Handling (20 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "1.2 Server API (180 features)",
+      "node_id": "022",
+      "start_index": 22,
+      "end_index": 23,
+      "summary": "Section about 1.2 Server API (180 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Core APIs (150 endpoints)",
+      "node_id": "023",
+      "start_index": 23,
+      "end_index": 24,
+      "summary": "Section about Core APIs (150 endpoints)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Services (30 features)",
+      "node_id": "024",
+      "start_index": 24,
+      "end_index": 25,
+      "summary": "Section about Services (30 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Middleware (10 features)",
+      "node_id": "025",
+      "start_index": 25,
+      "end_index": 26,
+      "summary": "Section about Middleware (10 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Database Models (35 features)",
+      "node_id": "026",
+      "start_index": 26,
+      "end_index": 27,
+      "summary": "Section about Database Models (35 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "1.3 PWA Frontend (150 features)",
+      "node_id": "027",
+      "start_index": 27,
+      "end_index": 28,
+      "summary": "Section about 1.3 PWA Frontend (150 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Pages (24 features)",
+      "node_id": "028",
+      "start_index": 28,
+      "end_index": 29,
+      "summary": "Section about Pages (24 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Components (80+ features)",
+      "node_id": "029",
+      "start_index": 29,
+      "end_index": 30,
+      "summary": "Section about Components (80+ features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Hooks (18 features)",
+      "node_id": "030",
+      "start_index": 30,
+      "end_index": 31,
+      "summary": "Section about Hooks (18 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "State Management (10 features)",
+      "node_id": "031",
+      "start_index": 31,
+      "end_index": 32,
+      "summary": "Section about State Management (10 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Services (25 features)",
+      "node_id": "032",
+      "start_index": 32,
+      "end_index": 33,
+      "summary": "Section about Services (25 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Storage (15 features)",
+      "node_id": "033",
+      "start_index": 33,
+      "end_index": 34,
+      "summary": "Section about Storage (15 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Recommendation Engine (15 features)",
+      "node_id": "034",
+      "start_index": 34,
+      "end_index": 35,
+      "summary": "Section about Recommendation Engine (15 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "BYOK (8 features)",
+      "node_id": "035",
+      "start_index": 35,
+      "end_index": 36,
+      "summary": "Section about BYOK (8 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "1.4 SDK Foundation (100 features)",
+      "node_id": "036",
+      "start_index": 36,
+      "end_index": 37,
+      "summary": "Section about 1.4 SDK Foundation (100 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Core SDK (20 features)",
+      "node_id": "037",
+      "start_index": 37,
+      "end_index": 38,
+      "summary": "Section about Core SDK (20 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "API Nodes (8 features)",
+      "node_id": "038",
+      "start_index": 38,
+      "end_index": 39,
+      "summary": "Section about API Nodes (8 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Protocols (15 features)",
+      "node_id": "039",
+      "start_index": 39,
+      "end_index": 40,
+      "summary": "Section about Protocols (15 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Extension System (10 features)",
+      "node_id": "040",
+      "start_index": 40,
+      "end_index": 41,
+      "summary": "Section about Extension System (10 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Graph & Registry (12 features)",
+      "node_id": "041",
+      "start_index": 41,
+      "end_index": 42,
+      "summary": "Section about Graph & Registry (12 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "CLI (15 features)",
+      "node_id": "042",
+      "start_index": 42,
+      "end_index": 43,
+      "summary": "Section about CLI (15 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Bun Integration (5 features)",
+      "node_id": "043",
+      "start_index": 43,
+      "end_index": 44,
+      "summary": "Section about Bun Integration (5 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Utilities (15 features)",
+      "node_id": "044",
+      "start_index": 44,
+      "end_index": 45,
+      "summary": "Section about Utilities (15 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Phase 2: Expansion (In Progress 🚧)",
+      "node_id": "045",
+      "start_index": 45,
+      "end_index": 46,
+      "summary": "Section about Phase 2: Expansion (In Progress 🚧)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Objectives",
+      "node_id": "046",
+      "start_index": 46,
+      "end_index": 47,
+      "summary": "Section about Objectives",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "In Progress Features",
+      "node_id": "047",
+      "start_index": 47,
+      "end_index": 48,
+      "summary": "Section about In Progress Features",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "2.1 Network Enhancements (25 features)",
+      "node_id": "048",
+      "start_index": 48,
+      "end_index": 49,
+      "summary": "Section about 2.1 Network Enhancements (25 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "2.2 SDK Advanced Nodes (3 features)",
+      "node_id": "049",
+      "start_index": 49,
+      "end_index": 50,
+      "summary": "Section about 2.2 SDK Advanced Nodes (3 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "2.3 SDK Apps (8 features)",
+      "node_id": "050",
+      "start_index": 50,
+      "end_index": 51,
+      "summary": "Section about 2.3 SDK Apps (8 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "2.4 Error Handling & Monitoring (5 features)",
+      "node_id": "051",
+      "start_index": 51,
+      "end_index": 52,
+      "summary": "Section about 2.4 Error Handling & Monitoring (5 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "2.5 PWA Enhancements (5 features)",
+      "node_id": "052",
+      "start_index": 52,
+      "end_index": 53,
+      "summary": "Section about 2.5 PWA Enhancements (5 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "2.6 Server Enhancements (5 features)",
+      "node_id": "053",
+      "start_index": 53,
+      "end_index": 54,
+      "summary": "Section about 2.6 Server Enhancements (5 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Phase 2 Deliverables",
+      "node_id": "054",
+      "start_index": 54,
+      "end_index": 55,
+      "summary": "Section about Phase 2 Deliverables",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Phase 2 Timeline",
+      "node_id": "055",
+      "start_index": 55,
+      "end_index": 56,
+      "summary": "Section about Phase 2 Timeline",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Phase 3: Decentralization (Planned ⏳)",
+      "node_id": "056",
+      "start_index": 56,
+      "end_index": 57,
+      "summary": "Section about Phase 3: Decentralization (Planned ⏳)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Objectives",
+      "node_id": "057",
+      "start_index": 57,
+      "end_index": 58,
+      "summary": "Section about Objectives",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Planned Features",
+      "node_id": "058",
+      "start_index": 58,
+      "end_index": 59,
+      "summary": "Section about Planned Features",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "3.1 Full Federation (20 features)",
+      "node_id": "059",
+      "start_index": 59,
+      "end_index": 60,
+      "summary": "Section about 3.1 Full Federation (20 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "3.2 Decentralized Identity (15 features)",
+      "node_id": "060",
+      "start_index": 60,
+      "end_index": 61,
+      "summary": "Section about 3.2 Decentralized Identity (15 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "3.3 Governance (10 features)",
+      "node_id": "061",
+      "start_index": 61,
+      "end_index": 62,
+      "summary": "Section about 3.3 Governance (10 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "3.4 Token Economics (Optional) (10 features)",
+      "node_id": "062",
+      "start_index": 62,
+      "end_index": 63,
+      "summary": "Section about 3.4 Token Economics (Optional) (10 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "3.5 Advanced P2P (15 features)",
+      "node_id": "063",
+      "start_index": 63,
+      "end_index": 64,
+      "summary": "Section about 3.5 Advanced P2P (15 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Phase 3 Deliverables",
+      "node_id": "064",
+      "start_index": 64,
+      "end_index": 65,
+      "summary": "Section about Phase 3 Deliverables",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Phase 4: Ecosystem (Future 🔮)",
+      "node_id": "065",
+      "start_index": 65,
+      "end_index": 66,
+      "summary": "Section about Phase 4: Ecosystem (Future 🔮)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Objectives",
+      "node_id": "066",
+      "start_index": 66,
+      "end_index": 67,
+      "summary": "Section about Objectives",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Vision Features",
+      "node_id": "067",
+      "start_index": 67,
+      "end_index": 68,
+      "summary": "Section about Vision Features",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "4.1 Developer Ecosystem (25 features)",
+      "node_id": "068",
+      "start_index": 68,
+      "end_index": 69,
+      "summary": "Section about 4.1 Developer Ecosystem (25 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "4.2 Enterprise Features (20 features)",
+      "node_id": "069",
+      "start_index": 69,
+      "end_index": 70,
+      "summary": "Section about 4.2 Enterprise Features (20 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "4.3 AI Advancements (20 features)",
+      "node_id": "070",
+      "start_index": 70,
+      "end_index": 71,
+      "summary": "Section about 4.3 AI Advancements (20 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "4.4 Social & Community (15 features)",
+      "node_id": "071",
+      "start_index": 71,
+      "end_index": 72,
+      "summary": "Section about 4.4 Social & Community (15 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "4.5 Global Scale (15 features)",
+      "node_id": "072",
+      "start_index": 72,
+      "end_index": 73,
+      "summary": "Section about 4.5 Global Scale (15 features)",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Phase 4 Deliverables",
+      "node_id": "073",
+      "start_index": 73,
+      "end_index": 74,
+      "summary": "Section about Phase 4 Deliverables",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Feature Status Legend",
+      "node_id": "074",
+      "start_index": 74,
+      "end_index": 75,
+      "summary": "Section about Feature Status Legend",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Timeline Visualization",
+      "node_id": "075",
+      "start_index": 75,
+      "end_index": 76,
+      "summary": "Section about Timeline Visualization",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Overall Progress",
+      "node_id": "076",
+      "start_index": 76,
+      "end_index": 77,
+      "summary": "Section about Overall Progress",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Feature Status Distribution",
+      "node_id": "077",
+      "start_index": 77,
+      "end_index": 78,
+      "summary": "Section about Feature Status Distribution",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Completion by Component",
+      "node_id": "078",
+      "start_index": 78,
+      "end_index": 79,
+      "summary": "Section about Completion by Component",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Key Milestones",
+      "node_id": "079",
+      "start_index": 79,
+      "end_index": 80,
+      "summary": "Section about Key Milestones",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "2025 Milestones",
+      "node_id": "080",
+      "start_index": 80,
+      "end_index": 81,
+      "summary": "Section about 2025 Milestones",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "2026 Milestones",
+      "node_id": "081",
+      "start_index": 81,
+      "end_index": 82,
+      "summary": "Section about 2026 Milestones",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "2027 Milestones",
+      "node_id": "082",
+      "start_index": 82,
+      "end_index": 83,
+      "summary": "Section about 2027 Milestones",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Risk Assessment",
+      "node_id": "083",
+      "start_index": 83,
+      "end_index": 84,
+      "summary": "Section about Risk Assessment",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "High Priority Risks",
+      "node_id": "084",
+      "start_index": 84,
+      "end_index": 85,
+      "summary": "Section about High Priority Risks",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Medium Priority Risks",
+      "node_id": "085",
+      "start_index": 85,
+      "end_index": 86,
+      "summary": "Section about Medium Priority Risks",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Success Metrics",
+      "node_id": "086",
+      "start_index": 86,
+      "end_index": 87,
+      "summary": "Section about Success Metrics",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Technical Metrics",
+      "node_id": "087",
+      "start_index": 87,
+      "end_index": 88,
+      "summary": "Section about Technical Metrics",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "User Metrics",
+      "node_id": "088",
+      "start_index": 88,
+      "end_index": 89,
+      "summary": "Section about User Metrics",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Business Metrics",
+      "node_id": "089",
+      "start_index": 89,
+      "end_index": 90,
+      "summary": "Section about Business Metrics",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Contributing to the Roadmap",
+      "node_id": "090",
+      "start_index": 90,
+      "end_index": 91,
+      "summary": "Section about Contributing to the Roadmap",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Roadmap Governance",
+      "node_id": "091",
+      "start_index": 91,
+      "end_index": 92,
+      "summary": "Section about Roadmap Governance",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Contact & Updates",
+      "node_id": "092",
+      "start_index": 92,
+      "end_index": 93,
+      "summary": "Section about Contact & Updates",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:47:26.860Z"
+}

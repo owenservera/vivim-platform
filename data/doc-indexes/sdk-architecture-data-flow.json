@@ -1,0 +1,459 @@
+{
+  "documentId": "sdk-architecture-data-flow",
+  "title": "sdk-architecture-data-flow",
+  "tree": {
+    "title": "sdk-architecture-data-flow",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 16,
+    "summary": "Documentation for sdk-architecture-data-flow",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "SDK Architecture & Data Flow",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about SDK Architecture & Data Flow",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "System Architecture Overview",
+        "node_id": "001",
+        "start_index": 1,
+        "end_index": 2,
+        "summary": "Section about System Architecture Overview",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "SDK Initialization Flow",
+        "node_id": "002",
+        "start_index": 2,
+        "end_index": 3,
+        "summary": "Section about SDK Initialization Flow",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Chain of Trust Architecture",
+        "node_id": "003",
+        "start_index": 3,
+        "end_index": 4,
+        "summary": "Section about Chain of Trust Architecture",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "RecordKeeper Data Flow",
+        "node_id": "004",
+        "start_index": 4,
+        "end_index": 5,
+        "summary": "Section about RecordKeeper Data Flow",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Anchor Protocol State Flow",
+        "node_id": "005",
+        "start_index": 5,
+        "end_index": 6,
+        "summary": "Section about Anchor Protocol State Flow",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Storage Node Architecture",
+        "node_id": "006",
+        "start_index": 6,
+        "end_index": 7,
+        "summary": "Section about Storage Node Architecture",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Storage Operation Flow",
+        "node_id": "007",
+        "start_index": 7,
+        "end_index": 8,
+        "summary": "Section about Storage Operation Flow",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Memory Node Architecture",
+        "node_id": "008",
+        "start_index": 8,
+        "end_index": 9,
+        "summary": "Section about Memory Node Architecture",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Memory Creation Flow",
+        "node_id": "009",
+        "start_index": 9,
+        "end_index": 10,
+        "summary": "Section about Memory Creation Flow",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Communication Protocol Flow",
+        "node_id": "010",
+        "start_index": 10,
+        "end_index": 11,
+        "summary": "Section about Communication Protocol Flow",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Node Lifecycle",
+        "node_id": "011",
+        "start_index": 11,
+        "end_index": 12,
+        "summary": "Section about Node Lifecycle",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Self-Design Evolution Flow",
+        "node_id": "012",
+        "start_index": 12,
+        "end_index": 13,
+        "summary": "Section about Self-Design Evolution Flow",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Complete Application Data Flow",
+        "node_id": "013",
+        "start_index": 13,
+        "end_index": 14,
+        "summary": "Section about Complete Application Data Flow",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Related",
+        "node_id": "014",
+        "start_index": 14,
+        "end_index": 15,
+        "summary": "Section about Related",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Links",
+        "node_id": "015",
+        "start_index": 15,
+        "end_index": 16,
+        "summary": "Section about Links",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "sdk-architecture-data-flow",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 16,
+      "summary": "Documentation for sdk-architecture-data-flow",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "SDK Architecture & Data Flow",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about SDK Architecture & Data Flow",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "System Architecture Overview",
+          "node_id": "001",
+          "start_index": 1,
+          "end_index": 2,
+          "summary": "Section about System Architecture Overview",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "SDK Initialization Flow",
+          "node_id": "002",
+          "start_index": 2,
+          "end_index": 3,
+          "summary": "Section about SDK Initialization Flow",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Chain of Trust Architecture",
+          "node_id": "003",
+          "start_index": 3,
+          "end_index": 4,
+          "summary": "Section about Chain of Trust Architecture",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "RecordKeeper Data Flow",
+          "node_id": "004",
+          "start_index": 4,
+          "end_index": 5,
+          "summary": "Section about RecordKeeper Data Flow",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Anchor Protocol State Flow",
+          "node_id": "005",
+          "start_index": 5,
+          "end_index": 6,
+          "summary": "Section about Anchor Protocol State Flow",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Storage Node Architecture",
+          "node_id": "006",
+          "start_index": 6,
+          "end_index": 7,
+          "summary": "Section about Storage Node Architecture",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Storage Operation Flow",
+          "node_id": "007",
+          "start_index": 7,
+          "end_index": 8,
+          "summary": "Section about Storage Operation Flow",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Memory Node Architecture",
+          "node_id": "008",
+          "start_index": 8,
+          "end_index": 9,
+          "summary": "Section about Memory Node Architecture",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Memory Creation Flow",
+          "node_id": "009",
+          "start_index": 9,
+          "end_index": 10,
+          "summary": "Section about Memory Creation Flow",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Communication Protocol Flow",
+          "node_id": "010",
+          "start_index": 10,
+          "end_index": 11,
+          "summary": "Section about Communication Protocol Flow",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Node Lifecycle",
+          "node_id": "011",
+          "start_index": 11,
+          "end_index": 12,
+          "summary": "Section about Node Lifecycle",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Self-Design Evolution Flow",
+          "node_id": "012",
+          "start_index": 12,
+          "end_index": 13,
+          "summary": "Section about Self-Design Evolution Flow",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Complete Application Data Flow",
+          "node_id": "013",
+          "start_index": 13,
+          "end_index": 14,
+          "summary": "Section about Complete Application Data Flow",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Related",
+          "node_id": "014",
+          "start_index": 14,
+          "end_index": 15,
+          "summary": "Section about Related",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Links",
+          "node_id": "015",
+          "start_index": 15,
+          "end_index": 16,
+          "summary": "Section about Links",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "SDK Architecture & Data Flow",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about SDK Architecture & Data Flow",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "System Architecture Overview",
+      "node_id": "001",
+      "start_index": 1,
+      "end_index": 2,
+      "summary": "Section about System Architecture Overview",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "SDK Initialization Flow",
+      "node_id": "002",
+      "start_index": 2,
+      "end_index": 3,
+      "summary": "Section about SDK Initialization Flow",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Chain of Trust Architecture",
+      "node_id": "003",
+      "start_index": 3,
+      "end_index": 4,
+      "summary": "Section about Chain of Trust Architecture",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "RecordKeeper Data Flow",
+      "node_id": "004",
+      "start_index": 4,
+      "end_index": 5,
+      "summary": "Section about RecordKeeper Data Flow",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Anchor Protocol State Flow",
+      "node_id": "005",
+      "start_index": 5,
+      "end_index": 6,
+      "summary": "Section about Anchor Protocol State Flow",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Storage Node Architecture",
+      "node_id": "006",
+      "start_index": 6,
+      "end_index": 7,
+      "summary": "Section about Storage Node Architecture",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Storage Operation Flow",
+      "node_id": "007",
+      "start_index": 7,
+      "end_index": 8,
+      "summary": "Section about Storage Operation Flow",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Memory Node Architecture",
+      "node_id": "008",
+      "start_index": 8,
+      "end_index": 9,
+      "summary": "Section about Memory Node Architecture",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Memory Creation Flow",
+      "node_id": "009",
+      "start_index": 9,
+      "end_index": 10,
+      "summary": "Section about Memory Creation Flow",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Communication Protocol Flow",
+      "node_id": "010",
+      "start_index": 10,
+      "end_index": 11,
+      "summary": "Section about Communication Protocol Flow",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Node Lifecycle",
+      "node_id": "011",
+      "start_index": 11,
+      "end_index": 12,
+      "summary": "Section about Node Lifecycle",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Self-Design Evolution Flow",
+      "node_id": "012",
+      "start_index": 12,
+      "end_index": 13,
+      "summary": "Section about Self-Design Evolution Flow",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Complete Application Data Flow",
+      "node_id": "013",
+      "start_index": 13,
+      "end_index": 14,
+      "summary": "Section about Complete Application Data Flow",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Related",
+      "node_id": "014",
+      "start_index": 14,
+      "end_index": 15,
+      "summary": "Section about Related",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Links",
+      "node_id": "015",
+      "start_index": 15,
+      "end_index": 16,
+      "summary": "Section about Links",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:51:25.405Z"
+}

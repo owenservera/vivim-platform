@@ -36,3 +36,36 @@ export type {
   SyncConfig,
   SyncEvents,
 } from './sync.js';
+
+// Chat Protocol (assistant-ui-VIVIM patterns)
+export * from './chat/index.js';
+
+// Storage Protocol (distributed storage)
+export * from './storage/index.js';
+
+// ActivityPub Protocol (W3C federation standard)
+export {
+  ActivityPubService,
+  ActivityPubHelpers,
+  ACTIVITYPUB_CONTEXT,
+  createActivityPubService,
+} from './activitypub.js';
+
+export type {
+  ActivityPubAPI,
+  ActivityPubObject,
+  ActivityPubActivity,
+  ActivityPubActor,
+  ActivityPubActorType,
+  ActivityPubObjectType,
+  ActivityPubActivityType,
+  ActivityPubImage,
+  ActivityPubTag,
+  ActivityPubAttachment,
+  ActivityPubCollection,
+  ActivityPubCollectionPage,
+  ActivityPubInbox,
+  ActivityPubOutbox,
+  WebFingerResponse,
+  WebFingerLink,
+} from './activitypub.js';

@@ -22,6 +22,7 @@ import { OnChainRecordKeeper } from './recordkeeper.js';
 import { AnchorProtocol } from './anchor.js';
 import { SelfDesignModule } from './self-design.js';
 import { VivimAssistantRuntime } from './assistant-runtime.js';
+import { WalletService, createWalletService, type WalletServiceConfig } from './wallet-service.js';
 
 /**
  * VIVIM SDK
@@ -43,6 +44,7 @@ export class VivimSDK extends (EventEmitter as new () => TypedEventEmitter<SDKEv
   public readonly anchor: AnchorProtocol;
   public readonly selfDesign: SelfDesignModule;
   public readonly assistant: VivimAssistantRuntime;
+  public readonly wallet: WalletService;
 
   constructor(config: VivimSDKConfig = {}) {
     super();
@@ -54,6 +56,7 @@ export class VivimSDK extends (EventEmitter as new () => TypedEventEmitter<SDKEv
     this.anchor = new AnchorProtocol(this);
     this.selfDesign = new SelfDesignModule(this);
     this.assistant = new VivimAssistantRuntime(this);
+    this.wallet = createWalletService(this, config.wallet as WalletServiceConfig | undefined);
 
     this.logger.info('VIVIM SDK initialized', { version: SDK_VERSION });
   }
@@ -90,6 +93,7 @@ export class VivimSDK extends (EventEmitter as new () => TypedEventEmitter<SDKEv
         directories: config.extensions?.directories ?? [],
         registries: config.extensions?.registries ?? [],
       },
+      wallet: config.wallet ?? {},
     };
   }
 
@@ -305,6 +309,10 @@ export class VivimSDK extends (EventEmitter as new () => TypedEventEmitter<SDKEv
       case BUILTIN_NODES.MEMORY: {
         const { MemoryNode } = await import('../nodes/memory-node.js');
         return new MemoryNode(this) as T;
+      }
+      case BUILTIN_NODES.SOVEREIGN_PERMISSIONS: {
+        const { SovereignPermissionsNode } = await import('../nodes/sovereign-permissions-node.js');
+        return new SovereignPermissionsNode(this) as T;
       }
       default:
         return null;

@@ -26,3 +26,20 @@ export {
   type LogLevel,
   type LoggerConfig,
 } from './logger.js';
+
+// Performance Utilities
+export {
+  Cache,
+  BatchProcessor,
+  CircularBuffer,
+  Lazy,
+  ObjectPool,
+  createCache,
+  createBatchProcessor,
+  createCircularBuffer,
+  createObjectPool,
+  debounce as perfDebounce,
+  throttle as perfThrottle,
+  type CacheConfig,
+  type CacheEntry,
+} from './performance.js';

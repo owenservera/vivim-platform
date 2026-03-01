@@ -1,0 +1,1296 @@
+{
+  "documentId": "sdk-core-overview",
+  "title": "sdk-core-overview",
+  "tree": {
+    "title": "sdk-core-overview",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 47,
+    "summary": "Documentation for sdk-core-overview",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "Core SDK",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about Core SDK",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Installation",
+        "node_id": "001",
+        "start_index": 1,
+        "end_index": 2,
+        "summary": "Section about Installation",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Quick Start",
+        "node_id": "002",
+        "start_index": 2,
+        "end_index": 3,
+        "summary": "Section about Quick Start",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "VivimSDK Class",
+        "node_id": "003",
+        "start_index": 3,
+        "end_index": 4,
+        "summary": "Section about VivimSDK Class",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Constructor",
+        "node_id": "004",
+        "start_index": 4,
+        "end_index": 5,
+        "summary": "Section about Constructor",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Configuration",
+        "node_id": "005",
+        "start_index": 5,
+        "end_index": 6,
+        "summary": "Section about Configuration",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Properties",
+        "node_id": "006",
+        "start_index": 6,
+        "end_index": 7,
+        "summary": "Section about Properties",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Methods",
+        "node_id": "007",
+        "start_index": 7,
+        "end_index": 8,
+        "summary": "Section about Methods",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "initialize()",
+        "node_id": "008",
+        "start_index": 8,
+        "end_index": 9,
+        "summary": "Section about initialize()",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "loadNode()",
+        "node_id": "009",
+        "start_index": 9,
+        "end_index": 10,
+        "summary": "Section about loadNode()",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "registerNode()",
+        "node_id": "010",
+        "start_index": 10,
+        "end_index": 11,
+        "summary": "Section about registerNode()",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "unloadNode()",
+        "node_id": "011",
+        "start_index": 11,
+        "end_index": 12,
+        "summary": "Section about unloadNode()",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "destroy()",
+        "node_id": "012",
+        "start_index": 12,
+        "end_index": 13,
+        "summary": "Section about destroy()",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Core Module Accessors",
+        "node_id": "013",
+        "start_index": 13,
+        "end_index": 14,
+        "summary": "Section about Core Module Accessors",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "getRecordKeeper()",
+        "node_id": "014",
+        "start_index": 14,
+        "end_index": 15,
+        "summary": "Section about getRecordKeeper()",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "getAnchorProtocol()",
+        "node_id": "015",
+        "start_index": 15,
+        "end_index": 16,
+        "summary": "Section about getAnchorProtocol()",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "getSelfDesign()",
+        "node_id": "016",
+        "start_index": 16,
+        "end_index": 17,
+        "summary": "Section about getSelfDesign()",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "getAssistant()",
+        "node_id": "017",
+        "start_index": 17,
+        "end_index": 18,
+        "summary": "Section about getAssistant()",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Identity Management",
+        "node_id": "018",
+        "start_index": 18,
+        "end_index": 19,
+        "summary": "Section about Identity Management",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Identity Interface",
+        "node_id": "019",
+        "start_index": 19,
+        "end_index": 20,
+        "summary": "Section about Identity Interface",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Creating Identity",
+        "node_id": "020",
+        "start_index": 20,
+        "end_index": 21,
+        "summary": "Section about Creating Identity",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "RecordKeeper",
+        "node_id": "021",
+        "start_index": 21,
+        "end_index": 22,
+        "summary": "Section about RecordKeeper",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Operation Types",
+        "node_id": "022",
+        "start_index": 22,
+        "end_index": 23,
+        "summary": "Section about Operation Types",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Recording Operations",
+        "node_id": "023",
+        "start_index": 23,
+        "end_index": 24,
+        "summary": "Section about Recording Operations",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Getting Operation History",
+        "node_id": "024",
+        "start_index": 24,
+        "end_index": 25,
+        "summary": "Section about Getting Operation History",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Verifying Operations",
+        "node_id": "025",
+        "start_index": 25,
+        "end_index": 26,
+        "summary": "Section about Verifying Operations",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Anchor Protocol",
+        "node_id": "026",
+        "start_index": 26,
+        "end_index": 27,
+        "summary": "Section about Anchor Protocol",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Trust Levels",
+        "node_id": "027",
+        "start_index": 27,
+        "end_index": 28,
+        "summary": "Section about Trust Levels",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Getting Anchor State",
+        "node_id": "028",
+        "start_index": 28,
+        "end_index": 29,
+        "summary": "Section about Getting Anchor State",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Anchoring State",
+        "node_id": "029",
+        "start_index": 29,
+        "end_index": 30,
+        "summary": "Section about Anchoring State",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Trust Verification",
+        "node_id": "030",
+        "start_index": 30,
+        "end_index": 31,
+        "summary": "Section about Trust Verification",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Self-Design Module",
+        "node_id": "031",
+        "start_index": 31,
+        "end_index": 32,
+        "summary": "Section about Self-Design Module",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Applying Modifications",
+        "node_id": "032",
+        "start_index": 32,
+        "end_index": 33,
+        "summary": "Section about Applying Modifications",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Evolution History",
+        "node_id": "033",
+        "start_index": 33,
+        "end_index": 34,
+        "summary": "Section about Evolution History",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Assistant Runtime",
+        "node_id": "034",
+        "start_index": 34,
+        "end_index": 35,
+        "summary": "Section about Assistant Runtime",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Processing Context",
+        "node_id": "035",
+        "start_index": 35,
+        "end_index": 36,
+        "summary": "Section about Processing Context",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Generating Responses",
+        "node_id": "036",
+        "start_index": 36,
+        "end_index": 37,
+        "summary": "Section about Generating Responses",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Events",
+        "node_id": "037",
+        "start_index": 37,
+        "end_index": 38,
+        "summary": "Section about Events",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Event Types",
+        "node_id": "038",
+        "start_index": 38,
+        "end_index": 39,
+        "summary": "Section about Event Types",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Listening for Events",
+        "node_id": "039",
+        "start_index": 39,
+        "end_index": 40,
+        "summary": "Section about Listening for Events",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Error Handling",
+        "node_id": "040",
+        "start_index": 40,
+        "end_index": 41,
+        "summary": "Section about Error Handling",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Error Codes",
+        "node_id": "041",
+        "start_index": 41,
+        "end_index": 42,
+        "summary": "Section about Error Codes",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Handling Errors",
+        "node_id": "042",
+        "start_index": 42,
+        "end_index": 43,
+        "summary": "Section about Handling Errors",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Examples",
+        "node_id": "043",
+        "start_index": 43,
+        "end_index": 44,
+        "summary": "Section about Examples",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Complete Setup Example",
+        "node_id": "044",
+        "start_index": 44,
+        "end_index": 45,
+        "summary": "Section about Complete Setup Example",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Related",
+        "node_id": "045",
+        "start_index": 45,
+        "end_index": 46,
+        "summary": "Section about Related",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Links",
+        "node_id": "046",
+        "start_index": 46,
+        "end_index": 47,
+        "summary": "Section about Links",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "sdk-core-overview",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 47,
+      "summary": "Documentation for sdk-core-overview",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "Core SDK",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about Core SDK",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Installation",
+          "node_id": "001",
+          "start_index": 1,
+          "end_index": 2,
+          "summary": "Section about Installation",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Quick Start",
+          "node_id": "002",
+          "start_index": 2,
+          "end_index": 3,
+          "summary": "Section about Quick Start",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "VivimSDK Class",
+          "node_id": "003",
+          "start_index": 3,
+          "end_index": 4,
+          "summary": "Section about VivimSDK Class",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Constructor",
+          "node_id": "004",
+          "start_index": 4,
+          "end_index": 5,
+          "summary": "Section about Constructor",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Configuration",
+          "node_id": "005",
+          "start_index": 5,
+          "end_index": 6,
+          "summary": "Section about Configuration",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Properties",
+          "node_id": "006",
+          "start_index": 6,
+          "end_index": 7,
+          "summary": "Section about Properties",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Methods",
+          "node_id": "007",
+          "start_index": 7,
+          "end_index": 8,
+          "summary": "Section about Methods",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "initialize()",
+          "node_id": "008",
+          "start_index": 8,
+          "end_index": 9,
+          "summary": "Section about initialize()",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "loadNode()",
+          "node_id": "009",
+          "start_index": 9,
+          "end_index": 10,
+          "summary": "Section about loadNode()",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "registerNode()",
+          "node_id": "010",
+          "start_index": 10,
+          "end_index": 11,
+          "summary": "Section about registerNode()",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "unloadNode()",
+          "node_id": "011",
+          "start_index": 11,
+          "end_index": 12,
+          "summary": "Section about unloadNode()",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "destroy()",
+          "node_id": "012",
+          "start_index": 12,
+          "end_index": 13,
+          "summary": "Section about destroy()",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Core Module Accessors",
+          "node_id": "013",
+          "start_index": 13,
+          "end_index": 14,
+          "summary": "Section about Core Module Accessors",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "getRecordKeeper()",
+          "node_id": "014",
+          "start_index": 14,
+          "end_index": 15,
+          "summary": "Section about getRecordKeeper()",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "getAnchorProtocol()",
+          "node_id": "015",
+          "start_index": 15,
+          "end_index": 16,
+          "summary": "Section about getAnchorProtocol()",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "getSelfDesign()",
+          "node_id": "016",
+          "start_index": 16,
+          "end_index": 17,
+          "summary": "Section about getSelfDesign()",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "getAssistant()",
+          "node_id": "017",
+          "start_index": 17,
+          "end_index": 18,
+          "summary": "Section about getAssistant()",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Identity Management",
+          "node_id": "018",
+          "start_index": 18,
+          "end_index": 19,
+          "summary": "Section about Identity Management",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Identity Interface",
+          "node_id": "019",
+          "start_index": 19,
+          "end_index": 20,
+          "summary": "Section about Identity Interface",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Creating Identity",
+          "node_id": "020",
+          "start_index": 20,
+          "end_index": 21,
+          "summary": "Section about Creating Identity",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "RecordKeeper",
+          "node_id": "021",
+          "start_index": 21,
+          "end_index": 22,
+          "summary": "Section about RecordKeeper",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Operation Types",
+          "node_id": "022",
+          "start_index": 22,
+          "end_index": 23,
+          "summary": "Section about Operation Types",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Recording Operations",
+          "node_id": "023",
+          "start_index": 23,
+          "end_index": 24,
+          "summary": "Section about Recording Operations",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Getting Operation History",
+          "node_id": "024",
+          "start_index": 24,
+          "end_index": 25,
+          "summary": "Section about Getting Operation History",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Verifying Operations",
+          "node_id": "025",
+          "start_index": 25,
+          "end_index": 26,
+          "summary": "Section about Verifying Operations",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Anchor Protocol",
+          "node_id": "026",
+          "start_index": 26,
+          "end_index": 27,
+          "summary": "Section about Anchor Protocol",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Trust Levels",
+          "node_id": "027",
+          "start_index": 27,
+          "end_index": 28,
+          "summary": "Section about Trust Levels",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Getting Anchor State",
+          "node_id": "028",
+          "start_index": 28,
+          "end_index": 29,
+          "summary": "Section about Getting Anchor State",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Anchoring State",
+          "node_id": "029",
+          "start_index": 29,
+          "end_index": 30,
+          "summary": "Section about Anchoring State",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Trust Verification",
+          "node_id": "030",
+          "start_index": 30,
+          "end_index": 31,
+          "summary": "Section about Trust Verification",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Self-Design Module",
+          "node_id": "031",
+          "start_index": 31,
+          "end_index": 32,
+          "summary": "Section about Self-Design Module",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Applying Modifications",
+          "node_id": "032",
+          "start_index": 32,
+          "end_index": 33,
+          "summary": "Section about Applying Modifications",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Evolution History",
+          "node_id": "033",
+          "start_index": 33,
+          "end_index": 34,
+          "summary": "Section about Evolution History",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Assistant Runtime",
+          "node_id": "034",
+          "start_index": 34,
+          "end_index": 35,
+          "summary": "Section about Assistant Runtime",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Processing Context",
+          "node_id": "035",
+          "start_index": 35,
+          "end_index": 36,
+          "summary": "Section about Processing Context",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Generating Responses",
+          "node_id": "036",
+          "start_index": 36,
+          "end_index": 37,
+          "summary": "Section about Generating Responses",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Events",
+          "node_id": "037",
+          "start_index": 37,
+          "end_index": 38,
+          "summary": "Section about Events",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Event Types",
+          "node_id": "038",
+          "start_index": 38,
+          "end_index": 39,
+          "summary": "Section about Event Types",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Listening for Events",
+          "node_id": "039",
+          "start_index": 39,
+          "end_index": 40,
+          "summary": "Section about Listening for Events",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Error Handling",
+          "node_id": "040",
+          "start_index": 40,
+          "end_index": 41,
+          "summary": "Section about Error Handling",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Error Codes",
+          "node_id": "041",
+          "start_index": 41,
+          "end_index": 42,
+          "summary": "Section about Error Codes",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Handling Errors",
+          "node_id": "042",
+          "start_index": 42,
+          "end_index": 43,
+          "summary": "Section about Handling Errors",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Examples",
+          "node_id": "043",
+          "start_index": 43,
+          "end_index": 44,
+          "summary": "Section about Examples",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Complete Setup Example",
+          "node_id": "044",
+          "start_index": 44,
+          "end_index": 45,
+          "summary": "Section about Complete Setup Example",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Related",
+          "node_id": "045",
+          "start_index": 45,
+          "end_index": 46,
+          "summary": "Section about Related",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Links",
+          "node_id": "046",
+          "start_index": 46,
+          "end_index": 47,
+          "summary": "Section about Links",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "Core SDK",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about Core SDK",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Installation",
+      "node_id": "001",
+      "start_index": 1,
+      "end_index": 2,
+      "summary": "Section about Installation",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Quick Start",
+      "node_id": "002",
+      "start_index": 2,
+      "end_index": 3,
+      "summary": "Section about Quick Start",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "VivimSDK Class",
+      "node_id": "003",
+      "start_index": 3,
+      "end_index": 4,
+      "summary": "Section about VivimSDK Class",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Constructor",
+      "node_id": "004",
+      "start_index": 4,
+      "end_index": 5,
+      "summary": "Section about Constructor",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Configuration",
+      "node_id": "005",
+      "start_index": 5,
+      "end_index": 6,
+      "summary": "Section about Configuration",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Properties",
+      "node_id": "006",
+      "start_index": 6,
+      "end_index": 7,
+      "summary": "Section about Properties",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Methods",
+      "node_id": "007",
+      "start_index": 7,
+      "end_index": 8,
+      "summary": "Section about Methods",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "initialize()",
+      "node_id": "008",
+      "start_index": 8,
+      "end_index": 9,
+      "summary": "Section about initialize()",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "loadNode()",
+      "node_id": "009",
+      "start_index": 9,
+      "end_index": 10,
+      "summary": "Section about loadNode()",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "registerNode()",
+      "node_id": "010",
+      "start_index": 10,
+      "end_index": 11,
+      "summary": "Section about registerNode()",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "unloadNode()",
+      "node_id": "011",
+      "start_index": 11,
+      "end_index": 12,
+      "summary": "Section about unloadNode()",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "destroy()",
+      "node_id": "012",
+      "start_index": 12,
+      "end_index": 13,
+      "summary": "Section about destroy()",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Core Module Accessors",
+      "node_id": "013",
+      "start_index": 13,
+      "end_index": 14,
+      "summary": "Section about Core Module Accessors",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "getRecordKeeper()",
+      "node_id": "014",
+      "start_index": 14,
+      "end_index": 15,
+      "summary": "Section about getRecordKeeper()",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "getAnchorProtocol()",
+      "node_id": "015",
+      "start_index": 15,
+      "end_index": 16,
+      "summary": "Section about getAnchorProtocol()",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "getSelfDesign()",
+      "node_id": "016",
+      "start_index": 16,
+      "end_index": 17,
+      "summary": "Section about getSelfDesign()",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "getAssistant()",
+      "node_id": "017",
+      "start_index": 17,
+      "end_index": 18,
+      "summary": "Section about getAssistant()",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Identity Management",
+      "node_id": "018",
+      "start_index": 18,
+      "end_index": 19,
+      "summary": "Section about Identity Management",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Identity Interface",
+      "node_id": "019",
+      "start_index": 19,
+      "end_index": 20,
+      "summary": "Section about Identity Interface",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Creating Identity",
+      "node_id": "020",
+      "start_index": 20,
+      "end_index": 21,
+      "summary": "Section about Creating Identity",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "RecordKeeper",
+      "node_id": "021",
+      "start_index": 21,
+      "end_index": 22,
+      "summary": "Section about RecordKeeper",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Operation Types",
+      "node_id": "022",
+      "start_index": 22,
+      "end_index": 23,
+      "summary": "Section about Operation Types",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Recording Operations",
+      "node_id": "023",
+      "start_index": 23,
+      "end_index": 24,
+      "summary": "Section about Recording Operations",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Getting Operation History",
+      "node_id": "024",
+      "start_index": 24,
+      "end_index": 25,
+      "summary": "Section about Getting Operation History",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Verifying Operations",
+      "node_id": "025",
+      "start_index": 25,
+      "end_index": 26,
+      "summary": "Section about Verifying Operations",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Anchor Protocol",
+      "node_id": "026",
+      "start_index": 26,
+      "end_index": 27,
+      "summary": "Section about Anchor Protocol",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Trust Levels",
+      "node_id": "027",
+      "start_index": 27,
+      "end_index": 28,
+      "summary": "Section about Trust Levels",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Getting Anchor State",
+      "node_id": "028",
+      "start_index": 28,
+      "end_index": 29,
+      "summary": "Section about Getting Anchor State",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Anchoring State",
+      "node_id": "029",
+      "start_index": 29,
+      "end_index": 30,
+      "summary": "Section about Anchoring State",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Trust Verification",
+      "node_id": "030",
+      "start_index": 30,
+      "end_index": 31,
+      "summary": "Section about Trust Verification",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Self-Design Module",
+      "node_id": "031",
+      "start_index": 31,
+      "end_index": 32,
+      "summary": "Section about Self-Design Module",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Applying Modifications",
+      "node_id": "032",
+      "start_index": 32,
+      "end_index": 33,
+      "summary": "Section about Applying Modifications",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Evolution History",
+      "node_id": "033",
+      "start_index": 33,
+      "end_index": 34,
+      "summary": "Section about Evolution History",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Assistant Runtime",
+      "node_id": "034",
+      "start_index": 34,
+      "end_index": 35,
+      "summary": "Section about Assistant Runtime",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Processing Context",
+      "node_id": "035",
+      "start_index": 35,
+      "end_index": 36,
+      "summary": "Section about Processing Context",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Generating Responses",
+      "node_id": "036",
+      "start_index": 36,
+      "end_index": 37,
+      "summary": "Section about Generating Responses",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Events",
+      "node_id": "037",
+      "start_index": 37,
+      "end_index": 38,
+      "summary": "Section about Events",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Event Types",
+      "node_id": "038",
+      "start_index": 38,
+      "end_index": 39,
+      "summary": "Section about Event Types",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Listening for Events",
+      "node_id": "039",
+      "start_index": 39,
+      "end_index": 40,
+      "summary": "Section about Listening for Events",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Error Handling",
+      "node_id": "040",
+      "start_index": 40,
+      "end_index": 41,
+      "summary": "Section about Error Handling",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Error Codes",
+      "node_id": "041",
+      "start_index": 41,
+      "end_index": 42,
+      "summary": "Section about Error Codes",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Handling Errors",
+      "node_id": "042",
+      "start_index": 42,
+      "end_index": 43,
+      "summary": "Section about Handling Errors",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Examples",
+      "node_id": "043",
+      "start_index": 43,
+      "end_index": 44,
+      "summary": "Section about Examples",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Complete Setup Example",
+      "node_id": "044",
+      "start_index": 44,
+      "end_index": 45,
+      "summary": "Section about Complete Setup Example",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Related",
+      "node_id": "045",
+      "start_index": 45,
+      "end_index": 46,
+      "summary": "Section about Related",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Links",
+      "node_id": "046",
+      "start_index": 46,
+      "end_index": 47,
+      "summary": "Section about Links",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:52:29.668Z"
+}

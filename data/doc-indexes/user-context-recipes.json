@@ -1,0 +1,594 @@
+{
+  "documentId": "user-context-recipes",
+  "title": "user-context-recipes",
+  "tree": {
+    "title": "user-context-recipes",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 21,
+    "summary": "Documentation for user-context-recipes",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "Context Recipes",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about Context Recipes",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "What Are Context Layers?",
+        "node_id": "001",
+        "start_index": 1,
+        "end_index": 2,
+        "summary": "Section about What Are Context Layers?",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Accessing Context Recipes",
+        "node_id": "002",
+        "start_index": 2,
+        "end_index": 3,
+        "summary": "Section about Accessing Context Recipes",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Customizing Layers",
+        "node_id": "003",
+        "start_index": 3,
+        "end_index": 4,
+        "summary": "Section about Customizing Layers",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Enable/Disable",
+        "node_id": "004",
+        "start_index": 4,
+        "end_index": 5,
+        "summary": "Section about Enable/Disable",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Token Budget",
+        "node_id": "005",
+        "start_index": 5,
+        "end_index": 6,
+        "summary": "Section about Token Budget",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Manual Content",
+        "node_id": "006",
+        "start_index": 6,
+        "end_index": 7,
+        "summary": "Section about Manual Content",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Knowledge Depth",
+        "node_id": "007",
+        "start_index": 7,
+        "end_index": 8,
+        "summary": "Section about Knowledge Depth",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Minimal",
+        "node_id": "008",
+        "start_index": 8,
+        "end_index": 9,
+        "summary": "Section about Minimal",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Standard",
+        "node_id": "009",
+        "start_index": 9,
+        "end_index": 10,
+        "summary": "Section about Standard",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Deep",
+        "node_id": "010",
+        "start_index": 10,
+        "end_index": 11,
+        "summary": "Section about Deep",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Preserving History",
+        "node_id": "011",
+        "start_index": 11,
+        "end_index": 12,
+        "summary": "Section about Preserving History",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Prioritize History",
+        "node_id": "012",
+        "start_index": 12,
+        "end_index": 13,
+        "summary": "Section about Prioritize History",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Entity Context",
+        "node_id": "013",
+        "start_index": 13,
+        "end_index": 14,
+        "summary": "Section about Entity Context",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Preview Budget",
+        "node_id": "014",
+        "start_index": 14,
+        "end_index": 15,
+        "summary": "Section about Preview Budget",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Use Cases",
+        "node_id": "015",
+        "start_index": 15,
+        "end_index": 16,
+        "summary": "Section about Use Cases",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Technical Discussions",
+        "node_id": "016",
+        "start_index": 16,
+        "end_index": 17,
+        "summary": "Section about Technical Discussions",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Creative Writing",
+        "node_id": "017",
+        "start_index": 17,
+        "end_index": 18,
+        "summary": "Section about Creative Writing",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Learning",
+        "node_id": "018",
+        "start_index": 18,
+        "end_index": 19,
+        "summary": "Section about Learning",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Best Practices",
+        "node_id": "019",
+        "start_index": 19,
+        "end_index": 20,
+        "summary": "Section about Best Practices",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Context Cockpit",
+        "node_id": "020",
+        "start_index": 20,
+        "end_index": 21,
+        "summary": "Section about Context Cockpit",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "user-context-recipes",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 21,
+      "summary": "Documentation for user-context-recipes",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "Context Recipes",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about Context Recipes",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "What Are Context Layers?",
+          "node_id": "001",
+          "start_index": 1,
+          "end_index": 2,
+          "summary": "Section about What Are Context Layers?",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Accessing Context Recipes",
+          "node_id": "002",
+          "start_index": 2,
+          "end_index": 3,
+          "summary": "Section about Accessing Context Recipes",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Customizing Layers",
+          "node_id": "003",
+          "start_index": 3,
+          "end_index": 4,
+          "summary": "Section about Customizing Layers",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Enable/Disable",
+          "node_id": "004",
+          "start_index": 4,
+          "end_index": 5,
+          "summary": "Section about Enable/Disable",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Token Budget",
+          "node_id": "005",
+          "start_index": 5,
+          "end_index": 6,
+          "summary": "Section about Token Budget",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Manual Content",
+          "node_id": "006",
+          "start_index": 6,
+          "end_index": 7,
+          "summary": "Section about Manual Content",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Knowledge Depth",
+          "node_id": "007",
+          "start_index": 7,
+          "end_index": 8,
+          "summary": "Section about Knowledge Depth",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Minimal",
+          "node_id": "008",
+          "start_index": 8,
+          "end_index": 9,
+          "summary": "Section about Minimal",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Standard",
+          "node_id": "009",
+          "start_index": 9,
+          "end_index": 10,
+          "summary": "Section about Standard",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Deep",
+          "node_id": "010",
+          "start_index": 10,
+          "end_index": 11,
+          "summary": "Section about Deep",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Preserving History",
+          "node_id": "011",
+          "start_index": 11,
+          "end_index": 12,
+          "summary": "Section about Preserving History",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Prioritize History",
+          "node_id": "012",
+          "start_index": 12,
+          "end_index": 13,
+          "summary": "Section about Prioritize History",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Entity Context",
+          "node_id": "013",
+          "start_index": 13,
+          "end_index": 14,
+          "summary": "Section about Entity Context",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Preview Budget",
+          "node_id": "014",
+          "start_index": 14,
+          "end_index": 15,
+          "summary": "Section about Preview Budget",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Use Cases",
+          "node_id": "015",
+          "start_index": 15,
+          "end_index": 16,
+          "summary": "Section about Use Cases",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Technical Discussions",
+          "node_id": "016",
+          "start_index": 16,
+          "end_index": 17,
+          "summary": "Section about Technical Discussions",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Creative Writing",
+          "node_id": "017",
+          "start_index": 17,
+          "end_index": 18,
+          "summary": "Section about Creative Writing",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Learning",
+          "node_id": "018",
+          "start_index": 18,
+          "end_index": 19,
+          "summary": "Section about Learning",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Best Practices",
+          "node_id": "019",
+          "start_index": 19,
+          "end_index": 20,
+          "summary": "Section about Best Practices",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Context Cockpit",
+          "node_id": "020",
+          "start_index": 20,
+          "end_index": 21,
+          "summary": "Section about Context Cockpit",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "Context Recipes",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about Context Recipes",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "What Are Context Layers?",
+      "node_id": "001",
+      "start_index": 1,
+      "end_index": 2,
+      "summary": "Section about What Are Context Layers?",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Accessing Context Recipes",
+      "node_id": "002",
+      "start_index": 2,
+      "end_index": 3,
+      "summary": "Section about Accessing Context Recipes",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Customizing Layers",
+      "node_id": "003",
+      "start_index": 3,
+      "end_index": 4,
+      "summary": "Section about Customizing Layers",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Enable/Disable",
+      "node_id": "004",
+      "start_index": 4,
+      "end_index": 5,
+      "summary": "Section about Enable/Disable",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Token Budget",
+      "node_id": "005",
+      "start_index": 5,
+      "end_index": 6,
+      "summary": "Section about Token Budget",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Manual Content",
+      "node_id": "006",
+      "start_index": 6,
+      "end_index": 7,
+      "summary": "Section about Manual Content",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Knowledge Depth",
+      "node_id": "007",
+      "start_index": 7,
+      "end_index": 8,
+      "summary": "Section about Knowledge Depth",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Minimal",
+      "node_id": "008",
+      "start_index": 8,
+      "end_index": 9,
+      "summary": "Section about Minimal",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Standard",
+      "node_id": "009",
+      "start_index": 9,
+      "end_index": 10,
+      "summary": "Section about Standard",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Deep",
+      "node_id": "010",
+      "start_index": 10,
+      "end_index": 11,
+      "summary": "Section about Deep",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Preserving History",
+      "node_id": "011",
+      "start_index": 11,
+      "end_index": 12,
+      "summary": "Section about Preserving History",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Prioritize History",
+      "node_id": "012",
+      "start_index": 12,
+      "end_index": 13,
+      "summary": "Section about Prioritize History",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Entity Context",
+      "node_id": "013",
+      "start_index": 13,
+      "end_index": 14,
+      "summary": "Section about Entity Context",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Preview Budget",
+      "node_id": "014",
+      "start_index": 14,
+      "end_index": 15,
+      "summary": "Section about Preview Budget",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Use Cases",
+      "node_id": "015",
+      "start_index": 15,
+      "end_index": 16,
+      "summary": "Section about Use Cases",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Technical Discussions",
+      "node_id": "016",
+      "start_index": 16,
+      "end_index": 17,
+      "summary": "Section about Technical Discussions",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Creative Writing",
+      "node_id": "017",
+      "start_index": 17,
+      "end_index": 18,
+      "summary": "Section about Creative Writing",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Learning",
+      "node_id": "018",
+      "start_index": 18,
+      "end_index": 19,
+      "summary": "Section about Learning",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Best Practices",
+      "node_id": "019",
+      "start_index": 19,
+      "end_index": 20,
+      "summary": "Section about Best Practices",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Context Cockpit",
+      "node_id": "020",
+      "start_index": 20,
+      "end_index": 21,
+      "summary": "Section about Context Cockpit",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:45:55.945Z"
+}

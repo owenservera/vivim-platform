@@ -154,11 +154,11 @@ Customize how VIVIM builds context for AI:
 
 ## What's Next?
 
-- **[Capturing Conversations](/docs/user/capturing-conversations)** - Detailed capture guide
-- **[Searching & Finding](/docs/user/searching-finding)** - Master the search feature
-- **[Organizing with Collections](/docs/user/collections)** - Organize your library
-- **[Sharing Knowledge](/docs/user/sharing)** - Share with others
-- **[BYOK Chat](/docs/user/byok-chat)** - Use your own API keys
+- **[Capturing Conversations](/user/capturing-conversations)** - Detailed capture guide
+- **[Searching & Finding](/user/searching-finding)** - Master the search feature
+- **[Organizing with Collections](/user/collections)** - Organize your library
+- **[Sharing Knowledge](/user/sharing)** - Share with others
+- **[BYOK Chat](/user/byok-chat)** - Use your own API keys
 
 ---
 

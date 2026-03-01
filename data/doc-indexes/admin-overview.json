@@ -1,0 +1,459 @@
+{
+  "documentId": "admin-overview",
+  "title": "admin-overview",
+  "tree": {
+    "title": "admin-overview",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 16,
+    "summary": "Documentation for admin-overview",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "Admin Panel",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about Admin Panel",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Overview",
+        "node_id": "001",
+        "start_index": 1,
+        "end_index": 2,
+        "summary": "Section about Overview",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Features",
+        "node_id": "002",
+        "start_index": 2,
+        "end_index": 3,
+        "summary": "Section about Features",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Real-Time Logs",
+        "node_id": "003",
+        "start_index": 3,
+        "end_index": 4,
+        "summary": "Section about Real-Time Logs",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "System Metrics",
+        "node_id": "004",
+        "start_index": 4,
+        "end_index": 5,
+        "summary": "Section about System Metrics",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Database Monitoring",
+        "node_id": "005",
+        "start_index": 5,
+        "end_index": 6,
+        "summary": "Section about Database Monitoring",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Network Status",
+        "node_id": "006",
+        "start_index": 6,
+        "end_index": 7,
+        "summary": "Section about Network Status",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "CRDT Management",
+        "node_id": "007",
+        "start_index": 7,
+        "end_index": 8,
+        "summary": "Section about CRDT Management",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Panel Components",
+        "node_id": "008",
+        "start_index": 8,
+        "end_index": 9,
+        "summary": "Section about Panel Components",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "System Overview",
+        "node_id": "009",
+        "start_index": 9,
+        "end_index": 10,
+        "summary": "Section about System Overview",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Real-Time Logs",
+        "node_id": "010",
+        "start_index": 10,
+        "end_index": 11,
+        "summary": "Section about Real-Time Logs",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Network Visualization",
+        "node_id": "011",
+        "start_index": 11,
+        "end_index": 12,
+        "summary": "Section about Network Visualization",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Actions Panel",
+        "node_id": "012",
+        "start_index": 12,
+        "end_index": 13,
+        "summary": "Section about Actions Panel",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Access Control",
+        "node_id": "013",
+        "start_index": 13,
+        "end_index": 14,
+        "summary": "Section about Access Control",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Roles",
+        "node_id": "014",
+        "start_index": 14,
+        "end_index": 15,
+        "summary": "Section about Roles",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Authentication",
+        "node_id": "015",
+        "start_index": 15,
+        "end_index": 16,
+        "summary": "Section about Authentication",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "admin-overview",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 16,
+      "summary": "Documentation for admin-overview",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "Admin Panel",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about Admin Panel",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Overview",
+          "node_id": "001",
+          "start_index": 1,
+          "end_index": 2,
+          "summary": "Section about Overview",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Features",
+          "node_id": "002",
+          "start_index": 2,
+          "end_index": 3,
+          "summary": "Section about Features",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Real-Time Logs",
+          "node_id": "003",
+          "start_index": 3,
+          "end_index": 4,
+          "summary": "Section about Real-Time Logs",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "System Metrics",
+          "node_id": "004",
+          "start_index": 4,
+          "end_index": 5,
+          "summary": "Section about System Metrics",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Database Monitoring",
+          "node_id": "005",
+          "start_index": 5,
+          "end_index": 6,
+          "summary": "Section about Database Monitoring",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Network Status",
+          "node_id": "006",
+          "start_index": 6,
+          "end_index": 7,
+          "summary": "Section about Network Status",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "CRDT Management",
+          "node_id": "007",
+          "start_index": 7,
+          "end_index": 8,
+          "summary": "Section about CRDT Management",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Panel Components",
+          "node_id": "008",
+          "start_index": 8,
+          "end_index": 9,
+          "summary": "Section about Panel Components",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "System Overview",
+          "node_id": "009",
+          "start_index": 9,
+          "end_index": 10,
+          "summary": "Section about System Overview",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Real-Time Logs",
+          "node_id": "010",
+          "start_index": 10,
+          "end_index": 11,
+          "summary": "Section about Real-Time Logs",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Network Visualization",
+          "node_id": "011",
+          "start_index": 11,
+          "end_index": 12,
+          "summary": "Section about Network Visualization",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Actions Panel",
+          "node_id": "012",
+          "start_index": 12,
+          "end_index": 13,
+          "summary": "Section about Actions Panel",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Access Control",
+          "node_id": "013",
+          "start_index": 13,
+          "end_index": 14,
+          "summary": "Section about Access Control",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Roles",
+          "node_id": "014",
+          "start_index": 14,
+          "end_index": 15,
+          "summary": "Section about Roles",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Authentication",
+          "node_id": "015",
+          "start_index": 15,
+          "end_index": 16,
+          "summary": "Section about Authentication",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "Admin Panel",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about Admin Panel",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Overview",
+      "node_id": "001",
+      "start_index": 1,
+      "end_index": 2,
+      "summary": "Section about Overview",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Features",
+      "node_id": "002",
+      "start_index": 2,
+      "end_index": 3,
+      "summary": "Section about Features",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Real-Time Logs",
+      "node_id": "003",
+      "start_index": 3,
+      "end_index": 4,
+      "summary": "Section about Real-Time Logs",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "System Metrics",
+      "node_id": "004",
+      "start_index": 4,
+      "end_index": 5,
+      "summary": "Section about System Metrics",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Database Monitoring",
+      "node_id": "005",
+      "start_index": 5,
+      "end_index": 6,
+      "summary": "Section about Database Monitoring",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Network Status",
+      "node_id": "006",
+      "start_index": 6,
+      "end_index": 7,
+      "summary": "Section about Network Status",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "CRDT Management",
+      "node_id": "007",
+      "start_index": 7,
+      "end_index": 8,
+      "summary": "Section about CRDT Management",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Panel Components",
+      "node_id": "008",
+      "start_index": 8,
+      "end_index": 9,
+      "summary": "Section about Panel Components",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "System Overview",
+      "node_id": "009",
+      "start_index": 9,
+      "end_index": 10,
+      "summary": "Section about System Overview",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Real-Time Logs",
+      "node_id": "010",
+      "start_index": 10,
+      "end_index": 11,
+      "summary": "Section about Real-Time Logs",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Network Visualization",
+      "node_id": "011",
+      "start_index": 11,
+      "end_index": 12,
+      "summary": "Section about Network Visualization",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Actions Panel",
+      "node_id": "012",
+      "start_index": 12,
+      "end_index": 13,
+      "summary": "Section about Actions Panel",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Access Control",
+      "node_id": "013",
+      "start_index": 13,
+      "end_index": 14,
+      "summary": "Section about Access Control",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Roles",
+      "node_id": "014",
+      "start_index": 14,
+      "end_index": 15,
+      "summary": "Section about Roles",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Authentication",
+      "node_id": "015",
+      "start_index": 15,
+      "end_index": 16,
+      "summary": "Section about Authentication",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:44:31.892Z"
+}

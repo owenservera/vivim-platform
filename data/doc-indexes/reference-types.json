@@ -1,0 +1,540 @@
+{
+  "documentId": "reference-types",
+  "title": "reference-types",
+  "tree": {
+    "title": "reference-types",
+    "node_id": "000",
+    "start_index": 0,
+    "end_index": 19,
+    "summary": "Documentation for reference-types",
+    "level": 0,
+    "nodes": [
+      {
+        "title": "TypeScript Type Definitions",
+        "node_id": "000",
+        "start_index": 0,
+        "end_index": 1,
+        "summary": "Section about TypeScript Type Definitions",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Core Types Overview",
+        "node_id": "001",
+        "start_index": 1,
+        "end_index": 2,
+        "summary": "Section about Core Types Overview",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Content Types",
+        "node_id": "002",
+        "start_index": 2,
+        "end_index": 3,
+        "summary": "Section about Content Types",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "ContentPart Union",
+        "node_id": "003",
+        "start_index": 3,
+        "end_index": 4,
+        "summary": "Section about ContentPart Union",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Message Types",
+        "node_id": "004",
+        "start_index": 4,
+        "end_index": 5,
+        "summary": "Section about Message Types",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Conversation Types",
+        "node_id": "005",
+        "start_index": 5,
+        "end_index": 6,
+        "summary": "Section about Conversation Types",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Context Types",
+        "node_id": "006",
+        "start_index": 6,
+        "end_index": 7,
+        "summary": "Section about Context Types",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Token Budget",
+        "node_id": "007",
+        "start_index": 7,
+        "end_index": 8,
+        "summary": "Section about Token Budget",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Network Types",
+        "node_id": "008",
+        "start_index": 8,
+        "end_index": 9,
+        "summary": "Section about Network Types",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Peer & Connection",
+        "node_id": "009",
+        "start_index": 9,
+        "end_index": 10,
+        "summary": "Section about Peer & Connection",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Sync State",
+        "node_id": "010",
+        "start_index": 10,
+        "end_index": 11,
+        "summary": "Section about Sync State",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Context Settings Types",
+        "node_id": "011",
+        "start_index": 11,
+        "end_index": 12,
+        "summary": "Section about Context Settings Types",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "API Request/Response Types",
+        "node_id": "012",
+        "start_index": 12,
+        "end_index": 13,
+        "summary": "Section about API Request/Response Types",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Standard Response",
+        "node_id": "013",
+        "start_index": 13,
+        "end_index": 14,
+        "summary": "Section about Standard Response",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Capture Types",
+        "node_id": "014",
+        "start_index": 14,
+        "end_index": 15,
+        "summary": "Section about Capture Types",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Social Types",
+        "node_id": "015",
+        "start_index": 15,
+        "end_index": 16,
+        "summary": "Section about Social Types",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Circle Types",
+        "node_id": "016",
+        "start_index": 16,
+        "end_index": 17,
+        "summary": "Section about Circle Types",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Feed Types",
+        "node_id": "017",
+        "start_index": 17,
+        "end_index": 18,
+        "summary": "Section about Feed Types",
+        "level": 1,
+        "nodes": []
+      },
+      {
+        "title": "Utility Functions",
+        "node_id": "018",
+        "start_index": 18,
+        "end_index": 19,
+        "summary": "Section about Utility Functions",
+        "level": 1,
+        "nodes": []
+      }
+    ]
+  },
+  "sections": [
+    {
+      "title": "reference-types",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 19,
+      "summary": "Documentation for reference-types",
+      "level": 0,
+      "nodes": [
+        {
+          "title": "TypeScript Type Definitions",
+          "node_id": "000",
+          "start_index": 0,
+          "end_index": 1,
+          "summary": "Section about TypeScript Type Definitions",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Core Types Overview",
+          "node_id": "001",
+          "start_index": 1,
+          "end_index": 2,
+          "summary": "Section about Core Types Overview",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Content Types",
+          "node_id": "002",
+          "start_index": 2,
+          "end_index": 3,
+          "summary": "Section about Content Types",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "ContentPart Union",
+          "node_id": "003",
+          "start_index": 3,
+          "end_index": 4,
+          "summary": "Section about ContentPart Union",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Message Types",
+          "node_id": "004",
+          "start_index": 4,
+          "end_index": 5,
+          "summary": "Section about Message Types",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Conversation Types",
+          "node_id": "005",
+          "start_index": 5,
+          "end_index": 6,
+          "summary": "Section about Conversation Types",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Context Types",
+          "node_id": "006",
+          "start_index": 6,
+          "end_index": 7,
+          "summary": "Section about Context Types",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Token Budget",
+          "node_id": "007",
+          "start_index": 7,
+          "end_index": 8,
+          "summary": "Section about Token Budget",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Network Types",
+          "node_id": "008",
+          "start_index": 8,
+          "end_index": 9,
+          "summary": "Section about Network Types",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Peer & Connection",
+          "node_id": "009",
+          "start_index": 9,
+          "end_index": 10,
+          "summary": "Section about Peer & Connection",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Sync State",
+          "node_id": "010",
+          "start_index": 10,
+          "end_index": 11,
+          "summary": "Section about Sync State",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Context Settings Types",
+          "node_id": "011",
+          "start_index": 11,
+          "end_index": 12,
+          "summary": "Section about Context Settings Types",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "API Request/Response Types",
+          "node_id": "012",
+          "start_index": 12,
+          "end_index": 13,
+          "summary": "Section about API Request/Response Types",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Standard Response",
+          "node_id": "013",
+          "start_index": 13,
+          "end_index": 14,
+          "summary": "Section about Standard Response",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Capture Types",
+          "node_id": "014",
+          "start_index": 14,
+          "end_index": 15,
+          "summary": "Section about Capture Types",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Social Types",
+          "node_id": "015",
+          "start_index": 15,
+          "end_index": 16,
+          "summary": "Section about Social Types",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Circle Types",
+          "node_id": "016",
+          "start_index": 16,
+          "end_index": 17,
+          "summary": "Section about Circle Types",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Feed Types",
+          "node_id": "017",
+          "start_index": 17,
+          "end_index": 18,
+          "summary": "Section about Feed Types",
+          "level": 1,
+          "nodes": []
+        },
+        {
+          "title": "Utility Functions",
+          "node_id": "018",
+          "start_index": 18,
+          "end_index": 19,
+          "summary": "Section about Utility Functions",
+          "level": 1,
+          "nodes": []
+        }
+      ]
+    },
+    {
+      "title": "TypeScript Type Definitions",
+      "node_id": "000",
+      "start_index": 0,
+      "end_index": 1,
+      "summary": "Section about TypeScript Type Definitions",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Core Types Overview",
+      "node_id": "001",
+      "start_index": 1,
+      "end_index": 2,
+      "summary": "Section about Core Types Overview",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Content Types",
+      "node_id": "002",
+      "start_index": 2,
+      "end_index": 3,
+      "summary": "Section about Content Types",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "ContentPart Union",
+      "node_id": "003",
+      "start_index": 3,
+      "end_index": 4,
+      "summary": "Section about ContentPart Union",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Message Types",
+      "node_id": "004",
+      "start_index": 4,
+      "end_index": 5,
+      "summary": "Section about Message Types",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Conversation Types",
+      "node_id": "005",
+      "start_index": 5,
+      "end_index": 6,
+      "summary": "Section about Conversation Types",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Context Types",
+      "node_id": "006",
+      "start_index": 6,
+      "end_index": 7,
+      "summary": "Section about Context Types",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Token Budget",
+      "node_id": "007",
+      "start_index": 7,
+      "end_index": 8,
+      "summary": "Section about Token Budget",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Network Types",
+      "node_id": "008",
+      "start_index": 8,
+      "end_index": 9,
+      "summary": "Section about Network Types",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Peer & Connection",
+      "node_id": "009",
+      "start_index": 9,
+      "end_index": 10,
+      "summary": "Section about Peer & Connection",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Sync State",
+      "node_id": "010",
+      "start_index": 10,
+      "end_index": 11,
+      "summary": "Section about Sync State",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Context Settings Types",
+      "node_id": "011",
+      "start_index": 11,
+      "end_index": 12,
+      "summary": "Section about Context Settings Types",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "API Request/Response Types",
+      "node_id": "012",
+      "start_index": 12,
+      "end_index": 13,
+      "summary": "Section about API Request/Response Types",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Standard Response",
+      "node_id": "013",
+      "start_index": 13,
+      "end_index": 14,
+      "summary": "Section about Standard Response",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Capture Types",
+      "node_id": "014",
+      "start_index": 14,
+      "end_index": 15,
+      "summary": "Section about Capture Types",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Social Types",
+      "node_id": "015",
+      "start_index": 15,
+      "end_index": 16,
+      "summary": "Section about Social Types",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Circle Types",
+      "node_id": "016",
+      "start_index": 16,
+      "end_index": 17,
+      "summary": "Section about Circle Types",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Feed Types",
+      "node_id": "017",
+      "start_index": 17,
+      "end_index": 18,
+      "summary": "Section about Feed Types",
+      "level": 1,
+      "nodes": []
+    },
+    {
+      "title": "Utility Functions",
+      "node_id": "018",
+      "start_index": 18,
+      "end_index": 19,
+      "summary": "Section about Utility Functions",
+      "level": 1,
+      "nodes": []
+    }
+  ],
+  "indexedAt": "2026-02-27T18:47:35.834Z"
+}
