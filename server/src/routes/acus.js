@@ -13,12 +13,25 @@
  */
 
 import express from 'express';
+import rateLimit from 'express-rate-limit';
 import { getPrismaClient } from '../lib/database.js';
 import { logger } from '../lib/logger.js';
 import { processConversationToACUs, processAllConversations } from '../services/acu-processor.js';
 import { authenticateDID } from '../middleware/auth.js';
 
 const router = express.Router();
+
+const batchRateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour window
+  max: 10, // Limit each IP to 10 requests per `window`
+  message: {
+    success: false,
+    error: 'Too Many Requests',
+    message: 'Batch processing is limited to 10 requests per hour. Please try again later.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // All ACU routes require authentication
 router.use(authenticateDID);
@@ -407,7 +420,7 @@ router.post('/process', async (req, res) => {
  * POST /api/v1/acus/batch
  * Batch process all conversations
  */
-router.post('/batch', async (req, res) => {
+router.post('/batch', batchRateLimiter, async (req, res) => {
   try {
     const {
       batchSize = 10,

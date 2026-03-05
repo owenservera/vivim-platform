@@ -12,6 +12,7 @@ import {
   DynamicContextAssembler,
   createEmbeddingService,
   createLLMService,
+  createTokenEstimator,
   LibrarianWorker,
   BundleCompiler,
   BudgetAlgorithm,
@@ -57,7 +58,7 @@ export class UnifiedContextService {
         });
 
         // Create token estimator
-        const tokenEstimator = { estimateTokens: (text: string) => Math.ceil(text.length / 4) };
+        const tokenEstimator = createTokenEstimator();
 
         this.dynamicAssembler = new DynamicContextAssembler({
           prisma,
@@ -246,46 +247,48 @@ export class UnifiedContextService {
 
   /**
    * Invalidate bundles when data changes
+   * Now emits events to ContextEventBus instead of direct Prisma updates
    */
   async invalidateBundles(userId: string, eventType: string, relatedIds: string[]): Promise<void> {
-    // For now, use Prisma directly
-    // TODO: Move this to InvalidationService once implemented
-    const bundleTypes = this.getBundleTypesForEvent(eventType);
+    // Emit event to ContextEventBus - InvalidationService will handle the actual invalidation
+    // This decouples invalidation logic from business logic
+    const eventTypes: Record<string, string> = {
+      'memory:created': 'memory:created',
+      'memory:updated': 'memory:updated',
+      'memory:deleted': 'memory:deleted',
+      'acu:processed': 'acu:processed',
+      'acu:deleted': 'acu:deleted',
+      'conversation:message_added': 'conversation:message_added',
+      'conversation:archived': 'conversation:archived',
+      'topic:updated': 'topic:updated',
+      'entity:updated': 'entity:updated',
+    };
 
-    for (const bundleType of bundleTypes) {
-      if (bundleType === 'topic' && relatedIds.length > 0) {
-        for (const topicId of relatedIds) {
-          await prisma.contextBundle.updateMany({
-            where: { userId, bundleType, topicProfileId: topicId },
-            data: { isDirty: true },
-          });
-        }
-      } else if (bundleType === 'entity' && relatedIds.length > 0) {
-        for (const entityId of relatedIds) {
-          await prisma.contextBundle.updateMany({
-            where: { userId, bundleType, entityProfileId: entityId },
-            data: { isDirty: true },
-          });
-        }
-      } else if (bundleType === 'conversation' && relatedIds.length > 0) {
-        for (const conversationId of relatedIds) {
-          await prisma.contextBundle.updateMany({
-            where: { userId, bundleType, conversationId },
-            data: { isDirty: true },
-          });
-        }
-      } else if (bundleType === 'identity_core') {
-        await prisma.contextBundle.updateMany({
-          where: { userId, bundleType, topicProfileId: null, entityProfileId: null },
-          data: { isDirty: true },
-        });
-      } else if (bundleType === 'global_prefs') {
-        await prisma.contextBundle.updateMany({
-          where: { userId, bundleType, topicProfileId: null, entityProfileId: null },
-          data: { isDirty: true },
-        });
-      }
+    const mappedEventType = eventTypes[eventType];
+    if (!mappedEventType) {
+      logger.warn({ eventType }, 'Unknown event type for bundle invalidation');
+      return;
     }
+
+    // Emit event for each related ID
+    for (const id of relatedIds) {
+      await this.contextEventBus.emit(mappedEventType, {
+        userId,
+        [this.getEntityIdField(eventType)]: id,
+      });
+    }
+  }
+
+  /**
+   * Get the ID field name for an event type
+   */
+  private getEntityIdField(eventType: string): string {
+    if (eventType.includes('memory')) return 'memoryId';
+    if (eventType.includes('acu')) return 'acuId';
+    if (eventType.includes('conversation')) return 'conversationId';
+    if (eventType.includes('topic')) return 'topicId';
+    if (eventType.includes('entity')) return 'entityId';
+    return 'id';
   }
 
   /**

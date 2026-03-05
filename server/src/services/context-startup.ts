@@ -24,6 +24,8 @@ import {
 } from '../context/index.js';
 import { getPrismaClient } from '../lib/database.js';
 import { initContextWarmupWorker } from './context-warmup-worker.js';
+import { InvalidationService } from './invalidation-service.js';
+import { initMemoryCleanupWorker } from '../workers/memory-cleanup-worker.js';
 
 let _booted = false;
 
@@ -47,6 +49,15 @@ export async function bootContextSystem(): Promise<void> {
     const cache = getContextCache();
     wireDefaultInvalidation(eventBus, cache);
     logger.info('✅ Context event bus invalidation handlers wired');
+
+    // ── 1b. Initialize InvalidationService ──────────────────────────────
+    const invalidationService = new InvalidationService(eventBus);
+    invalidationService.initialize();
+    logger.info('✅ InvalidationService initialized');
+
+    // ── 1c. Initialize Memory Cleanup Worker ────────────────────────────
+    initMemoryCleanupWorker();
+    logger.info('✅ Memory cleanup worker started (24h interval)');
 
     // ── 2. Initialize bundle compiler + warmup worker ───────────────────
     try {

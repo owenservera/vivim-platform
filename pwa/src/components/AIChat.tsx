@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 import { AIProviderCapabilities } from '../types/ai';
 import { Bot, User, Sparkles, AlertCircle, Loader2, Trash2, Copy, RefreshCw, Check, ChevronDown, Command, Zap, ZapOff, Settings } from 'lucide-react';
@@ -24,15 +25,13 @@ export const AIChat = ({ initialMessage }: AIChatProps) => {
   } = useAIChat();
 
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
-  const [showModelSelector, setShowModelSelector] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const modelSelectorRef = useRef<HTMLDivElement>(null);
 
-  const { 
-    defaultModel, 
-    setDefaultProvider, 
+  const {
+    defaultModel,
+    setDefaultProvider,
     setDefaultModel,
-    apiKeys 
+    apiKeys
   } = useAIStore();
 
   const scrollToBottom = useCallback(() => {
@@ -42,17 +41,6 @@ export const AIChat = ({ initialMessage }: AIChatProps) => {
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
-
-  // Click outside listener for model selector
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (modelSelectorRef.current && !modelSelectorRef.current.contains(event.target as Node)) {
-        setShowModelSelector(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const handleSend = async (message: string) => {
     if (!message.trim()) return;
@@ -121,15 +109,74 @@ export const AIChat = ({ initialMessage }: AIChatProps) => {
         </div>
         
         <div className="flex items-center gap-2">
-          {/* Model Selector Pill */}
-          <button 
-            className={`ai-model-pill ${showModelSelector ? 'active' : ''}`}
-            onClick={() => setShowModelSelector(!showModelSelector)}
-          >
-            <Zap className="w-3.5 h-3.5" />
-            <span>{defaultModel || 'Select Model'}</span>
-            <ChevronDown className="w-3 h-3" />
-          </button>
+          {/* Model Selector - Radix UI DropdownMenu */}
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger asChild>
+              <button className="ai-model-pill">
+                <Zap className="w-3.5 h-3.5" />
+                <span>{defaultModel || 'Select Model'}</span>
+                <ChevronDown className="w-3 h-3" />
+              </button>
+            </DropdownMenu.Trigger>
+
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                className="ai-model-selector-dropdown"
+                sideOffset={5}
+                align="end"
+              >
+                <DropdownMenu.Item className="ai-model-selector-header">
+                  <Command className="w-4 h-4" />
+                  <span>Switch AI Model</span>
+                </DropdownMenu.Item>
+                
+                <DropdownMenu.Separator className="ai-model-separator" />
+                
+                <div className="ai-model-list">
+                  {providers.map((providerId: string) => {
+                    const capabilities = (AIProviderCapabilities as any)[providerId];
+                    if (!capabilities) return null;
+
+                    const hasKey = capabilities.isFree || apiKeys[providerId];
+                    const providerModels = activeModels[providerId]?.models || [];
+
+                    if (providerModels.length === 0) return null;
+
+                    return (
+                      <div key={providerId} className="ai-provider-group">
+                        <div className="ai-provider-label">
+                          {capabilities.displayName}
+                          {!hasKey && <span className="ai-setup-required">Setup Req.</span>}
+                        </div>
+                        {providerModels.map((m: string) => (
+                          <DropdownMenu.Item
+                            key={m}
+                            className={`ai-model-option ${defaultModel === m ? 'selected' : ''} ${!hasKey ? 'disabled' : ''}`}
+                            onClick={() => hasKey ? handleSelectModel(providerId, m) : handleCommandSelect('/settings')}
+                            disabled={!hasKey}
+                          >
+                            <span className="ai-model-name">{m}</span>
+                            {defaultModel === m && <Check className="w-3.5 h-3.5" />}
+                            {!hasKey && <ZapOff className="w-3 h-3" />}
+                          </DropdownMenu.Item>
+                        ))}
+                      </div>
+                    );
+                  })}
+                </div>
+                
+                <DropdownMenu.Separator className="ai-model-separator" />
+                
+                <DropdownMenu.Item
+                  className="ai-model-selector-footer"
+                  onClick={() => handleCommandSelect('/settings')}
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                  <span>Manage Providers & Keys</span>
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
 
           {messages.length > 0 && (
             <button
@@ -141,53 +188,6 @@ export const AIChat = ({ initialMessage }: AIChatProps) => {
             </button>
           )}
         </div>
-
-        {/* Model Selector Dropdown */}
-        {showModelSelector && (
-          <div className="ai-model-selector" ref={modelSelectorRef}>
-            <div className="ai-model-selector-header">
-              <Command className="w-4 h-4" />
-              <span>Switch AI Model</span>
-            </div>
-            <div className="ai-model-list">
-              {providers.map((providerId: string) => {
-                const capabilities = (AIProviderCapabilities as any)[providerId];
-                if (!capabilities) return null;
-                
-                const hasKey = capabilities.isFree || apiKeys[providerId];
-                const providerModels = activeModels[providerId]?.models || [];
-                
-                if (providerModels.length === 0) return null;
-
-                return (
-                  <div key={providerId} className="ai-provider-group">
-                    <div className="ai-provider-label">
-                      {capabilities.displayName}
-                      {!hasKey && <span className="ai-setup-required">Setup Req.</span>}
-                    </div>
-                    {providerModels.map((m: string) => (
-                      <button
-                        key={m}
-                        className={`ai-model-option ${defaultModel === m ? 'selected' : ''} ${!hasKey ? 'disabled' : ''}`}
-                        onClick={() => hasKey ? handleSelectModel(providerId, m) : handleCommandSelect('/settings')}
-                      >
-                        <span className="ai-model-name">{m}</span>
-                        {defaultModel === m && <Check className="w-3.5 h-3.5" />}
-                        {!hasKey && <ZapOff className="w-3 h-3" />}
-                      </button>
-                    ))}
-                  </div>
-                );
-              })}
-            </div>
-            <div className="ai-model-selector-footer">
-              <button onClick={() => handleCommandSelect('/settings')}>
-                <Settings className="w-3.5 h-3.5" />
-                <span>Manage Providers & Keys</span>
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
       {lastResponse?.contextAllocation && (

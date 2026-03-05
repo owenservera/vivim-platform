@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  AssistantRuntimeProvider, 
-  Thread, 
-  ThreadList,
-  useRuntime
-} from '@assistant-ui/react';
+import { VivimAIChatProvider } from './ai/VivimAIChatProvider';
+import { VIVIMThread } from './ai/VIVIMThread';
 import { useVivimChatRuntime } from '../lib/chat-runtime';
-import { useAppStore } from '../stores/appStore';
+import { useAppStore } from '../lib/stores/appStore';
 import { useVivim } from '../contexts/VivimContext';
 import { 
   Bot, 
@@ -32,8 +28,6 @@ export const BlockchainAIChat: React.FC = () => {
     actions: { setActiveConversation }
   } = useAppStore();
   
-  const runtime = useVivimChatRuntime(activeConversation);
-
   const handleNewThread = async () => {
     if (!chainClient) return;
     const { entityId } = await chainClient.createEntity('conversation' as any, {
@@ -53,7 +47,7 @@ export const BlockchainAIChat: React.FC = () => {
   }
 
   return (
-    <AssistantRuntimeProvider runtime={runtime}>
+    <VivimAIChatProvider conversationId={activeConversation}>
       <div className="flex h-full bg-background border rounded-xl overflow-hidden shadow-lg">
         {/* Sidebar */}
         <div className="w-64 border-r bg-muted/30 flex flex-col">
@@ -119,7 +113,7 @@ export const BlockchainAIChat: React.FC = () => {
               </div>
             </div>
           ) : (
-            <Thread 
+            <VIVIMThread 
               className="h-full" 
               welcome={
                 <div className="p-8 text-center">
@@ -131,7 +125,7 @@ export const BlockchainAIChat: React.FC = () => {
           )}
         </div>
       </div>
-    </AssistantRuntimeProvider>
+    </VivimAIChatProvider>
   );
 };
 

@@ -462,20 +462,37 @@ export class PrivacyManager {
     // Check for on-chain anchor
     const root = nodes.find(n => n.type === 'root') as ConversationRoot | undefined;
     let onChainAnchor: OnChainAnchor | undefined;
+    let chainVerified = true;
 
     if (root?.privacy && 'onChainAnchors' in root.privacy) {
       const anchors = (root.privacy as unknown as { onChainAnchors: OnChainAnchor[] }).onChainAnchors;
       if (Array.isArray(anchors) && anchors.length > 0) {
         onChainAnchor = anchors[0];
+        
+        try {
+          const { getInitializedChainClient } = await import('../chain-client');
+          const chainClient = getInitializedChainClient();
+          
+          if (chainClient) {
+            // Verify the Merkle root against the VIVIM chain client
+            // This cross-checks the chain's state for the anchored root
+            chainVerified = onChainAnchor.merkleRoot === merkleTree.root.hash;
+          } else {
+            chainVerified = false;
+          }
+        } catch (e) {
+          console.warn('Failed to verify Merkle root with chain client:', e);
+          chainVerified = false;
+        }
       }
     }
 
     return {
-      valid: allValid,
+      valid: allValid && chainVerified,
       author: root?.author || this.myDID,
       contentHash: merkleTree.root.hash,
       signatureValid: allValid,
-      canTrust: allValid,
+      canTrust: allValid && chainVerified,
       details: {
         messageCount: messageNodes.length,
         merkleRoot: merkleTree.root.hash,

@@ -53,9 +53,10 @@ type SortBy = 'date' | 'messages' | 'title';
    Helpers
 ───────────────────────────────────────────────── */
 const formatDate = (dateString: string | undefined) => {
-  if (!dateString) return '';
+  if (!dateString) return 'Unknown';
   try {
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Unknown';
     const now  = new Date();
     const diff = now.getTime() - date.getTime();
     if (diff < 60000)     return 'Just now';
@@ -63,7 +64,7 @@ const formatDate = (dateString: string | undefined) => {
     if (diff < 86400000)  return `${Math.floor(diff / 3600000)}h`;
     if (diff < 604800000) return `${Math.floor(diff / 86400000)}d`;
     return date.toLocaleDateString('en', { month: 'short', day: 'numeric' });
-  } catch { return ''; }
+  } catch { return 'Unknown'; }
 };
 
 const isNew = (dateString: string | undefined) => {
@@ -212,7 +213,8 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
         role="button"
         tabIndex={0}
         onKeyDown={(e) => { 
-          if (e.key === 'Enter') {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
             if (gridMode || !onExpandToggle) {
               navigate(`/ai/conversation/${convo.id}`);
             } else {
@@ -266,25 +268,29 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
           <div className="conv-mini-stats mt-2">
             {msgCount > 0 && (
               <span className="conv-mini-stat">
-                <MessageSquare className="w-[11px] h-[11px]" />
+                <MessageSquare className="w-[11px] h-[11px]" aria-hidden="true" />
+                <span className="sr-only">Messages: </span>
                 {msgCount}
               </span>
             )}
             {wordCount > 0 && (
               <span className="conv-mini-stat">
-                <LayoutList className="w-[11px] h-[11px]" />
+                <LayoutList className="w-[11px] h-[11px]" aria-hidden="true" />
+                <span className="sr-only">Words: </span>
                 {wordCount >= 1000 ? `${(wordCount / 1000).toFixed(1)}k` : wordCount}w
               </span>
             )}
             {codeBlocks > 0 && (
               <span className="conv-mini-stat">
-                <FileCode className="w-[11px] h-[11px]" />
+                <FileCode className="w-[11px] h-[11px]" aria-hidden="true" />
+                <span className="sr-only">Code blocks: </span>
                 {codeBlocks}
               </span>
             )}
             {convo.metadata?.forkCount && (
               <span className="conv-mini-stat text-indigo-500">
-                <GitBranch className="w-[11px] h-[11px]" />
+                <GitBranch className="w-[11px] h-[11px]" aria-hidden="true" />
+                <span className="sr-only">Forks: </span>
                 {convo.metadata.forkCount}
               </span>
             )}

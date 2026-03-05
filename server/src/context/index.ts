@@ -85,7 +85,7 @@ export type {
 } from './cortex';
 
 // --- Utilities ---
-export { SimpleTokenEstimator } from './utils/token-estimator';
+export { TiktokenEstimator, GPTTokenEstimator, SimpleTokenEstimator, createTokenEstimator } from './utils/token-estimator';
 export { EmbeddingService, MockEmbeddingService } from './utils/embedding-service';
 export {
   ZAIEmbeddingService,

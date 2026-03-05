@@ -77,5 +77,5 @@ queueService.getQueue('consolidation').on('active', (job) => {
 
 // Helper to trigger consolidation
 export const scheduleConsolidation = (conversationId) => {
-  return queueService.add('consolidation', () => processConsolidationJob(conversationId));
+  return queueService.add('consolidation', () => processConsolidationJob(conversationId), { conversationId });
 };

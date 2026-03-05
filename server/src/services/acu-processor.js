@@ -15,6 +15,7 @@
 
 import { getPrismaClient } from '../lib/database.js';
 import { logger } from '../lib/logger.js';
+import { encryptString } from '../lib/crypto.js';
 import crypto from 'crypto';
 
 // Import Rust core (will be available after UniFFI bindings are set up)
@@ -355,12 +356,21 @@ async function saveAcuToDatabase(acu, context) {
     qualityScores = calculateAcuQuality(acu);
   }
 
+  let finalContent = acu.content;
+  if (acu.securityLevel >= 2 && authorDid) {
+    const db = getPrismaClient();
+    const user = await db.user.findUnique({ where: { did: authorDid } });
+    if (user) {
+      finalContent = encryptString(acu.content, user.publicKey);
+    }
+  }
+
   // Prepare ACU data
   const acuData = {
     id: acu.id,
     authorDid,
     signature: Buffer.from([]), // Placeholder - would be real signature in production
-    content: acu.content,
+    content: finalContent,
     language: acu.language,
     type: acu.type,
     category: acu.category,

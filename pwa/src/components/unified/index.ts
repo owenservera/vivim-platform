@@ -29,22 +29,42 @@ export type {
   ResponsiveContainerProps
 } from './ResponsiveLayout';
 
-// Error State components
+/**
+ * Unified Error State components — design-token-aware, no hardcoded colors.
+ * Prefer these over ios/ErrorState exports for new code.
+ */
 export {
-  IOSErrorState,
+  ErrorState,
+  ErrorCard,
+  ErrorBanner,
   ErrorNetwork,
   ErrorServer,
   ErrorNotFound,
   ErrorPermission,
+} from './ErrorState';
+export type {
+  ErrorStateProps,
+  ErrorCardProps,
+  ErrorBannerProps,
+  ErrorType,
+} from './ErrorState';
+
+/**
+ * @deprecated Prefer unified/ErrorState components. These are kept for
+ * backward compatibility only and will be removed in a future release.
+ */
+export {
+  IOSErrorState,
   IOSErrorCard,
-  IOSErrorBanner
+  IOSErrorBanner,
 } from '../ios/ErrorState';
 export type {
   IOSErrorStateProps,
   IOSErrorCardProps,
   IOSErrorBannerProps,
-  IOSErrorType
+  IOSErrorType,
 } from '../ios/ErrorState';
 
 // Skeleton components
 export { Skeleton, CardSkeleton, ListSkeleton } from '../ui/Skeleton/Skeleton';
+

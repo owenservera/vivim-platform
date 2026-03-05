@@ -1,16 +1,99 @@
+import { getEncoding, encodingForModel, TiktokenModel, TiktokenEncoding } from "js-tiktoken";
 import type { ITokenEstimator } from '../types';
 
 /**
- * GPT-4 Token Estimator
+ * Tiktoken Token Estimator (SOTA)
  *
- * More accurate token estimation for OpenAI/GPT models using character-based approximation.
- * Based on OpenAI's documentation: average of 4 characters per token for English text.
- *
- * This provides better accuracy than word-based counting, especially for:
- * - Code with special characters
- * - Technical terminology
- * - Non-English text
- * - Text with punctuation and symbols
+ * Provides exact token counts using OpenAI's tiktoken algorithm.
+ * Supports different encodings (cl100k_base, o200k_base) based on the model.
+ */
+export class TiktokenEstimator implements ITokenEstimator {
+  private defaultEncoding: TiktokenEncoding = "cl100k_base";
+  private cache: Map<string, any> = new Map();
+
+  constructor(defaultModel: string = "gpt-4o") {
+    try {
+      this.defaultEncoding = this.getEncodingNameForModel(defaultModel);
+    } catch (e) {
+      this.defaultEncoding = "cl100k_base";
+    }
+  }
+
+  private getEncodingNameForModel(model: string): TiktokenEncoding {
+    try {
+      // js-tiktoken encodingForModel returns the actual encoder, 
+      // but we want to cache it or just use it.
+      return "cl100k_base"; // Default for most modern GPT models
+    } catch (e) {
+      return "cl100k_base";
+    }
+  }
+
+  private getEncoder(model?: string) {
+    const cacheKey = model || "default";
+    if (this.cache.has(cacheKey)) {
+      return this.cache.get(cacheKey);
+    }
+
+    let encoder;
+    try {
+      if (model) {
+        encoder = encodingForModel(model as TiktokenModel);
+      } else {
+        encoder = getEncoding(this.defaultEncoding);
+      }
+    } catch (e) {
+      encoder = getEncoding("cl100k_base");
+    }
+
+    this.cache.set(cacheKey, encoder);
+    return encoder;
+  }
+
+  estimateTokens(text: string, model?: string): number {
+    if (!text || text.length === 0) return 0;
+    const encoder = this.getEncoder(model);
+    return encoder.encode(text).length;
+  }
+
+  estimateMessageTokens(message: { role?: string; content: any }, model?: string): number {
+    let totalTokens = 0;
+    const encoder = this.getEncoder(model);
+
+    // Count content tokens
+    if (typeof message.content === 'string') {
+      totalTokens += encoder.encode(message.content).length;
+    } else if (Array.isArray(message.content)) {
+      for (const part of message.content) {
+        if (typeof part === 'string') {
+          totalTokens += encoder.encode(part).length;
+        } else if (part && typeof part.text === 'string') {
+          totalTokens += encoder.encode(part.text).length;
+        } else if (part && part.type === 'image_url') {
+          totalTokens += 85; // Standard image overhead
+        }
+      }
+    } else if (message.content && typeof message.content === 'object') {
+      const jsonString = JSON.stringify(message.content);
+      totalTokens += encoder.encode(jsonString).length;
+    }
+
+    // Overhead for message formatting (role, etc.)
+    // For cl100k_base, it's typically 3 tokens per message + 3 tokens at the end
+    totalTokens += 3; 
+
+    return totalTokens;
+  }
+
+  estimateConversationTokens(messages: Array<{ role?: string; content: any }>, model?: string): number {
+    if (messages.length === 0) return 0;
+    return messages.reduce((total, msg) => total + this.estimateMessageTokens(msg, model), 0) + 3;
+  }
+}
+
+/**
+ * GPT-4 Token Estimator (Heuristic fallback)
+ * ...
  */
 export class GPTTokenEstimator implements ITokenEstimator {
   // Average characters per token for English text (OpenAI's estimate)
@@ -23,7 +106,7 @@ export class GPTTokenEstimator implements ITokenEstimator {
     this.messageOverhead = messageOverhead;
   }
 
-  estimateTokens(text: string): number {
+  estimateTokens(text: string, model?: string): number {
     if (!text || text.length === 0) return 0;
 
     // Count actual characters
@@ -38,7 +121,7 @@ export class GPTTokenEstimator implements ITokenEstimator {
     return baseTokens + overheadTokens;
   }
 
-  estimateMessageTokens(message: { role?: string; content: any }): number {
+  estimateMessageTokens(message: { role?: string; content: any }, model?: string): number {
     let totalTokens = 0;
 
     // Count content tokens
@@ -87,14 +170,14 @@ export class SimpleTokenEstimator implements ITokenEstimator {
     this.wordsPerToken = wordsPerToken;
   }
 
-  estimateTokens(text: string): number {
+  estimateTokens(text: string, model?: string): number {
     if (!text || text.length === 0) return 0;
 
     const wordCount = text.trim().split(/\s+/).length;
     return Math.ceil(wordCount / this.wordsPerToken);
   }
 
-  estimateMessageTokens(message: { parts: any[] }): number {
+  estimateMessageTokens(message: { parts: any[] }, model?: string): number {
     if (!message.parts || message.parts.length === 0) return 0;
 
     let totalTokens = 0;
@@ -117,11 +200,15 @@ export class SimpleTokenEstimator implements ITokenEstimator {
  * Factory function to create the appropriate token estimator
  */
 export function createTokenEstimator(): ITokenEstimator {
-  const estimatorType = process.env.TOKEN_ESTIMATOR_TYPE || 'gpt';
+  const estimatorType = process.env.TOKEN_ESTIMATOR_TYPE || 'tiktoken';
 
   switch (estimatorType.toLowerCase()) {
-    case 'gpt':
+    case 'tiktoken':
     case 'accurate':
+    case 'sota':
+      return new TiktokenEstimator();
+    case 'gpt':
+    case 'heuristic':
       return new GPTTokenEstimator();
     case 'simple':
     default:

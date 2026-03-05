@@ -18,10 +18,12 @@ import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
+import cookieParser from 'cookie-parser';
 
 import { logger } from './lib/logger.js';
 import { config, validateConfig } from './config/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { csrfProtection, setCsrfCookie } from './middleware/csrf.js';
 import { serverErrorReporter, errorReportingMiddleware } from './utils/server-error-reporting.js';
 import { requestLogger } from './middleware/requestLogger.js';
 import { requestId } from './middleware/requestId.js';
@@ -47,6 +49,7 @@ import identityV2Router from './routes/identity-v2.js';
 import circleRouter from './routes/circles.js';
 import sharingRouter from './routes/sharing.js';
 import feedV2Router from './routes/feed-v2.js';
+import { feedAnalyticsRouter } from './routes/feed-analytics.ts';
 import unifiedApiRouter from './routes/unified-api.js';
 import portabilityRouter from './routes/portability.js';
 import authRouter from './routes/auth.js';
@@ -54,6 +57,7 @@ import accountRouter from './routes/account.js';
 import contextV2Router from './routes/context-v2.js';
 import memoryRouter from './routes/memory.js';
 import memorySearchRouter from './routes/memory-search.js';
+import contextRecipesRouter from './routes/context-recipes.js';
 import { debugRouter } from './routes/debug.js';
 import { collectionsRouter } from './routes/collections.js';
 import socialRouter from './routes/social.js';
@@ -185,6 +189,26 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+app.use(cookieParser());
+
+const csrfExcludedPaths = ['/api/v1/auth/google/callback', '/stripe/webhook'];
+
+// Apply CSRF protection
+app.use((req, res, next) => {
+  if (csrfExcludedPaths.some(p => req.path.startsWith(p))) {
+    return next();
+  }
+  return csrfProtection(req, res, next);
+});
+
+// Set CSRF Cookie for frontend
+app.use((req, res, next) => {
+  if (csrfExcludedPaths.some(p => req.path.startsWith(p))) {
+    return next();
+  }
+  return setCsrfCookie(req, res, next);
+});
 
 // Custom CORS middleware for additional logging and headers
 const allowedOrigins = config.isDevelopment
@@ -356,8 +380,7 @@ app.use(logDevAuthStatus);
 // Request ID - Add unique identifier to each request
 app.use(requestId);
 
-// Enhanced Request Logger - Human-readable, structured logging
-app.use((req, res, next) => {
+// Enhanced Request Logger - Human-readable, structured loggingapp.use((req, res, next) => {
   const startTime = Date.now();
   const requestId = req.id;
   const { method } = req;
@@ -439,6 +462,7 @@ app.use('/api/v2/identity', identityV2Router);
 app.use('/api/v2/circles', circleRouter);
 app.use('/api/v2/sharing', sharingRouter);
 app.use('/api/v2/feed', feedV2Router);
+app.use('/api/v2/feed', feedAnalyticsRouter);
 app.use('/api/unified', unifiedApiRouter);
 app.use('/api/v2/portability', portabilityRouter);
 app.use('/api/v2/moderation', moderationRouter);
@@ -471,6 +495,7 @@ app.use('/api/admin/dataflow', adminDataflowRouter);
 
 // Enhanced Dynamic Context Engine routes
 app.use('/api/v2/context-engine', contextEngineRouter);
+app.use('/api/v2/context-recipes', contextRecipesRouter);
 
 // Documentation Search (PageIndex-style)
 app.use('/api/docs', docSearchRouter);

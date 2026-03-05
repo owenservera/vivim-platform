@@ -1,0 +1,17 @@
+https://chatgpt.com/share/698c2156-385c-8006-bf81-050b4f3757f9
+https://chatgpt.com/share/6972c61f-13a8-8006-a284-86d67852ae75
+https://claude.ai/share/d600b167-aae1-4985-8a64-aa3d3a9150df
+https://gemini.google.com/share/41c7c9113f61
+https://gemini.google.com/share/38ad852b797b
+https://chat.qwen.ai/s/635e4b63-44ec-4cf1-8310-721d69efac61?fev=0.1.40
+https://chat.deepseek.com/share/rdhmeeeb6v3skpm5i3
+https://chatgpt.com/share/698a2bc3-7a70-8006-95b1-899a141372bc
+https://www.kimi.com/share/19c43bc0-9c92-89f6-8000-00000d271f59
+https://www.kimi.com/share/19c43bcc-c9e2-8d4b-8000-00009fdc625b
+https://chat.z.ai/s/984016de-58ab-43c0-ac45-168441eb59d0
+https://grok.com/share/bGVnYWN5_ae10ced7-c418-4045-aa2c-01f8f4e86e6e 
+https://gemini.google.com/share/d5b24f3671c5
+https://chat.z.ai/s/4908f5b8-d7c5-41f6-bfae-8d52418d7041
+https://chatgpt.com/share/698a2cf3-1c78-8006-8ce8-eb9f54a111e9
+https://claude.ai/share/7302dc6b-aa69-4449-b9a4-d1cc0a81eddd
+https://chat.z.ai/s/d19008c6-8ed4-425e-aadb-ef8382392bfd

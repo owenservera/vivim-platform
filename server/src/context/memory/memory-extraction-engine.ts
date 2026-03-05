@@ -16,11 +16,14 @@ import {
   ILLMService,
   MemoryTypeEnum,
 } from './memory-types';
+import { ACUQualityScorer } from '../utils/acu-quality-scorer';
+import { MemoryService } from './memory-service';
 import { logger } from '../../lib/logger.js';
 
 export interface MemoryExtractionConfig {
   prisma: PrismaClient;
   llmService: ILLMService;
+  memoryService: MemoryService;
   embeddingService?: IEmbeddingService;
   extractionModel?: string;
   maxMemoriesPerConversation?: number;
@@ -38,7 +41,9 @@ interface ExtractionResult {
 export class MemoryExtractionEngine {
   private prisma: PrismaClient;
   private llmService: ILLMService;
+  private memoryService: MemoryService;
   private embeddingService?: IEmbeddingService;
+  private qualityScorer: ACUQualityScorer;
   private extractionModel: string;
   private maxMemoriesPerConversation: number;
   private minConfidenceThreshold: number;
@@ -47,7 +52,9 @@ export class MemoryExtractionEngine {
   constructor(config: MemoryExtractionConfig) {
     this.prisma = config.prisma;
     this.llmService = config.llmService;
+    this.memoryService = config.memoryService;
     this.embeddingService = config.embeddingService;
+    this.qualityScorer = new ACUQualityScorer();
     this.extractionModel = config.extractionModel || 'glm-4.7-flash';
     this.maxMemoriesPerConversation = config.maxMemoriesPerConversation || 20;
     this.minConfidenceThreshold = config.minConfidenceThreshold || 0.5;
@@ -146,10 +153,24 @@ export class MemoryExtractionEngine {
         .slice(0, this.maxMemoriesPerConversation);
 
       // Create memories in database
-      const createdMemories: CreateMemoryInput[] = [];
+      const createdMemories: any[] = [];
       for (const memory of filteredMemories) {
         try {
-          const created = await this.createMemoryFromExtraction(userId, conversationId, memory);
+          // Calculate quality score
+          const quality = await this.qualityScorer.calculateScore(memory.content, memory.memoryType);
+          
+          // Combine extracted data with calculated quality
+          const memoryInput: CreateMemoryInput = {
+            ...memory,
+            importance: Math.max(memory.importance, quality.overall),
+            sourceConversationIds: [conversationId],
+            metadata: {
+              extractionConfidence: memory.confidence,
+              qualityScore: quality,
+            }
+          };
+
+          const created = await this.memoryService.createMemory(userId, memoryInput);
           createdMemories.push(created);
         } catch (error) {
           logger.warn({ error, memory }, 'Failed to create extracted memory');
@@ -359,34 +380,6 @@ export class MemoryExtractionEngine {
         error: error instanceof Error ? error.message : 'LLM extraction failed',
       };
     }
-  }
-
-  private async createMemoryFromExtraction(
-    userId: string,
-    conversationId: string,
-    extracted: ExtractedMemory
-  ): Promise<CreateMemoryInput> {
-    // Generate embedding if service available
-    let embedding: number[] = [];
-    if (this.embeddingService) {
-      try {
-        embedding = await this.embeddingService.embed(extracted.content);
-      } catch (error) {
-        logger.warn({ error }, 'Failed to generate embedding for extracted memory');
-      }
-    }
-
-    return {
-      content: extracted.content,
-      summary: extracted.summary,
-      memoryType: extracted.memoryType,
-      category: extracted.category,
-      subcategory: extracted.subcategory,
-      tags: extracted.tags,
-      importance: extracted.importance,
-      sourceConversationIds: [conversationId],
-      isPinned: extracted.importance >= 0.9, // Auto-pin critical memories
-    };
   }
 }
 

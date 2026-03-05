@@ -1,3 +1,4 @@
+import { Wifi, WifiOff, RefreshCw, AlertTriangle, Clock, Check } from 'lucide-react';
 import { useAppStore } from '../lib/stores/appStore';
 import './SyncIndicator.css';
 
@@ -8,21 +9,25 @@ export function SyncIndicator() {
   const peerCount = useAppStore(state => state.network.peerCount);
   const isOnline = navigator.onLine && status !== 'offline' && status !== 'error';
 
-  async function handleManualSync() {
-    // Chain client handles GossipSub sync automatically
+  // GossipSub sync is handled automatically by the chain client.
+  // The button is intentionally disabled to avoid false feedback.
+  // We surface an informative tooltip instead.
+  function handleManualSync() {
+    // No-op: sync happens automatically via GossipSub.
+    // The button is disabled anyway, but this guard ensures no accidental call.
   }
 
   function getStatusIcon() {
-    if (!isOnline) return '📡';
-    if (status === 'connecting') return '🔄';
-    if (status === 'error') return '⚠️';
-    if (pendingOperations > 0) return '⏳';
-    return '✅';
+    if (!isOnline) return <WifiOff className="w-3.5 h-3.5" aria-hidden="true" />;
+    if (status === 'connecting') return <RefreshCw className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />;
+    if (status === 'error') return <AlertTriangle className="w-3.5 h-3.5" aria-hidden="true" />;
+    if (pendingOperations > 0) return <Clock className="w-3.5 h-3.5" aria-hidden="true" />;
+    return <Check className="w-3.5 h-3.5" aria-hidden="true" />;
   }
 
   function getStatusText() {
     if (!isOnline) return 'Offline';
-    if (status === 'connecting') return 'Connecting...';
+    if (status === 'connecting') return 'Connecting…';
     if (status === 'error') return 'Sync error';
     if (pendingOperations > 0) return `${pendingOperations} pending`;
     if (lastSync) {
@@ -30,7 +35,7 @@ export function SyncIndicator() {
       const now = new Date();
       const diffMs = now.getTime() - lastSyncDate.getTime();
       const diffMins = Math.floor(diffMs / 60000);
-      
+
       if (diffMins < 1) return `Connected (${peerCount} peers)`;
       if (diffMins < 60) return `Synced ${diffMins}m ago (${peerCount} peers)`;
       const diffHours = Math.floor(diffMins / 60);
@@ -47,13 +52,21 @@ export function SyncIndicator() {
     return 'synced';
   }
 
+  const isSyncing = status === 'connecting' || !isOnline;
+
   return (
     <div className={`sync-indicator ${getStatusClass()}`}>
       <button
         className="sync-button"
         onClick={handleManualSync}
-        disabled={status === 'connecting' || !isOnline}
-        title={getStatusText()}
+        disabled={true}
+        title={
+          isSyncing
+            ? getStatusText()
+            : 'Sync is automatic via GossipSub — no manual trigger needed'
+        }
+        aria-label={`Network status: ${getStatusText()}`}
+        aria-live="polite"
       >
         <span className="sync-icon">{getStatusIcon()}</span>
         <span className="sync-text">{getStatusText()}</span>

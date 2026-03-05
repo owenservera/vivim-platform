@@ -4,15 +4,16 @@
  * Intelligent memory retrieval system using hybrid search (semantic + keyword).
  * Provides contextual relevance scoring and integrates with the context engine.
  */
-
 import { PrismaClient, Prisma } from '@prisma/client';
 import {
   MemoryRetrievalOptions,
   MemoryRetrievalResult,
   IEmbeddingService,
   estimateTokensForMemories,
+  MEMORY_TYPES,
 } from './memory-types';
 import { logger } from '../../lib/logger.js';
+import { decryptString } from '../../lib/crypto.js';
 
 export interface MemoryRetrievalConfig {
   prisma: PrismaClient;
@@ -141,6 +142,19 @@ export class MemoryRetrievalService {
 
     // Remove duplicates
     const uniqueResults = this.deduplicateResults(allResults);
+
+    // Decrypt content before fitting to token budget
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (user) {
+      for (const m of uniqueResults) {
+        if (m.content && m.content.startsWith('ENCRYPTED:')) {
+          m.content = decryptString(m.content, user.publicKey);
+        }
+        if (m.summary && m.summary.startsWith('ENCRYPTED:')) {
+          m.summary = decryptString(m.summary, user.publicKey);
+        }
+      }
+    }
 
     // Fit to token budget
     const finalMemories = this.fitToTokenBudget(uniqueResults, maxTokens);

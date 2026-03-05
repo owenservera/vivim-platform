@@ -9,6 +9,7 @@ import PQueue from 'p-queue';
 import { logger } from '../lib/logger.js';
 import { v4 as uuidv4 } from 'uuid';
 import { serverErrorReporter } from '../utils/server-error-reporting.js';
+import { getPrismaClient } from '../lib/database.js';
 
 class QueueService {
   constructor() {
@@ -35,8 +36,9 @@ class QueueService {
    * Add a task to the queue
    * @param {string} taskType
    * @param {Function} taskFunction
+   * @param {Object} [payload]
    */
-  async add(taskType, taskFunction) {
+  async add(taskType, taskFunction, payload = {}) {
     const queue = this.getQueue(taskType);
     const taskId = uuidv4();
 
@@ -46,10 +48,25 @@ class QueueService {
         logger.info({ taskId, taskType }, 'Task completed');
       } catch (error) {
         logger.error({ taskId, taskType, error: error.message }, 'Task failed');
+        
+        try {
+          const prisma = getPrismaClient();
+          await prisma.failedJob.create({
+            data: {
+              jobType: taskType,
+              payload: payload,
+              errorMessage: error.message || 'Unknown error',
+              errorStack: error.stack,
+            }
+          });
+        } catch (dbError) {
+          logger.error({ error: dbError.message }, 'Failed to save failed job to database');
+        }
+
         serverErrorReporter.reportServerError(
           `Background task failed: ${taskType}`,
           error,
-          { taskId, taskType },
+          { taskId, taskType, payload },
           'medium'
         );
       }

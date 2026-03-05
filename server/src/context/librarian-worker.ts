@@ -611,9 +611,15 @@ Only include topics with confidence > 0.7.`;
     return markedCount;
   }
 
-  /**
-   * Mark ACUs as processed by the librarian
-   */
+import { getContextEventBus } from './index.js';
+
+// ... (config and other imports)
+
+const eventBus = getContextEventBus();
+
+/**
+ * Mark ACUs as processed by the librarian
+ */
   private async markACUsProcessed(userId: string, analyses: ACUAnalysis[]): Promise<void> {
     const acuIds = analyses.map((a) => a.acuId).filter((id) => id.length > 0);
 
@@ -625,6 +631,9 @@ Only include topics with confidence > 0.7.`;
       SET metadata = jsonb_set(metadata, '{librarianProcessed}', 'true'::jsonb)
       WHERE id = ANY(${acuIds}::text[])
     `;
+
+    // Emit event for cache invalidation
+    await eventBus.emit('acu:processed', userId, { ids: acuIds });
   }
 
   private isInCooldown(): boolean {

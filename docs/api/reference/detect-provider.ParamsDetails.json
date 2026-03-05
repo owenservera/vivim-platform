@@ -1,1 +1,0 @@
-{"parameters":[{"name":"url","in":"query","required":true,"schema":{"type":"string","format":"uri"},"description":"The URL to analyze","example":"https://claude.ai/share/abc123"}]}

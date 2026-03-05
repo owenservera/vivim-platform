@@ -6,6 +6,7 @@
 
 import { getPrismaClient } from '../lib/database.js';
 import { logger } from '../lib/logger.js';
+import { encryptString } from '../lib/crypto.js';
 import crypto from 'crypto';
 
 // ============================================================================
@@ -146,6 +147,13 @@ export async function saveACUs(acus, userClient = null) {
 
   for (const acu of acus) {
     try {
+      if (acu.securityLevel >= 2 && acu.authorDid) {
+        const user = await db.user.findUnique({ where: { did: acu.authorDid } });
+        if (user) {
+          acu.content = encryptString(acu.content, user.publicKey);
+        }
+      }
+
       await db.atomicChatUnit.create({
         data: acu,
       });

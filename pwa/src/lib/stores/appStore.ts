@@ -193,7 +193,7 @@ interface AppState {
 
 export const useAppStore = create<AppState>()(
   persist(
-    immer((set, get) => ({
+    immer((set) => ({
       // Initial state
       identity: {
         did: null,
@@ -310,7 +310,7 @@ export const useAppStore = create<AppState>()(
         }),
         
         removePin: (cid) => set((state) => {
-          state.storage.ipfsPins = state.storage.ipfsPins.filter(c => c !== cid);
+          state.storage.ipfsPins = state.storage.ipfsPins.filter((c: string) => c !== cid);
           state.storage.ipfsPinned = state.storage.ipfsPins.length;
         }),
         
@@ -363,7 +363,7 @@ export const useAppStore = create<AppState>()(
         }),
         
         markNotificationRead: (id) => set((state) => {
-          const notification = state.ui.notifications.find(n => n.id === id);
+          const notification = state.ui.notifications.find((n: Notification) => n.id === id);
           if (notification) {
             notification.read = true;
           }
@@ -400,17 +400,17 @@ export const useAppStore = create<AppState>()(
         
         // Social
         addCircle: (circle) => set((state) => {
-          if (!state.social.circles.find(c => c.id === circle.id)) {
+          if (!state.social.circles.find((c: Circle) => c.id === circle.id)) {
             state.social.circles.push(circle);
           }
         }),
         
         removeCircle: (id) => set((state) => {
-          state.social.circles = state.social.circles.filter(c => c.id !== id);
+          state.social.circles = state.social.circles.filter((c: Circle) => c.id !== id);
         }),
         
         updateCircle: (id, updates) => set((state) => {
-          const circle = state.social.circles.find(c => c.id === id);
+          const circle = state.social.circles.find((c: Circle) => c.id === id);
           if (circle) {
             Object.assign(circle, updates);
           }
@@ -427,25 +427,78 @@ export const useAppStore = create<AppState>()(
         }),
         
         removeFollowing: (did) => set((state) => {
-          state.social.following = state.social.following.filter(d => d !== did);
+          state.social.following = state.social.following.filter((d: string) => d !== did);
         }),
         
         setFollowers: (dids) => set((state) => {
           state.social.followers = dids;
         }),
         
-        // Export - to be implemented with actual API
+        // Export — calls the real portability API and triggers a browser download
         exportAllData: async () => {
-          // TODO: Connect to backend API
-          console.log('Export all data requested');
-          set((state) => {
-            state.sovereignty.lastExport = Date.now();
-          });
+          try {
+            const token = localStorage.getItem('vivim_token') ?? '';
+            const response = await fetch('/api/v2/portability/export', {
+              method: 'GET',
+              headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+              },
+            });
+
+            if (!response.ok) {
+              const err = await response.json().catch(() => ({ message: 'Export failed' }));
+              throw new Error(err.message ?? `Export failed: ${response.status}`);
+            }
+
+            const blob = await response.blob();
+            const contentDisposition = response.headers.get('Content-Disposition');
+            const filenameMatch = contentDisposition?.match(/filename="?([^"]+)"?/);
+            const filename = filenameMatch?.[1] ?? `vivim-export-${new Date().toISOString().slice(0, 10)}.json`;
+
+            // Trigger browser download
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = filename;
+            document.body.appendChild(anchor);
+            anchor.click();
+            anchor.remove();
+            URL.revokeObjectURL(url);
+
+            set((state) => {
+              state.sovereignty.lastExport = Date.now();
+            });
+          } catch (error) {
+            console.error('[AppStore] exportAllData failed:', error);
+            throw error;
+          }
         },
-        
+
         importData: async (file) => {
-          // TODO: Connect to backend API
-          console.log('Import data requested:', file.name);
+          try {
+            const token = localStorage.getItem('vivim_token') ?? '';
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch('/api/v2/portability/import', {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              body: formData,
+            });
+
+            if (!response.ok) {
+              const err = await response.json().catch(() => ({ message: 'Import failed' }));
+              throw new Error(err.message ?? `Import failed: ${response.status}`);
+            }
+
+            console.log('[AppStore] importData: import successful for', file.name);
+          } catch (error) {
+            console.error('[AppStore] importData failed:', error);
+            throw error;
+          }
         },
       },
     })),

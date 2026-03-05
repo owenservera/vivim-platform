@@ -5,13 +5,35 @@
  */
 
 import { Router } from 'express';
-import { requireAdminAuth } from '../../middleware/admin-auth.js';
 import { createRequestLogger } from '../../lib/logger.js';
 import { getPrismaClient } from '../../lib/database.js';
 import os from 'os';
+import { statfs } from 'fs/promises';
 
 const router = Router();
 const prisma = getPrismaClient();
+
+/**
+ * Get real disk usage for the process working directory.
+ * Uses Node's native statfs (>= v19). Falls back to null on older runtimes.
+ */
+async function getDiskUsage() {
+  try {
+    const stats = await statfs(process.cwd());
+    const total = stats.blocks * stats.bsize;
+    const free  = stats.bfree  * stats.bsize;
+    const used  = total - free;
+    return {
+      total,
+      used,
+      free,
+      percentage: total > 0 ? (used / total) * 100 : 0,
+    };
+  } catch {
+    // statfs not available (older Node) — return null; caller decides fallback
+    return null;
+  }
+}
 
 // ============================================================================
 // GET SYSTEM STATS
@@ -26,9 +48,11 @@ router.get('/stats', async (req, res, next) => {
   const log = createRequestLogger(req);
 
   try {
+    const disk = await getDiskUsage();
+
     const stats = {
       cpu: {
-        usage: process.cpuUsage().user / 1000000, // Convert to seconds
+        usage: process.cpuUsage().user / 1000000, // microseconds → seconds
         cores: os.cpus().length,
         loadAverage: os.loadavg(),
       },
@@ -38,19 +62,18 @@ router.get('/stats', async (req, res, next) => {
         used: os.totalmem() - os.freemem(),
         percentage: ((os.totalmem() - os.freemem()) / os.totalmem()) * 100,
       },
-      disk: {
-        // TODO: Get actual disk usage
-        total: 1000000000000,
-        used: 500000000000,
-        free: 500000000000,
-        percentage: 50,
+      disk: disk ?? {
+        total: null,
+        used: null,
+        free: null,
+        percentage: null,
+        error: 'statfs not available on this runtime',
       },
       uptime: process.uptime(),
       timestamp: new Date().toISOString(),
     };
 
     log.info('System stats retrieved');
-
     res.json(stats);
   } catch (error) {
     next(error);
@@ -70,18 +93,24 @@ router.get('/users/stats', async (req, res, next) => {
   const log = createRequestLogger(req);
 
   try {
-    // Get user count from database
-    const userCount = await prisma.user.count();
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - 7);
+
+    const [totalUsers, newUsersToday, newUsersWeek] = await Promise.all([
+      prisma.user.count(),
+      prisma.user.count({ where: { createdAt: { gte: startOfDay } } }),
+      prisma.user.count({ where: { createdAt: { gte: startOfWeek } } }),
+    ]);
 
     const stats = {
-      totalUsers: userCount,
-      activeUsers: Math.floor(userCount * 0.7), // Mock active users
-      newUsersToday: Math.floor(Math.random() * 10),
-      newUsersWeek: Math.floor(Math.random() * 50),
+      totalUsers,
+      newUsersToday,
+      newUsersWeek,
     };
 
-    log.info('User stats retrieved');
-
+    log.info('User stats retrieved (real data)');
     res.json(stats);
   } catch (error) {
     next(error);
@@ -101,18 +130,22 @@ router.get('/conversations/stats', async (req, res, next) => {
   const log = createRequestLogger(req);
 
   try {
-    const conversationCount = await prisma.conversation.count();
+    const [totalConversations, totalMessages] = await Promise.all([
+      prisma.conversation.count(),
+      prisma.message.count(),
+    ]);
+
+    const avg = totalConversations > 0
+      ? (totalMessages / totalConversations).toFixed(1)
+      : 0;
 
     const stats = {
-      totalConversations: conversationCount,
-      publicConversations: Math.floor(conversationCount * 0.3),
-      privateConversations: Math.floor(conversationCount * 0.7),
-      totalMessages: await prisma.message.count(),
-      avgMessagesPerConversation: 5.7,
+      totalConversations,
+      totalMessages,
+      avgMessagesPerConversation: Number(avg),
     };
 
-    log.info('Conversation stats retrieved');
-
+    log.info('Conversation stats retrieved (real data)');
     res.json(stats);
   } catch (error) {
     next(error);
@@ -132,26 +165,30 @@ router.get('/storage/stats', async (req, res, next) => {
   const log = createRequestLogger(req);
 
   try {
+    const [dbSizeRows, tableCountRows, totalConvos] = await Promise.all([
+      prisma.$queryRaw`
+        SELECT pg_size_pretty(pg_database_size(current_database())) AS db_size;
+      `,
+      prisma.$queryRaw`
+        SELECT count(*)::int AS table_count, sum(n_live_tup)::int AS row_count
+        FROM pg_stat_user_tables;
+      `,
+      prisma.conversation.count(),
+    ]);
+
     const stats = {
       database: {
-        totalSize: '15.4 MB',
-        tables: 4,
-        rows: 10346,
+        totalSize: dbSizeRows[0]?.db_size ?? 'unknown',
+        tables: tableCountRows[0]?.table_count ?? 0,
+        rows: Number(tableCountRows[0]?.row_count ?? 0),
       },
-      indexedDB: {
-        // PWA local storage
-        totalSize: '8.2 MB',
-        documents: 1524,
-      },
-      cache: {
-        totalSize: '125 MB',
-        entries: 342,
+      conversations: {
+        total: totalConvos,
       },
       timestamp: new Date().toISOString(),
     };
 
-    log.info('Storage stats retrieved');
-
+    log.info('Storage stats retrieved (real data)');
     res.json(stats);
   } catch (error) {
     next(error);
@@ -230,12 +267,22 @@ router.get('/health', async (req, res, next) => {
       dbStatus = 'down';
     }
 
+    // Check disk availability
+    const disk = await getDiskUsage();
+    const diskStatus = disk !== null ? 'up' : 'unknown';
+
+    // Check memory (flag as degraded if >90% used)
+    const memPct = ((os.totalmem() - os.freemem()) / os.totalmem()) * 100;
+    const memStatus = memPct < 90 ? 'up' : 'degraded';
+
+    const overallStatus = [dbStatus, memStatus].every(s => s === 'up') ? 'healthy' : 'degraded';
+
     const health = {
-      status: dbStatus === 'up' ? 'healthy' : 'degraded',
+      status: overallStatus,
       services: {
         database: dbStatus,
-        network: 'up', // TODO: Check actual network status
-        storage: 'up', // TODO: Check actual storage
+        memory: memStatus,
+        disk: diskStatus,
         api: 'up',
       },
       uptime: process.uptime(),

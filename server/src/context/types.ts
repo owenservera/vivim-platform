@@ -223,6 +223,7 @@ export interface AssemblyParams {
   conversationId: string;
   userMessage: string;
   personaId?: string;
+  recipeId?: string;
   deviceId?: string;
   providerId?: string;
   modelId?: string;
@@ -308,6 +309,7 @@ export interface ILLMService {
 }
 
 export interface ITokenEstimator {
-  estimateTokens(text: string): number;
-  estimateMessageTokens(message: { role?: string; content: any }): number;
+  estimateTokens(text: string, model?: string): number;
+  estimateMessageTokens(message: { role?: string; content: any }, model?: string): number;
+  estimateConversationTokens(messages: Array<{ role?: string; content: any }>, model?: string): number;
 }

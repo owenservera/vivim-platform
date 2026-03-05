@@ -365,14 +365,17 @@
   width: 100%;
 }
 
-.conv-card-accent.chatgpt  { background: linear-gradient(90deg, #10b981, #059669); }
-.conv-card-accent.claude   { background: linear-gradient(90deg, #f97316, #ea580c); }
-.conv-card-accent.gemini   { background: linear-gradient(90deg, #3b82f6, #1d4ed8); }
-.conv-card-accent.grok     { background: linear-gradient(90deg, #ef4444, #b91c1c); }
-.conv-card-accent.perplexity { background: linear-gradient(90deg, #8b5cf6, #6d28d9); }
-.conv-card-accent.deepseek { background: linear-gradient(90deg, #06b6d4, #0891b2); }
-.conv-card-accent.kimi     { background: linear-gradient(90deg, #ec4899, #be185d); }
-.conv-card-accent.qwen     { background: linear-gradient(90deg, #6366f1, #4f46e5); }
+/* Use CSS variables from design-system.css for provider gradients */
+.conv-card-accent.chatgpt  { background: var(--provider-chatgpt-gradient); }
+.conv-card-accent.claude   { background: var(--provider-claude-gradient); }
+.conv-card-accent.gemini   { background: var(--provider-gemini-gradient); }
+.conv-card-accent.grok     { background: var(--provider-grok-gradient); }
+.conv-card-accent.perplexity { background: var(--provider-perplexity-gradient); }
+.conv-card-accent.deepseek { background: var(--provider-deepseek-gradient); }
+.conv-card-accent.kimi     { background: var(--provider-kimi-gradient); }
+.conv-card-accent.qwen     { background: var(--provider-qwen-gradient); }
+.conv-card-accent.mistral  { background: var(--provider-mistral-gradient); }
+.conv-card-accent.copilot  { background: var(--provider-copilot-gradient); }
 .conv-card-accent.other,
 .conv-card-accent.default  { background: linear-gradient(90deg, #9ca3af, #6b7280); }
 
@@ -400,6 +403,7 @@
 .conv-preview-text {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   font-size: 12.5px;
@@ -466,13 +470,20 @@
   border-left: 4px solid #6366f1;
 }
 
-.conv-card-enhanced.is-archived {
-  opacity: 0.6;
+/* ── Archived: dim body content only, keep action strip fully visible ── */
+.conv-card-enhanced.is-archived .conv-card-body > :not(.conv-action-strip) {
+  opacity: 0.55;
+  transition: opacity 0.2s ease;
+}
+
+.conv-card-enhanced.is-archived:hover .conv-card-body > :not(.conv-action-strip) {
+  opacity: 0.75;
 }
 
 /* ── Grid mode card adjustments ── */
 .home-feed-grid .conv-card-enhanced .conv-preview-text {
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   font-size: 12px;
 }
 
@@ -776,4 +787,29 @@
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(99, 102, 241, 0.4);
+}
+
+/* ── Accessibility: Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .conv-card-enhanced,
+  .home-feed-list,
+  .home-feed-grid,
+  .home-fab-main,
+  .home-fab-mini,
+  .home-stat-pill,
+  .home-filter-tab,
+  .home-empty-hero,
+  .assistant-message-entry,
+  .user-message-entry {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .conv-new-badge {
+    animation: none !important;
+  }
+
+  .home-filter-tab .tab-count {
+    animation: none !important;
+  }
 }

@@ -64,6 +64,18 @@ export function calculateMessageHash(role, content, timestamp, parts) {
 // Symmetric Encryption (XSalsa20-Poly1305)
 // ============================================================================
 
+const SERVER_GLOBAL_SECRET = process.env.JWT_SECRET || 'fallback-server-secret-key-12345';
+
+/**
+ * Derive a symmetric key from a user's public key (Ed25519 base64) and server secret
+ * This ensures the data is tied to the user's identity but still accessible by the server for JIT retrieval.
+ */
+export function deriveUserSymmetricKey(userPublicKeyBase64) {
+  return createHash('sha256')
+    .update(userPublicKeyBase64 + SERVER_GLOBAL_SECRET)
+    .digest('base64');
+}
+
 /**
  * Decrypt data with symmetric key
  */
@@ -97,6 +109,23 @@ export function symmetricEncrypt(data, keyBase64) {
     nonce: Buffer.from(nonce).toString('base64'),
     ciphertext: Buffer.from(box).toString('base64'),
   };
+}
+
+export function encryptString(text, userPublicKeyBase64) {
+  if (!text) return text;
+  const key = deriveUserSymmetricKey(userPublicKeyBase64);
+  const { nonce, ciphertext } = symmetricEncrypt(text, key);
+  return `ENCRYPTED:${nonce}:${ciphertext}`;
+}
+
+export function decryptString(text, userPublicKeyBase64) {
+  if (!text || !text.startsWith('ENCRYPTED:')) return text;
+  const parts = text.split(':');
+  if (parts.length !== 3) return text;
+  const [, nonce, ciphertext] = parts;
+  const key = deriveUserSymmetricKey(userPublicKeyBase64);
+  const decrypted = symmetricDecrypt(ciphertext, nonce, key);
+  return decrypted || text; // fallback to original if decrypt fails
 }
 
 // ============================================================================

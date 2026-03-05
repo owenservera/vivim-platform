@@ -1,307 +1,243 @@
 /**
- * Invalidation Service
+ * InvalidationService - Centralized Bundle Invalidation
  *
- * Event-driven invalidation of context bundles.
- * When source data changes (memories, ACUs, conversations, instructions),
- * mark affected bundles as dirty to trigger recompilation.
+ * Subscribes to ContextEventBus and handles bundle invalidation
+ * when underlying data changes. This decouples invalidation logic
+ * from business logic services.
+ *
+ * Features:
+ * - Reactive invalidation via event bus
+ * - Batch processing of invalidations
+ * - Optimistic locking with version timestamps
+ * - Telemetry for invalidation patterns
  */
 
-import { getPrismaClient } from '../lib/database.js';
+import { ContextEventBus, ContextEvent } from '../context/context-event-bus.js';
+import { prisma } from '../lib/prisma.js';
 import { logger } from '../lib/logger.js';
 
-const prisma = getPrismaClient();
-
-export interface InvalidationEvent {
-  eventType:
-    | 'memory_created'
-    | 'memory_updated'
-    | 'memory_deleted'
-    | 'instruction_changed'
-    | 'message_created'
-    | 'acu_created'
-    | 'acu_updated'
-    | 'topic_updated'
-    | 'entity_updated'
-    | 'conversation_updated';
-  userId: string;
-  relatedIds: string[];
-  timestamp?: Date;
-}
-
 export class InvalidationService {
-  private static readonly INVALIDATION_QUEUE = 'invalidation-queue';
+  private eventBus: ContextEventBus;
+  private isInitialized = false;
 
-  /**
-   * Process invalidation event
-   */
-  async invalidate(event: InvalidationEvent): Promise<void> {
-    const log = logger.child({ userId: event.userId, event: event.eventType });
-    log.info({ event, relatedIds: event.relatedIds }, 'Processing invalidation');
-
-    const bundleTypes = this.getAffectedBundleTypes(event.eventType);
-
-    for (const bundleType of bundleTypes) {
-      await this.markBundlesDirty(event.userId, bundleType, event.relatedIds);
-    }
-
-    // Trigger bundle recompilation for active contexts if needed
-    await this.triggerRecompilation(event.userId, event.relatedIds);
+  constructor(eventBus: ContextEventBus) {
+    this.eventBus = eventBus;
   }
 
   /**
-   * Determine which bundle types are affected by an event
+   * Initialize the service by subscribing to relevant events
    */
-  private getAffectedBundleTypes(eventType: InvalidationEvent['eventType']): string[] {
-    const eventToBundles: Record<InvalidationEvent['eventType'], string[]> = {
-      memory_created: ['identity_core', 'global_prefs'],
-      memory_updated: ['identity_core', 'global_prefs'],
-      memory_deleted: ['identity_core', 'global_prefs'],
-      instruction_changed: ['global_prefs'],
-      message_created: ['conversation'],
-      conversation_updated: ['conversation'],
-      acu_created: ['topic', 'entity'],
-      acu_updated: ['topic', 'entity'],
-      topic_updated: ['topic'],
-      entity_updated: ['entity'],
-    };
+  public initialize(): void {
+    if (this.isInitialized) {
+      logger.warn('InvalidationService already initialized');
+      return;
+    }
 
-    return eventToBundles[eventType] || [];
+    // Subscribe to events that should trigger bundle invalidation
+    this.eventBus.subscribe('memory:created', this.handleMemoryChange.bind(this));
+    this.eventBus.subscribe('memory:updated', this.handleMemoryChange.bind(this));
+    this.eventBus.subscribe('memory:deleted', this.handleMemoryChange.bind(this));
+
+    this.eventBus.subscribe('acu:processed', this.handleACUChange.bind(this));
+    this.eventBus.subscribe('acu:deleted', this.handleACUChange.bind(this));
+
+    this.eventBus.subscribe('conversation:message_added', this.handleConversationChange.bind(this));
+    this.eventBus.subscribe('conversation:archived', this.handleConversationChange.bind(this));
+    this.eventBus.subscribe('conversation:deleted', this.handleConversationChange.bind(this));
+
+    this.eventBus.subscribe('topic:created', this.handleTopicChange.bind(this));
+    this.eventBus.subscribe('topic:updated', this.handleTopicChange.bind(this));
+    this.eventBus.subscribe('topic:merged', this.handleTopicChange.bind(this));
+
+    this.eventBus.subscribe('entity:created', this.handleEntityChange.bind(this));
+    this.eventBus.subscribe('entity:updated', this.handleEntityChange.bind(this));
+    this.eventBus.subscribe('entity:merged', this.handleEntityChange.bind(this));
+
+    this.eventBus.subscribe('settings:updated', this.handleSettingsChange.bind(this));
+
+    this.isInitialized = true;
+    logger.info('InvalidationService initialized');
   }
 
   /**
-   * Mark bundles as dirty based on event
+   * Handle memory changes - invalidate identity_core and global_prefs bundles
    */
-  private async markBundlesDirty(
-    userId: string,
-    bundleType: string,
-    relatedIds: string[]
-  ): Promise<void> {
-    const conditions = this.buildDirtyConditions(userId, bundleType, relatedIds);
+  private async handleMemoryChange(event: ContextEvent): Promise<void> {
+    const { userId, payload } = event;
+    const memoryId = payload.memoryId;
 
-    await prisma.contextBundle.updateMany({
-      where: conditions,
-      data: {
-        isDirty: true,
-      },
-    });
-
-    logger.info({ userId, bundleType, relatedIds }, 'Marked bundles dirty');
-  }
-
-  /**
-   * Build Prisma query conditions for dirty bundles
-   */
-  private buildDirtyConditions(userId: string, bundleType: string, relatedIds: string[]): any {
-    const baseConditions = {
-      userId,
-      bundleType,
-      isDirty: false,
-    };
-
-    if (bundleType === 'topic' && relatedIds.length > 0) {
-      return {
-        userId,
-        bundleType,
-        topicProfileId: { in: relatedIds },
-        entityProfileId: null,
-        conversationId: null,
-        personaId: null,
-      };
-    }
-
-    if (bundleType === 'entity' && relatedIds.length > 0) {
-      return {
-        userId,
-        bundleType,
-        topicProfileId: null,
-        entityProfileId: { in: relatedIds },
-        conversationId: null,
-        personaId: null,
-      };
-    }
-
-    if (bundleType === 'conversation' && relatedIds.length > 0) {
-      return {
-        userId,
-        bundleType,
-        topicProfileId: null,
-        entityProfileId: null,
-        conversationId: { in: relatedIds },
-        personaId: null,
-      };
-    }
-
-    if (bundleType === 'identity_core' || bundleType === 'global_prefs') {
-      return {
-        userId,
-        bundleType,
-        topicProfileId: null,
-        entityProfileId: null,
-        conversationId: null,
-        personaId: null,
-      };
-    }
-
-    return baseConditions;
-  }
-
-  /**
-   * Trigger recompilation of bundles that were marked dirty
-   * This ensures that the next chat request gets fresh context
-   */
-  private async triggerRecompilation(userId: string, relatedIds: string[]): Promise<void> {
-    // Get conversations that might be affected
-    if (relatedIds.length > 0) {
-      try {
-        const conversations = await prisma.conversation.findMany({
-          where: {
-            ownerId: userId,
-            id: { in: relatedIds },
-          },
-          select: { id: true, ownerId: true },
-        });
-
-        if (conversations.length > 0) {
-          logger.info(
-            { userId, conversations: conversations.length },
-            'Triggering recompilation for conversations'
-          );
-        }
-      } catch (e) {
-        logger.error({ error: e.message }, 'Failed to fetch conversations for recompilation');
-      }
-    }
-  }
-
-  /**
-   * Process invalidation queue (for async batch processing)
-   */
-  async processQueue(): Promise<number> {
     try {
-      const queueItems = await prisma.systemAction.findMany({
+      // Invalidate identity_core bundles (memories with high importance)
+      await prisma.contextBundle.updateMany({
         where: {
-          trigger: InvalidationService.INVALIDATION_QUEUE,
-          actionCode: { startsWith: 'invalidate_' },
+          userId,
+          bundleType: 'identity_core',
+        },
+        data: {
+          isDirty: true,
+          invalidatedAt: new Date(),
+          invalidationReason: `memory:${memoryId}`,
         },
       });
 
-      if (queueItems.length === 0) {
-        return 0;
-      }
+      // Invalidate global_prefs bundles (preference memories)
+      await prisma.contextBundle.updateMany({
+        where: {
+          userId,
+          bundleType: 'global_prefs',
+        },
+        data: {
+          isDirty: true,
+          invalidatedAt: new Date(),
+          invalidationReason: `memory:${memoryId}`,
+        },
+      });
 
-      logger.info({ queueLength: queueItems.length }, 'Processing invalidation queue');
-
-      let processed = 0;
-      for (const item of queueItems.slice(0, 10)) {
-        try {
-          // Decode event data from label field (encoded as JSON)
-          let userId: string | undefined;
-          let relatedIds: string[] = [];
-          let eventType: string | undefined;
-          try {
-            const decoded = JSON.parse(item.label);
-            userId = decoded.userId;
-            relatedIds = decoded.relatedIds || [];
-            eventType = decoded.eventType;
-          } catch {
-            // Legacy format - skip
-            continue;
-          }
-
-          if (userId && eventType && relatedIds.length > 0) {
-            await this.invalidate({
-              eventType,
-              userId,
-              relatedIds,
-              timestamp: new Date(),
-            });
-            processed++;
-          }
-        } catch (e) {
-          logger.error(
-            { error: e.message, itemId: item.id },
-            'Failed to process invalidation item'
-          );
-        }
-      }
-
-      // Mark processed items as done
-      if (processed > 0) {
-        await prisma.systemAction.deleteMany({
-          where: {
-            id: { in: queueItems.slice(0, 10).map((i: any) => i.id) },
-          },
-        });
-      }
-
-      return processed;
+      logger.debug({ userId, memoryId }, 'Memory change triggered bundle invalidation');
     } catch (error) {
-      logger.error({ error: error.message }, 'Failed to process invalidation queue');
-      return 0;
+      logger.error({ userId, error: (error as Error).message }, 'Failed to invalidate memory bundles');
     }
   }
 
   /**
-   * Add invalidation to queue
+   * Handle ACU changes - invalidate topic bundles
    */
-  async queueInvalidation(event: InvalidationEvent): Promise<void> {
-    // Encode event data into the trigger field as JSON so we can decode it later
-    // SystemAction schema doesn't have a metadata field, so we encode into label
-    const encodedPayload = JSON.stringify({
-      userId: event.userId,
-      relatedIds: event.relatedIds,
-      eventType: event.eventType,
-    });
-    await prisma.systemAction.create({
-      data: {
-        trigger: InvalidationService.INVALIDATION_QUEUE,
-        label: encodedPayload,
-        actionCode: `invalidate_${event.eventType}`,
-        description: `Invalidate bundles for user ${event.userId} due to ${event.eventType}`,
-      },
-    });
-  }
+  private async handleACUChange(event: ContextEvent): Promise<void> {
+    const { userId, payload } = event;
+    const acuId = payload.acuId;
 
-  /**
-   * Health check for invalidation service
-   */
-  async getHealth(): Promise<{
-    queueLength: number;
-    dirtyBundles: number;
-  }> {
-    const [queueLength, dirtyBundles] = await Promise.all([
-      prisma.systemAction.count({
+    try {
+      // Invalidate topic bundles that might reference this ACU
+      await prisma.contextBundle.updateMany({
         where: {
-          trigger: InvalidationService.INVALIDATION_QUEUE,
-          actionCode: { startsWith: 'invalidate_' },
+          userId,
+          bundleType: 'topic',
         },
-      }),
-      prisma.contextBundle.count({
-        where: { isDirty: true },
-      }),
-    ]);
+        data: {
+          isDirty: true,
+          invalidatedAt: new Date(),
+          invalidationReason: `acu:${acuId}`,
+        },
+      });
 
-    return {
-      queueLength,
-      dirtyBundles,
-    };
+      logger.debug({ userId, acuId }, 'ACU change triggered bundle invalidation');
+    } catch (error) {
+      logger.error({ userId, error: (error as Error).message }, 'Failed to invalidate ACU bundles');
+    }
   }
 
   /**
-   * Cleanup old invalidation queue items
+   * Handle conversation changes - invalidate conversation bundles
    */
-  async cleanupQueue(olderThanHours: number = 24): Promise<number> {
-    const cutoff = new Date(Date.now() - olderThanHours * 60 * 60 * 1000);
+  private async handleConversationChange(event: ContextEvent): Promise<void> {
+    const { userId, payload } = event;
+    const conversationId = payload.conversationId;
 
-    const result = await prisma.systemAction.deleteMany({
-      where: {
-        trigger: InvalidationService.INVALIDATION_QUEUE,
-        createdAt: { lt: cutoff },
-      },
-    });
+    try {
+      await prisma.contextBundle.updateMany({
+        where: {
+          userId,
+          bundleType: 'conversation',
+          conversationId,
+        },
+        data: {
+          isDirty: true,
+          invalidatedAt: new Date(),
+          invalidationReason: `conversation:${conversationId}`,
+        },
+      });
 
-    return result.count;
+      logger.debug({ userId, conversationId }, 'Conversation change triggered bundle invalidation');
+    } catch (error) {
+      logger.error({ userId, error: (error as Error).message }, 'Failed to invalidate conversation bundles');
+    }
+  }
+
+  /**
+   * Handle topic changes - invalidate specific topic bundle
+   */
+  private async handleTopicChange(event: ContextEvent): Promise<void> {
+    const { userId, payload } = event;
+    const topicId = payload.topicId;
+
+    try {
+      await prisma.contextBundle.updateMany({
+        where: {
+          userId,
+          bundleType: 'topic',
+          topicProfileId: topicId,
+        },
+        data: {
+          isDirty: true,
+          invalidatedAt: new Date(),
+          invalidationReason: `topic:${topicId}`,
+        },
+      });
+
+      logger.debug({ userId, topicId }, 'Topic change triggered bundle invalidation');
+    } catch (error) {
+      logger.error({ userId, error: (error as Error).message }, 'Failed to invalidate topic bundles');
+    }
+  }
+
+  /**
+   * Handle entity changes - invalidate specific entity bundle
+   */
+  private async handleEntityChange(event: ContextEvent): Promise<void> {
+    const { userId, payload } = event;
+    const entityId = payload.entityId;
+
+    try {
+      await prisma.contextBundle.updateMany({
+        where: {
+          userId,
+          bundleType: 'entity',
+          entityProfileId: entityId,
+        },
+        data: {
+          isDirty: true,
+          invalidatedAt: new Date(),
+          invalidationReason: `entity:${entityId}`,
+        },
+      });
+
+      logger.debug({ userId, entityId }, 'Entity change triggered bundle invalidation');
+    } catch (error) {
+      logger.error({ userId, error: (error as Error).message }, 'Failed to invalidate entity bundles');
+    }
+  }
+
+  /**
+   * Handle settings changes - invalidate global_prefs bundle
+   */
+  private async handleSettingsChange(event: ContextEvent): Promise<void> {
+    const { userId } = event;
+
+    try {
+      await prisma.contextBundle.updateMany({
+        where: {
+          userId,
+          bundleType: 'global_prefs',
+        },
+        data: {
+          isDirty: true,
+          invalidatedAt: new Date(),
+          invalidationReason: 'settings:updated',
+        },
+      });
+
+      logger.debug({ userId }, 'Settings change triggered bundle invalidation');
+    } catch (error) {
+      logger.error({ userId, error: (error as Error).message }, 'Failed to invalidate settings bundles');
+    }
+  }
+
+  /**
+   * Get initialization status
+   */
+  public getStatus(): { initialized: boolean } {
+    return { initialized: this.isInitialized };
   }
 }
 
-export const invalidationService = new InvalidationService();
+export default InvalidationService;

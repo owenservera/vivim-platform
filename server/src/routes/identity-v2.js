@@ -12,6 +12,7 @@ import { authenticateDID, optionalAuth, requireVerification } from '../middlewar
 import { getPrismaClient } from '../lib/database.js';
 import { logger } from '../lib/logger.js';
 import { debugReporter } from '../services/debug-reporter.js';
+import jwt from 'jsonwebtoken';
 
 const router = Router();
 const log = logger.child({ module: 'identity-routes-v2' });
@@ -62,6 +63,143 @@ const completeVerificationSchema = z.object({
 const verifyPhoneSchema = z.object({
   phoneNumber: z.string().min(6).max(15),
   countryCode: z.string().length(2),
+});
+
+// ============================================================================
+// Authentication & Tokens (JWT)
+// ============================================================================
+
+/**
+ * POST /api/v2/identity/auth/token
+ * Generate access and refresh tokens (requires valid DID authentication)
+ */
+router.post('/auth/token', authenticateDID, async (req, res) => {
+  try {
+    const { userId, did, deviceId } = req.user;
+    
+    // Access token (short-lived TTL)
+    const accessToken = jwt.sign(
+      { sub: userId, did, deviceId, type: 'access' },
+      process.env.JWT_SECRET || 'dev-secret',
+      { expiresIn: '15m' }
+    );
+    
+    // Refresh token (long-lived TTL)
+    const refreshToken = jwt.sign(
+      { sub: userId, did, deviceId, type: 'refresh' },
+      process.env.JWT_SECRET || 'dev-secret',
+      { expiresIn: '7d' }
+    );
+
+    const crypto = await import('crypto');
+    const hash = crypto.createHash('sha256').update(refreshToken).digest('hex');
+    const prisma = getPrismaClient();
+    await prisma.device.update({
+      where: { deviceId },
+      data: { refreshTokenHash: hash }
+    });
+
+    // Send refresh token as HttpOnly cookie for automatic rotation    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/api/v2/identity/auth/refresh',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+    
+    res.json({
+      success: true,
+      data: {
+        accessToken,
+        expiresIn: 15 * 60
+      }
+    });
+
+  } catch (error) {
+    log.error({ error: error.message }, 'Token generation failed');
+    res.status(500).json({ success: false, error: 'Token generation failed' });
+  }
+});
+
+/**
+ * POST /api/v2/identity/auth/refresh
+ * Refresh access token
+ */
+router.post('/auth/refresh', async (req, res) => {
+  try {
+    const cookieHeader = req.headers.cookie || '';
+    const match = cookieHeader.match(/refresh_token=([^;]+)/);
+    const refreshToken = match ? match[1] : null;
+
+    if (!refreshToken) {
+      return res.status(401).json({ success: false, error: 'No refresh token provided' });
+    }
+
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET || 'dev-secret');
+    if (decoded.type !== 'refresh') {
+      return res.status(401).json({ success: false, error: 'Invalid token type' });
+    }
+
+    // Optional: add a hard check against database if the device is revoked or user is deleted here
+    const crypto = await import('crypto');
+    const hash = crypto.createHash('sha256').update(refreshToken).digest('hex');
+    const prisma = getPrismaClient();
+    const device = await prisma.device.findUnique({ where: { deviceId: decoded.deviceId } });
+    
+    if (!device || device.refreshTokenHash !== hash || !device.isActive) {
+      return res.status(401).json({ success: false, error: 'Invalid or revoked refresh token' });
+    }
+
+    // Generate rotated refresh token
+    const newRefreshToken = jwt.sign(
+      { sub: decoded.sub, did: decoded.did, deviceId: decoded.deviceId, type: 'refresh' },
+      process.env.JWT_SECRET || 'dev-secret',
+      { expiresIn: '7d' } // Extend TTL
+    );
+
+    const newHash = crypto.createHash('sha256').update(newRefreshToken).digest('hex');
+    await prisma.device.update({
+      where: { deviceId: decoded.deviceId },
+      data: { refreshTokenHash: newHash }
+    });
+
+    // Generate new access token
+    const accessToken = jwt.sign(
+      { sub: decoded.sub, did: decoded.did, deviceId: decoded.deviceId, type: 'access' },
+      process.env.JWT_SECRET || 'dev-secret',
+      { expiresIn: '15m' } 
+    );
+    
+    // Set new refresh token
+    res.cookie('refresh_token', newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/api/v2/identity/auth/refresh',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
+    res.json({
+      success: true,
+      data: { accessToken, expiresIn: 15 * 60 }
+    });
+
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      res.clearCookie('refresh_token', { path: '/api/v2/identity/auth/refresh' });
+      return res.status(401).json({ success: false, error: 'Refresh token expired' });
+    }
+    res.status(401).json({ success: false, error: 'Invalid refresh token' });
+  }
+});
+
+/**
+ * POST /api/v2/identity/auth/logout
+ * Log out and clear refresh token
+ */
+router.post('/auth/logout', async (req, res) => {
+  res.clearCookie('refresh_token', { path: '/api/v2/identity/auth/refresh' });
+  res.json({ success: true, message: 'Logged out successfully' });
 });
 
 // ============================================================================

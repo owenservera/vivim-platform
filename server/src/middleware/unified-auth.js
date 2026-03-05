@@ -7,6 +7,7 @@ import passport from './google-auth.js';
 import { identityService } from '../services/identity-service.js';
 import { canUserAccess } from '../services/account-lifecycle-service.js';
 import { apiKeyService } from '../services/api-key-service.js';
+import jwt from 'jsonwebtoken';
 
 export async function requireAuth(req, res, next) {
   let userId = null;
@@ -31,7 +32,25 @@ export async function requireAuth(req, res, next) {
         // Mock req.user for consistency
         req.user = { userId: user.id, email: user.email, did: user.did };
       }
-    } else {
+    } else if (authHeader.startsWith('Bearer ') && !authHeader.startsWith('Bearer did:')) {
+      // Check JWT
+      const token = authHeader.replace('Bearer ', '');
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev-secret');
+        if (decoded.type === 'access') {
+          userId = decoded.sub;
+          did = decoded.did;
+          req.user = { userId: decoded.sub, did: decoded.did, deviceId: decoded.deviceId };
+        }
+      } catch (err) {
+        if (err.name === 'TokenExpiredError') {
+          return res.status(401).json({ success: false, error: 'Token expired', code: 'TOKEN_EXPIRED' });
+        }
+        // token invalid, fall through
+      }
+    }
+    
+    if (!userId) {
       did = req.headers['x-did'] || authHeader.replace('Bearer did:', 'did:');
       if (did && did.startsWith('did:') && identityService.validateDID(did)) {
         const publicKey = identityService.didToPublicKey(did);
@@ -84,7 +103,21 @@ export async function optionalAuth(req, res, next) {
         userId = user.id;
         req.user = { userId: user.id, email: user.email, did: user.did };
       }
-    } else {
+    } else if (authHeader.startsWith('Bearer ') && !authHeader.startsWith('Bearer did:')) {
+      // Check JWT
+      const token = authHeader.replace('Bearer ', '');
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev-secret');
+        if (decoded.type === 'access') {
+          userId = decoded.sub;
+          req.user = { userId: decoded.sub, did: decoded.did, deviceId: decoded.deviceId };
+        }
+      } catch (err) {
+        // ignore
+      }
+    }
+    
+    if (!userId) {
       const did = req.headers['x-did'];
       if (did && identityService.validateDID(did)) {
         const publicKey = identityService.didToPublicKey(did);

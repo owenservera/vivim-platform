@@ -623,10 +623,14 @@ const LatexPart: React.FC<{ part: any }> = memo(({ part }) => {
   const content = isStringContent(part.content) ? part.content : String(part.content ?? '');
   const display = part.display ?? 'block';
   const [renderedHtml, setRenderedHtml] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const renderMath = async () => {
       try {
+        setIsLoading(true);
+        setError(null);
         const katexLib = await initKatex();
         if (katexLib) {
           const html = katexLib.renderToString(content, {
@@ -634,16 +638,59 @@ const LatexPart: React.FC<{ part: any }> = memo(({ part }) => {
             throwOnError: false,
           });
           setRenderedHtml(html);
+        } else {
+          setError('KaTeX library failed to load');
         }
       } catch (err) {
         console.error('KaTeX rendering error:', err);
+        setError(err instanceof Error ? err.message : 'Failed to render math');
+      } finally {
+        setIsLoading(false);
       }
     };
     renderMath();
   }, [content, display]);
 
+  if (isLoading) {
+    return (
+      <div className={`my-4 ${display === 'block' ? 'text-center' : 'inline'}`}>
+        <div className="flex items-center gap-3 text-gray-400 justify-center">
+          <Loader2 className="w-5 h-5 animate-spin" />
+          <span className="text-sm">Rendering math...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="my-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+        <div className="flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-sm font-medium text-amber-400 mb-1">Math rendering unavailable</p>
+            <p className="text-xs text-amber-300/80">{error}</p>
+            <pre className="mt-2 text-xs font-mono bg-amber-500/10 p-2 rounded overflow-x-auto">
+              {content}
+            </pre>
+            <button
+              onClick={() => {
+                setRenderedHtml(null);
+                setError(null);
+                setIsLoading(true);
+              }}
+              className="mt-2 px-3 py-1.5 text-xs font-medium bg-amber-500/20 hover:bg-amber-500/30 rounded-lg transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div 
+    <div
       className={`my-4 ${display === 'block' ? 'text-center overflow-x-auto py-2' : 'inline'}`}
       dangerouslySetInnerHTML={{ __html: renderedHtml || content }}
     />
@@ -689,25 +736,69 @@ const TablePart: React.FC<{ part: any }> = memo(({ part }) => {
 
 const MermaidPart: React.FC<{ part: any }> = memo(({ part }) => {
   const [svg, setSvg] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const diagramId = useRef(`mermaid-${Math.random().toString(36).substring(2, 9)}`);
 
   useEffect(() => {
     const renderDiagram = async () => {
       try {
+        setIsLoading(true);
+        setError(null);
         const mermaidLib = await initMermaid();
         if (mermaidLib) {
           const { svg } = await mermaidLib.render(diagramId.current, part.content);
           setSvg(svg);
+        } else {
+          setError('Mermaid library failed to load');
         }
       } catch (err) {
         console.error('Mermaid rendering error:', err);
+        setError(err instanceof Error ? err.message : 'Failed to render diagram');
+      } finally {
+        setIsLoading(false);
       }
     };
     renderDiagram();
   }, [part.content]);
 
+  if (isLoading) {
+    return (
+      <div className="my-4 p-6 bg-white/5 rounded-2xl border border-black/10 dark:border-white/10 flex justify-center">
+        <div className="flex items-center gap-3 text-gray-400">
+          <Loader2 className="w-5 h-5 animate-spin" />
+          <span className="text-sm">Rendering diagram...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="my-4 p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+        <div className="flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-sm font-medium text-red-400 mb-1">Diagram failed to load</p>
+            <p className="text-xs text-red-300/80">{error}</p>
+            <button
+              onClick={() => {
+                setSvg(null);
+                setError(null);
+                setIsLoading(true);
+              }}
+              className="mt-2 px-3 py-1.5 text-xs font-medium bg-red-500/20 hover:bg-red-500/30 rounded-lg transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div 
+    <div
       className="my-4 p-6 bg-white/5 rounded-2xl border border-black/10 dark:border-white/10 flex justify-center overflow-x-auto"
       dangerouslySetInnerHTML={{ __html: svg || '<div class="animate-pulse h-32 w-full bg-gray-200 dark:bg-gray-800 rounded"></div>' }}
     />

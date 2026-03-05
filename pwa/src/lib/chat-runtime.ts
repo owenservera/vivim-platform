@@ -4,6 +4,7 @@ import { getInitializedChainClient } from './chain-client';
 import { toolRegistry } from './tool-registry';
 import { EventType } from '@vivim/network-engine';
 import { useEffect, useMemo } from 'react';
+import { unifiedRepository } from './db/unified-repository';
 
 export function useVivimChatRuntime(conversationId: string | null) {
   const chat = useChat({
@@ -19,6 +20,18 @@ export function useVivimChatRuntime(conversationId: string | null) {
           content: message.content,
           createdAt: Date.now()
         });
+
+        // Bridge persistence: sync to Dexie/IDB
+        try {
+          const conv = await unifiedRepository.getConversation(conversationId);
+          if (conv) {
+             conv.stats.totalMessages += 1; // Basic increment for now
+             conv.stats.lastMessageAt = new Date().toISOString();
+             await unifiedRepository.saveConversation(conv);
+          }
+        } catch (e) {
+          console.error("Failed to sync completed thread to dexie/IDB", e);
+        }
       }
     }
   });

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './ContextVisualizer.css';
-import { ChevronDown, ChevronUp, Layers, Info, Database, Brain, MessageSquare, BookOpen, Hash, User, Clock, Zap, CheckCircle, XCircle } from 'lucide-react';
+import { ChevronDown, ChevronUp, Layers, Info, Database, Brain, MessageSquare, BookOpen, Hash, User, Zap, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 
 interface LayerBudget {
   layer: string;
@@ -18,6 +18,8 @@ export interface BundleInfo {
   title: string;
   tokenCount: number;
   snippet: string;
+  isTruncated?: boolean; // Indicates if this bundle was truncated
+  droppedItems?: number; // Number of items dropped due to budget
 }
 
 export interface DetectedItem {
@@ -39,6 +41,12 @@ export interface ContextMetadata {
     totalTokens: number;
     hasConversation: boolean;
   };
+  layerTruncation?: Record<string, {
+    originalCount: number;
+    includedCount: number;
+    droppedCount: number;
+    reason: 'budget' | 'excluded' | 'relevance';
+  }>;
 }
 
 interface ContextVisualizerProps {
@@ -49,15 +57,21 @@ interface ContextVisualizerProps {
   metadata?: ContextMetadata;
 }
 
+/**
+ * LAYER_COLORS maps each layer key to a CSS custom property defined in design-system.css.
+ * This eliminates hardcoded hex values and keeps the design system as the single source of truth.
+ *
+ * To change a layer color, update --layer-N in design-system.css.
+ */
 const LAYER_COLORS: Record<string, string> = {
-  'L0_identity': '#8b5cf6', // Violet
-  'L1_global_prefs': '#6366f1', // Indigo
-  'L2_topic': '#0ea5e9', // Light Blue
-  'L3_entity': '#10b981', // Emerald
-  'L4_conversation': '#f59e0b', // Amber
-  'L5_jit': '#ef4444', // Red
-  'L6_message_history': '#ec4899', // Pink
-  'L7_user_message': '#14b8a6', // Teal
+  'L0_identity':        'var(--layer-0)',
+  'L1_global_prefs':    'var(--layer-1)',
+  'L2_topic':           'var(--layer-2)',
+  'L3_entity':          'var(--layer-3)',
+  'L4_conversation':    'var(--layer-4)',
+  'L5_jit':             'var(--layer-5)',
+  'L6_message_history': 'var(--layer-6)',
+  'L7_user_message':    'var(--layer-7)',
 };
 
 const LAYER_NAMES: Record<string, string> = {
@@ -159,20 +173,30 @@ export const ContextVisualizer: React.FC<ContextVisualizerProps> = ({
             {layers.map((layerKey) => {
               const layer = contextAllocation[layerKey];
               if (!layer) return null;
-              
+
               const isZero = layer.allocated === 0;
+              const truncationInfo = metadata?.layerTruncation?.[layerKey];
+              const hasTruncation = truncationInfo && truncationInfo.droppedCount > 0;
 
               return (
-                <div key={layerKey} className={`layer-row ${isZero ? 'opacity-50' : ''}`}>
+                <div key={layerKey} className={`layer-row ${isZero ? 'opacity-50' : ''} ${hasTruncation ? 'relative' : ''}`}>
                   <div className="flex items-center gap-2">
-                    <div 
-                      className="layer-color-dot" 
-                      style={{ backgroundColor: LAYER_COLORS[layerKey] || '#888' }} 
+                    <div
+                      className="layer-color-dot"
+                      style={{ backgroundColor: LAYER_COLORS[layerKey] || '#888' }}
                     />
                     <span className="layer-name">{LAYER_NAMES[layerKey]}</span>
+                    {hasTruncation && (
+                      <AlertTriangle className="w-3 h-3 text-yellow-500" title={`${truncationInfo.droppedCount} items dropped due to ${truncationInfo.reason}`} />
+                    )}
                   </div>
                   <div className="layer-tokens text-right">
                     {layer.allocated.toLocaleString()} tks
+                    {hasTruncation && (
+                      <div className="text-[9px] text-yellow-500 mt-0.5">
+                        -{truncationInfo.droppedCount} items dropped
+                      </div>
+                    )}
                   </div>
                 </div>
               );

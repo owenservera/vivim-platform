@@ -436,3 +436,15 @@
   animation: shimmer 1.5s infinite;
   border-radius: 8px;
 }
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .conv-card,
+  .conv-card-skeleton,
+  .conv-card-skeleton-title,
+  .conv-card-skeleton-preview,
+  .conv-card-skeleton-meta {
+    animation: none;
+    transition: none;
+  }
+}

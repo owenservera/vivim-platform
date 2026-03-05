@@ -5,6 +5,7 @@
  * Replaces OpenAI API for all AI operations.
  */
 
+import CircuitBreaker from 'opossum';
 import type { IEmbeddingService, ILLMService } from '../types';
 import { logger } from '../../lib/logger.js';
 
@@ -407,27 +408,152 @@ Do not include any explanation or markdown formatting.`,
   }
 }
 
+import { CircuitBreakerEmbeddingService } from './circuit-breaker-service';
+
+/**
+ * Circuit Breaker Decorator for LLM Services
+ *
+ * Uses opossum to protect against cascading failures when LLM APIs are down.
+ * Provides fallback responses when the circuit is open or requests fail.
+ */
+export class CircuitBreakerLLMService implements ILLMService {
+  private service: ILLMService;
+  private breaker: CircuitBreaker;
+
+  constructor(service: ILLMService, options: CircuitBreaker.Options = {}) {
+    this.service = service;
+
+    const defaultOptions: CircuitBreaker.Options = {
+      timeout: 30000, // 30 seconds
+      errorThresholdPercentage: 50, // 50% failure rate opens the circuit
+      resetTimeout: 30000, // Wait 30 seconds before trying again
+      ...options,
+    };
+
+    this.breaker = new CircuitBreaker(this.service.chat.bind(this.service), defaultOptions);
+    this.setupEvents();
+  }
+
+  private setupEvents() {
+    this.breaker.on('open', () => {
+      logger.warn('LLM circuit breaker OPENed - requests will use fallback');
+    });
+
+    this.breaker.on('halfOpen', () => {
+      logger.info('LLM circuit breaker HALF-OPENed - testing recovery');
+    });
+
+    this.breaker.on('close', () => {
+      logger.info('LLM circuit breaker CLOSED - service recovered');
+    });
+
+    this.breaker.on('fallback', (result) => {
+      logger.debug('LLM circuit breaker using FALLBACK response');
+    });
+
+    this.breaker.on('reject', () => {
+      logger.error('LLM circuit breaker REJECTED request - circuit is open');
+    });
+  }
+
+  async chat(
+    params: any
+  ): Promise<{
+    content: string;
+    usage: { promptTokens: number; completionTokens: number; totalTokens: number };
+  }> {
+    try {
+      return await this.breaker.fire(params);
+    } catch (error) {
+      logger.error({ error: (error as Error).message }, 'LLM circuit breaker failed');
+      // Return a safe fallback response
+      return this.generateFallbackResponse(params);
+    }
+  }
+
+  async *chatStream(params: any): AsyncGenerator<string> {
+    // For streaming, we can't use the circuit breaker directly
+    // Instead, we'll wrap the underlying service call
+    try {
+      yield* this.service.chatStream(params);
+    } catch (error) {
+      logger.error({ error: (error as Error).message }, 'LLM streaming failed');
+      // Yield a fallback message
+      yield '[Service temporarily unavailable. Please try again shortly.]';
+    }
+  }
+
+  private generateFallbackResponse(params: any): {
+    content: string;
+    usage: { promptTokens: number; completionTokens: number; totalTokens: number };
+  } {
+    // Intelligent fallback based on the request context
+    const messages = params.messages || [];
+    const lastUserMessage = messages
+      .filter((m: any) => m.role === 'user')
+      .slice(-1)[0]?.content || '';
+
+    // Provide context-aware fallback
+    let fallbackContent =
+      'I apologize, but I am experiencing a temporary service interruption. ';
+    
+    if (lastUserMessage.toLowerCase().includes('hello') || lastUserMessage.toLowerCase().includes('hi')) {
+      fallbackContent += 'Hello! How can I assist you today?';
+    } else if (lastUserMessage.toLowerCase().includes('thank')) {
+      fallbackContent += 'You are welcome! Is there anything else I can help you with?';
+    } else if (lastUserMessage.includes('?')) {
+      fallbackContent += 
+        'Your question is important. Please try again in a moment, or rephrase your query.';
+    } else {
+      fallbackContent += 
+        'Please try your request again shortly, or check if there are any known service issues.';
+    }
+
+    return {
+      content: fallbackContent,
+      usage: {
+        promptTokens: 0,
+        completionTokens: fallbackContent.split(' ').length,
+        totalTokens: 0,
+      },
+    };
+  }
+
+  getConfig(): { model: string; baseUrl: string; hasApiKey: boolean } {
+    return this.service.getConfig();
+  }
+}
+
 /**
  * Factory function to create the appropriate embedding service based on configuration
  */
 export function createEmbeddingService(): IEmbeddingService {
   const zaiApiKey = process.env.ZAI_API_KEY;
+  let service: IEmbeddingService;
 
   if (zaiApiKey && zaiApiKey !== '') {
     logger.info('Using Z.AI embedding service with glm-4.7-flash');
-    return new ZAIEmbeddingService();
+    service = new ZAIEmbeddingService();
+  } else {
+    const openaiApiKey = process.env.OPENAI_API_KEY;
+    if (openaiApiKey && openaiApiKey !== '') {
+      logger.info('Using OpenAI embedding service');
+      const { EmbeddingService } = require('./embedding-service');
+      service = new EmbeddingService();
+    } else {
+      logger.warn('No API key configured, using mock embeddings');
+      const { MockEmbeddingService } = require('./embedding-service');
+      service = new MockEmbeddingService(1536);
+    }
   }
 
-  const openaiApiKey = process.env.OPENAI_API_KEY;
-  if (openaiApiKey && openaiApiKey !== '') {
-    logger.info('Using OpenAI embedding service');
-    const { EmbeddingService } = require('./embedding-service');
-    return new EmbeddingService();
+  // Wrap in circuit breaker if configured (default on)
+  const enableCircuitBreaker = process.env.ENABLE_EMBEDDING_CIRCUIT_BREAKER !== 'false';
+  if (enableCircuitBreaker) {
+    return new CircuitBreakerEmbeddingService(service);
   }
-
-  logger.warn('No API key configured, using mock embeddings');
-  const { MockEmbeddingService } = require('./embedding-service');
-  return new MockEmbeddingService(1536);
+  
+  return service;
 }
 
 /**
@@ -436,10 +562,20 @@ export function createEmbeddingService(): IEmbeddingService {
 export function createLLMService(): ILLMService {
   const zaiApiKey = process.env.ZAI_API_KEY;
 
+  let service: ILLMService;
+
   if (zaiApiKey && zaiApiKey !== '') {
     logger.info('Using Z.AI LLM service with glm-4.7-flash');
-    return new ZAILLMService();
+    service = new ZAILLMService();
+  } else {
+    throw new Error('Z.AI API key not configured. Set ZAI_API_KEY environment variable.');
   }
 
-  throw new Error('Z.AI API key not configured. Set ZAI_API_KEY environment variable.');
+  // Wrap in circuit breaker if configured (default on)
+  const enableCircuitBreaker = process.env.ENABLE_LLM_CIRCUIT_BREAKER !== 'false';
+  if (enableCircuitBreaker) {
+    return new CircuitBreakerLLMService(service);
+  }
+
+  return service;
 }

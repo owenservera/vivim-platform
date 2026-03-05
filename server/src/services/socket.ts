@@ -201,10 +201,119 @@ class SocketService {
     }
   }
 
-  handleSyncPush(socket, { changes }) {
-    // TODO: Implement write-back logic
-    logger.info({ changes }, 'Received sync push');
-    socket.emit('sync:ack', { status: 'processed' });
+  async handleSyncPush(socket, { changes }) {
+    if (socket.data.isGuest) {
+      return socket.emit('sync:error', { message: 'Unauthorized' });
+    }
+
+    if (!Array.isArray(changes) || changes.length === 0) {
+      return socket.emit('sync:ack', { status: 'no_changes' });
+    }
+
+    const userId = socket.data.user?.id;
+    const prisma = getPrismaClient();
+
+    try {
+      await prisma.$transaction(async (tx) => {
+        for (const change of changes) {
+          const { action, type, data } = change;
+
+          if (!action || !type || !data) {
+            logger.warn({ change }, 'Skipping malformed sync change');
+            continue;
+          }
+
+          if (type === 'conversation') {
+            if (action === 'delete') {
+              await tx.conversation.deleteMany({
+                where: { id: data.id, ownerId: userId },
+              });
+            } else {
+              // upsert: create or update — always validate ownership
+              await tx.conversation.upsert({
+                where: { id: data.id },
+                create: {
+                  id: data.id,
+                  title: data.title ?? 'Untitled',
+                  provider: data.provider ?? 'other',
+                  sourceUrl: data.sourceUrl ?? '',
+                  state: data.state ?? 'ACTIVE',
+                  ownerId: userId,
+                  contentHash: data.contentHash ?? null,
+                  capturedAt: data.capturedAt ? new Date(data.capturedAt) : new Date(),
+                  metadata: data.metadata ?? {},
+                  tags: data.tags ?? [],
+                },
+                update: {
+                  title: data.title,
+                  state: data.state,
+                  metadata: data.metadata,
+                  tags: data.tags,
+                  updatedAt: new Date(),
+                },
+              });
+            }
+          } else if (type === 'message') {
+            if (action === 'delete') {
+              await tx.message.deleteMany({ where: { id: data.id } });
+            } else {
+              await tx.message.upsert({
+                where: { id: data.id },
+                create: {
+                  id: data.id,
+                  conversationId: data.conversationId,
+                  role: data.role,
+                  content: data.content ?? '',
+                  parts: data.parts ?? [],
+                  metadata: data.metadata ?? {},
+                  createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
+                },
+                update: {
+                  content: data.content,
+                  parts: data.parts,
+                  metadata: data.metadata,
+                },
+              });
+            }
+          } else if (type === 'atomicChatUnit') {
+            if (action === 'delete') {
+              await tx.atomicChatUnit.deleteMany({ where: { id: data.id } });
+            } else {
+              await tx.atomicChatUnit.upsert({
+                where: { id: data.id },
+                create: {
+                  id: data.id,
+                  ...data,
+                  ownerId: userId,
+                  createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
+                  updatedAt: new Date(),
+                },
+                update: {
+                  ...data,
+                  updatedAt: new Date(),
+                },
+              });
+            }
+          } else {
+            logger.warn({ type, action }, 'Unknown entity type in sync:push — skipped');
+          }
+        }
+      });
+
+      // Notify context engine of potential bundle invalidation
+      eventBus.emit(EVENTS.ENTITY_UPDATED, {
+        userId,
+        type: 'sync_push',
+        data: { changeCount: changes.length },
+        timestamp: new Date().toISOString(),
+      });
+
+      logger.info({ userId, changeCount: changes.length }, 'Sync push persisted successfully');
+      socket.emit('sync:ack', { status: 'processed', count: changes.length });
+    } catch (err) {
+      logger.error({ err, userId }, 'Sync push write-back failed');
+      socket.emit('sync:error', { message: 'Failed to persist sync changes' });
+    }
   }
 
   // Preserve the signaling logic from the old file

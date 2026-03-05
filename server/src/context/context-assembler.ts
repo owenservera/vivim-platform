@@ -85,6 +85,9 @@ export class DynamicContextAssembler {
       return cached;
     }
 
+    // Load Context Recipe if provided or use default
+    const recipe = await this.loadRecipe(params.userId, params.recipeId);
+
     // Fetch conversation stats if conversationId provided
     let conversationStats = {
       messageCount: 0,
@@ -117,7 +120,7 @@ export class DynamicContextAssembler {
     );
 
     const [bundles, jitKnowledge] = await Promise.all([
-      this.gatherBundles(params.userId, detectedContext, params.conversationId, params.personaId),
+      this.gatherBundles(params.userId, detectedContext, params.conversationId, params.personaId, recipe),
       this.justInTimeRetrieval(
         params.userId,
         params.userMessage,
@@ -131,9 +134,10 @@ export class DynamicContextAssembler {
       jitKnowledge,
       params,
       conversationStats,
-      detectedContext
+      detectedContext,
+      recipe
     );
-    const systemPrompt = this.compilePrompt(bundles, jitKnowledge, budget);
+    const systemPrompt = this.compilePrompt(bundles, jitKnowledge, budget, params.modelId);
 
     const assemblyTimeMs = Date.now() - startTime;
 
@@ -289,14 +293,38 @@ export class DynamicContextAssembler {
     return Array.from(entityMap.values());
   }
 
+  private async loadRecipe(userId: string, recipeId?: string): Promise<any | null> {
+    try {
+      if (recipeId) {
+        return await this.prisma.contextRecipe.findUnique({
+          where: { id: recipeId },
+        });
+      }
+
+      // Load default user recipe or system default
+      return await this.prisma.contextRecipe.findFirst({
+        where: {
+          OR: [{ userId }, { userId: null, isDefault: true }],
+        },
+        orderBy: { userId: 'desc' }, // User-specific first
+      });
+    } catch (e) {
+      logger.error({ error: (e as Error).message }, 'Failed to load Context Recipe');
+      return null;
+    }
+  }
+
   private async gatherBundles(
     userId: string,
     context: DetectedContext,
     conversationId: string,
-    personaId?: string
+    personaId?: string,
+    recipe?: any
   ): Promise<CompiledBundle[]> {
     const normalizedPersonaId = personaId === undefined ? null : personaId;
     const tasks: Promise<CompiledBundle | null>[] = [];
+
+    const excludedLayers = (recipe?.excludedLayers as string[]) || [];
 
     const fetchBundle = async (
       type: string,
@@ -305,6 +333,11 @@ export class DynamicContextAssembler {
       convId: string | null,
       compileFn: () => Promise<any>
     ) => {
+      // Check if layer is excluded by recipe
+      if (excludedLayers.includes(type)) {
+        return null;
+      }
+
       let bundle = await this.getBundle(
         userId,
         type,
@@ -454,15 +487,22 @@ export class DynamicContextAssembler {
       })),
     };
   }
+private computeBudget(
+  bundles: CompiledBundle[],
+  jit: JITKnowledge,
+  params: AssemblyParams,
+  conversationStats: { messageCount: number; totalTokens: number; hasConversation: boolean },
+  detectedContext: DetectedContext,
+  recipe?: any
+): ComputedBudget {
+  // Determine total token budget
+  let totalAvailable = params.settings?.maxContextTokens || 12000;
 
-  private computeBudget(
-    bundles: CompiledBundle[],
-    jit: JITKnowledge,
-    params: AssemblyParams,
-    conversationStats: { messageCount: number; totalTokens: number; hasConversation: boolean },
-    detectedContext: DetectedContext
-  ): ComputedBudget {
-    let totalAvailable = params.settings?.maxContextTokens || 12000;
+  // Apply Recipe budget override if present
+  if (recipe?.customBudget) {
+    totalAvailable = recipe.customBudget;
+  }
+
     
     // Bounds check against actual model max limit if we have it
     if (params.providerId && params.modelId) {
@@ -491,7 +531,7 @@ export class DynamicContextAssembler {
       totalBudget: totalAvailable,
       conversationMessageCount: msgCount,
       conversationTotalTokens: totalTokens,
-      userMessageTokens: this.tokenEstimator.estimateTokens(params.userMessage),
+      userMessageTokens: this.tokenEstimator.estimateTokens(params.userMessage, params.modelId),
       detectedTopicCount: detectedContext.topics.length,
       detectedEntityCount: detectedContext.entities.length,
       hasActiveConversation: hasConv,
@@ -501,7 +541,21 @@ export class DynamicContextAssembler {
     };
 
     const algorithm = new BudgetAlgorithm();
-    const computedLayers = algorithm.computeBudget(input);
+    let computedLayers = algorithm.computeBudget(input);
+
+    // Apply Recipe weight overrides (priority overrides)
+    if (recipe?.layerWeights && Object.keys(recipe.layerWeights).length > 0) {
+      const weights = recipe.layerWeights as Record<string, number>;
+      for (const [layer, weight] of Object.entries(weights)) {
+        if (computedLayers.has(layer)) {
+          const budget = computedLayers.get(layer)!;
+          budget.priority = weight;
+          // Re-sort or re-allocate if priority changes significantly
+          // (BudgetAlgorithm uses priority for allocation conflicts)
+        }
+      }
+    }
+
     const totalUsed = Array.from(computedLayers.values()).reduce((sum, layer) => sum + layer.allocated, 0);
     
     // Convert Map to Record for JSON serialization
@@ -517,7 +571,12 @@ export class DynamicContextAssembler {
     };
   }
 
-  private compilePrompt(bundles: CompiledBundle[], jit: JITKnowledge, budget: ComputedBudget): string {
+  private compilePrompt(
+    bundles: CompiledBundle[],
+    jit: JITKnowledge,
+    budget: ComputedBudget,
+    modelId?: string
+  ): string {
     const sections: Array<{ content: string; priority: number; tokens: number }> = [];
 
     const priorityMap: Record<string, number> = {
@@ -544,7 +603,7 @@ export class DynamicContextAssembler {
       sections.push({
         content: memBlock,
         priority: 60,
-        tokens: this.tokenEstimator.estimateTokens(memBlock),
+        tokens: this.tokenEstimator.estimateTokens(memBlock, modelId),
       });
     }
 
@@ -555,14 +614,14 @@ export class DynamicContextAssembler {
       sections.push({
         content: acuBlock,
         priority: 55,
-        tokens: this.tokenEstimator.estimateTokens(acuBlock),
+        tokens: this.tokenEstimator.estimateTokens(acuBlock, modelId),
       });
     }
 
     sections.sort((a, b) => b.priority - a.priority);
 
     const vivimIdentity = getVIVIMSystemPrompt();
-    const vivimTokens = this.tokenEstimator.estimateTokens(vivimIdentity);
+    const vivimTokens = this.tokenEstimator.estimateTokens(vivimIdentity, modelId);
 
     let totalTokens = vivimTokens;
     const included: string[] = [vivimIdentity];
@@ -571,7 +630,7 @@ export class DynamicContextAssembler {
       if (totalTokens + section.tokens > budget.totalAvailable) {
         const remaining = budget.totalAvailable - totalTokens;
         if (remaining > 100) {
-          included.push(this.truncateToTokens(section.content, remaining));
+          included.push(this.truncateToTokens(section.content, remaining, modelId));
           totalTokens += remaining;
         }
         break;
@@ -583,8 +642,8 @@ export class DynamicContextAssembler {
     return included.join('\n\n---\n\n');
   }
 
-  private truncateToTokens(text: string, maxTokens: number): string {
-    const estimatedTokens = this.tokenEstimator.estimateTokens(text);
+  private truncateToTokens(text: string, maxTokens: number, modelId?: string): string {
+    const estimatedTokens = this.tokenEstimator.estimateTokens(text, modelId);
     if (estimatedTokens <= maxTokens) return text;
 
     const ratio = maxTokens / estimatedTokens;

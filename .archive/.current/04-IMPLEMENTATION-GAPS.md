@@ -1,0 +1,17 @@
+# Implementation Gaps & Bugs
+
+| File Path | Line Reference | Problem Description | Severity | Category | Recommended Fix |
+|-----------|----------------|---------------------|----------|----------|-----------------|
+| `server/src/routes/admin/system.js` | 42, 237, 238 | Admin system health endpoint is returning hardcoded "up" strings for network and storage, and mocked disk usage metrics. | HIGH | MISSING IMPL | Implement OS-level bindings (`os` module) for disk usage and inject `NetworkNode` status checks. |
+| `server/src/routes/admin/database.js` | 55, 81, 173 | Database stats and table schema routes return mocked lists instead of querying actual database stats. | HIGH | MISSING IMPL | Use Prisma introspection API (`prisma.$queryRaw`) to fetch actual table sizes and schemas. |
+| `server/src/routes/admin/crdt.js` | 170 | Conflict resolution endpoint does not actually interface with `CRDTSyncService`. | MEDIUM | MISSING IMPL | Wire the route to call `crdtService.resolveConflict()` directly. |
+| `server/src/services/admin-network-service.js` | 5, 23, 58, 75 | Missing actual integration with the libp2p `NetworkNode` package. Functions are just stubs. | HIGH | MISSING IMPL | Inject the global `NetworkNode` instance and return actual peer lists/topics. |
+| `pwa/src/lib/storage-v2/secure-crypto.ts` | 537, 608, 737, 754 | Post-Quantum Cryptography (CRYSTALS-Kyber/Dilithium) is stubbed. Implementation relies on standard curves for now. | MEDIUM | MISSING IMPL | Integrate WebAssembly (WASM) modules for Kyber/Dilithium as per security spec. |
+| `pwa/src/lib/recommendation/analytics.ts` | 169 | Server analytics backend is noted as "Phase 2" and not currently syncing client impressions to the server. | MEDIUM | MISSING IMPL | Create the `POST /api/v2/feed/analytics` endpoint and wire the client to batch-send telemetry. |
+| `pwa/src/lib/storage-v2/privacy-manager.ts`| 383, 496 | Blockchain anchoring verification is stubbed out. It does not actually query the chain. | HIGH | MISSING IMPL | Implement cross-check with the VIVIM chain client to verify Merkle roots. |
+| `server/src/services/socket.ts` | 205 | WebSocket write-back logic is stubbed. Changes received via socket are not persisted to Postgres. | CRITICAL | DATA MISMATCH | Implement `applyOperationToDomain` correctly inside the socket event listener. |
+| `server/src/services/unified-context-service.ts`| 252 | Cache invalidation is done inline instead of using the `InvalidationService`. | LOW | BROKEN PATTERN | Refactor to emit events to `ContextEventBus` to trigger `InvalidationService`. |
+| `pwa/src/pages/Home.tsx` | N/A | Hardcoded model name extraction (`convo.model \|\| convo.metadata?.model`) fails because `model` doesn't exist at the root level of the conversation object. | HIGH | BUG | Change access to strictly `convo.metadata?.model` with proper fallback. |
+| `pwa/src/pages/Home.css` | 368-377 | Archived card opacity class `.is-archived { opacity: 0.6 }` affects all child action buttons, making them hard to use. | LOW | UX BROKEN | Apply opacity only to `.conv-card-body`, leaving actions fully opaque. |
+| `pwa/src/pages/Home.tsx` | 53-65 | Missing visual indicators for empty/unknown dates (`formatDate()` returns an empty string). | LOW | UX BROKEN | Update formatter to return "Unknown" or a fallback badge. |
+| `pwa/src/pages/Home.tsx` | N/A | Missing ARIA labels and space key support on conversation cards. | MEDIUM | UX BROKEN | Add `onKeyDown` handlers for Space, and wrap stats in `aria-label` spans. |

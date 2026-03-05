@@ -10,6 +10,7 @@ import { IOSDefaultTopBar } from '../components/ios';
 import { IOSBottomNav } from '../components/ios';
 import { IOSToastProvider } from '../components/ios';
 import { ResponsiveLayout } from '../components/responsive/ResponsiveLayout';
+import { SideNav } from '../components/layout/SideNav';
 import queryClient from '../lib/query-client';
 import { Bug } from 'lucide-react';
 import { GlobalSocketListener } from '../components/GlobalSocketListener';
@@ -74,32 +75,46 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   };
   
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white font-sans antialiased selection:bg-blue-500 selection:text-white">
-      <IOSDefaultTopBar />
-      
-      <BackgroundSync />
-      <GlobalSocketListener />
-      
-      <ResponsiveLayout
-        maxWidth="full"
-        padding="md"
-        className="flex-1"
-        mobileClassName="px-2"
-        desktopClassName="px-4"
-      >
-        <main className="pt-16 pb-20 overflow-y-auto scrollbar-hide">
-          <Suspense fallback={<PageLoading />}>
-            {children}
-          </Suspense>
-        </main>
-      </ResponsiveLayout>
+    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white font-sans antialiased selection:bg-indigo-500 selection:text-white">
+      {/* Desktop sidebar — hidden on mobile/tablet via CSS (lg:flex in SideNav) */}
+      <SideNav />
 
-      <IOSBottomNav />
+      {/* Main content area — shifted right on desktop to account for sidebar */}
+      <div className="flex flex-col flex-1 min-h-screen lg:pl-[260px]">
+        {/* Top bar — hidden on lg+ because SideNav handles branding */}
+        <div className="lg:hidden">
+          <IOSDefaultTopBar />
+        </div>
+
+        <BackgroundSync />
+        <GlobalSocketListener />
+
+        <ResponsiveLayout
+          maxWidth="full"
+          padding="md"
+          className="flex-1"
+          mobileClassName="px-2"
+          desktopClassName="px-6"
+        >
+          {/* Mobile: pt-16 for TopBar + pb-20 for BottomNav; Desktop: pt-6 pb-6, no nav overlap */}
+          <main className="pt-16 pb-20 lg:pt-6 lg:pb-6 overflow-y-auto scrollbar-hide">
+            <Suspense fallback={<PageLoading />}>
+              {children}
+            </Suspense>
+          </main>
+        </ResponsiveLayout>
+
+        {/* BottomNav — mobile/tablet only */}
+        <div className="lg:hidden">
+          <IOSBottomNav />
+        </div>
+      </div>
+
       <DebugPanel />
       {import.meta.env.DEV && (
         <button
           onClick={toggleDebug}
-          className="fixed bottom-[4.5rem] right-[4.5rem] z-[1020] p-2.5 rounded-full bg-gray-900 dark:bg-gray-100 border border-gray-700 dark:border-gray-300 shadow-lg hover:scale-110 active:scale-95 transition-transform text-gray-100 dark:text-gray-900"
+          className="fixed bottom-[4.5rem] right-[4.5rem] z-[1020] p-2.5 rounded-full bg-gray-900 dark:bg-gray-100 border border-gray-700 dark:border-gray-300 shadow-lg hover:scale-110 active:scale-95 transition-transform text-gray-100 dark:text-gray-900 lg:bottom-6"
           title="Toggle Debug Panel"
         >
           <Bug size={18} />

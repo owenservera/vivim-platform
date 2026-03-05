@@ -362,6 +362,11 @@ export class ContextEventBus {
 // DEFAULT EVENT WIRING
 // ============================================================================
 
+import { invalidationService } from '../services/invalidation-service';
+import { logger } from '../lib/logger.js';
+
+// ... (ContextEvent and other interfaces)
+
 /**
  * Wire up the default cache invalidation handlers.
  * Call this at startup to connect the event bus to the cache.
@@ -374,7 +379,9 @@ export function wireDefaultInvalidation(
   bus.on(
     'memory:created',
     async (event) => {
-      const { category, importance } = event.payload;
+      const { category, importance, id } = event.payload;
+      
+      // 1. Invalidate In-Memory Cache
       if (['biography', 'identity', 'role'].includes(category) && importance >= 0.8) {
         cache.invalidateBundles(event.userId, ['identity_core']);
       }
@@ -382,6 +389,26 @@ export function wireDefaultInvalidation(
         cache.invalidateBundles(event.userId, ['global_prefs']);
       }
       cache.invalidateGraph(event.userId);
+
+      // 2. Mark DB Bundles as Dirty via InvalidationService
+      await invalidationService.invalidate({
+        eventType: 'memory_created',
+        userId: event.userId,
+        relatedIds: [id],
+      });
+    },
+    { priority: 100 }
+  );
+
+  bus.on(
+    'memory:updated',
+    async (event) => {
+      const { id } = event.payload;
+      await invalidationService.invalidate({
+        eventType: 'memory_updated',
+        userId: event.userId,
+        relatedIds: [id],
+      });
     },
     { priority: 100 }
   );
@@ -390,8 +417,30 @@ export function wireDefaultInvalidation(
   bus.on(
     'acu:processed',
     async (event) => {
+      // 1. Invalidate In-Memory Cache
       cache.invalidateBundles(event.userId, ['topic', 'entity']);
       cache.invalidateGraph(event.userId);
+
+      // 2. Mark DB Bundles as Dirty
+      const { ids } = event.payload;
+      await invalidationService.invalidate({
+        eventType: 'acu_updated',
+        userId: event.userId,
+        relatedIds: ids || [],
+      });
+    },
+    { priority: 90 }
+  );
+
+  bus.on(
+    'acu:created',
+    async (event) => {
+      const { id } = event.payload;
+      await invalidationService.invalidate({
+        eventType: 'acu_created',
+        userId: event.userId,
+        relatedIds: [id],
+      });
     },
     { priority: 90 }
   );
@@ -401,7 +450,16 @@ export function wireDefaultInvalidation(
     'conversation:message_added',
     async (event) => {
       const { conversationId } = event.payload;
+      
+      // 1. Invalidate In-Memory Cache
       cache.delete('bundle', `${event.userId}:conversation:${conversationId}`);
+
+      // 2. Mark DB Bundles as Dirty
+      await invalidationService.invalidate({
+        eventType: 'message_created',
+        userId: event.userId,
+        relatedIds: [conversationId],
+      });
     },
     { priority: 100 }
   );
@@ -410,7 +468,14 @@ export function wireDefaultInvalidation(
   bus.on(
     'instruction:created',
     async (event) => {
+      const { id } = event.payload;
       cache.invalidateBundles(event.userId, ['global_prefs']);
+      
+      await invalidationService.invalidate({
+        eventType: 'instruction_changed',
+        userId: event.userId,
+        relatedIds: [id],
+      });
     },
     { priority: 90 }
   );
@@ -418,7 +483,14 @@ export function wireDefaultInvalidation(
   bus.on(
     'instruction:updated',
     async (event) => {
+      const { id } = event.payload;
       cache.invalidateBundles(event.userId, ['global_prefs']);
+
+      await invalidationService.invalidate({
+        eventType: 'instruction_changed',
+        userId: event.userId,
+        relatedIds: [id],
+      });
     },
     { priority: 90 }
   );
@@ -428,10 +500,21 @@ export function wireDefaultInvalidation(
     'settings:updated',
     async (event) => {
       cache.invalidateSettings(event.userId);
-      cache.invalidateBundles(event.userId); // Settings affect budget, so invalidate all
+      // Settings affect budget, so invalidate all in-memory
+      cache.invalidateBundles(event.userId);
+      
+      // We don't have a specific event for settings in InvalidationService yet,
+      // but we should mark all bundles as potentially affected due to budget changes
+      await invalidationService.invalidate({
+        eventType: 'instruction_changed', // Use this as proxy for now
+        userId: event.userId,
+        relatedIds: [],
+      });
     },
     { priority: 100 }
   );
+
+  // ... (Presence and System handlers)
 
   // Presence events → update presence cache
   bus.on(

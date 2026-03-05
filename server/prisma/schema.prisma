@@ -198,6 +198,7 @@ model User {
   facts               UserFact[]
   sharingPolicies    SharingPolicy[]
   contentStakeholders ContentStakeholder[]
+  contextRecipes      ContextRecipe[]
   
   // Social network relations
   friendsRequested   Friend[]        @relation("FriendRequester")
@@ -250,21 +251,22 @@ model ApiKey {
 }
 
 model Device {
-  id          String   @id @default(uuid())
-  userId      String
-  deviceId    String   @unique
-  deviceName  String
-  deviceType  String
-  platform    String
-  fingerprint String?
-  publicKey   String
-  isActive    Boolean  @default(true)
-  isTrusted   Boolean  @default(false)
-  createdAt   DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
-  lastSeenAt  DateTime @default(now()) @db.Timestamptz(6)
-  metadata    Json     @default("{}")
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id               String   @id @default(uuid())
+  userId           String
+  deviceId         String   @unique
+  deviceName       String
+  deviceType       String
+  platform         String
+  fingerprint      String?
+  publicKey        String
+  refreshTokenHash String?
+  isActive         Boolean  @default(true)
+  isTrusted        Boolean  @default(false)
+  createdAt        DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @db.Timestamptz(6)
+  lastSeenAt       DateTime @default(now()) @db.Timestamptz(6)
+  metadata         Json     @default("{}")
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([deviceId])
@@ -283,7 +285,7 @@ model AtomicChatUnit {
   type                String
   category            String
   origin              String           @default("extraction")
-  embedding           Float[]
+  embedding           Unsupported("vector(1536)")?
   embeddingModel      String?
   conversationId      String?
   messageId           String?
@@ -332,6 +334,7 @@ model AtomicChatUnit {
   @@index([conversationId])
   @@index([messageId])
   @@index([authorDid])
+  @@index([authorDid, createdAt(sort: Desc)])
   @@index([type])
   @@index([category])
   @@index([qualityOverall(sort: Desc)])
@@ -340,6 +343,7 @@ model AtomicChatUnit {
   @@index([sharingPolicy])
   @@index([tags])
   @@index([contentHash])
+  @@index([embedding])
   @@map("atomic_chat_units")
 }
 
@@ -973,7 +977,7 @@ model TopicProfile {
   compiledTokenCount Int?
   contextVersion     Int                 @default(0)
   isDirty            Boolean             @default(true)
-  embedding          Float[]
+  embedding          Unsupported("vector(1536)")?
   embeddingModel     String?
   createdAt          DateTime            @default(now()) @db.Timestamptz(6)
   updatedAt          DateTime            @updatedAt @db.Timestamptz(6)
@@ -988,6 +992,7 @@ model TopicProfile {
   @@index([userId, lastEngagedAt(sort: Desc)])
   @@index([userId, isDirty])
   @@index([domain])
+  @@index([embedding])
   @@map("topic_profiles")
 }
 
@@ -1023,7 +1028,7 @@ model EntityProfile {
   compiledTokenCount Int?
   contextVersion     Int             @default(0)
   isDirty            Boolean         @default(true)
-  embedding          Float[]
+  embedding          Unsupported("vector(1536)")?
   embeddingModel     String?
   importanceScore    Float           @default(0.5)
   createdAt          DateTime        @default(now()) @db.Timestamptz(6)
@@ -1035,6 +1040,7 @@ model EntityProfile {
   @@index([userId, importanceScore(sort: Desc)])
   @@index([userId, type])
   @@index([userId, lastMentionedAt(sort: Desc)])
+  @@index([embedding])
   @@map("entity_profiles")
 }
 
@@ -1237,7 +1243,7 @@ model Memory {
   sourceMessageIds      String[] @default([])
 
   // Embeddings for semantic search
-  embedding       Float[]
+  embedding       Unsupported("vector(1536)")?
   embeddingModel  String?
   embeddingDimension Int?               // Dimension of embedding (1536, 1024, etc.)
 
@@ -1250,7 +1256,8 @@ model Memory {
   occurredAt      DateTime?            // When the event/fact occurred
   validFrom       DateTime?           // When this memory became relevant
   validUntil      DateTime?           // When this memory expires (for temporal facts)
-  
+  expiresAt       DateTime?           // Auto-expiry based on importance (TTL implementation)
+
   // Status
   isActive       Boolean  @default(true)
   isPinned        Boolean  @default(false)  // Pinned memories always included
@@ -1283,6 +1290,7 @@ model Memory {
   @@index([userId, memoryType, importance(sort: Desc)])
   @@index([userId, consolidationStatus, createdAt(sort: Desc)])
   @@index([userId, isPinned, importance(sort: Desc)])
+  @@index([userId, expiresAt])
   // Provenance indexes
   @@index([userId, provider])
   @@index([userId, sourceType])
@@ -1290,7 +1298,32 @@ model Memory {
   @@index([captureSessionId])
   @@index([contentHash])
   @@index([provenanceId])
+  @@index([embedding])
   @@map("memories")
+}
+
+// Memory conflict tracking for detecting contradictory memories
+model MemoryConflict {
+  id                 String   @id @default(uuid())
+  userId             String
+  memoryId1          String
+  memoryId2          String
+  conflictType       String   // "contradiction", "outdated", "duplicate"
+  confidence         Float    @default(0.5)  // 0-1 confidence in conflict detection
+  explanation        String   @db.Text
+  suggestedResolution String  // "merge", "archive", "keep_newest", "manual"
+  isResolved         Boolean  @default(false)
+  resolvedAt         DateTime?
+  resolutionMethod   String?
+  resolvedBy         String?  // User ID who resolved it
+  createdAt          DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([userId, isResolved])
+  @@index([userId, conflictType])
+  @@index([memoryId1])
+  @@index([memoryId2])
+  @@map("memory_conflicts")
 }
 
 // Memory relationship for graph-like connections
@@ -1312,6 +1345,21 @@ model MemoryRelationship {
 }
 
 // Memory extraction queue for async processing
+model FailedJob {
+  id           String   @id @default(uuid())
+  jobType      String
+  payload      Json?
+  errorMessage String
+  errorStack   String?
+  retryCount   Int      @default(0)
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(6)
+
+  @@index([jobType])
+  @@index([createdAt])
+  @@map("failed_jobs")
+}
+
 model MemoryExtractionJob {
   id              String   @id @default(uuid())
   userId          String
@@ -1435,6 +1483,7 @@ model SharingPolicy {
   stakeholders ContentStakeholder[]
 
   @@index([ownerId])
+  @@index([ownerId, createdAt(sort: Desc)])
   @@index([contentId])
   @@index([status])
   @@map("sharing_policies")
@@ -1959,7 +2008,7 @@ model ModerationRule {
 model UserModerationRecord {
   id              String           @id @default(uuid())
   userId          String           @unique
-  
+
   // Strike counts by reason
   spamCount       Int              @default(0)
   harassmentCount Int              @default(0)
@@ -1968,30 +2017,73 @@ model UserModerationRecord {
   sexualCount     Int              @default(0)
   misinformationCount Int         @default(0)
   otherCount      Int              @default(0)
-  
+
   // Overall
   totalStrikes    Int              @default(0)
   warningsIssued  Int              @default(0)
   contentRemoved  Int              @default(0)
-  
+
   // Current status
   isWarningActive Boolean          @default(false)
   warningExpiresAt DateTime?       @db.Timestamptz(6)
   isBanned        Boolean          @default(false)
   banReason       String?
   banExpiresAt    DateTime?        @db.Timestamptz(6)
-  
+
   // Appeal
   banAppealReason String?
   appealDeniedAt  DateTime?        @db.Timestamptz(6)
-  
+
   lastStrikedAt   DateTime?        @db.Timestamptz(6)
-  
+
   createdAt       DateTime         @default(now()) @db.Timestamptz(6)
   updatedAt       DateTime         @updatedAt @db.Timestamptz(6)
-  
+
   @@index([totalStrikes(sort: Desc)])
   @@index([isBanned])
   @@index([warningExpiresAt])
   @@map("user_moderation_records")
+}
+
+model ContextRecipe {
+  id             String   @id @default(uuid())
+  name           String
+  description    String?
+  layerWeights   Json     @default("{}") // Record<string, number> - priority overrides
+  excludedLayers String[] @default([])   // Layers to skip
+  customBudget   Int?     // Optional budget override
+  isDefault      Boolean  @default(false)
+  userId         String?  // null = global system recipe
+  createdAt      DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime @updatedAt @db.Timestamptz(6)
+  user           User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isDefault])
+  @@map("context_recipes")
+}
+
+// ============================================================================
+// FEED ANALYTICS
+// ============================================================================
+
+model FeedImpression {
+  id            String   @id @default(uuid())
+  userId        String
+  contentId     String   // ID of conversation/ACU shown
+  contentType   String   // 'conversation' | 'acu' | 'notebook'
+  position      Int      // Position in feed where shown
+  contextTags   String[] // Tags/topics that triggered this impression
+  viewedAt      DateTime @default(now()) @db.Timestamptz(6)
+  dwellTimeMs   Int?     // Time spent viewing (tracked client-side)
+  clicked       Boolean  @default(false)
+  shared        Boolean  @default(false)
+  dismissed     Boolean  @default(false)
+  
+  createdAt     DateTime @default(now()) @db.Timestamptz(6)
+  
+  @@index([userId, viewedAt])
+  @@index([contentId, contentType])
+  @@index([userId, createdAt])
+  @@map("feed_impressions")
 }

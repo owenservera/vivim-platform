@@ -186,20 +186,111 @@
   /* ========================================
      BREAKPOINTS (for reference)
      ======================================== */
-  
+
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1536px;
+
+  /* ========================================
+     AI PROVIDER ACCENT SYSTEM
+     (Replaces hardcoded hex values in Home.css / Capture.css)
+     ======================================== */
+
+  --provider-chatgpt-start:       #10b981;
+  --provider-chatgpt-end:         #059669;
+  --provider-chatgpt-gradient:    linear-gradient(90deg, var(--provider-chatgpt-start), var(--provider-chatgpt-end));
+
+  --provider-claude-start:        #f97316;
+  --provider-claude-end:          #ea580c;
+  --provider-claude-gradient:     linear-gradient(90deg, var(--provider-claude-start), var(--provider-claude-end));
+
+  --provider-gemini-start:        #3b82f6;
+  --provider-gemini-end:          #1d4ed8;
+  --provider-gemini-gradient:     linear-gradient(90deg, var(--provider-gemini-start), var(--provider-gemini-end));
+
+  --provider-grok-start:          #ef4444;
+  --provider-grok-end:            #b91c1c;
+  --provider-grok-gradient:       linear-gradient(90deg, var(--provider-grok-start), var(--provider-grok-end));
+
+  --provider-perplexity-start:    #8b5cf6;
+  --provider-perplexity-end:      #6d28d9;
+  --provider-perplexity-gradient: linear-gradient(90deg, var(--provider-perplexity-start), var(--provider-perplexity-end));
+
+  --provider-deepseek-start:      #06b6d4;
+  --provider-deepseek-end:        #0891b2;
+  --provider-deepseek-gradient:   linear-gradient(90deg, var(--provider-deepseek-start), var(--provider-deepseek-end));
+
+  --provider-kimi-start:          #ec4899;
+  --provider-kimi-end:            #be185d;
+  --provider-kimi-gradient:       linear-gradient(90deg, var(--provider-kimi-start), var(--provider-kimi-end));
+
+  --provider-qwen-start:          #6366f1;
+  --provider-qwen-end:            #4f46e5;
+  --provider-qwen-gradient:       linear-gradient(90deg, var(--provider-qwen-start), var(--provider-qwen-end));
+
+  --provider-mistral-start:       #f59e0b;
+  --provider-mistral-end:         #d97706;
+  --provider-mistral-gradient:    linear-gradient(90deg, var(--provider-mistral-start), var(--provider-mistral-end));
+
+  --provider-copilot-start:       #22c55e;
+  --provider-copilot-end:         #16a34a;
+  --provider-copilot-gradient:    linear-gradient(90deg, var(--provider-copilot-start), var(--provider-copilot-end));
+
+  /* ========================================
+     CONTEXT ENGINE LAYER COLORS
+     (Replaces hardcoded hex in ContextVisualizer.tsx)
+     ======================================== */
+
+  --layer-0: #8b5cf6;  /* L0_identity        — Violet */
+  --layer-1: #6366f1;  /* L1_global_prefs    — Indigo */
+  --layer-2: #0ea5e9;  /* L2_topic           — Light Blue */
+  --layer-3: #10b981;  /* L3_entity          — Emerald */
+  --layer-4: #f59e0b;  /* L4_conversation    — Amber */
+  --layer-5: #ef4444;  /* L5_jit             — Red */
+  --layer-6: #ec4899;  /* L6_message_history — Pink */
+  --layer-7: #14b8a6;  /* L7_user_message    — Teal */
+
+  /* ========================================
+     SEMANTIC SURFACE & BORDER TOKENS
+     (Neo-Glassmorphic Knowledge Hub — Light Mode defaults)
+     ======================================== */
+
+  --surface-base:     #ffffff;
+  --surface-elevated: #f8f9fb;
+  --surface-glass:    rgba(255, 255, 255, 0.7);
+  --surface-overlay:  rgba(255, 255, 255, 0.85);
+
+  --border-subtle:    rgba(0, 0, 0, 0.05);
+  --border-strong:    rgba(0, 0, 0, 0.15);
+  --border-focus:     var(--primary-500);
+
+  /* Brand aliases */
+  --color-brand-primary:   var(--primary-500);
+  --color-brand-secondary: var(--accent-500);
+
+  /* Error semantic tokens */
+  --color-error-50:   var(--error-50);
+  --color-error-500:  var(--error-500);
+  --color-error-700:  var(--error-700);
 }
 
 /* ========================================
-   DARK MODE
+   DARK MODE OVERRIDES (surfaces + providers)
    ======================================== */
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --surface-base:     #000000;
+    --surface-elevated: #0a0a0f;
+    --surface-glass:    rgba(20, 20, 25, 0.6);
+    --surface-overlay:  rgba(10, 10, 15, 0.9);
+
+    --border-subtle:    rgba(255, 255, 255, 0.05);
+    --border-strong:    rgba(255, 255, 255, 0.15);
+
+    /* Grayscale inversion for dark mode */
     --gray-50:  #111827;
     --gray-100: #1f2937;
     --gray-200: #374151;
@@ -212,6 +303,11 @@
     --gray-900: #f9fafb;
   }
 }
+
+
+
+
+
 
 /* ========================================
    BASE STYLES

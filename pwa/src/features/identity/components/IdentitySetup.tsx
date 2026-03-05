@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAppStore } from '../../../stores/appStore';
+import { useAppStore } from '../../../lib/stores/appStore';
 import { getChainClient } from '../../../lib/chain-client';
 import { Button } from '../../../components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from '../../../components/ui/card';

@@ -26,6 +26,9 @@ import {
 } from './memory-types';
 import { logger } from '../../lib/logger.js';
 
+import { encryptString, decryptString } from '../../lib/crypto.js';
+import { conflictDetectionService } from '../../services/memory-conflict-detection.js';
+
 export interface MemoryServiceConfig {
   prisma: PrismaClient;
   embeddingService?: IEmbeddingService;
@@ -101,12 +104,17 @@ export class MemoryService {
     // Set defaults
     const finalCategory = category || getDefaultCategoryForType(memoryType);
 
+    // Encrypt content and summary
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    const contentToSave = user ? encryptString(input.content, user.publicKey) : input.content;
+    const summaryToSave = user && input.summary ? encryptString(input.summary, user.publicKey) : input.summary;
+
     // Create memory
     const memory = await this.prisma.memory.create({
       data: {
         userId,
-        content: input.content,
-        summary: input.summary,
+        content: contentToSave,
+        summary: summaryToSave,
         memoryType,
         category: finalCategory,
         subcategory: input.subcategory,
@@ -135,6 +143,42 @@ export class MemoryService {
       timestamp: new Date(),
       payload: { memoryType, category: finalCategory },
     });
+
+    // Check for conflicts with existing memories
+    try {
+      const conflicts = await conflictDetectionService.checkForConflicts(
+        userId,
+        input.content,
+        finalCategory,
+        memory.id
+      );
+
+      // Create conflict records for high-confidence conflicts
+      for (const conflict of conflicts) {
+        if (conflict.hasConflict && conflict.confidence > 0.7) {
+          for (const conflictingMemoryId of conflict.conflictingMemoryIds) {
+            await conflictDetectionService.createConflict(
+              userId,
+              memory.id,
+              conflictingMemoryId,
+              conflict.conflictType as any,
+              conflict.confidence,
+              conflict.explanation || 'Conflict detected',
+              conflict.suggestedResolution || 'manual'
+            );
+          }
+        }
+      }
+
+      if (conflicts.length > 0) {
+        logger.info(
+          { memoryId: memory.id, conflictsFound: conflicts.length },
+          'Memory conflicts detected during creation'
+        );
+      }
+    } catch (error) {
+      logger.warn({ error: (error as Error).message, memoryId: memory.id }, 'Conflict detection failed during memory creation');
+    }
 
     // Update analytics
     await this.updateAnalytics(userId);
@@ -175,8 +219,16 @@ export class MemoryService {
       },
     });
 
+    if (!memory) return null;
+
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (user && memory.content.startsWith('ENCRYPTED:')) {
+      memory.content = decryptString(memory.content, user.publicKey);
+      if (memory.summary) memory.summary = decryptString(memory.summary, user.publicKey);
+    }
+
     // Get related memories
-    if (memory?.relatedMemoryIds.length) {
+    if (memory.relatedMemoryIds.length) {
       const related = await this.prisma.memory.findMany({
         where: {
           id: { in: memory.relatedMemoryIds },

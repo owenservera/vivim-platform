@@ -24,11 +24,25 @@ interface RetrievalResult {
   memories: SearchResult[];
 }
 
+interface CacheEntry {
+  result: RetrievalResult;
+  timestamp: number;
+  ttl: number; // Time to live in ms
+}
+
+interface CacheKey {
+  userId: string;
+  messageHash: string;
+  topicSlugsHash: string;
+}
+
 export class HybridRetrievalService {
   private prisma: PrismaClient;
   private config: HybridRetrievalConfig;
+  private jitCache: Map<string, CacheEntry>;
+  private cacheTTL: number; // Default 90 seconds
 
-  constructor(prisma: PrismaClient, config?: Partial<HybridRetrievalConfig>) {
+  constructor(prisma: PrismaClient, config?: Partial<HybridRetrievalConfig & { cacheTTLSeconds?: number }>) {
     this.prisma = prisma;
     this.config = {
       semanticWeight: config?.semanticWeight ?? 0.6,
@@ -36,6 +50,8 @@ export class HybridRetrievalService {
       maxResults: config?.maxResults ?? 10,
       similarityThreshold: config?.similarityThreshold ?? 0.3,
     };
+    this.jitCache = new Map();
+    this.cacheTTL = (config?.cacheTTLSeconds ?? 90) * 1000; // Default 90 seconds in ms
   }
 
   async retrieve(
@@ -44,6 +60,18 @@ export class HybridRetrievalService {
     embedding: number[],
     topicSlugs: string[]
   ): Promise<RetrievalResult> {
+    // Generate cache key
+    const cacheKey = this.generateCacheKey(userId, message, topicSlugs);
+    
+    // Check cache first
+    const cached = this.getCached(cacheKey);
+    if (cached) {
+      logger.debug({ cacheKey, userId }, 'JIT cache hit');
+      return cached;
+    }
+
+    logger.debug({ cacheKey, userId }, 'JIT cache miss, performing retrieval');
+
     const keywords = this.extractKeywords(message);
 
     const [semanticAcus, keywordAcus, semanticMemories, keywordMemories] = await Promise.all([
@@ -56,9 +84,99 @@ export class HybridRetrievalService {
     const fusedAcus = this.fuseResults(semanticAcus, keywordAcus);
     const fusedMemories = this.fuseResults(semanticMemories, keywordMemories);
 
-    return {
+    const result = {
       acus: fusedAcus.slice(0, this.config.maxResults),
       memories: fusedMemories.slice(0, this.config.maxResults / 2),
+    };
+
+    // Cache the result
+    this.setCached(cacheKey, result);
+
+    return result;
+  }
+
+  private generateCacheKey(userId: string, message: string, topicSlugs: string[]): string {
+    const crypto = require('crypto');
+    const messageHash = crypto.createHash('sha256').update(message).digest('hex').substring(0, 16);
+    const topicsHash = crypto
+      .createHash('sha256')
+      .update(topicSlugs.sort().join(','))
+      .digest('hex')
+      .substring(0, 8);
+    return `jit:${userId}:${messageHash}:${topicsHash}`;
+  }
+
+  private getCached(cacheKey: string): RetrievalResult | null {
+    const entry = this.jitCache.get(cacheKey);
+    if (!entry) return null;
+
+    const now = Date.now();
+    if (now - entry.timestamp > entry.ttl) {
+      // Expired
+      this.jitCache.delete(cacheKey);
+      return null;
+    }
+
+    return entry.result;
+  }
+
+  private setCached(cacheKey: string, result: RetrievalResult): void {
+    // Clean up old entries periodically (every 100 cache writes)
+    if (this.jitCache.size % 100 === 0) {
+      this.cleanupExpiredCache();
+    }
+
+    this.jitCache.set(cacheKey, {
+      result,
+      timestamp: Date.now(),
+      ttl: this.cacheTTL,
+    });
+
+    logger.debug({ cacheKey, ttl: this.cacheTTL }, 'JIT result cached');
+  }
+
+  private cleanupExpiredCache(): void {
+    const now = Date.now();
+    let cleaned = 0;
+    for (const [key, entry] of this.jitCache.entries()) {
+      if (now - entry.timestamp > entry.ttl) {
+        this.jitCache.delete(key);
+        cleaned++;
+      }
+    }
+    if (cleaned > 0) {
+      logger.debug({ cleaned }, 'JIT cache cleanup completed');
+    }
+  }
+
+  /**
+   * Clear cache for a specific user (e.g., when memories are updated)
+   */
+  clearCacheForUser(userId: string): void {
+    const prefix = `jit:${userId}:`;
+    for (const key of this.jitCache.keys()) {
+      if (key.startsWith(prefix)) {
+        this.jitCache.delete(key);
+      }
+    }
+    logger.debug({ userId }, 'JIT cache cleared for user');
+  }
+
+  /**
+   * Get cache statistics
+   */
+  getCacheStats(): { size: number; entries: number; expired: number } {
+    const now = Date.now();
+    let expired = 0;
+    for (const entry of this.jitCache.values()) {
+      if (now - entry.timestamp > entry.ttl) {
+        expired++;
+      }
+    }
+    return {
+      size: this.jitCache.size,
+      entries: this.jitCache.size - expired,
+      expired,
     };
   }
 
