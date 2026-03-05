@@ -15,6 +15,7 @@ export interface Conversation {
   capturedAt: string;
   tags: string[];
   messages: unknown[];
+  totalTokens?: number;
   stats: ConversationStats;
   metadata: Record<string, unknown>;
 }
@@ -69,6 +70,9 @@ export interface DBSchema {
       'by-capturedAt': string;
       'by-provider': string;
       'by-ownerId': string;
+      'by-totalTokens': number;
+      'by-state': string;
+      'by-tags': string[];
     };
   };
   
@@ -101,7 +105,7 @@ export interface DBSchema {
 // ============================================================================
 
 const DB_NAME = 'VivimMetadataDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 class VivimDatabase {
   private db: IDBPDatabase | null = null;
@@ -123,7 +127,7 @@ class VivimDatabase {
     logger.info('DB', 'Initializing Vivim Unified Database...');
     
     this.db = await openDB(DB_NAME, DB_VERSION, {
-      upgrade(db, oldVersion, _newVersion, _transaction) {
+      upgrade(db, _oldVersion, _newVersion, _transaction) {
         // Create conversations store
         if (!db.objectStoreNames.contains('conversations')) {
           const convStore = db.createObjectStore('conversations', { keyPath: 'id' });
@@ -132,7 +136,15 @@ class VivimDatabase {
           convStore.createIndex('by-capturedAt', 'capturedAt');
           convStore.createIndex('by-provider', 'provider');
           convStore.createIndex('by-ownerId', 'ownerId');
+          convStore.createIndex('by-totalTokens', 'totalTokens');
+          convStore.createIndex('by-state', 'state');
+          convStore.createIndex('by-tags', 'tags', { multiEntry: true });
           logger.info('DB', 'Created conversations store');
+        } else {
+          const convStore = _transaction.objectStore('conversations');
+          if (!convStore.indexNames.contains('by-totalTokens')) convStore.createIndex('by-totalTokens', 'totalTokens');
+          if (!convStore.indexNames.contains('by-state')) convStore.createIndex('by-state', 'state');
+          if (!convStore.indexNames.contains('by-tags')) convStore.createIndex('by-tags', 'tags', { multiEntry: true });
         }
         
         // Create conversation metadata store (for home feed optimization)
@@ -165,9 +177,9 @@ class VivimDatabase {
         logger.warn('DB', 'Database blocked - please close other tabs');
       },
       
-      blocking(event) {
+      blocking(_currentVersion, _blockedVersion, event) {
         logger.warn('DB', 'Database blocking - closing');
-        event.close();
+        (event.target as any)?.result?.close();
       },
     });
     
@@ -223,7 +235,7 @@ class VivimDatabase {
     const db = await this.ready();
     await db.delete('conversations', id);
     await db.delete('conversationMetadata', id).catch(err => {
-      logger.error({ err, id }, 'Failed to delete conversation metadata');
+      logger.error('DB', `Failed to delete conversation metadata ${id}`, err instanceof Error ? err : new Error(String(err)));
     });
   }
 
@@ -442,4 +454,3 @@ export function useVivimDB() {
 }
 
 export { VivimDatabase };
-export type { Conversation, ConversationMetadata, SyncOperation };

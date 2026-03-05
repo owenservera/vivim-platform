@@ -19,6 +19,7 @@ import {
   Sparkles,
   Users,
   ChevronRight,
+  Archive,
 } from 'lucide-react';
 import { useAppStore } from '../../lib/stores/appStore';
 import { SyncIndicator } from '../SyncIndicator';
@@ -32,6 +33,7 @@ interface NavItem {
 
 const primaryNavItems: NavItem[] = [
   { to: '/', icon: <Home className="w-5 h-5" strokeWidth={2} />, label: 'Home' },
+  { to: '/archive', icon: <Archive className="w-5 h-5" strokeWidth={2} />, label: 'Archive' },
   { to: '/search', icon: <Search className="w-5 h-5" strokeWidth={2} />, label: 'Search' },
   { to: '/capture', icon: <PlusCircle className="w-5 h-5" strokeWidth={2} />, label: 'Capture' },
   { to: '/ai-conversations', icon: <MessageSquare className="w-5 h-5" strokeWidth={2} />, label: 'AI Chat' },

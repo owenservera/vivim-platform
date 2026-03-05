@@ -43,6 +43,16 @@ const BlockchainAIChat = lazy(() => import('../components/BlockchainAIChat').the
 const IdentitySetup = lazy(() => import('../features/identity/components/IdentitySetup').then(m => ({ default: m.IdentitySetup })));
 const StorageDashboard = lazy(() => import('../features/storage/components/StorageDashboard').then(m => ({ default: m.StorageDashboard })));
 
+// Archive components
+const Archive = lazy(() => import('../pages/Archive/Archive'));
+const AllChats = lazy(() => import('../pages/Archive/AllChats'));
+const ArchiveImported = lazy(() => import('../pages/Archive/Imported'));
+const ArchiveActive = lazy(() => import('../pages/Archive/Active'));
+const ArchiveShared = lazy(() => import('../pages/Archive/Shared'));
+const ArchiveCollections = lazy(() => import('../pages/Archive/Collections'));
+const CollectionDetail = lazy(() => import('../components/archive/Collections/CollectionDetail'));
+const ArchiveSearch = lazy(() => import('../components/archive/Search/ArchiveSearch'));
+
 // Loading component
 const PageLoading = () => (
   <div className="flex items-center justify-center min-h-screen">
@@ -283,6 +293,47 @@ const router = createBrowserRouter([
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
+  },
+  {
+    path: "/archive",
+    element: (
+      <AuthGuard>
+        <AppLayout>
+          <Archive />
+        </AppLayout>
+      </AuthGuard>
+    ),
+    errorElement: <ErrorBoundary />,
+    children: [
+      {
+        path: "",
+        element: <AllChats />
+      },
+      {
+        path: "imported",
+        element: <ArchiveImported />
+      },
+      {
+        path: "active",
+        element: <ArchiveActive />
+      },
+      {
+        path: "shared",
+        element: <ArchiveShared />
+      },
+      {
+        path: "collections",
+        element: <ArchiveCollections />
+      },
+      {
+        path: "collections/:id",
+        element: <CollectionDetail />
+      },
+      {
+        path: "search",
+        element: <ArchiveSearch />
+      }
+    ]
   },
   {
     path: "/chat",

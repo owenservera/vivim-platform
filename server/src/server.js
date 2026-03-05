@@ -380,9 +380,10 @@ app.use(logDevAuthStatus);
 // Request ID - Add unique identifier to each request
 app.use(requestId);
 
-// Enhanced Request Logger - Human-readable, structured loggingapp.use((req, res, next) => {
+// Enhanced Request Logger - Human-readable, structured logging
+app.use((req, res, next) => {
   const startTime = Date.now();
-  const requestId = req.id;
+  const reqId = req.id;
   const { method } = req;
   const { path } = req;
   const { ip } = req;
@@ -393,7 +394,7 @@ app.use(requestId);
   console.log('║                        REQUEST RECEIVED                      ║');
   console.log('╠══════════════════════════════════════════════════════════════╣');
   console.log(
-    `║  🆔 ID:        ${requestId.substring(0, 8)}...${requestId.substring(requestId.length - 4)}`
+    `║  🆔 ID:        ${reqId.substring(0, 8)}...${reqId.substring(reqId.length - 4)}`
   );
   console.log(`║  🧭 METHOD:    ${method.padEnd(10)}`);
   console.log(`║  📍 PATH:      ${path}`);
@@ -427,7 +428,7 @@ app.use(requestId);
     console.log('║                        RESPONSE SENT                         ║');
     console.log('╠══════════════════════════════════════════════════════════════╣');
     console.log(
-      `║  🆔 ID:        ${requestId.substring(0, 8)}...${requestId.substring(requestId.length - 4)}`
+      `║  🆔 ID:        ${reqId.substring(0, 8)}...${reqId.substring(reqId.length - 4)}`
     );
     console.log(`║  🏷️  STATUS:    ${statusCode} ${statusCategory}`);
     console.log(`║  ⏱️  DURATION:  ${duration}ms`);

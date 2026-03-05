@@ -67,7 +67,6 @@ async function retryWithBackoff(fn, maxRetries = MAX_RETRIES, initialBackoffMs =
   
   throw lastError;
 }
-const router = Router();
 
 // ============================================================================
 // HELPERS
@@ -251,7 +250,9 @@ router.post('/capture', async (req, res, next) => {
 
     const extractionStartTime = Date.now();
     let conversation;
+
     // Retry extraction with exponential backoff
+    try {
       conversation = await retryWithBackoff(
         () => extractConversation(url, options),
         MAX_RETRIES,
@@ -276,9 +277,9 @@ router.post('/capture', async (req, res, next) => {
         },
         'Conversation captured successfully'
       );
-    } catch (dbError) {
-      log.warn({ error: dbError.message }, 'Failed during extraction');
-      throw dbError;
+    } catch (extractError) {
+      log.warn({ error: extractError.message }, 'Failed during extraction');
+      throw extractError;
     }
 
     console.log(
@@ -287,7 +288,7 @@ router.post('/capture', async (req, res, next) => {
 
     // Ensure ownerId is set - look up user from DID if needed
     let validUserId = req.userId || req.user?.userId;
-    
+
     // If no userId yet, try to look up by DID from auth header
     if (!validUserId && req.user?.did) {
       try {
@@ -305,13 +306,13 @@ router.post('/capture', async (req, res, next) => {
         log.warn({ error: lookupError.message }, 'Failed to look up user by DID');
       }
     }
-    
+
     if (validUserId) {
       conversation.ownerId = validUserId;
     }
-      if (validUserId) {
-        conversation.ownerId = validUserId;
-      }
+
+    try {
+      const saveStartTime = Date.now();
       const saveResult = await saveConversationUnified(conversation, userClient);
       debugReporter.trackInfo(
         {

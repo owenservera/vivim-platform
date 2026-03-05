@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Search, PlusCircle, MessageSquare, Settings, Sparkles } from 'lucide-react';
+import { Home, Search, PlusCircle, MessageSquare, Settings, Archive } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 export interface IOSNavItem {
@@ -18,7 +18,7 @@ export interface IOSBottomNavProps {
 
 const defaultNavItems: IOSNavItem[] = [
   { to: '/', icon: <Home className="w-5 h-5" strokeWidth={2.5} />, label: 'Home' },
-  { to: '/assistant-home', icon: <Sparkles className="w-5 h-5" strokeWidth={2.5} />, label: 'Assistant' },
+  { to: '/archive', icon: <Archive className="w-5 h-5" strokeWidth={2.5} />, label: 'Archive' },
   { to: '/search', icon: <Search className="w-5 h-5" strokeWidth={2.5} />, label: 'Search' },
   {
     to: '/capture',
