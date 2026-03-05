@@ -34,6 +34,42 @@ import { debugReporter } from '../services/debug-reporter.js';
 const router = Router();
 
 // ============================================================================
+// RETRY CONFIGURATION
+// ============================================================================
+const MAX_RETRIES = 3;
+const INITIAL_BACKOFF_MS = 1000;
+const MAX_BACKOFF_MS = 10000;
+
+/**
+ * Retry a function with exponential backoff
+ * @param {Function} fn - Function to retry
+ * @param {number} maxRetries - Maximum number of retry attempts
+ * @param {number} initialBackoffMs - Initial backoff delay in ms
+ * @param {number} maxBackoffMs - Maximum backoff delay in ms
+ * @returns {Promise<any>} Result of the function
+ */
+async function retryWithBackoff(fn, maxRetries = MAX_RETRIES, initialBackoffMs = INITIAL_BACKOFF_MS, maxBackoffMs = MAX_BACKOFF_MS) {
+  let lastError;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      
+      if (attempt < maxRetries) {
+        const backoffMs = Math.min(initialBackoffMs * Math.pow(2, attempt), maxBackoffMs);
+        console.log(`⚠️  [RETRY] Attempt ${attempt + 1} failed: ${error.message}. Retrying in ${backoffMs}ms...`);
+        await new Promise(resolve => setTimeout(resolve, backoffMs));
+      }
+    }
+  }
+  
+  throw lastError;
+}
+const router = Router();
+
+// ============================================================================
 // HELPERS
 // ============================================================================
 
@@ -215,8 +251,13 @@ router.post('/capture', async (req, res, next) => {
 
     const extractionStartTime = Date.now();
     let conversation;
-    try {
-      conversation = await extractConversation(url, options);
+    // Retry extraction with exponential backoff
+      conversation = await retryWithBackoff(
+        () => extractConversation(url, options),
+        MAX_RETRIES,
+        INITIAL_BACKOFF_MS,
+        MAX_BACKOFF_MS
+      );
 
       debugReporter.trackExtraction(
         provider,
@@ -244,10 +285,30 @@ router.post('/capture', async (req, res, next) => {
       `✅ [EXTRACTION COMPLETE] Retrieved ${conversation?.messages?.length || 0} messages`
     );
 
-    const saveStartTime = Date.now();
-    try {
-      // Stamp ownerId so this conversation is scoped to the authenticated user
-      const validUserId = req.userId || req.user?.userId;
+    // Ensure ownerId is set - look up user from DID if needed
+    let validUserId = req.userId || req.user?.userId;
+    
+    // If no userId yet, try to look up by DID from auth header
+    if (!validUserId && req.user?.did) {
+      try {
+        const { getPrismaClient } = await import('../lib/database.js');
+        const prisma = getPrismaClient();
+        const user = await prisma.user.findUnique({
+          where: { did: req.user.did },
+          select: { id: true }
+        });
+        if (user) {
+          validUserId = user.id;
+          req.userId = user.id;
+        }
+      } catch (lookupError) {
+        log.warn({ error: lookupError.message }, 'Failed to look up user by DID');
+      }
+    }
+    
+    if (validUserId) {
+      conversation.ownerId = validUserId;
+    }
       if (validUserId) {
         conversation.ownerId = validUserId;
       }

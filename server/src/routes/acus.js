@@ -16,8 +16,12 @@ import express from 'express';
 import { getPrismaClient } from '../lib/database.js';
 import { logger } from '../lib/logger.js';
 import { processConversationToACUs, processAllConversations } from '../services/acu-processor.js';
+import { authenticateDID } from '../middleware/auth.js';
 
 const router = express.Router();
+
+// All ACU routes require authentication
+router.use(authenticateDID);
 
 /**
  * GET /api/v1/acus
@@ -496,7 +500,7 @@ router.post('/quick', async (req, res) => {
     const acu = await getPrismaClient().atomicChatUnit.create({
       data: {
         id: acuId,
-        authorDid: req.auth?.did || 'did:key:anon', // Would use real DID in production
+        authorDid: req.user?.did, // Would use real DID in production
         signature: Buffer.from('quick-capture'),
         content: content.trim(),
         type: acuType,
@@ -591,7 +595,7 @@ router.post('/:id/remix', async (req, res) => {
     const remix = await getPrismaClient().atomicChatUnit.create({
       data: {
         id: remixId,
-        authorDid: req.auth?.did || 'did:key:anon',
+        authorDid: req.user?.did,
         signature: Buffer.from('remix'),
         content: content.trim(),
         type,
@@ -631,7 +635,7 @@ router.post('/:id/remix', async (req, res) => {
         targetId: parentId,
         relation: 'derived_from',
         weight: 1.0,
-        createdByDid: req.auth?.did,
+        createdByDid: req.user?.did,
       },
     });
 
@@ -706,7 +710,7 @@ router.post('/:id/annotate', async (req, res) => {
     const annotation = await getPrismaClient().atomicChatUnit.create({
       data: {
         id: annotationId,
-        authorDid: req.auth?.did || 'did:key:anon',
+        authorDid: req.user?.did,
         signature: Buffer.from('annotation'),
         content: content.trim(),
         type,
@@ -740,7 +744,7 @@ router.post('/:id/annotate', async (req, res) => {
         targetId: parentId,
         relation: 'annotates',
         weight: 1.0,
-        createdByDid: req.auth?.did,
+        createdByDid: req.user?.did,
       },
     });
 
@@ -818,7 +822,7 @@ router.post('/:id/bookmark', async (req, res) => {
       where: { id: bookmarkId },
       create: {
         id: bookmarkId,
-        authorDid: req.auth?.did || 'did:key:anon',
+        authorDid: req.user?.did,
         signature: Buffer.from('bookmark'),
         content: `[Bookmark] ${acu.content.substring(0, 500)}${acu.content.length > 500 ? '...' : ''}`,
         type: 'bookmark',
@@ -864,7 +868,7 @@ router.post('/:id/bookmark', async (req, res) => {
         targetId: acuId,
         relation: 'bookmarks',
         weight: 1.0,
-        createdByDid: req.auth?.did,
+        createdByDid: req.user?.did,
       },
       update: {},
     });

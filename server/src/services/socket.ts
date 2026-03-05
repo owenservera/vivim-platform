@@ -44,9 +44,10 @@ class SocketService {
       }
 
       // Verify token
-      // NOTE: Using a placeholder verify function or standard jwt.verify depending on how auth is set up.
-      // Assuming standard JWT for now.
-      const decoded = jwt.decode(token); // In real app, use jwt.verify(token, process.env.JWT_SECRET)
+      // Verify token with proper signature validation
+      const decoded = jwt.verify(token, process.env.JWT_SECRET, {
+        algorithms: ['HS256', 'RS256'],
+      });
 
       if (!decoded || !decoded.sub) {
         return next(new Error('Invalid token'));

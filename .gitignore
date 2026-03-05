@@ -56,8 +56,38 @@ temp/
 .debug/
 openscroll_dump_*.json
 
+# Lint & type-check reports (generated, never commit)
+*-eslint-report.json
+eslint-report.json
+tsc_out*.txt
+tsconfig.tsbuildinfo
+
+# Build / debug text artifacts
+build_err*.txt
+build_error*.log
+build_out*.txt
+build.log
+server.log
+*.log
+dev.log
+dev_err.log
+error_log.txt
+server_crash_log.txt
+test_log*.txt
+temp_test*.txt
+quick_test.txt
+server_fresh.txt
+
+# Debug HTML exports (browser session dumps)
+debug-chatgpt-*.html
+
+# AI session / chat exports
+roo_task_*.md
+assistant-ui-chat.md
+
 # Project specific
 nul
 session-ses_*.md
 .tmp.driveupload/
 server.zip
+.vercel

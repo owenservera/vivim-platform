@@ -110,6 +110,11 @@ export function validateConfig() {
       );
     }
 
+    // Auth bypass validation - MUST be disabled in production
+    if (config.skipAuthForDevelopment) {
+      errors.push('SKIP_AUTH_FOR_DEVELOPMENT must be false in production. Authentication is required.');
+    }
+
     // Session secret validation
     if (!process.env.SESSION_SECRET) {
       errors.push('SESSION_SECRET environment variable is required in production');
@@ -130,6 +135,12 @@ export function validateConfig() {
         'WARNING: Debug logging is enabled in production. This may expose sensitive information.'
       );
     }
+
+    // P2P validation - warn if P2P is configured but bootstrap peers are empty
+    if (config.p2pListenAddresses && (!config.p2pBootstrapPeers || config.p2pBootstrapPeers.length === 0)) {
+      console.warn(
+        'WARNING: P2P is configured but P2P_BOOTSTRAP_PEERS is empty. P2P networking will not be operational.'
+      );
   }
 
   // Development-specific validations
