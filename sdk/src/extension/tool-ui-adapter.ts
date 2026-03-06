@@ -63,7 +63,7 @@ export interface ApprovalCardPayload {
   alternatives?: string[];
 }
 
-export const ApprovalCardSchema: z.ZodSchema<ApprovalCardPayload> = z.object({
+export const ApprovalCardSchema = z.object({
   title: z.string().min(1),
   description: z.string(),
   action_type: z.string(),
@@ -72,7 +72,7 @@ export const ApprovalCardSchema: z.ZodSchema<ApprovalCardPayload> = z.object({
   details: z.record(z.unknown()),
   suggestions: z.array(z.string()).optional(),
   alternatives: z.array(z.string()).optional(),
-});
+}) as z.ZodType<ApprovalCardPayload>;
 
 export const ApprovalCardComponent: ToolUIComponent<ApprovalCardPayload> = {
   type: 'approval-card',
@@ -128,7 +128,7 @@ export interface DataTablePayload {
   page_size?: number;
 }
 
-export const DataTableSchema: z.ZodSchema<DataTablePayload> = z.object({
+export const DataTableSchema = z.object({
   title: z.string(),
   columns: z.array(z.object({
     key: z.string(),
@@ -142,7 +142,7 @@ export const DataTableSchema: z.ZodSchema<DataTablePayload> = z.object({
   total_rows: z.number().optional(),
   page: z.number().optional(),
   page_size: z.number().optional(),
-});
+}) as z.ZodType<DataTablePayload>;
 
 export const DataTableComponent: ToolUIComponent<DataTablePayload> = {
   type: 'data-table',
@@ -185,7 +185,7 @@ export interface ChartPayload {
   options?: { stacked?: boolean; legend?: boolean; grid?: boolean };
 }
 
-export const ChartSchema: z.ZodSchema<ChartPayload> = z.object({
+export const ChartSchema = z.object({
   title: z.string(),
   type: z.enum(['line', 'bar', 'pie', 'scatter', 'area']),
   x_axis: z.string(),
@@ -201,7 +201,7 @@ export const ChartSchema: z.ZodSchema<ChartPayload> = z.object({
     legend: z.boolean().optional(),
     grid: z.boolean().optional(),
   }).optional(),
-});
+}) as z.ZodType<ChartPayload>;
 
 export const ChartComponent: ToolUIComponent<ChartPayload> = {
   type: 'chart',
@@ -236,14 +236,14 @@ export interface CodeBlockPayload {
   theme?: 'dark' | 'light';
 }
 
-export const CodeBlockSchema: z.ZodSchema<CodeBlockPayload> = z.object({
+export const CodeBlockSchema = z.object({
   code: z.string(),
   language: z.string(),
   filename: z.string().optional(),
   highlights: z.array(z.number()).optional(),
   showLineNumbers: z.boolean().optional(),
   theme: z.enum(['dark', 'light']).optional(),
-});
+}) as z.ZodType<CodeBlockPayload>;
 
 export const CodeBlockComponent: ToolUIComponent<CodeBlockPayload> = {
   type: 'code-block',

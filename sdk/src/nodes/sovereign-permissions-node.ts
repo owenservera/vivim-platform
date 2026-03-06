@@ -290,6 +290,7 @@ export interface CreateGrantOptions {
   derivable?: boolean;
   monetizable?: boolean;
   attributionRequired?: boolean;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ModifyGrantOptions {
@@ -893,7 +894,7 @@ export class SovereignPermissionsNode extends SimpleEventEmitter implements Sove
 
   private getTemplateDefaultEffect(template: PolicyTemplateType): PermissionEffect {
     const publicTemplates = [PolicyTemplate.PUBLIC_READ, PolicyTemplate.PUBLIC_ATTRIBUTED, PolicyTemplate.PUBLIC_FORKABLE, PolicyTemplate.OPEN];
-    return publicTemplates.includes(template) ? 'allow' : 'deny';
+    return publicTemplates.includes(template as any) ? 'allow' : 'deny';
   }
 
   destroy(): void {

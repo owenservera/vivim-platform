@@ -1,0 +1,73 @@
+[0m[2m[35m$[0m [2m[1mbun run dev:core[0m
+[0m[2m[35m$[0m [2m[1mconcurrently --kill-others --prefix "[{name}]" --names "PWA,SRV,WS,ADM" --prefix-colors "cyan,green,yellow,magenta" "bun run dev:pwa" "bun run dev:server" "bun run dev:network:ws" "bun run dev:admin"[0m
+[36m[PWA][39m [0m[2m[35m$[0m [2m[1mcd pwa && bun run dev[0m
+[32m[SRV][39m [0m[2m[35m$[0m [2m[1mcd server && bun run dev[0m
+[35m[ADM][39m [0m[2m[35m$[0m [2m[1mcd admin-panel && bun run dev[0m
+[33m[WS][39m [0m[2m[35m$[0m [2m[1mcd network && bun run dev:ws[0m
+[36m[PWA][39m [0m[2m[35m$[0m [2m[1mbun --bun vite[0m
+[35m[ADM][39m [0m[2m[35m$[0m [2m[1mvite[0m
+[32m[SRV][39m [0m[2m[35m$[0m [2m[1mbun src/server-wrapper.js[0m
+[33m[WS][39m [0m[2m[35m$[0m [2m[1mHOST=0.0.0.0 PORT=1235 bunx y-websocket[0m
+[33m[WS][39m running at '0.0.0.0' on port 1235
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\common\error-aggregator.ts is not in the project directory and will not be watched
+[32m[SRV][39m 
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\common\error-alerting.ts is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\common\error-reporting.js is not in the project directory and will not be watched
+[32m[SRV][39m 
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\index.js is not in the project directory and will not be watched
+[32m[SRV][39m 
+[35m[ADM][39m 
+[35m[ADM][39m   [32m[1mVITE[22m v6.4.1[39m  [2mready in [0m[1m2446[22m[2m[0m ms[22m
+[35m[ADM][39m 
+[35m[ADM][39m   [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5174[22m/[39m
+[35m[ADM][39m [2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\p2p\ConnectionManager.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\security\E2EEncryption.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\dht\ContentRegistry.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\chain\EventStore.js is not in the project directory and will not be watched
+[32m[SRV][39m 
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\crdt\VectorClock.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\crdt\FollowCRDT.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\crdt\GroupCRDT.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\chain\EventHandler.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\p2p\NetworkNode.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\chain\ChainDHT.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\chain\HLClock.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\crdt\CRDTSyncService.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\crdt\FriendCRDT.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\pubsub\PubSubService.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\chain\utils.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\crdt\ConversationCRDT.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\crdt\TeamCRDT.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\crdt\CircleCRDT.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\federation\FederationServer.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\security\KeyManager.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\federation\InstanceDiscovery.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\chain\ChainClient.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\dht\DHTService.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\utils\logger.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\api\VivimChatRuntime.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\security\CapabilityManager.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\federation\FederationClient.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\pubsub\TopicManager.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\chain\StateMachine.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\storage\DistributedContentClient.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\p2p\PeerDiscovery.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\chain\types.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\chain\GossipSync.js is not in the project directory and will not be watched
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\crdt\Libp2pYjsProvider.js is not in the project directory and will not be watched
+[32m[SRV][39m 
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\utils\error-reporter.js is not in the project directory and will not be watched
+[32m[SRV][39m 
+[32m[SRV][39m [33mwarn[0m[2m:[0m File C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\network\dist\common\error-reporting.js is not in the project directory and will not be watched
+[32m[SRV][39m 
+[36m[PWA][39m 
+[36m[PWA][39m   [32m[1mVITE[22m v7.3.1[39m  [2mready in [0m[1m8125[22m[2m[0m ms[22m
+[36m[PWA][39m 
+[36m[PWA][39m   [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5173[22m/[39m
+[36m[PWA][39m [2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+[32m[SRV][39m [32mINFO[39m [2026-03-05 18:30:28.439 +0100]: [36mPrisma client initialized with enhanced observability[39m
+[32m[SRV][39m 
+[32m[SRV][39m [33mWARN[39m [2026-03-05 18:30:29.158 +0100]: [36mRedis connection failed, using in-memory cache fallback[39m
+[32m[SRV][39m     error: ""
+[32m[SRV][39m 

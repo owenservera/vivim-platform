@@ -1,5 +1,5 @@
 import { openDB, type IDBPDatabase } from 'idb';
-import { IEventStorage, ChainEvent, EventFilter } from '@vivim/network-engine';
+import { IEventStorage, ChainEvent, EventFilter } from '../network-mocks';
 
 const DB_NAME = 'VivimChainDB';
 const DB_VERSION = 1;

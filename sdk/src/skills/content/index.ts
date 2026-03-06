@@ -47,8 +47,8 @@ const postCapability: SkillCapability = {
         'post',
         { text: params.text as string },
         {
-          visibility: (params.visibility as 'public' | 'circle' | 'friends' | 'private') || 'public',
-          circleId: params.circleId as string | undefined,
+          visibility: (params.visibility as any) || 'public',
+          circleIds: params.circleId ? [params.circleId as string] : undefined,
         }
       );
 
@@ -94,7 +94,7 @@ const feedCapability: SkillCapability = {
       const contentNode = await context.sdk.getContentNode();
       
       const feed = await contentNode.getFeed({
-        type: (params.type as 'following' | 'popular' | 'recent') || 'recent',
+        type: (params.type === 'popular' ? 'trending' : params.type === 'recent' ? 'discover' : params.type as any) || 'discover',
         limit: (params.limit as number) || 20,
       });
 
@@ -104,9 +104,9 @@ const feedCapability: SkillCapability = {
           count: feed.length,
           posts: feed.map(p => ({
             id: p.id,
-            authorId: p.authorId,
-            content: p.content,
-            createdAt: p.createdAt,
+            author: p.author,
+            text: p.text,
+            timestamp: p.timestamp,
           })),
         },
       };
@@ -159,9 +159,9 @@ const searchCapability: SkillCapability = {
           count: results.length,
           posts: results.slice(0, (params.limit as number) || 20).map(p => ({
             id: p.id,
-            authorId: p.authorId,
-            content: p.content,
-            createdAt: p.createdAt,
+            author: p.author,
+            text: p.text,
+            timestamp: p.timestamp,
           })),
         },
       };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAppStore } from '../../../stores/appStore';
+import { useAppStore } from '../../../lib/stores/appStore';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '../../../components/ui/card';
 import { HardDrive, Globe, Database, Pin, Plus, ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { Badge } from '../../../components/ui/badge';

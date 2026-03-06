@@ -19,7 +19,6 @@ export { MultiTransport, createMultiTransport } from './multi-transport.js';
 
 // LibP2P Transport
 export { LibP2PTransport, createLibP2PTransport, type LibP2PTransportConfig, type NetworkNodeLike } from './libp2p-transport.js';
-export { MultiTransport, createMultiTransport } from './multi-transport.js';
 
 
 // Social Transport

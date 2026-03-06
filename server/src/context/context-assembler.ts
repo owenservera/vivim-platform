@@ -4,6 +4,7 @@ import type {
   AssemblyParams,
   BudgetInput,
   CompiledBundle,
+  ComputedBudget,
   DetectedContext,
   DetectedEntity,
   DetectedTopic,
@@ -188,7 +189,7 @@ export class DynamicContextAssembler {
     } catch (e) {
       logger.warn({ error: e }, 'Topic semantic search failed, using fallback');
       const fallback = await this.prisma.topicProfile.findMany({
-        where: { userId, embedding: { isEmpty: false } },
+        where: { userId },
         take: 3,
         select: { id: true, slug: true, label: true },
       });
@@ -209,7 +210,7 @@ export class DynamicContextAssembler {
     } catch (e) {
       logger.warn({ error: e }, 'Entity semantic search failed, using fallback');
       const fallback = await this.prisma.entityProfile.findMany({
-        where: { userId, embedding: { isEmpty: false } },
+        where: { userId },
         take: 3,
         select: { id: true, name: true, type: true },
       });

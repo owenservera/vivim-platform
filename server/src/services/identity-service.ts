@@ -20,7 +20,8 @@ import { createUserContextSystem } from '../context/user-context-system.js';
 import { logger } from '../lib/logger.js';
 import crypto from 'crypto';
 import * as nacl from 'tweetnacl';
-import { decodeBase64, encodeBase64 } from 'tweetnacl-util';
+import naclUtil from 'tweetnacl-util';
+const { decodeBase64, encodeBase64 } = naclUtil;
 
 const log = logger.child({ module: 'identity-service' });
 

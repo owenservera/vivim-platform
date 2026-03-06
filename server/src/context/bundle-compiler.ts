@@ -7,6 +7,7 @@ import {
   ITokenEstimator,
   ILLMService,
 } from './types';
+import type { MemoryTypeEnum } from './memory/memory-types';
 import { MemoryRetrievalService } from './memory/memory-retrieval-service';
 import { createEmbeddingService } from './utils/zai-service.js';
 
@@ -50,7 +51,7 @@ export class BundleCompiler {
     options: {
       maxTokens?: number;
       minImportance?: number;
-      preferredTypes?: string[];
+      preferredTypes?: MemoryTypeEnum[];
       includePinned?: boolean;
     } = {}
   ): Promise<

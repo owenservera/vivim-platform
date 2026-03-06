@@ -27,7 +27,7 @@ export class ConversationContextEngine {
       where: { id: conversationId },
       include: {
         messages: { orderBy: { messageIndex: 'asc' } },
-        compactions: { orderBy: { fromMessageIndex: 'asc' } },
+        conversationCompactions: { orderBy: { fromMessageIndex: 'asc' } },
       },
     });
 
@@ -36,6 +36,7 @@ export class ConversationContextEngine {
     }
 
     const messages = conv.messages;
+    const compactions = conv.conversationCompactions;
     const totalTokens = this.estimateMessagesTokens(messages);
     const totalBudget = l4Budget + l6Budget;
     const compressionRatio = totalTokens / totalBudget;
@@ -83,6 +84,7 @@ export class ConversationContextEngine {
     l4Budget: number,
     l6Budget: number
   ): Promise<ConversationWindow> {
+    const compactions = conv.conversationCompactions || [];
     const recentBudget = Math.floor(l6Budget * 0.7);
     const olderBudget = l6Budget - recentBudget;
 
@@ -106,7 +108,7 @@ export class ConversationContextEngine {
     let olderSummary = '';
 
     if (olderMessages.length > 0) {
-      const existingCompaction = conv.compactions?.find(
+      const existingCompaction = compactions?.find(
         (c: any) => c.fromMessageIndex === 0 && c.toMessageIndex >= cutIndex - 1
       );
 

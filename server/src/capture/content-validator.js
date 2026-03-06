@@ -75,10 +75,7 @@ export class ContentValidator {
     conversation.messages.forEach(msg => {
       msg.parts.forEach(part => {
         if (part.type === 'text') {
-           part.content = part.content.replace(/
-{3,}/g, '
-
-').trim();
+           part.content = part.content.replace(/\n{3,}/g, '\n\n').trim();
         }
       });
     });

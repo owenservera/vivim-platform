@@ -3,6 +3,7 @@ import type { ClientPresenceState, NavigationEvent } from './types';
 import { PredictionEngine } from './prediction-engine';
 import { BundleCompiler } from './bundle-compiler';
 import type { ITokenEstimator, ILLMService } from './types';
+import { logger } from '../lib/logger.js';
 
 interface ContextOrchestratorConfig {
   prisma: PrismaClient;
@@ -189,7 +190,25 @@ export class ContextOrchestrator {
       entity: 6 * 60 * 60 * 1000,
       conversation: 30 * 60 * 1000,
     };
-    return ttls[bundleType] ?? 60 * 60 * 1000;
+    return ttls[bundleType] || 60 * 60 * 1000;
+  }
+
+  /**
+   * Mark all bundles for a user as dirty (needs recompilation)
+   */
+  async markDirty(): Promise<void> {
+    // This method is a placeholder for future implementation
+    // It would mark all context bundles as needing recompilation
+    logger.warn('markDirty called - not yet implemented');
+  }
+
+  /**
+   * Mark bundles for a specific user and ID as dirty
+   */
+  async markDirtyWithId(userId: string, referenceId: string): Promise<void> {
+    // This method is a placeholder for future implementation
+    // It would mark specific context bundles as needing recompilation
+    logger.warn({ userId, referenceId }, 'markDirtyWithId called - not yet implemented');
   }
 
   async invalidateOnMemoryCreated(

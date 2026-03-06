@@ -8,9 +8,9 @@
  */
 
 import { EventEmitter } from 'events';
-import type { VivimSDK } from './sdk.js';
+import type { VivimSDK } from '../core/sdk.js';
 import type { StateSnapshot } from './exit-node.js';
-import { TrustProof } from './anchor.js';
+import type { TrustProof } from '../core/anchor.js';
 
 // Sync protocol constants
 export const SYNC_VERSION = '1.0.0';
@@ -544,12 +544,3 @@ export class SyncProtocol extends EventEmitter {
     console.log(`[Sync] Published update: ${update.updateId}`);
   }
 }
-
-// Export types
-export type {
-  SyncEvents,
-  SyncConfig,
-  SyncEndpoints,
-  StateUpdate,
-  UpdateType,
-};

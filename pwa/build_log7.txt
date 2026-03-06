@@ -1,0 +1,35 @@
+$ bun --bun vite build
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[plugin vite:resolve] Module "async_hooks" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/on-finished@2.4.1/node_modules/on-finished/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "async_hooks" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/raw-body@2.5.3/node_modules/raw-body/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+../sdk/dist/core/self-design.js (284:17): "mkdir" is not exported by "src/empty-stub.js", imported by "../sdk/dist/core/self-design.js".
+../sdk/dist/core/self-design.js (289:21): "mkdir" is not exported by "src/empty-stub.js", imported by "../sdk/dist/core/self-design.js".
+../sdk/dist/core/self-design.js (290:21): "writeFile" is not exported by "src/empty-stub.js", imported by "../sdk/dist/core/self-design.js".
+../sdk/dist/core/self-design.js (345:21): "rm" is not exported by "src/empty-stub.js", imported by "../sdk/dist/core/self-design.js".
+[32mΓ£ô[39m 7815 modules transformed.
+Γ£ù Build failed in 1m
+error during build:
+[vite-plugin-pwa:build] There was an error during the build:
+  ../sdk/dist/core/self-design.js (11:9): "execSync" is not exported by "../node_modules/.bun/node-stdlib-browser@1.3.1/node_modules/node-stdlib-browser/esm/mock/empty.js", imported by "../sdk/dist/core/self-design.js".
+Additionally, handling the error in the 'buildEnd' hook caused the following error:
+  ../sdk/dist/core/self-design.js (11:9): "execSync" is not exported by "../node_modules/.bun/node-stdlib-browser@1.3.1/node_modules/node-stdlib-browser/esm/mock/empty.js", imported by "../sdk/dist/core/self-design.js".
+file: C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/core/self-design.js:11:9
+
+ 9: import * as fs from 'fs/promises';
+10: import * as path from 'path';
+11: import { execSync } from 'child_process';
+             ^
+12: /**
+13:  * Self-Design Module
+
+    at getRollupError (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\rollup@4.59.0\node_modules\rollup\dist\es\shared\parseAst.js:402:45)
+    at <anonymous> (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\rollup@4.59.0\node_modules\rollup\dist\es\shared\node-entry.js:23467:39)
+    at async catchUnfinishedHookActions (unknown)
+    at async rollupInternal (unknown)
+    at async buildEnvironment (unknown)
+    at async build (unknown)
+    at async buildApp (unknown)
+    at unknown
+    at processTicksAndRejections (native:7:39)
+error: script "build:vite" exited with code 1

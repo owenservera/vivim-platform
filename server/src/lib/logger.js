@@ -23,7 +23,7 @@ const pinoConfig = {
   levelKey: 'level',
 };
 
-const isPretty = config.logFormat === 'pretty';
+const isPretty = config.logFormat === 'pretty' || config.isDevelopment;
 
 export const logger = pino(
   isPretty
@@ -35,6 +35,7 @@ export const logger = pino(
             colorize: true,
             translateTime: 'SYS:standard',
             ignore: 'pid,hostname',
+            levelFirst: true,
           },
         },
       }
@@ -73,5 +74,9 @@ export function createOperationLogger(operation, context = {}) {
     ...context,
   });
 }
+
+// Export terminal intelligence helper
+import terminalIntelligenceModule from './terminal-intelligence.js';
+export const terminalIntelligence = terminalIntelligenceModule;
 
 export default logger;

@@ -37,8 +37,11 @@ export interface StorageResult {
  */
 export interface PinInfo {
   cid: string;
-  pinnedAt: number;
+  name?: string;
+  status: 'pinned' | 'pinning' | 'failed';
   size: number;
+  pinnedAt: number;
+  createdAt: number;
 }
 
 /**
@@ -108,7 +111,7 @@ export interface StorageNodeAPI {
   exists(cid: string): Promise<boolean>;
 
   // Pinning
-  pin(cid: string): Promise<void>;
+  pin(cid: string, options?: { name?: string }): Promise<PinInfo>;
   unpin(cid: string): Promise<void>;
   getPins(): Promise<PinInfo[]>;
 
@@ -338,18 +341,25 @@ export class StorageNode implements StorageNodeAPI {
     return this.storage.has(cid);
   }
 
-  async pin(cid: string): Promise<void> {
-    if (!this.storage.has(cid)) {
+  async pin(cid: string, options: { name?: string } = {}): Promise<PinInfo> {
+    const stored = this.storage.get(cid);
+    if (!stored) {
       throw new Error(`Content not found: ${cid}`);
     }
-
-    this.pins.set(cid, {
+    
+    const pin: PinInfo = {
       cid,
+      name: options.name || `pin-${cid.slice(0, 8)}`,
+      status: 'pinned',
+      size: stored.metadata.size,
       pinnedAt: Date.now(),
-      size: this.storage.get(cid)!.metadata.size,
-    });
-
-    await this.sendMessage('storage_pin', { cid });
+      createdAt: Date.now(),
+    };
+    
+    this.pins.set(cid, pin);
+    await this.sendMessage('storage_pin', { cid, name: pin.name });
+    
+    return pin;
   }
 
   async unpin(cid: string): Promise<void> {

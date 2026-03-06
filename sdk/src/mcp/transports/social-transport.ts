@@ -207,8 +207,7 @@ export interface SocialTransport extends EventEmitter {
  */
 export abstract class BaseSocialTransport extends EventEmitter implements SocialTransport {
   abstract readonly type: 'social';
-  abstract readonly isActive: boolean;
-  abstract readonly localDID?: DID;
+
   
   protected _isActive = false;
   protected _localDID?: DID;

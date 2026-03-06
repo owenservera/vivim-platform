@@ -1,0 +1,12 @@
+export const execSync = () => {};
+export const spawn = () => ({});
+export const mkdir = async () => {};
+export const writeFile = async () => {};
+export const rm = async () => {};
+export const readFile = async () => '';
+export const watch = () => ({});
+export const readdir = async () => [];
+export const Agent = class {};
+export const createServer = () => ({});
+export const request = () => ({});
+export default {};

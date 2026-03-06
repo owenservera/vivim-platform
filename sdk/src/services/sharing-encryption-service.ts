@@ -221,7 +221,7 @@ export class SharingEncryptionService implements SharingEncryptionAPI {
           iv: iv,
         },
         symmetricKey,
-        plaintext
+        plaintext as any
       );
 
       const encryptedData = new Uint8Array(encrypted);
@@ -280,10 +280,10 @@ export class SharingEncryptionService implements SharingEncryptionAPI {
       const authTag = encrypted.authTag ? this.base64ToArrayBuffer(encrypted.authTag) : null;
 
       // Combine ciphertext and auth tag
-      const encryptedData = new Uint8Array(ciphertext.length + (authTag?.length || 16));
-      encryptedData.set(ciphertext, 0);
+      const encryptedData = new Uint8Array(ciphertext.byteLength + (authTag?.byteLength || 16));
+      encryptedData.set(new Uint8Array(ciphertext), 0);
       if (authTag) {
-        encryptedData.set(authTag, ciphertext.length);
+        encryptedData.set(new Uint8Array(authTag), ciphertext.byteLength);
       }
 
       // Decrypt
@@ -293,7 +293,7 @@ export class SharingEncryptionService implements SharingEncryptionAPI {
           iv: iv,
         },
         symmetricKey,
-        encryptedData
+        encryptedData as any
       );
 
       this.emit('content:decrypted', { contentId });
@@ -487,7 +487,7 @@ export class SharingEncryptionService implements SharingEncryptionAPI {
     // Use HKDF to derive key from shared secret
     const keyMaterial = await crypto.subtle.importKey(
       'raw',
-      sharedSecret,
+      sharedSecret as any,
       'HKDF',
       false,
       ['deriveKey']

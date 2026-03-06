@@ -33,6 +33,22 @@ export type {
   EventMap,
   TypedEventEmitter,
   EventHandler,
+
+  // Wallet types
+  WalletType,
+  SmartAccountType,
+  SmartWalletConfig,
+  SmartWallet,
+  UserOperation,
+  Call,
+  FeeQuote,
+  SessionKey,
+  SessionPermission,
+  RecoveryConfig,
+  LinkedAccount,
+  VivimUserID,
+  CreateWalletOptions,
+  WalletEventMap,
 } from './types.js';
 
 // Constants

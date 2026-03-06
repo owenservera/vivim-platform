@@ -15,38 +15,67 @@ class CacheService {
     this.client = null;
     this.isConnected = false;
     this.memoryCache = new Map(); // Fallback
+    this.connectionAttempted = false;
+    this.connectionFailed = false;
+    this.retryCount = 0;
+    this.maxRetries = 3;
   }
 
   async connect() {
     if (!config.redisUrl) {
-      logger.warn('Redis URL not configured. Using in-memory fallback.');
+      logger.info('Redis not configured (REDIS_URL not set). Using in-memory cache fallback.');
       return;
     }
 
+    if (this.connectionAttempted) {
+      // Already tried connecting
+      if (this.connectionFailed) {
+        logger.debug('Redis connection previously failed, using in-memory cache');
+      }
+      return;
+    }
+
+    this.connectionAttempted = true;
+
     try {
       this.client = new Redis(config.redisUrl, {
-        retryStrategy: (times) => Math.min(times * 50, 2000),
-        maxRetriesPerRequest: 3,
+        retryStrategy: (times) => {
+          this.retryCount = times;
+          if (times > this.maxRetries) {
+            // Stop retrying after max attempts
+            this.connectionFailed = true;
+            logger.debug('Redis connection failed after max retries, using in-memory cache');
+            return null; // Stop retrying
+          }
+          // Exponential backoff: 100ms, 200ms, 400ms
+          return Math.min(times * 100, 500);
+        },
+        maxRetriesPerRequest: 1,
+        connectTimeout: 2000,
       });
 
       this.client.on('connect', () => {
         logger.info('Redis connected successfully');
         this.isConnected = true;
+        this.connectionFailed = false;
       });
 
       this.client.on('error', (err) => {
-        logger.error({ error: err.message }, 'Redis connection error');
+        // Only log the first connection error, not retries
+        if (!this.connectionFailed && this.retryCount === 0) {
+          this.connectionFailed = true;
+          logger.warn({ error: err.message }, 'Redis connection failed, using in-memory cache fallback');
+        }
         this.isConnected = false;
-        serverErrorReporter.reportServerError(
-          'Redis connection failed',
-          err,
-          { url: config.redisUrl },
-          'high'
-        );
       });
+
+      this.client.on('close', () => {
+        this.isConnected = false;
+      });
+
     } catch (error) {
-      logger.error({ error: error.message }, 'Failed to initialize Redis client');
-      serverErrorReporter.reportServerError('Redis initialization failed', error, {}, 'high');
+      this.connectionFailed = true;
+      logger.warn({ error: error.message }, 'Redis initialization failed, using in-memory cache fallback');
     }
   }
 

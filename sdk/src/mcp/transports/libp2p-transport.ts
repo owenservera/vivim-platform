@@ -19,6 +19,7 @@ import type {
   ConnectionState,
   TransportConfig,
 } from './types.js';
+import { EventEmitter } from 'events';
 import { BaseTransport, SimpleTransportStream } from './base-transport.js';
 
 /**
@@ -79,6 +80,7 @@ export class LibP2PTransport extends BaseTransport {
   private connections: Map<string, LibP2PConnection> = new Map();
   private protocolPrefix: string;
   private messageHandlers: Map<string, (message: TransportMessage) => void> = new Map();
+  private mcpMessageHandler?: (message: any) => void;
   
   constructor(config: LibP2PTransportConfig = {}) {
     super(config);
@@ -110,6 +112,10 @@ export class LibP2PTransport extends BaseTransport {
   
   getNetworkNode(): NetworkNodeLike | undefined {
     return this.networkNode;
+  }
+  
+  onMessage(handler: (message: any) => void): void {
+    this.mcpMessageHandler = handler;
   }
   
   private setupEventHandlers(): void {
@@ -147,10 +153,10 @@ export class LibP2PTransport extends BaseTransport {
         const { NetworkNode } = await import('@vivim/network-engine');
         
         const nodeConfig = {
-          nodeType: 'client',
+          nodeType: 'client' as any,
           roles: ['routing'],
           listenAddresses: ['/ip4/0.0.0.0/tcp/0'],
-          bootstrapPeers: this.config.remoteAddresses ?? [],
+          bootstrapPeers: (this.config as any).remoteAddresses ?? [],
           enableWebRTC: true,
           enableDHT: true,
           enableGossipsub: true,
@@ -267,13 +273,17 @@ export class LibP2PTransport extends BaseTransport {
     }
   }
   
-  async send(message: TransportMessage): Promise<SendResult> {
+  // @ts-ignore - Dual transport implementation
+  async send(message: TransportMessage | JSONRPCResponse | JSONRPCNotification): Promise<SendResult | void> {
     try {
-      const data = typeof message.payload === 'string'
-        ? message.payload
-        : new TextDecoder().decode(message.payload);
+      const isJsonRpc = 'jsonrpc' in message;
+      const data = isJsonRpc 
+        ? JSON.stringify(message)
+        : (typeof (message as TransportMessage).payload === 'string'
+          ? (message as TransportMessage).payload
+          : new TextDecoder().decode((message as TransportMessage).payload as Uint8Array));
       
-      const recipients = message.metadata?.recipients as string[] | undefined;
+      const recipients = isJsonRpc ? undefined : ((message as TransportMessage).metadata?.recipients as string[] | undefined);
       
       if (recipients && recipients.length > 0) {
         for (const recipient of recipients) {
@@ -288,19 +298,21 @@ export class LibP2PTransport extends BaseTransport {
         );
         await Promise.all(sendPromises);
       } else if (this.networkNode && 'publish' in this.networkNode) {
-        const topic = message.metadata?.topic as string ?? '/vivim/broadcast';
-        await this.networkNode.publish!(topic, new TextEncoder().encode(data));
+        const topic = (message as any).metadata?.topic as string ?? '/vivim/broadcast';
+        await (this.networkNode as any).publish!(topic, data as any);
       }
       
+      if (isJsonRpc) return;
       return {
         success: true,
-        messageId: message.id,
+        messageId: (message as TransportMessage).id,
         deliveredAt: Date.now(),
       };
     } catch (error) {
+      if ('jsonrpc' in message) return;
       return {
         success: false,
-        messageId: message.id,
+        messageId: (message as TransportMessage).id,
         error: error as Error,
       };
     }
@@ -366,7 +378,7 @@ export class LibP2PTransport extends BaseTransport {
   }
 }
 
-class LibP2PConnection implements TransportConnection {
+class LibP2PConnection extends EventEmitter implements TransportConnection {
   readonly peerId: PeerId;
   readonly remoteAddress: string;
   readonly localAddress: string;
@@ -382,6 +394,7 @@ class LibP2PConnection implements TransportConnection {
     protocolPrefix: string,
     transport: LibP2PTransport
   ) {
+    super();
     this.peerId = peerId;
     this.remoteAddress = `/p2p/${peerId.id}`;
     this.localAddress = '/p2p/local';

@@ -35,6 +35,8 @@ export type ContextEventType =
   | 'memory:created'
   | 'memory:updated'
   | 'memory:deleted'
+  | 'memory:batch_archived'
+  | 'memory:extract_from_feed'
   // ACU lifecycle
   | 'acu:created'
   | 'acu:processed'
@@ -70,9 +72,15 @@ export type ContextEventType =
   // Telemetry
   | 'telemetry:assembly_complete'
   | 'telemetry:prediction_scored'
+  | 'telemetry:context_complete'
   // System
   | 'system:cleanup'
-  | 'system:warmup_requested';
+  | 'system:warmup_requested'
+  // Context streaming
+  | 'context:stream_complete'
+  | 'context:updated'
+  // Feed engagement
+  | 'feed:engagement';
 
 type EventHandler = (event: ContextEvent) => Promise<void> | void;
 
@@ -93,6 +101,8 @@ interface DebouncedEvent {
 // ============================================================================
 // EVENT BUS IMPLEMENTATION
 // ============================================================================
+
+var _busInstance: ContextEventBus | null = null;
 
 export class ContextEventBus {
   private handlers: Map<string, HandlerRegistration[]> = new Map();
@@ -362,19 +372,17 @@ export class ContextEventBus {
 // DEFAULT EVENT WIRING
 // ============================================================================
 
-import { invalidationService } from '../services/invalidation-service';
-import { logger } from '../lib/logger.js';
-
 // ... (ContextEvent and other interfaces)
 
 /**
  * Wire up the default cache invalidation handlers.
  * Call this at startup to connect the event bus to the cache.
  */
-export function wireDefaultInvalidation(
+export async function wireDefaultInvalidation(
   bus: ContextEventBus,
   cache: import('./context-cache').ContextCache
-): void {
+): Promise<void> {
+  const { invalidationService } = await import('../services/invalidation-service.js');
   // Memory events → invalidate identity + topic bundles
   bus.on(
     'memory:created',
@@ -545,8 +553,6 @@ export function wireDefaultInvalidation(
 // ============================================================================
 // SINGLETON
 // ============================================================================
-
-let _busInstance: ContextEventBus | null = null;
 
 export function getContextEventBus(): ContextEventBus {
   if (!_busInstance) {

@@ -1,8 +1,8 @@
-import { useChat } from 'ai/react';
+import { useChat } from '@ai-sdk/react';
 import { useChatRuntime } from '@assistant-ui/react-ai-sdk';
 import { getInitializedChainClient } from './chain-client';
 import { toolRegistry } from './tool-registry';
-import { EventType } from '@vivim/network-engine';
+import { EventType } from './network-mocks';
 import { useEffect, useMemo } from 'react';
 import { unifiedRepository } from './db/unified-repository';
 

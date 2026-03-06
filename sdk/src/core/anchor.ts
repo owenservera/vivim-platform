@@ -8,7 +8,8 @@
  */
 
 import { EventEmitter } from 'events';
-import type { Identity, VivimSDK } from './sdk.js';
+import type { VivimSDK } from './sdk.js';
+import type { Identity } from './types.js';
 import { SDK_VERSION } from './constants.js';
 
 /**
@@ -495,10 +496,3 @@ export class AnchorProtocol extends EventEmitter {
     return major === sdkMajor;
   }
 }
-
-// Export types
-export type {
-  AnchorEvents,
-  AnchorConfig,
-  StateManifest,
-};

@@ -7,7 +7,6 @@
 
 import { ERC1155 } from './erc1155.js';
 import type {
-  AccessToken,
   MintAccessTokenParams,
   AccessTokenType,
   AccessTokenStatus,

@@ -1,0 +1,18 @@
+# Bun configuration for the monorepo
+# Reference: https://bun.sh/docs/bundler/watch
+
+[watch]
+# Watch these paths
+include = ["src/**/*"]
+# Exclude build artifacts and external packages
+exclude = [
+  "**/node_modules/**", 
+  "**/dist/**", 
+  "**/*.test.*", 
+  "**/*.spec.*",
+  "**/network/dist/**"
+]
+
+[install]
+# Save exact versions for reproducibility
+exact = true

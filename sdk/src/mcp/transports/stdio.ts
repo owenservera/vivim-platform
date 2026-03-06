@@ -9,7 +9,7 @@ import type {
   JSONRPCRequest, 
   JSONRPCResponse, 
   JSONRPCNotification 
-} from './types.js';
+} from '../types.js';
 
 /**
  * STDIO Transport Options
@@ -29,6 +29,13 @@ export class StdioTransport implements MCPTransport {
 
   constructor(options: StdioTransportOptions) {
     this.options = options;
+  }
+
+  /**
+   * Set message handler for incoming requests
+   */
+  onMessage(handler: (message: JSONRPCRequest) => void): void {
+    this.options.onMessage = handler;
   }
 
   /**
@@ -54,7 +61,7 @@ export class StdioTransport implements MCPTransport {
         if (!trimmed) continue;
 
         try {
-          const message = JSON.parse(trimed) as JSONRPCRequest;
+          const message = JSON.parse(trimmed) as JSONRPCRequest;
           this.options.onMessage(message);
         } catch (error) {
           // Send parse error response

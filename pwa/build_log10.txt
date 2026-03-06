@@ -1,0 +1,345 @@
+$ bun --bun vite build
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[plugin vite:resolve] Module "http" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/express@4.22.1/node_modules/express/lib/response.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "http" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/express@4.22.1/node_modules/express/lib/request.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "querystring" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/body-parser@1.20.4/node_modules/body-parser/lib/types/urlencoded.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "async_hooks" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/on-finished@2.4.1/node_modules/on-finished/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "querystring" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/express@4.22.1/node_modules/express/lib/utils.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "fs" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/send@0.19.2/node_modules/send/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "zlib" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/body-parser@1.20.4/node_modules/body-parser/lib/read.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "fs" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/etag@1.8.1/node_modules/etag/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "fs" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/destroy@1.2.0/node_modules/destroy/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "zlib" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/destroy@1.2.0/node_modules/destroy/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "vm" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/asn1.js@4.10.1/node_modules/asn1.js/lib/asn1/api.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "async_hooks" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/raw-body@2.5.3/node_modules/raw-body/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "http" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/express@4.22.1/node_modules/express/lib/application.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "fs" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/mime@1.6.0/node_modules/mime/mime.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "fs" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/express@4.22.1/node_modules/express/lib/view.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/mcp/transports/http.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+../sdk/dist/mcp/transports/http.js (42:31): "Agent" is not exported by "__vite-browser-external", imported by "../sdk/dist/mcp/transports/http.js".
+../sdk/dist/mcp/transports/http.js (55:31): "createServer" is not exported by "__vite-browser-external", imported by "../sdk/dist/mcp/transports/http.js".
+../sdk/dist/mcp/transports/http.js (211:29): "request" is not exported by "__vite-browser-external", imported by "../sdk/dist/mcp/transports/http.js".
+[32mΓ£ô[39m 7752 modules transformed.
+Export "ConversationCard" of module "src/components/ios/ConversationCard.tsx" was reexported through module "src/components/ios/index.ts" while both modules are dependencies of each other and will end up in different chunks by current Rollup settings. This scenario is not well supported at the moment as it will produce a circular dependency between chunks and will likely lead to broken execution order.
+Either change the import in "src/pages/Bookmarks.tsx" to point directly to the exporting module or reconfigure "output.manualChunks" to ensure these modules end up in the same chunk.
+Export "ConversationCard" of module "src/components/ios/ConversationCard.tsx" was reexported through module "src/components/ios/index.ts" while both modules are dependencies of each other and will end up in different chunks by current Rollup settings. This scenario is not well supported at the moment as it will produce a circular dependency between chunks and will likely lead to broken execution order.
+Either change the import in "src/pages/Collections.tsx" to point directly to the exporting module or reconfigure "output.manualChunks" to ensure these modules end up in the same chunk.
+Export "ConversationCard" of module "src/components/ios/ConversationCard.tsx" was reexported through module "src/components/ios/index.ts" while both modules are dependencies of each other and will end up in different chunks by current Rollup settings. This scenario is not well supported at the moment as it will produce a circular dependency between chunks and will likely lead to broken execution order.
+Either change the import in "src/pages/Search.tsx" to point directly to the exporting module or reconfigure "output.manualChunks" to ensure these modules end up in the same chunk.
+Export "ShareDialog" of module "src/components/ios/ShareDialog.tsx" was reexported through module "src/components/ios/index.ts" while both modules are dependencies of each other and will end up in different chunks by current Rollup settings. This scenario is not well supported at the moment as it will produce a circular dependency between chunks and will likely lead to broken execution order.
+Either change the import in "src/pages/Home.tsx" to point directly to the exporting module or reconfigure "output.manualChunks" to ensure these modules end up in the same chunk.
+Export "AIActionsPanel" of module "src/components/ios/AIActionsPanel.tsx" was reexported through module "src/components/ios/index.ts" while both modules are dependencies of each other and will end up in different chunks by current Rollup settings. This scenario is not well supported at the moment as it will produce a circular dependency between chunks and will likely lead to broken execution order.
+Either change the import in "src/pages/Home.tsx" to point directly to the exporting module or reconfigure "output.manualChunks" to ensure these modules end up in the same chunk.
+Export "CircleManager" of module "src/components/ios/CircleManager.tsx" was reexported through module "src/components/ios/index.ts" while both modules are dependencies of each other and will end up in different chunks by current Rollup settings. This scenario is not well supported at the moment as it will produce a circular dependency between chunks and will likely lead to broken execution order.
+Either change the import in "src/pages/Home.tsx" to point directly to the exporting module or reconfigure "output.manualChunks" to ensure these modules end up in the same chunk.
+Export "ShareDialog" of module "src/components/ios/ShareDialog.tsx" was reexported through module "src/components/ios/index.ts" while both modules are dependencies of each other and will end up in different chunks by current Rollup settings. This scenario is not well supported at the moment as it will produce a circular dependency between chunks and will likely lead to broken execution order.
+Either change the import in "src/pages/HomeAssistant.tsx" to point directly to the exporting module or reconfigure "output.manualChunks" to ensure these modules end up in the same chunk.
+Export "AIActionsPanel" of module "src/components/ios/AIActionsPanel.tsx" was reexported through module "src/components/ios/index.ts" while both modules are dependencies of each other and will end up in different chunks by current Rollup settings. This scenario is not well supported at the moment as it will produce a circular dependency between chunks and will likely lead to broken execution order.
+Either change the import in "src/pages/HomeAssistant.tsx" to point directly to the exporting module or reconfigure "output.manualChunks" to ensure these modules end up in the same chunk.
+Export "CircleManager" of module "src/components/ios/CircleManager.tsx" was reexported through module "src/components/ios/index.ts" while both modules are dependencies of each other and will end up in different chunks by current Rollup settings. This scenario is not well supported at the moment as it will produce a circular dependency between chunks and will likely lead to broken execution order.
+Either change the import in "src/pages/HomeAssistant.tsx" to point directly to the exporting module or reconfigure "output.manualChunks" to ensure these modules end up in the same chunk.
+rendering chunks...
+[plugin vite:reporter] 
+(!) C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/core/constants.js is dynamically imported by C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/core/sdk.js, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/core/sdk.js, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/core/sdk.js, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/core/sdk.js, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/core/sdk.js, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/core/sdk.js but also statically imported by C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/core/anchor.js, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/core/assistant-runtime.js, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/core/index.js, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/core/l0-storage.js, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/core/sdk.js, dynamic import will not move module into another chunk.
+
+[plugin vite:reporter] 
+(!) C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/lib/storage-v2/crypto.ts is dynamically imported by C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/lib/storage-v2/dag-engine.ts, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/lib/storage-v2/dag-engine.ts, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/lib/storage-v2/object-store.ts, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/lib/storage-v2/object-store.ts, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/pages/CaptureSimple.tsx but also statically imported by C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/lib/api.ts, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/lib/storage-v2/dag-engine.ts, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/lib/storage-v2/index.ts, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/lib/storage-v2/merkle.ts, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/lib/storage-v2/storage.ts, dynamic import will not move module into another chunk.
+
+[plugin vite:reporter] 
+(!) C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/lib/api.ts is dynamically imported by C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/components/BackgroundSync.tsx but also statically imported by C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/components/BackgroundSync.tsx, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/lib/conversation-sync-service.ts, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/pages/Capture.tsx, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/pages/CaptureSimple.tsx, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/pages/Home.tsx, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/pages/HomeAssistant.tsx, dynamic import will not move module into another chunk.
+
+[plugin vite:reporter] 
+(!) C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/katex@0.16.33/node_modules/katex/dist/katex.mjs is dynamically imported by C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/mermaid@11.12.3/node_modules/mermaid/dist/chunks/mermaid.core/chunk-ABZYJK2D.mjs, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/pwa/src/components/content/ContentRenderer.tsx but also statically imported by C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/micromark-extension-math@3.1.0/node_modules/micromark-extension-math/lib/html.js, C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/rehype-katex@7.0.1/node_modules/rehype-katex/lib/index.js, dynamic import will not move module into another chunk.
+
+computing gzip size...
+[2mdist/[22m[32mregisterSW.js                                    [39m[1m[2m    0.13 kB[22m[1m[22m
+[2mdist/[22m[32mmanifest.webmanifest                             [39m[1m[2m    1.06 kB[22m[1m[22m
+[2mdist/[22m[32mindex.html                                       [39m[1m[2m    2.73 kB[22m[1m[22m[2m Γöé gzip:     1.03 kB[22m
+[2mdist/[22m[32massets/KaTeX_Size3-Regular-CTq5MqoE.woff         [39m[1m[2m    4.42 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Size4-Regular-Dl5lxZxV.woff2        [39m[1m[2m    4.93 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Size2-Regular-Dy4dx90m.woff2        [39m[1m[2m    5.21 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Size1-Regular-mCD8mA8B.woff2        [39m[1m[2m    5.47 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Size4-Regular-BF-4gkZK.woff         [39m[1m[2m    5.98 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Size2-Regular-oD1tc_U0.woff         [39m[1m[2m    6.19 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Size1-Regular-C195tn64.woff         [39m[1m[2m    6.50 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Caligraphic-Regular-Di6jR-x-.woff2  [39m[1m[2m    6.91 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Caligraphic-Bold-Dq_IR9rO.woff2     [39m[1m[2m    6.91 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Size3-Regular-DgpXs0kz.ttf          [39m[1m[2m    7.59 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Caligraphic-Regular-CTRA-rTL.woff   [39m[1m[2m    7.66 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Caligraphic-Bold-BEiXGLvX.woff      [39m[1m[2m    7.72 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Script-Regular-D3wIWfF6.woff2       [39m[1m[2m    9.64 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_SansSerif-Regular-DDBCnlJ7.woff2    [39m[1m[2m   10.34 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Size4-Regular-DWFBv043.ttf          [39m[1m[2m   10.36 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Script-Regular-D5yQViql.woff        [39m[1m[2m   10.59 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Fraktur-Regular-CTYiF6lA.woff2      [39m[1m[2m   11.32 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Fraktur-Bold-CL6g_b3V.woff2         [39m[1m[2m   11.35 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Size2-Regular-B7gKUWhC.ttf          [39m[1m[2m   11.51 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_SansSerif-Italic-C3H0VqGB.woff2     [39m[1m[2m   12.03 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_SansSerif-Bold-D1sUS0GD.woff2       [39m[1m[2m   12.22 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Size1-Regular-Dbsnue_I.ttf          [39m[1m[2m   12.23 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_SansSerif-Regular-CS6fqUqJ.woff     [39m[1m[2m   12.32 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Caligraphic-Regular-wX97UBjC.ttf    [39m[1m[2m   12.34 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Caligraphic-Bold-ATXxdsX0.ttf       [39m[1m[2m   12.37 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Fraktur-Regular-Dxdc4cR9.woff       [39m[1m[2m   13.21 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Fraktur-Bold-BsDP51OF.woff          [39m[1m[2m   13.30 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Typewriter-Regular-CO6r4hn1.woff2   [39m[1m[2m   13.57 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_SansSerif-Italic-DN2j7dab.woff      [39m[1m[2m   14.11 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_SansSerif-Bold-DbIhKOiC.woff        [39m[1m[2m   14.41 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Typewriter-Regular-C0xS9mPB.woff    [39m[1m[2m   16.03 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Math-BoldItalic-CZnvNsCZ.woff2      [39m[1m[2m   16.40 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Math-Italic-t53AETM-.woff2          [39m[1m[2m   16.44 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Script-Regular-C5JkGWo-.ttf         [39m[1m[2m   16.65 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Main-BoldItalic-DxDJ3AOS.woff2      [39m[1m[2m   16.78 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Main-Italic-NWA7e6Wa.woff2          [39m[1m[2m   16.99 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Math-BoldItalic-iY-2wyZ7.woff       [39m[1m[2m   18.67 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Math-Italic-DA0__PXp.woff           [39m[1m[2m   18.75 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Main-BoldItalic-SpSLRI95.woff       [39m[1m[2m   19.41 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_SansSerif-Regular-BNo7hRIc.ttf      [39m[1m[2m   19.44 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Fraktur-Regular-CB_wures.ttf        [39m[1m[2m   19.57 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Fraktur-Bold-BdnERNNW.ttf           [39m[1m[2m   19.58 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Main-Italic-BMLOBm91.woff           [39m[1m[2m   19.68 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_SansSerif-Italic-YYjJ1zSn.ttf       [39m[1m[2m   22.36 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_SansSerif-Bold-CFMepnvq.ttf         [39m[1m[2m   24.50 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Main-Bold-Cx986IdX.woff2            [39m[1m[2m   25.32 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Main-Regular-B22Nviop.woff2         [39m[1m[2m   26.27 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Typewriter-Regular-D3Ib7_Hf.ttf     [39m[1m[2m   27.56 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_AMS-Regular-BQhdFMY1.woff2          [39m[1m[2m   28.08 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Main-Bold-Jm3AIy58.woff             [39m[1m[2m   29.91 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Main-Regular-Dr94JaBh.woff          [39m[1m[2m   30.77 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Math-BoldItalic-B3XSjfu4.ttf        [39m[1m[2m   31.20 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Math-Italic-flOr_0UB.ttf            [39m[1m[2m   31.31 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Main-BoldItalic-DzxPMmG6.ttf        [39m[1m[2m   32.97 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_AMS-Regular-DMm9YOAa.woff           [39m[1m[2m   33.52 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Main-Italic-3WenGoN9.ttf            [39m[1m[2m   33.58 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Main-Bold-waoOVXN0.ttf              [39m[1m[2m   51.34 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_Main-Regular-ypZvNtVU.ttf           [39m[1m[2m   53.58 kB[22m[1m[22m
+[2mdist/[22m[32massets/KaTeX_AMS-Regular-DRggAlZN.ttf            [39m[1m[2m   63.63 kB[22m[1m[22m
+[2mdist/[22m[35massets/ContextVisualizer-BwmkvMeY.css            [39m[1m[2m    1.80 kB[22m[1m[22m[2m Γöé gzip:     0.66 kB[22m
+[2mdist/[22m[35massets/Analytics-a9jq4KC2.css                    [39m[1m[2m    3.37 kB[22m[1m[22m[2m Γöé gzip:     0.92 kB[22m
+[2mdist/[22m[35massets/Settings-BRD5IaRr.css                     [39m[1m[2m    3.38 kB[22m[1m[22m[2m Γöé gzip:     0.97 kB[22m
+[2mdist/[22m[35massets/ChatInputBox-ZPL9Enwn.css                 [39m[1m[2m    3.48 kB[22m[1m[22m[2m Γöé gzip:     1.25 kB[22m
+[2mdist/[22m[35massets/Search-CSflu5W8.css                       [39m[1m[2m    4.19 kB[22m[1m[22m[2m Γöé gzip:     1.19 kB[22m
+[2mdist/[22m[35massets/Collections-YDPa1TS-.css                  [39m[1m[2m    6.00 kB[22m[1m[22m[2m Γöé gzip:     1.64 kB[22m
+[2mdist/[22m[35massets/BYOKChat-D8OZR6EL.css                     [39m[1m[2m    8.22 kB[22m[1m[22m[2m Γöé gzip:     2.11 kB[22m
+[2mdist/[22m[35massets/ContextCockpit-CSiaq7aJ.css               [39m[1m[2m    8.46 kB[22m[1m[22m[2m Γöé gzip:     2.19 kB[22m
+[2mdist/[22m[35massets/AIChat-Dk5CKg8m.css                       [39m[1m[2m    9.84 kB[22m[1m[22m[2m Γöé gzip:     2.33 kB[22m
+[2mdist/[22m[35massets/useHomeUIStore-ZTBkMjIs.css               [39m[1m[2m   12.77 kB[22m[1m[22m[2m Γöé gzip:     3.28 kB[22m
+[2mdist/[22m[35massets/Capture-CwgvGXFv.css                      [39m[1m[2m   13.44 kB[22m[1m[22m[2m Γöé gzip:     2.54 kB[22m
+[2mdist/[22m[35massets/ForYou-U9ZX9HCf.css                       [39m[1m[2m   17.25 kB[22m[1m[22m[2m Γöé gzip:     3.71 kB[22m
+[2mdist/[22m[35massets/katex-BmnaB44z.css                        [39m[1m[2m   29.18 kB[22m[1m[22m[2m Γöé gzip:     8.28 kB[22m
+[2mdist/[22m[35massets/index-D4XJKxvx.css                        [39m[1m[2m  184.66 kB[22m[1m[22m[2m Γöé gzip:    30.44 kB[22m
+[2mdist/[22m[36massets/clone-CnOvaVhJ.js                         [39m[1m[2m    0.14 kB[22m[1m[22m[2m Γöé gzip:     0.15 kB[22m[2m Γöé map:      1.43 kB[22m
+[2mdist/[22m[36massets/channel-C5ZQSrfa.js                       [39m[1m[2m    0.16 kB[22m[1m[22m[2m Γöé gzip:     0.16 kB[22m[2m Γöé map:      0.56 kB[22m
+[2mdist/[22m[36massets/chevron-up-uGxe7EDe.js                    [39m[1m[2m    0.18 kB[22m[1m[22m[2m Γöé gzip:     0.18 kB[22m[2m Γöé map:      0.86 kB[22m
+[2mdist/[22m[36massets/init-Gi6I4Gst.js                          [39m[1m[2m    0.19 kB[22m[1m[22m[2m Γöé gzip:     0.17 kB[22m[2m Γöé map:      1.07 kB[22m
+[2mdist/[22m[36massets/plus-CzBgCeA8.js                          [39m[1m[2m    0.20 kB[22m[1m[22m[2m Γöé gzip:     0.19 kB[22m[2m Γöé map:      0.92 kB[22m
+[2mdist/[22m[36massets/arrow-left-DmEscwXq.js                    [39m[1m[2m    0.21 kB[22m[1m[22m[2m Γöé gzip:     0.20 kB[22m[2m Γöé map:      0.97 kB[22m
+[2mdist/[22m[36massets/arrow-right-GxE1Qfi-.js                   [39m[1m[2m    0.22 kB[22m[1m[22m[2m Γöé gzip:     0.20 kB[22m[2m Γöé map:      0.98 kB[22m
+[2mdist/[22m[36massets/arrow-up-right-DuXGtDcf.js                [39m[1m[2m    0.22 kB[22m[1m[22m[2m Γöé gzip:     0.19 kB[22m[2m Γöé map:      0.99 kB[22m
+[2mdist/[22m[36massets/check-check-y4lgLGeg.js                   [39m[1m[2m    0.23 kB[22m[1m[22m[2m Γöé gzip:     0.21 kB[22m[2m Γöé map:      0.99 kB[22m
+[2mdist/[22m[36massets/circle-check-A0ZAvOEi.js                  [39m[1m[2m    0.23 kB[22m[1m[22m[2m Γöé gzip:     0.21 kB[22m[2m Γöé map:      1.02 kB[22m
+[2mdist/[22m[36massets/user-C4XqIlqB.js                          [39m[1m[2m    0.24 kB[22m[1m[22m[2m Γöé gzip:     0.22 kB[22m[2m Γöé map:      1.00 kB[22m
+[2mdist/[22m[36massets/chunk-QZHKN3VN-DcTQ2UgW.js                [39m[1m[2m    0.25 kB[22m[1m[22m[2m Γöé gzip:     0.21 kB[22m[2m Γöé map:      0.87 kB[22m
+[2mdist/[22m[36massets/lock-BDrI2s-U.js                          [39m[1m[2m    0.25 kB[22m[1m[22m[2m Γöé gzip:     0.23 kB[22m[2m Γöé map:      1.04 kB[22m
+[2mdist/[22m[36massets/circle-x-B0POyebz.js                      [39m[1m[2m    0.25 kB[22m[1m[22m[2m Γöé gzip:     0.22 kB[22m[2m Γöé map:      1.08 kB[22m
+[2mdist/[22m[36massets/lock-open-BUCO_8-7.js                     [39m[1m[2m    0.26 kB[22m[1m[22m[2m Γöé gzip:     0.23 kB[22m[2m Γöé map:      1.07 kB[22m
+[2mdist/[22m[36massets/ellipsis-CCy3_n19.js                      [39m[1m[2m    0.27 kB[22m[1m[22m[2m Γöé gzip:     0.20 kB[22m[2m Γöé map:      1.16 kB[22m
+[2mdist/[22m[36massets/upload-Dp2euPpU.js                        [39m[1m[2m    0.28 kB[22m[1m[22m[2m Γöé gzip:     0.23 kB[22m[2m Γöé map:      1.08 kB[22m
+[2mdist/[22m[36massets/mic-DiMZnZID.js                           [39m[1m[2m    0.28 kB[22m[1m[22m[2m Γöé gzip:     0.24 kB[22m[2m Γöé map:      1.12 kB[22m
+[2mdist/[22m[36massets/bookmark-BCisD0mw.js                      [39m[1m[2m    0.28 kB[22m[1m[22m[2m Γöé gzip:     0.24 kB[22m[2m Γöé map:      1.00 kB[22m
+[2mdist/[22m[36massets/chunk-4BX2VUAB-BEG8gB7O.js                [39m[1m[2m    0.28 kB[22m[1m[22m[2m Γöé gzip:     0.22 kB[22m[2m Γöé map:      0.89 kB[22m
+[2mdist/[22m[36massets/paperclip-COYg3c9B.js                     [39m[1m[2m    0.28 kB[22m[1m[22m[2m Γöé gzip:     0.24 kB[22m[2m Γöé map:      1.00 kB[22m
+[2mdist/[22m[36massets/chunk-55IACEB6-C7DBycye.js                [39m[1m[2m    0.29 kB[22m[1m[22m[2m Γöé gzip:     0.26 kB[22m[2m Γöé map:      1.11 kB[22m
+[2mdist/[22m[36massets/ellipsis-vertical-zwoN82pE.js             [39m[1m[2m    0.29 kB[22m[1m[22m[2m Γöé gzip:     0.21 kB[22m[2m Γöé map:      1.22 kB[22m
+[2mdist/[22m[36massets/eye-DOl0b51b.js                           [39m[1m[2m    0.30 kB[22m[1m[22m[2m Γöé gzip:     0.24 kB[22m[2m Γöé map:      1.08 kB[22m
+[2mdist/[22m[36massets/link-C51xRt0V.js                          [39m[1m[2m    0.30 kB[22m[1m[22m[2m Γöé gzip:     0.23 kB[22m[2m Γöé map:      1.03 kB[22m
+[2mdist/[22m[36massets/table-pU_pM9GG.js                         [39m[1m[2m    0.30 kB[22m[1m[22m[2m Γöé gzip:     0.24 kB[22m[2m Γöé map:      1.21 kB[22m
+[2mdist/[22m[36massets/funnel-BAQmUt9Z.js                        [39m[1m[2m    0.30 kB[22m[1m[22m[2m Γöé gzip:     0.25 kB[22m[2m Γöé map:      1.01 kB[22m
+[2mdist/[22m[36massets/external-link-8NLPD3Hn.js                 [39m[1m[2m    0.30 kB[22m[1m[22m[2m Γöé gzip:     0.24 kB[22m[2m Γöé map:      1.14 kB[22m
+[2mdist/[22m[36massets/zap-DOX-VQEL.js                           [39m[1m[2m    0.30 kB[22m[1m[22m[2m Γöé gzip:     0.25 kB[22m[2m Γöé map:      1.00 kB[22m
+[2mdist/[22m[36massets/calendar-BGh66fyk.js                      [39m[1m[2m    0.30 kB[22m[1m[22m[2m Γöé gzip:     0.24 kB[22m[2m Γöé map:      1.23 kB[22m
+[2mdist/[22m[36massets/key-DsOkSv83.js                           [39m[1m[2m    0.31 kB[22m[1m[22m[2m Γöé gzip:     0.26 kB[22m[2m Γöé map:      1.12 kB[22m
+[2mdist/[22m[36massets/wifi-BtpvRaof.js                          [39m[1m[2m    0.32 kB[22m[1m[22m[2m Γöé gzip:     0.25 kB[22m[2m Γöé map:      1.18 kB[22m
+[2mdist/[22m[36massets/send-NjgkDp9D.js                          [39m[1m[2m    0.33 kB[22m[1m[22m[2m Γöé gzip:     0.27 kB[22m[2m Γöé map:      1.10 kB[22m
+[2mdist/[22m[36massets/hash-CqIzpLpJ.js                          [39m[1m[2m    0.34 kB[22m[1m[22m[2m Γöé gzip:     0.23 kB[22m[2m Γöé map:      1.36 kB[22m
+[2mdist/[22m[36massets/folder-open-Cp6PJr-3.js                   [39m[1m[2m    0.34 kB[22m[1m[22m[2m Γöé gzip:     0.26 kB[22m[2m Γöé map:      1.07 kB[22m
+[2mdist/[22m[36massets/list-CrS-VHHI.js                          [39m[1m[2m    0.35 kB[22m[1m[22m[2m Γöé gzip:     0.23 kB[22m[2m Γöé map:      1.32 kB[22m
+[2mdist/[22m[36massets/bookmark-plus-DwhGSDkk.js                 [39m[1m[2m    0.36 kB[22m[1m[22m[2m Γöé gzip:     0.27 kB[22m[2m Γöé map:      1.23 kB[22m
+[2mdist/[22m[36massets/save-BHwnptJZ.js                          [39m[1m[2m    0.37 kB[22m[1m[22m[2m Γöé gzip:     0.27 kB[22m[2m Γöé map:      1.20 kB[22m
+[2mdist/[22m[36massets/bot-C7OfZm6X.js                           [39m[1m[2m    0.37 kB[22m[1m[22m[2m Γöé gzip:     0.27 kB[22m[2m Γöé map:      1.40 kB[22m
+[2mdist/[22m[36massets/shield-check-D5o80XPR.js                  [39m[1m[2m    0.37 kB[22m[1m[22m[2m Γöé gzip:     0.29 kB[22m[2m Γöé map:      1.17 kB[22m
+[2mdist/[22m[36massets/git-fork-CAvGB4ZU.js                      [39m[1m[2m    0.38 kB[22m[1m[22m[2m Γöé gzip:     0.27 kB[22m[2m Γöé map:      1.38 kB[22m
+[2mdist/[22m[36massets/server--Q15VN5c.js                        [39m[1m[2m    0.38 kB[22m[1m[22m[2m Γöé gzip:     0.25 kB[22m[2m Γöé map:      1.46 kB[22m
+[2mdist/[22m[36massets/pin-9vt4EPU-.js                           [39m[1m[2m    0.39 kB[22m[1m[22m[2m Γöé gzip:     0.28 kB[22m[2m Γöé map:      1.14 kB[22m
+[2mdist/[22m[36massets/share-2-BZ1VG3Qf.js                       [39m[1m[2m    0.40 kB[22m[1m[22m[2m Γöé gzip:     0.27 kB[22m[2m Γöé map:      1.48 kB[22m
+[2mdist/[22m[36massets/toggle-right-B06rIL3t.js                  [39m[1m[2m    0.40 kB[22m[1m[22m[2m Γöé gzip:     0.26 kB[22m[2m Γöé map:      2.03 kB[22m
+[2mdist/[22m[36massets/code-CyLSEFUL.js                          [39m[1m[2m    0.41 kB[22m[1m[22m[2m Γöé gzip:     0.29 kB[22m[2m Γöé map:      1.97 kB[22m
+[2mdist/[22m[36massets/chunk-FMBD7UC4-DGBqTncG.js                [39m[1m[2m    0.42 kB[22m[1m[22m[2m Γöé gzip:     0.32 kB[22m[2m Γöé map:      0.84 kB[22m
+[2mdist/[22m[36massets/hard-drive-BUGUJRwb.js                    [39m[1m[2m    0.44 kB[22m[1m[22m[2m Γöé gzip:     0.30 kB[22m[2m Γöé map:      1.35 kB[22m
+[2mdist/[22m[36massets/index-Ckimo65T.js                         [39m[1m[2m    0.44 kB[22m[1m[22m[2m Γöé gzip:     0.31 kB[22m[2m Γöé map:      2.00 kB[22m
+[2mdist/[22m[36massets/reply-DRe7z3Qn.js                         [39m[1m[2m    0.45 kB[22m[1m[22m[2m Γöé gzip:     0.32 kB[22m[2m Γöé map:      1.90 kB[22m
+[2mdist/[22m[36massets/stateDiagram-v2-4FDKWEC3-iJs9-HJE.js      [39m[1m[2m    0.45 kB[22m[1m[22m[2m Γöé gzip:     0.33 kB[22m[2m Γöé map:      1.56 kB[22m
+[2mdist/[22m[36massets/layers-xC2gIImO.js                        [39m[1m[2m    0.47 kB[22m[1m[22m[2m Γöé gzip:     0.29 kB[22m[2m Γöé map:      1.37 kB[22m
+[2mdist/[22m[36massets/eye-off-DjKJkSDO.js                       [39m[1m[2m    0.48 kB[22m[1m[22m[2m Γöé gzip:     0.31 kB[22m[2m Γöé map:      1.41 kB[22m
+[2mdist/[22m[36massets/classDiagram-2ON5EDUG-BjNXSIVv.js         [39m[1m[2m    0.49 kB[22m[1m[22m[2m Γöé gzip:     0.35 kB[22m[2m Γöé map:      1.57 kB[22m
+[2mdist/[22m[36massets/settings-2-C5b6YboV.js                    [39m[1m[2m    0.49 kB[22m[1m[22m[2m Γöé gzip:     0.32 kB[22m[2m Γöé map:      2.17 kB[22m
+[2mdist/[22m[36massets/classDiagram-v2-WZHVMYZB-BjNXSIVv.js      [39m[1m[2m    0.49 kB[22m[1m[22m[2m Γöé gzip:     0.35 kB[22m[2m Γöé map:      1.58 kB[22m
+[2mdist/[22m[36massets/folder-B_VJfj5j.js                        [39m[1m[2m    0.53 kB[22m[1m[22m[2m Γöé gzip:     0.28 kB[22m[2m Γöé map:      2.04 kB[22m
+[2mdist/[22m[36massets/chunk-QN33PNHL-DhkFmLKE.js                [39m[1m[2m    0.56 kB[22m[1m[22m[2m Γöé gzip:     0.41 kB[22m[2m Γöé map:      2.34 kB[22m
+[2mdist/[22m[36massets/brain-Bcr465md.js                         [39m[1m[2m    0.62 kB[22m[1m[22m[2m Γöé gzip:     0.35 kB[22m[2m Γöé map:      1.74 kB[22m
+[2mdist/[22m[36massets/fingerprint-pattern-S_I4GO8w.js           [39m[1m[2m    0.67 kB[22m[1m[22m[2m Γöé gzip:     0.40 kB[22m[2m Γöé map:      1.92 kB[22m
+[2mdist/[22m[36massets/infoDiagram-HS3SLOUP-BHcqrxPE.js          [39m[1m[2m    0.75 kB[22m[1m[22m[2m Γöé gzip:     0.50 kB[22m[2m Γöé map:      2.42 kB[22m
+[2mdist/[22m[36massets/square-BLakSuxL.js                        [39m[1m[2m    0.75 kB[22m[1m[22m[2m Γöé gzip:     0.45 kB[22m[2m Γöé map:      3.84 kB[22m
+[2mdist/[22m[36massets/pen-tool-ChmMf1BR.js                      [39m[1m[2m    0.76 kB[22m[1m[22m[2m Γöé gzip:     0.46 kB[22m[2m Γöé map:      2.58 kB[22m
+[2mdist/[22m[36massets/bookmarks-ChsjvxyI.js                     [39m[1m[2m    0.81 kB[22m[1m[22m[2m Γöé gzip:     0.46 kB[22m[2m Γöé map:      3.86 kB[22m
+[2mdist/[22m[36massets/square-check-big-BoqBi8el.js              [39m[1m[2m    0.83 kB[22m[1m[22m[2m Γöé gzip:     0.44 kB[22m[2m Γöé map:      3.64 kB[22m
+[2mdist/[22m[36massets/star-CzhyOhBB.js                          [39m[1m[2m    0.89 kB[22m[1m[22m[2m Γöé gzip:     0.47 kB[22m[2m Γöé map:      2.75 kB[22m
+[2mdist/[22m[36massets/radio-DjcBvQs1.js                         [39m[1m[2m    0.96 kB[22m[1m[22m[2m Γöé gzip:     0.50 kB[22m[2m Γöé map:      3.78 kB[22m
+[2mdist/[22m[36massets/Badge-C-63wwMX.js                         [39m[1m[2m    0.99 kB[22m[1m[22m[2m Γöé gzip:     0.51 kB[22m[2m Γöé map:      2.33 kB[22m
+[2mdist/[22m[36massets/collections.store-lm6LGETr.js             [39m[1m[2m    1.01 kB[22m[1m[22m[2m Γöé gzip:     0.45 kB[22m[2m Γöé map:      3.85 kB[22m
+[2mdist/[22m[36massets/card-CMAu2ZTz.js                          [39m[1m[2m    1.03 kB[22m[1m[22m[2m Γöé gzip:     0.42 kB[22m[2m Γöé map:      3.38 kB[22m
+[2mdist/[22m[36massets/EmptyState-DLiCrV8K.js                    [39m[1m[2m    1.17 kB[22m[1m[22m[2m Γöé gzip:     0.63 kB[22m[2m Γöé map:      6.69 kB[22m
+[2mdist/[22m[36massets/Skeleton-7rJhPtZQ.js                      [39m[1m[2m    1.21 kB[22m[1m[22m[2m Γöé gzip:     0.66 kB[22m[2m Γöé map:      5.42 kB[22m
+[2mdist/[22m[36massets/ordinal-Cboi1Yqb.js                       [39m[1m[2m    1.23 kB[22m[1m[22m[2m Γöé gzip:     0.62 kB[22m[2m Γöé map:      5.15 kB[22m
+[2mdist/[22m[36massets/trending-up-kGtCrnPd.js                   [39m[1m[2m    1.24 kB[22m[1m[22m[2m Γöé gzip:     0.65 kB[22m[2m Γöé map:      5.19 kB[22m
+[2mdist/[22m[36massets/archive.store-krunKC0_.js                 [39m[1m[2m    1.26 kB[22m[1m[22m[2m Γöé gzip:     0.63 kB[22m[2m Γöé map:      5.99 kB[22m
+[2mdist/[22m[36massets/tablet-Do817rKZ.js                        [39m[1m[2m    1.41 kB[22m[1m[22m[2m Γöé gzip:     0.69 kB[22m[2m Γöé map:      6.42 kB[22m
+[2mdist/[22m[36massets/chunk-TZMSLE5B-CzZT5xDr.js                [39m[1m[2m    1.49 kB[22m[1m[22m[2m Γöé gzip:     0.70 kB[22m[2m Γöé map:      5.87 kB[22m
+[2mdist/[22m[36massets/Input-DV51Ystv.js                         [39m[1m[2m    1.59 kB[22m[1m[22m[2m Γöé gzip:     0.76 kB[22m[2m Γöé map:      4.32 kB[22m
+[2mdist/[22m[36massets/Button-hGf7Sm63.js                        [39m[1m[2m    1.73 kB[22m[1m[22m[2m Γöé gzip:     0.90 kB[22m[2m Γöé map:      4.38 kB[22m
+[2mdist/[22m[36massets/api-CNLZGV17.js                           [39m[1m[2m    1.75 kB[22m[1m[22m[2m Γöé gzip:     0.94 kB[22m[2m Γöé map:     17.67 kB[22m
+[2mdist/[22m[36massets/storage-adapter-KbyJg2q9.js               [39m[1m[2m    1.76 kB[22m[1m[22m[2m Γöé gzip:     0.83 kB[22m[2m Γöé map:      7.11 kB[22m
+[2mdist/[22m[36massets/separator-cDShPNDw.js                     [39m[1m[2m    1.77 kB[22m[1m[22m[2m Γöé gzip:     0.92 kB[22m[2m Γöé map:      6.80 kB[22m
+[2mdist/[22m[36massets/Active-C1NB8YJ4.js                        [39m[1m[2m    1.82 kB[22m[1m[22m[2m Γöé gzip:     0.96 kB[22m[2m Γöé map:      4.19 kB[22m
+[2mdist/[22m[36massets/ArchiveSearch-B3tKzJas.js                 [39m[1m[2m    1.89 kB[22m[1m[22m[2m Γöé gzip:     0.98 kB[22m[2m Γöé map:      5.43 kB[22m
+[2mdist/[22m[36massets/Bookmarks-CK4BZnLG.js                     [39m[1m[2m    1.92 kB[22m[1m[22m[2m Γöé gzip:     1.08 kB[22m[2m Γöé map:      5.62 kB[22m
+[2mdist/[22m[36massets/Imported-CRpA4pqM.js                      [39m[1m[2m    1.98 kB[22m[1m[22m[2m Γöé gzip:     1.02 kB[22m[2m Γöé map:      4.52 kB[22m
+[2mdist/[22m[36massets/ErrorState-BIRZQ1YL.js                    [39m[1m[2m    2.04 kB[22m[1m[22m[2m Γöé gzip:     0.90 kB[22m[2m Γöé map:     11.47 kB[22m
+[2mdist/[22m[36massets/index-CwrqT52f.js                         [39m[1m[2m    2.13 kB[22m[1m[22m[2m Γöé gzip:     1.03 kB[22m[2m Γöé map:     11.43 kB[22m
+[2mdist/[22m[36massets/Modal-DUjeKXFn.js                         [39m[1m[2m    2.23 kB[22m[1m[22m[2m Γöé gzip:     1.11 kB[22m[2m Γöé map:      6.69 kB[22m
+[2mdist/[22m[36massets/Shared-DNE9pk5q.js                        [39m[1m[2m    2.29 kB[22m[1m[22m[2m Γöé gzip:     1.01 kB[22m[2m Γöé map:      4.89 kB[22m
+[2mdist/[22m[36massets/_basePickBy-r6Vkw8hy.js                   [39m[1m[2m    2.63 kB[22m[1m[22m[2m Γöé gzip:     1.36 kB[22m[2m Γöé map:     26.17 kB[22m
+[2mdist/[22m[36massets/CollectionDetail-D_NAfbSG.js              [39m[1m[2m    2.95 kB[22m[1m[22m[2m Γöé gzip:     1.28 kB[22m[2m Γöé map:      6.59 kB[22m
+[2mdist/[22m[36massets/Login-CnHOHtII.js                         [39m[1m[2m    3.05 kB[22m[1m[22m[2m Γöé gzip:     1.48 kB[22m[2m Γöé map:      7.15 kB[22m
+[2mdist/[22m[36massets/SettingsGroup-DQO8maD1.js                 [39m[1m[2m    3.06 kB[22m[1m[22m[2m Γöé gzip:     1.21 kB[22m[2m Γöé map:      9.97 kB[22m
+[2mdist/[22m[36massets/arc-CyLjIjWd.js                           [39m[1m[2m    3.46 kB[22m[1m[22m[2m Γöé gzip:     1.53 kB[22m[2m Γöé map:     16.99 kB[22m
+[2mdist/[22m[36massets/button-DCoOsNvp.js                        [39m[1m[2m    3.65 kB[22m[1m[22m[2m Γöé gzip:     1.70 kB[22m[2m Γöé map:     15.52 kB[22m
+[2mdist/[22m[36massets/unified-repository-CK8semUF.js            [39m[1m[2m    3.79 kB[22m[1m[22m[2m Γöé gzip:     1.46 kB[22m[2m Γöé map:     11.41 kB[22m
+[2mdist/[22m[36massets/NetworkPanel-DijGS9L7.js                  [39m[1m[2m    3.95 kB[22m[1m[22m[2m Γöé gzip:     1.23 kB[22m[2m Γöé map:      9.32 kB[22m
+[2mdist/[22m[36massets/ContextCockpitPage-BH0NMpng.js            [39m[1m[2m    4.09 kB[22m[1m[22m[2m Γöé gzip:     1.78 kB[22m[2m Γöé map:     10.67 kB[22m
+[2mdist/[22m[36massets/Collections-D2vRoooB.js                   [39m[1m[2m    4.18 kB[22m[1m[22m[2m Γöé gzip:     1.65 kB[22m[2m Γöé map:      9.30 kB[22m
+[2mdist/[22m[36massets/diagram-S2PKOQOG-wOsZ0dTz.js              [39m[1m[2m    4.37 kB[22m[1m[22m[2m Γöé gzip:     1.97 kB[22m[2m Γöé map:     13.66 kB[22m
+[2mdist/[22m[36massets/communication-Cd-1sQCM.js                 [39m[1m[2m    4.51 kB[22m[1m[22m[2m Γöé gzip:     1.78 kB[22m[2m Γöé map:     16.10 kB[22m
+[2mdist/[22m[36massets/DatabasePanel-7W9Y_dOa.js                 [39m[1m[2m    4.71 kB[22m[1m[22m[2m Γöé gzip:     1.49 kB[22m[2m Γöé map:     14.03 kB[22m
+[2mdist/[22m[36massets/defaultLocale-DX6XiGOO.js                 [39m[1m[2m    4.74 kB[22m[1m[22m[2m Γöé gzip:     2.30 kB[22m[2m Γöé map:     22.49 kB[22m
+[2mdist/[22m[36massets/IdentitySetup-D9KVOY0w.js                 [39m[1m[2m    4.75 kB[22m[1m[22m[2m Γöé gzip:     1.82 kB[22m[2m Γöé map:     11.43 kB[22m
+[2mdist/[22m[36massets/DataFlowPanel-BG5QOLCZ.js                 [39m[1m[2m    4.80 kB[22m[1m[22m[2m Γöé gzip:     1.35 kB[22m[2m Γöé map:     11.02 kB[22m
+[2mdist/[22m[36massets/feature-hooks-DAKGHvij.js                 [39m[1m[2m    4.81 kB[22m[1m[22m[2m Γöé gzip:     1.72 kB[22m[2m Γöé map:     20.64 kB[22m
+[2mdist/[22m[36massets/ActionsPanel-B2qrkzsd.js                  [39m[1m[2m    5.15 kB[22m[1m[22m[2m Γöé gzip:     1.75 kB[22m[2m Γöé map:     13.86 kB[22m
+[2mdist/[22m[36massets/index-OS-czspl.js                         [39m[1m[2m    5.27 kB[22m[1m[22m[2m Γöé gzip:     2.97 kB[22m[2m Γöé map:      8.22 kB[22m
+[2mdist/[22m[36massets/StorageDashboard-B1KjAm8V.js              [39m[1m[2m    5.29 kB[22m[1m[22m[2m Γöé gzip:     1.86 kB[22m[2m Γöé map:     11.89 kB[22m
+[2mdist/[22m[36massets/pieDiagram-ADFJNKIX-jF_yWcRq.js           [39m[1m[2m    5.30 kB[22m[1m[22m[2m Γöé gzip:     2.42 kB[22m[2m Γöé map:     18.76 kB[22m
+[2mdist/[22m[36massets/Search-BDNYtV2J.js                        [39m[1m[2m    5.39 kB[22m[1m[22m[2m Γöé gzip:     2.22 kB[22m[2m Γöé map:     20.60 kB[22m
+[2mdist/[22m[36massets/Receive-KLdcUUPU.js                       [39m[1m[2m    5.50 kB[22m[1m[22m[2m Γöé gzip:     1.91 kB[22m[2m Γöé map:     13.53 kB[22m
+[2mdist/[22m[36massets/Collections-Ck5HpAou.js                   [39m[1m[2m    5.55 kB[22m[1m[22m[2m Γöé gzip:     2.25 kB[22m[2m Γöé map:     16.29 kB[22m
+[2mdist/[22m[36massets/AuthLoadingScreen-k56vC_eE.js             [39m[1m[2m    5.59 kB[22m[1m[22m[2m Γöé gzip:     2.03 kB[22m[2m Γöé map:     15.29 kB[22m
+[2mdist/[22m[36massets/Archive-edECstpD.js                       [39m[1m[2m    5.64 kB[22m[1m[22m[2m Γöé gzip:     1.73 kB[22m[2m Γöé map:     11.43 kB[22m
+[2mdist/[22m[36massets/BlockchainAIChat-CpzoK8lE.js              [39m[1m[2m    5.68 kB[22m[1m[22m[2m Γöé gzip:     2.35 kB[22m[2m Γöé map:     15.66 kB[22m
+[2mdist/[22m[36massets/linear-C7O-qhSe.js                        [39m[1m[2m    5.71 kB[22m[1m[22m[2m Γöé gzip:     2.43 kB[22m[2m Γöé map:     27.98 kB[22m
+[2mdist/[22m[36massets/vivim-db-BGYm6E2Q.js                      [39m[1m[2m    5.72 kB[22m[1m[22m[2m Γöé gzip:     1.86 kB[22m[2m Γöé map:     21.75 kB[22m
+[2mdist/[22m[36massets/Settings-DVzs-tNW.js                      [39m[1m[2m    5.73 kB[22m[1m[22m[2m Γöé gzip:     2.26 kB[22m[2m Γöé map:     18.36 kB[22m
+[2mdist/[22m[36massets/CRDTManagementPanel-BubATm7a.js           [39m[1m[2m    5.80 kB[22m[1m[22m[2m Γöé gzip:     1.61 kB[22m[2m Γöé map:     15.54 kB[22m
+[2mdist/[22m[36massets/HeavyRanker-CESkivDL.js                   [39m[1m[2m    5.93 kB[22m[1m[22m[2m Γöé gzip:     2.49 kB[22m[2m Γöé map:     30.46 kB[22m
+[2mdist/[22m[36massets/graph-KU_vVzoC.js                         [39m[1m[2m    5.96 kB[22m[1m[22m[2m Γöé gzip:     1.99 kB[22m[2m Γöé map:     23.02 kB[22m
+[2mdist/[22m[36massets/diagram-QEK2KX5R-6WGV-4Lo.js              [39m[1m[2m    5.97 kB[22m[1m[22m[2m Γöé gzip:     2.62 kB[22m[2m Γöé map:     20.77 kB[22m
+[2mdist/[22m[36massets/GridView-f7YRp570.js                      [39m[1m[2m    6.12 kB[22m[1m[22m[2m Γöé gzip:     2.29 kB[22m[2m Γöé map:     15.72 kB[22m
+[2mdist/[22m[36massets/RealTimeLogsPanel-D2sDtA6T.js             [39m[1m[2m    6.33 kB[22m[1m[22m[2m Γöé gzip:     2.22 kB[22m[2m Γöé map:     18.48 kB[22m
+[2mdist/[22m[36massets/LogsPanel-Dv2tmLHX.js                     [39m[1m[2m    6.36 kB[22m[1m[22m[2m Γöé gzip:     1.88 kB[22m[2m Γöé map:     16.08 kB[22m
+[2mdist/[22m[36massets/ChatBubble-BSplxadx.js                    [39m[1m[2m    6.38 kB[22m[1m[22m[2m Γöé gzip:     1.91 kB[22m[2m Γöé map:     14.47 kB[22m
+[2mdist/[22m[36massets/AllChats-Bk5v6VHa.js                      [39m[1m[2m    6.71 kB[22m[1m[22m[2m Γöé gzip:     2.86 kB[22m[2m Γöé map:     22.64 kB[22m
+[2mdist/[22m[36massets/Analytics-_326E7cB.js                     [39m[1m[2m    7.18 kB[22m[1m[22m[2m Γöé gzip:     2.14 kB[22m[2m Γöé map:     17.43 kB[22m
+[2mdist/[22m[36massets/AIChat-jBJRWTqt.js                        [39m[1m[2m    7.43 kB[22m[1m[22m[2m Γöé gzip:     2.83 kB[22m[2m Γöé map:     25.48 kB[22m
+[2mdist/[22m[36massets/Account-IBUamfIy.js                       [39m[1m[2m    7.45 kB[22m[1m[22m[2m Γöé gzip:     2.77 kB[22m[2m Γöé map:     20.11 kB[22m
+[2mdist/[22m[36massets/ErrorDashboard-BERDM2OE.js                [39m[1m[2m    7.53 kB[22m[1m[22m[2m Γöé gzip:     2.36 kB[22m[2m Γöé map:     18.10 kB[22m
+[2mdist/[22m[36massets/storage-node-D78aTb1M.js                  [39m[1m[2m    7.95 kB[22m[1m[22m[2m Γöé gzip:     3.06 kB[22m[2m Γöé map:     15.52 kB[22m
+[2mdist/[22m[36massets/identity-node-B2uLhQ7g.js                 [39m[1m[2m    8.00 kB[22m[1m[22m[2m Γöé gzip:     3.00 kB[22m[2m Γöé map:     16.54 kB[22m
+[2mdist/[22m[36massets/SystemOverviewPanel-xaOHLdWS.js           [39m[1m[2m    8.48 kB[22m[1m[22m[2m Γöé gzip:     1.87 kB[22m[2m Γöé map:     20.96 kB[22m
+[2mdist/[22m[36massets/content-node-THa0wDgE.js                  [39m[1m[2m    8.87 kB[22m[1m[22m[2m Γöé gzip:     3.23 kB[22m[2m Γöé map:     19.32 kB[22m
+[2mdist/[22m[36massets/ContextComponents-DIFLVhXo.js             [39m[1m[2m    9.08 kB[22m[1m[22m[2m Γöé gzip:     2.88 kB[22m[2m Γöé map:     20.54 kB[22m
+[2mdist/[22m[36massets/social-node-q_rOYVvH.js                   [39m[1m[2m    9.68 kB[22m[1m[22m[2m Γöé gzip:     3.31 kB[22m[2m Γöé map:     21.25 kB[22m
+[2mdist/[22m[36massets/ContextVisualizer-UrYHaOr6.js             [39m[1m[2m    9.69 kB[22m[1m[22m[2m Γöé gzip:     2.84 kB[22m[2m Γöé map:     24.89 kB[22m
+[2mdist/[22m[36massets/ai-chat-node-DkikIBmE.js                  [39m[1m[2m    9.89 kB[22m[1m[22m[2m Γöé gzip:     3.47 kB[22m[2m Γöé map:     22.25 kB[22m
+[2mdist/[22m[36massets/useQuery-Du-wIJ3U.js                      [39m[1m[2m   10.23 kB[22m[1m[22m[2m Γöé gzip:     3.83 kB[22m[2m Γöé map:     41.26 kB[22m
+[2mdist/[22m[36massets/CaptureSimple-DQgOBJCV.js                 [39m[1m[2m   10.29 kB[22m[1m[22m[2m Γöé gzip:     3.64 kB[22m[2m Γöé map:     24.56 kB[22m
+[2mdist/[22m[36massets/stateDiagram-FKZM4ZOC-DtIiDZFX.js         [39m[1m[2m   10.45 kB[22m[1m[22m[2m Γöé gzip:     3.82 kB[22m[2m Γöé map:     35.80 kB[22m
+[2mdist/[22m[36massets/memory-node-oTrzE2No.js                   [39m[1m[2m   10.95 kB[22m[1m[22m[2m Γöé gzip:     4.03 kB[22m[2m Γöé map:     27.51 kB[22m
+[2mdist/[22m[36massets/dagre-6UL2VRFP-B6YeDOqU.js                [39m[1m[2m   11.06 kB[22m[1m[22m[2m Γöé gzip:     4.30 kB[22m[2m Γöé map:     41.75 kB[22m
+[2mdist/[22m[36massets/ConversationView-CwPPQ1Nx.js              [39m[1m[2m   11.46 kB[22m[1m[22m[2m Γöé gzip:     3.94 kB[22m[2m Γöé map:     30.00 kB[22m
+[2mdist/[22m[36massets/_baseUniq-DOefLxX4.js                     [39m[1m[2m   11.94 kB[22m[1m[22m[2m Γöé gzip:     4.90 kB[22m[2m Γöé map:    106.30 kB[22m
+[2mdist/[22m[36massets/ContextCockpit-BVbas_qW.js                [39m[1m[2m   11.95 kB[22m[1m[22m[2m Γöé gzip:     3.49 kB[22m[2m Γöé map:     35.11 kB[22m
+[2mdist/[22m[36massets/ConversationCard-CdHuTuhx.js              [39m[1m[2m   12.10 kB[22m[1m[22m[2m Γöé gzip:     3.38 kB[22m[2m Γöé map:     33.27 kB[22m
+[2mdist/[22m[36massets/ChatInputBox-C9i_EmxH.js                  [39m[1m[2m   12.14 kB[22m[1m[22m[2m Γöé gzip:     4.77 kB[22m[2m Γöé map:     66.80 kB[22m
+[2mdist/[22m[36massets/admin-api-J9JJ_zLE.js                     [39m[1m[2m   12.32 kB[22m[1m[22m[2m Γöé gzip:     4.37 kB[22m[2m Γöé map:     45.64 kB[22m
+[2mdist/[22m[36massets/ContextRecipes-BG6-HI_p.js                [39m[1m[2m   12.75 kB[22m[1m[22m[2m Γöé gzip:     3.95 kB[22m[2m Γöé map:     32.89 kB[22m
+[2mdist/[22m[36massets/AdminPanel-DrwzBd8g.js                    [39m[1m[2m   12.80 kB[22m[1m[22m[2m Γöé gzip:     3.71 kB[22m[2m Γöé map:     25.34 kB[22m
+[2mdist/[22m[36massets/sovereign-permissions-node-D-EWnI_Z.js    [39m[1m[2m   13.15 kB[22m[1m[22m[2m Γöé gzip:     4.43 kB[22m[2m Γöé map:     35.42 kB[22m
+[2mdist/[22m[36massets/BYOKChat-BdC-7Bja.js                      [39m[1m[2m   15.91 kB[22m[1m[22m[2m Γöé gzip:     6.04 kB[22m[2m Γöé map:     56.27 kB[22m
+[2mdist/[22m[36massets/diagram-PSM6KHXK-ClnK_67X.js              [39m[1m[2m   15.94 kB[22m[1m[22m[2m Γöé gzip:     5.94 kB[22m[2m Γöé map:     61.04 kB[22m
+[2mdist/[22m[36massets/index-CDwWhnxG.js                         [39m[1m[2m   16.18 kB[22m[1m[22m[2m Γöé gzip:     5.24 kB[22m[2m Γöé map:     55.99 kB[22m
+[2mdist/[22m[36massets/ForYou-BoUZtxXX.js                        [39m[1m[2m   16.37 kB[22m[1m[22m[2m Γöé gzip:     4.78 kB[22m[2m Γöé map:     51.11 kB[22m
+[2mdist/[22m[36massets/test-data-generator-DPA3zqI4.js           [39m[1m[2m   17.87 kB[22m[1m[22m[2m Γöé gzip:     7.55 kB[22m[2m Γöé map:     31.31 kB[22m
+[2mdist/[22m[36massets/kanban-definition-3W4ZIXB7-IvZklwzm.js    [39m[1m[2m   20.27 kB[22m[1m[22m[2m Γöé gzip:     7.46 kB[22m[2m Γöé map:     68.05 kB[22m
+[2mdist/[22m[36massets/mindmap-definition-VGOIOE7T-AD9mC8Ja.js   [39m[1m[2m   20.98 kB[22m[1m[22m[2m Γöé gzip:     7.59 kB[22m[2m Γöé map:     71.54 kB[22m
+[2mdist/[22m[36massets/Capture-DUCESVtu.js                       [39m[1m[2m   21.02 kB[22m[1m[22m[2m Γöé gzip:     6.48 kB[22m[2m Γöé map:     55.21 kB[22m
+[2mdist/[22m[36massets/sankeyDiagram-TZEHDZUN-CpXDTCzM.js        [39m[1m[2m   22.17 kB[22m[1m[22m[2m Γöé gzip:     8.44 kB[22m[2m Γöé map:     85.38 kB[22m
+[2mdist/[22m[36massets/AIConversationsPage-DdcYPFtl.js           [39m[1m[2m   22.67 kB[22m[1m[22m[2m Γöé gzip:     6.97 kB[22m[2m Γöé map:     70.79 kB[22m
+[2mdist/[22m[36massets/journeyDiagram-XKPGCS4Q-Nr37iDfd.js       [39m[1m[2m   23.60 kB[22m[1m[22m[2m Γöé gzip:     8.64 kB[22m[2m Γöé map:     80.49 kB[22m
+[2mdist/[22m[36massets/timeline-definition-IT6M3QCI-DIbPOjdy.js  [39m[1m[2m   23.66 kB[22m[1m[22m[2m Γöé gzip:     8.59 kB[22m[2m Γöé map:     82.16 kB[22m
+[2mdist/[22m[36massets/gitGraphDiagram-V2S2FVAM-CJTjUiSE.js      [39m[1m[2m   24.20 kB[22m[1m[22m[2m Γöé gzip:     7.73 kB[22m[2m Γöé map:    102.49 kB[22m
+[2mdist/[22m[36massets/Share-BoX2_mq-.js                         [39m[1m[2m   25.25 kB[22m[1m[22m[2m Γöé gzip:     9.27 kB[22m[2m Γöé map:     94.18 kB[22m
+[2mdist/[22m[36massets/erDiagram-Q2GNP2WA-9N4H2eg5.js            [39m[1m[2m   25.30 kB[22m[1m[22m[2m Γöé gzip:     9.25 kB[22m[2m Γöé map:     85.66 kB[22m
+[2mdist/[22m[36massets/layout-B44eHeV7.js                        [39m[1m[2m   27.43 kB[22m[1m[22m[2m Γöé gzip:    10.14 kB[22m[2m Γöé map:    163.47 kB[22m
+[2mdist/[22m[36massets/useHomeUIStore-B2XKVObd.js                [39m[1m[2m   29.70 kB[22m[1m[22m[2m Γöé gzip:     8.09 kB[22m[2m Γöé map:     83.69 kB[22m
+[2mdist/[22m[36massets/requirementDiagram-UZGBJVZJ-TBT15Wb-.js   [39m[1m[2m   30.15 kB[22m[1m[22m[2m Γöé gzip:     9.88 kB[22m[2m Γöé map:     96.68 kB[22m
+[2mdist/[22m[36massets/quadrantDiagram-AYHSOK5B-Bs2ELUlj.js      [39m[1m[2m   33.90 kB[22m[1m[22m[2m Γöé gzip:    10.39 kB[22m[2m Γöé map:    110.58 kB[22m
+[2mdist/[22m[36massets/conversation-service-VL8TmnHh.js          [39m[1m[2m   34.30 kB[22m[1m[22m[2m Γöé gzip:     9.72 kB[22m[2m Γöé map:    120.07 kB[22m
+[2mdist/[22m[36massets/Home-BSOnR442.js                          [39m[1m[2m   34.44 kB[22m[1m[22m[2m Γöé gzip:    11.45 kB[22m[2m Γöé map:    101.81 kB[22m
+[2mdist/[22m[36massets/chunk-DI55MBZ5-CKr7KbIi.js                [39m[1m[2m   36.39 kB[22m[1m[22m[2m Γöé gzip:    12.33 kB[22m[2m Γöé map:    121.73 kB[22m
+[2mdist/[22m[36massets/xychartDiagram-PRI3JC2R-BmtMkLdC.js       [39m[1m[2m   40.27 kB[22m[1m[22m[2m Γöé gzip:    12.00 kB[22m[2m Γöé map:    133.16 kB[22m
+[2mdist/[22m[36massets/chunk-B4BG7PRW-CFdKe-_I.js                [39m[1m[2m   45.37 kB[22m[1m[22m[2m Γöé gzip:    15.30 kB[22m[2m Γöé map:    140.22 kB[22m
+[2mdist/[22m[36massets/index-D6Z8IVEb.js                         [39m[1m[2m   48.88 kB[22m[1m[22m[2m Γöé gzip:    15.38 kB[22m[2m Γöé map:    197.66 kB[22m
+[2mdist/[22m[36massets/flowDiagram-NV44I4VS-CRc_qbev.js          [39m[1m[2m   60.51 kB[22m[1m[22m[2m Γöé gzip:    20.26 kB[22m[2m Γöé map:    189.91 kB[22m
+[2mdist/[22m[36massets/ganttDiagram-JELNMOA3-Bbvdh1v-.js         [39m[1m[2m   68.37 kB[22m[1m[22m[2m Γöé gzip:    24.09 kB[22m[2m Γöé map:    246.57 kB[22m
+[2mdist/[22m[36massets/c4Diagram-YG6GDRKO-Dtkuv9NF.js            [39m[1m[2m   70.19 kB[22m[1m[22m[2m Γöé gzip:    20.48 kB[22m[2m Γöé map:    203.81 kB[22m
+[2mdist/[22m[36massets/blockDiagram-VD42YOAC-Cx3WQjma.js         [39m[1m[2m   71.85 kB[22m[1m[22m[2m Γöé gzip:    21.49 kB[22m[2m Γöé map:    247.00 kB[22m
+[2mdist/[22m[36massets/index-sQqE-wnG.js                         [39m[1m[2m   73.84 kB[22m[1m[22m[2m Γöé gzip:    26.60 kB[22m[2m Γöé map:    406.13 kB[22m
+[2mdist/[22m[36massets/cose-bilkent-S5V4N54A-Bql62UBw.js         [39m[1m[2m   81.77 kB[22m[1m[22m[2m Γöé gzip:    23.61 kB[22m[2m Γöé map:    305.20 kB[22m
+[2mdist/[22m[36massets/sequenceDiagram-WL72ISMW-DUpT3gbx.js      [39m[1m[2m   97.87 kB[22m[1m[22m[2m Γöé gzip:    27.98 kB[22m[2m Γöé map:    294.09 kB[22m
+[2mdist/[22m[36massets/proxy-DZEIkQbH.js                         [39m[1m[2m  122.57 kB[22m[1m[22m[2m Γöé gzip:    42.32 kB[22m[2m Γöé map:    698.26 kB[22m
+[2mdist/[22m[36massets/architectureDiagram-VXUJARFQ-CXHRj1pX.js  [39m[1m[2m  148.77 kB[22m[1m[22m[2m Γöé gzip:    44.06 kB[22m[2m Γöé map:    591.57 kB[22m
+[2mdist/[22m[36massets/VIVIMThread-CN9m4p0z.js                   [39m[1m[2m  336.61 kB[22m[1m[22m[2m Γöé gzip:    99.51 kB[22m[2m Γöé map:  2,038.53 kB[22m
+[2mdist/[22m[36massets/cytoscape.esm-R-qxz2fZ.js                 [39m[1m[2m  441.70 kB[22m[1m[22m[2m Γöé gzip:   147.46 kB[22m[2m Γöé map:  1,863.11 kB[22m
+[2mdist/[22m[36massets/treemap-GDKQZRPO-BdcZOa6B.js              [39m[1m[2m  452.94 kB[22m[1m[22m[2m Γöé gzip:   113.62 kB[22m[2m Γöé map:  1,798.62 kB[22m
+[2mdist/[22m[36massets/mermaid.core-EEYBF_9l.js                  [39m[1m[2m  491.72 kB[22m[1m[22m[2m Γöé gzip:   143.76 kB[22m[2m Γöé map:  1,695.79 kB[22m
+[2mdist/[22m[36massets/HomeAssistant-kkbM8VDz.js                 [39m[1m[33m  683.87 kB[39m[22m[2m Γöé gzip:   196.31 kB[22m[2m Γöé map:  2,654.13 kB[22m
+[2mdist/[22m[36massets/index-D6C-6ElJ.js                         [39m[1m[33m3,898.80 kB[39m[22m[2m Γöé gzip: 1,338.04 kB[22m[2m Γöé map: 13,792.45 kB[22m
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[32mΓ£ô built in 2m 16s[39m
+error during build:
+Error: 
+  Configure "workbox.maximumFileSizeToCacheInBytes" to change the limit: the default value is 2 MiB.
+  Check https://vite-pwa-org.netlify.app/guide/faq.html#missing-assets-from-sw-precache-manifest for more information.
+  Assets exceeding the limit:
+  - assets/index-D6C-6ElJ.js is 3.9 MB, and won't be precached.
+
+    at logWorkboxResult (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\vite-plugin-pwa@1.2.0+d51363fd897b6039\node_modules\vite-plugin-pwa\dist\chunk-G4TAN34B.js:44:17)
+    at generateServiceWorker (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\vite-plugin-pwa@1.2.0+d51363fd897b6039\node_modules\vite-plugin-pwa\dist\index.js:209:3)
+    at _generateSW (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\vite-plugin-pwa@1.2.0+d51363fd897b6039\node_modules\vite-plugin-pwa\dist\index.js:234:11)
+    at handler (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\vite-plugin-pwa@1.2.0+d51363fd897b6039\node_modules\vite-plugin-pwa\dist\index.js:427:19)
+    at processTicksAndRejections (native)
+error: script "build:vite" exited with code 1

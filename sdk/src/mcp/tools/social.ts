@@ -326,15 +326,22 @@ export const socialFriendsHandler: MCPToolHandler = async (
     const status = (params.status as 'following' | 'followers' | 'friends') || 'friends';
     
     if (status === 'following') {
-      friends = await socialNode.getFollowing(limit);
+      const identity = sdk.getIdentity();
+      friends = await socialNode.getFollowing(identity?.did || '');
+      friends = friends.map(did => ({ did, displayName: null, status: 'active' }));
     } else if (status === 'followers') {
-      friends = await socialNode.getFollowers(limit);
+      const identity = sdk.getIdentity();
+      friends = await socialNode.getFollowers(identity?.did || '');
+      friends = friends.map(did => ({ did, displayName: null, status: 'active' }));
     } else {
       // Friends - get both and intersect
-      const following = await socialNode.getFollowing(limit);
-      const followers = await socialNode.getFollowers(limit);
-      const followingIds = new Set(following.map(f => f.did));
-      friends = followers.filter(f => followingIds.has(f.did));
+      const identity = sdk.getIdentity();
+      const did = identity?.did || '';
+      const following = await socialNode.getFollowing(did);
+      const followers = await socialNode.getFollowers(did);
+      const followingIds = new Set(following);
+      const friendIds = followers.filter(f => followingIds.has(f));
+      friends = friendIds.map(did => ({ did, displayName: null, status: 'active' }));
     }
 
     return {

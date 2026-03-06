@@ -757,7 +757,11 @@ export class SharingPolicyNode implements SharingPolicyAPI {
       // Take intersection of permissions (most restrictive)
       for (const key of Object.keys(DEFAULT_PERMISSIONS)) {
         const k = key as keyof PermissionConfig;
-        merged.permissions[k] = merged.permissions[k] && policy.permissions[k];
+        if (typeof merged.permissions[k] === 'boolean') {
+          (merged.permissions as any)[k] = (merged.permissions[k] as boolean) && (policy.permissions[k] as boolean);
+        } else {
+          (merged.permissions as any)[k] = policy.permissions[k];
+        }
       }
 
       // Union of audiences

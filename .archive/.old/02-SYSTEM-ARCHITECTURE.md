@@ -3,163 +3,256 @@
 
 ---
 
-## Architecture Philosophy
-
-VIVIM follows an **offline-first, user-sovereign** architecture. The system treats the user's local device as the primary source of truth, with the centralized server acting as a sync/backup layer and the P2P network (LibP2P) as an optional decentralized transport.
+## High-Level Architecture
 
 ```
-┌─────────────────────────────────────────────────┐
-│                   PWA (React)                    │
-│  Zustand │ TanStack Query │ Dexie (IndexedDB)    │
-│          │ Yjs (CRDT) │ framer-motion            │
-└────────────────────┬────────────────────────────┘
-                     │ HTTP + WebSocket (Socket.IO)
-┌────────────────────▼────────────────────────────┐
-│              Backend (Bun + Express)             │
-│  Prisma │ PostgreSQL+pgvector │ Redis │ Socket.IO│
-│  Context Engine │ ACU Generator │ Librarian      │
-└────────────────────┬────────────────────────────┘
-                     │ (Future: LibP2P)
-┌────────────────────▼────────────────────────────┐
-│           P2P Network Layer (LibP2P)             │
-│  @vivim/network-engine │ Yjs CRDT │ GossipSub   │
-└─────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                    PWA (React 19 + Vite 7)             │
+│  Zustand │ TanStack Query │ Dexie (IndexedDB) │ Yjs    │
+│                  framer-motion │ TailwindCSS            │
+└────────────────────────┬────────────────────────────────┘
+              HTTP REST + WebSocket (Socket.IO)
+┌────────────────────────▼────────────────────────────────┐
+│             Backend (Bun + Express 5)                   │
+│  Prisma 7 │ PostgreSQL + pgvector │ Redis │ Socket.IO   │
+│  Context Engine │ ACU Generator │ Librarian Worker      │
+│  Playwright Extractors │ AI SDK │ Sync Service          │
+└────────────────────────┬────────────────────────────────┘
+              (Future) LibP2P P2P Network
+┌────────────────────────▼────────────────────────────────┐
+│           P2P Network Layer (@vivim/network-engine)     │
+│  LibP2P │ GossipSub │ Yjs CRDT │ Automerge (future)    │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## Frontend Architecture
 
-### Tech Stack
-- **Framework**: React 19 with Vite 7
-- **Routing**: react-router-dom v7 (file-based routes via `pwa/src/app/routes.tsx`)
-- **Styling**: TailwindCSS 4 + custom CSS files (Home.css, Capture.css)
-- **Animations**: framer-motion 12
-- **Icons**: lucide-react 0.575
+### Routing
+- File: `pwa/src/app/routes.tsx`
+- Library: `react-router-dom` v7
+
+| Route | Component | Notes |
+|-------|-----------|-------|
+| `/` | Home.tsx | Main feed + AI chat |
+| `/login` | Login.tsx | Google OAuth |
+| `/capture` | Capture.tsx | URL-based capture |
+| `/simple-capture` | CaptureSimple.tsx | Simplified flow |
+| `/conversation/:id` | ConversationView.tsx | Single conversation |
+| `/settings` | Settings.tsx | User & AI settings |
+| `/analytics` | Analytics.tsx | Usage insights |
+| `/bookmarks` | Bookmarks.tsx | Saved items |
+| `/search` | Search.tsx | Global search |
+| `/ai-conversations` | AIConversationsPage.tsx | AI chat list |
+| `/conversation/:id/share` | Share.tsx | Share dialog |
+| `/receive/:code` | Receive.tsx | Receive shared content |
+| `/account` | Account.tsx | Account management |
+| `/errors` | ErrorDashboard.tsx | Error tracking |
 
 ### State Management Layers
+
 | Layer | Tool | Purpose |
 |-------|------|---------|
-| Server state | TanStack Query 5 | All API fetching, caching, invalidation |
+| Server state | TanStack Query 5 | API fetching, background refetch, caching |
 | Global UI state | Zustand 5 | Auth, identity, sync status, settings |
 | Persistent offline state | Dexie 4 (IndexedDB) | Conversations, ACUs, context bundles |
-| CRDT sync state | Yjs + y-indexeddb | Real-time / offline-first data |
-| Real-time events | Socket.IO client | Server push, context updates |
+| CRDT real-time sync | Yjs + y-indexeddb | Offline-first collaborative data |
+| Real-time push | Socket.IO client | Server-push for context updates, sync |
 
-### Key Stores
-- `identity.store.ts` — DID, public key, authentication state
-- `settings.store.ts` — User preferences, context engine settings
-- `sync.store.ts` — Sync status, pending operations, conflicts
-- `ui.store.ts` — Global UI flags, modals, notifications
-- `useHomeUIStore.ts` — Home page filter/sort/view state
+### Zustand Stores
+| Store | File | Owns |
+|-------|------|------|
+| Identity | `identity.store.ts` | DID, public key, auth status |
+| Settings | `settings.store.ts` | User preferences, context engine settings |
+| Sync | `sync.store.ts` | Sync status, pending operations, conflicts |
+| UI | `ui.store.ts` | Global UI flags, modals, notifications |
+| Home UI | `useHomeUIStore.ts` | Home page filter/sort/view state |
+
+### TanStack Query Keys
+- `conversations:list` / `conversations:detail`
+- `memories:list`
+- `context:bundles`
+- `feed:personalized`
+- `user:profile`
+- `ai:settings`
+- `acus:search`
 
 ---
 
 ## Backend Architecture
 
-### Server Entry: `server/src/server.js`
-- Runtime: **Bun** (replaces Node.js)
-- HTTP Server: Express 5
-- WebSockets: Socket.IO 4.8 mounted on the same server
-- ORM: Prisma 7 with PostgreSQL adapter (`@prisma/adapter-pg`)
-
-### Database
-- **Primary**: PostgreSQL 15+ with `pgvector` extension
-  - Vector embeddings for semantic search (dimension: 384 or 1536)
-  - JSONB for structured metadata fields
-  - Full-text search via PostgreSQL native capabilities
-- **Schema**: `server/prisma/schema.prisma` (60+ models, 1997 lines)
-- **Migrations**: Applied via `bunx prisma migrate deploy`
-
-### Context Engine (8-Layer Architecture)
-The Context Engine assembles personalized system prompts from 6+ bundle types:
-
-| Layer | Bundle Type | Description |
-|-------|-------------|-------------|
-| L0 | `identity_core` | User's DID, name, persistent identity facts |
-| L1 | `global_prefs` | User preferences, language, behavior settings |
-| L2 | `topic` | Detected topic profiles (TopicProfile model) |
-| L3 | `entity` | Named entities tracked (EntityProfile model) |
-| L4 | `conversation` | Current conversation context |
-| L5 | `composite` | Pre-merged bundles from BundleCompiler |
-| L6 | JIT Memories | Just-in-time retrieved Memory records |
-| L7 | JIT ACUs | Semantically similar ACUs retrieved on-demand |
-
-**Key Files:**
-- `server/src/context/bundle-compiler.ts` — Compilation logic
-- `server/src/context/context-assembler.ts` — Assembly orchestration
-- `server/src/context/context-orchestrator.ts` — End-to-end orchestration
-- `server/src/context/budget-algorithm.ts` — Token budget distribution
-- `server/src/context/hybrid-retrieval.ts` — JIT retrieval from vector DB
-
-### AI Provider Integration
-Primary provider: **Z.AI** (via `ZAI_API_KEY`, `ZAI_BASE_URL`)
-
-| Provider | Package | Key Env Var |
-|----------|---------|-------------|
-| Z.AI (default) | Custom adapter | `ZAI_API_KEY` |
-| OpenAI | `@ai-sdk/openai` | `OPENAI_API_KEY` |
-| Anthropic | `@ai-sdk/anthropic` | `ANTHROPIC_API_KEY` |
-| Google | `@ai-sdk/google` | `GOOGLE_GENERATIVE_AI_KEY` |
-| xAI (Grok) | `@ai-sdk/xai` | `XAI_API_KEY` |
-
-### Capture Pipeline
+### Request Lifecycle
 ```
-POST /api/v1/capture
-  → extractor.js (orchestration)
-  → extractor-{provider}.js (Playwright scraping)
-  → storage-adapter.js (Prisma upsert)
-  → acu-generator.js (async ACU creation + embeddings + signing)
-  → librarian-worker.ts (memory extraction, 30min cooldown)
+HTTP Client
+  → Express Router (versioned: /api/v1, /api/v2, /api/admin)
+  → Middleware (auth, rate-limit, cors, logging)
+  → Route Handler
+  → Service Layer (business logic)
+  → Prisma ORM
+  → PostgreSQL
 ```
 
-Supported providers: ChatGPT, Claude, DeepSeek, Gemini, Grok, Kimi, Mistral, Qwen, Z.AI
+### Service Layer Map
+
+| Service | File | Responsibility |
+|---------|------|---------------|
+| Capture | `services/extractor.js` | Orchestrates Playwright extraction |
+| Storage Adapter | `services/storage-adapter.js` | Persists captured data via Prisma |
+| ACU Generator | `services/acu-generator.js` | Creates ACUs, generates embeddings, signs with Ed25519 |
+| ACU Memory Pipeline | `services/acu-memory-pipeline.ts` | Links ACUs to memory extraction |
+| Socket Service | `services/socket.ts` | WebSocket events, CRDT sync write-back |
+| Sync Service | `services/sync-service.js` | HLC-timestamped sync operations |
+| Queue Service | `services/queue-service.js` | In-memory job queue (p-queue, 5 concurrent) |
+| Sharing Policy | `services/sharing-policy-service.js` | Access control for shared content |
+| Sharing Intent | `services/sharing-intent-service.js` | Share link generation |
+| Identity Service | `services/identity-service.ts` | DID creation, device registration |
+| MFA Service | `services/mfa-service.js` | TOTP generation and verification |
+| Social Service | `services/social-service.ts` | Friends, follows, groups, teams |
+| Circle Service | `services/circle-service.js` | Circle CRUD and membership |
+| Portability Service | `services/portability-service.js` | Data export/import |
+| Feed Service | `services/feed-service.js` | Feed ranking and personalization |
+| Moderation Service | `services/moderation-service.js` | Content flagging and review |
+| Admin Network Service | `services/admin-network-service.js` | P2P network telemetry (STUBBED) |
+
+### Context Engine Architecture
+
+```
+User Request (chat message)
+  → ContextOrchestrator
+  → ContextAssembler
+      ├── identity_core bundle (vivim-identity-context.json)
+      ├── global_prefs bundle (user settings)
+      ├── topic bundles (TopicProfile model)
+      ├── entity bundles (EntityProfile model)
+      ├── conversation bundle (current thread)
+      └── composite bundle (BundleCompiler)
+  → BudgetAlgorithm (token allocation across layers)
+  → HybridRetrieval (JIT: ACUs + Memories via pgvector)
+  → BundleCompiler → compiledPrompt + tokenCount
+  → AI SDK (streaming response)
+```
+
+Key files:
+- `context/bundle-compiler.ts` — Final compilation
+- `context/context-assembler.ts` — Bundle assembly
+- `context/context-orchestrator.ts` — Top-level orchestration
+- `context/budget-algorithm.ts` — Token budget distribution
+- `context/hybrid-retrieval.ts` — pgvector similarity search
+- `context/query-optimizer.ts` — Query optimization
+- `context/prefetch-engine.ts` — Prefetch for fast first response
+- `context/context-thermodynamics.ts` — Adaptive budget tuning
+- `context/librarian-worker.ts` — Cron: memory extraction (30min cooldown)
 
 ---
 
-## P2P / CRDT Layer
+## Database Architecture
 
-**Status**: Infrastructure present, not fully operational.
+### PostgreSQL Schema Highlights
+- **Total Models**: 60+ in `server/prisma/schema.prisma` (1,997 lines)
+- **Extension**: `pgvector` for float[] vector similarity search
+- **Key Models**: User, Conversation, Message, AtomicChatUnit, Memory, Circle, ContextBundle, Notebook, SharingPolicy, SharingIntent
 
-- **LibP2P**: `@vivim/network-engine` package
-- **Listen addresses**: `/ip4/0.0.0.0/tcp/4001`, `/ip4/0.0.0.0/tcp/4002/ws`
-- **CRDT**: Yjs (`Y.Doc`, `Y.Map`, `Y.Array`, `Y.Text`) with y-websocket transport
-- **Automerge**: Installed, not actively used
-- **GossipSub**: Planned for P2P message propagation
+### Multiple Schema Files (Phase-Based)
+| File | Purpose |
+|------|---------|
+| `schema.prisma` | **CANONICAL** — current consolidated schema |
+| `schema-extended.prisma` | Extended version |
+| `schema-phase2-circles.prisma` | Phase 2 additions |
+| `schema-phase3-sharing.prisma` | Phase 3 additions |
+| `schema-phase4-discovery.prisma` | Phase 4 additions |
+| `schema-phase5-portability.prisma` | Phase 5 additions |
+
+**Note**: Only `schema.prisma` should be used going forward. Others are historical.
+
+### Applied Migrations
+| Migration | Date |
+|-----------|------|
+| `20260211045216_initial_schema` | 2026-02-11 |
+| `20260211073604_add_context_models` | 2026-02-11 |
 
 ---
 
 ## Security Architecture
 
-### Cryptography Stack
-| Operation | Algorithm |
-|-----------|-----------|
-| Key exchange | ML-KEM-1024 (Kyber — quantum-resistant) |
-| Message signing | Ed25519 |
-| Symmetric encryption | AES-GCM |
-| Identity | DID:key with Ed25519 |
+### Auth Flow
+1. **Google OAuth** → Passport.js → Express session → JWT cookie
+2. **DID Auth** → Ed25519 keypair generated client-side → registered server-side → `authenticateDID` middleware
+3. **API Keys** → Hashed with SHA-256, stored as `keyHash`, passed via `X-API-Key` header
+4. **Admin Auth** → `requireAdminAuth` middleware (role check + IP allowlist)
+5. **2FA** → TOTP via `otplib`, QR code via `qrcode`, 10 backup codes
 
-### Authentication Layers
-1. **Google OAuth** — via Passport.js (`passport-google-oauth20`)
-2. **JWT** — Session tokens, stored in HTTP-only cookies
-3. **DID Auth** — Decentralized identity verification
-4. **API Keys** — Hashed keys for server-to-server and SDK usage
-5. **2FA (TOTP)** — via `otplib` with QR code generation
+### Middleware Auth Map
+| Route Prefix | Auth Type |
+|-------------|-----------|
+| `/api/v1/account/*` | JWT (`requireAuth`) |
+| `/api/v1/conversations/*` | JWT (`requireAuth`) |
+| `/api/v1/acus/*` | Optional JWT |
+| `/api/v1/memory/*` | DID (`authenticateDID`) |
+| `/api/v2/context/*` | DID or None |
+| `/api/v2/circles/*` | DID |
+| `/api/v2/social/*` | DID |
+| `/api/v2/sharing/*` | DID |
+| `/api/v2/moderation/*` | Moderator role |
+| `/api/admin/*` | Admin role |
+
+### Crypto Stack
+| Operation | Algorithm | Status |
+|-----------|-----------|--------|
+| Key exchange | ML-KEM-1024 (Kyber) | ✅ Implemented |
+| Message signing | Ed25519 | ✅ Implemented |
+| Symmetric encryption | AES-GCM | ✅ Implemented |
+| Post-quantum signing | CRYSTALS-Dilithium | ⚠️ Stubbed (WASM needed) |
 
 ---
 
-## Deployment Configuration
+## Real-Time Architecture (Socket.IO)
 
-```
-# Vercel (PWA)
-vercel.json — configured
+### Server-Side Events (`server/src/services/socket.ts`)
+| Event | Direction | Handler |
+|-------|-----------|---------|
+| `connection` | Inbound | JWT auth, room join |
+| `disconnect` | Inbound | Cleanup |
+| `context:update` | Bidirectional | Context bundle refresh |
+| `sync:request` | Inbound | CRDT sync initiation |
+| `sync:response` | Outbound | CRDT sync data |
+| `sync:push` | Inbound | **Write-back to Postgres** (✅ Fixed) |
 
-# Docker (Server)
-docker-compose.yml — PostgreSQL + Server
+### Client-Side Listener (`pwa/src/components/GlobalSocketListener.tsx`)
+- Subscribes to: `connection`, `context:update`, `sync:response`
+- Integrated into app root
 
-# CI/CD
-server/.github/ — Basic GitHub Actions workflows
-```
+---
 
-**Production Readiness**: NOT PRODUCTION READY
-- Missing: Proper secrets, rate limiting enforcement, CDN, email service, DB backup strategy, load balancing
+## P2P Network Layer (Future)
+
+**Package**: `@vivim/network-engine`
+
+- **Status**: Infrastructure ready, NOT operational (no bootstrap peers configured)
+- **Protocol**: LibP2P
+- **Listen**: `/ip4/0.0.0.0/tcp/4001`, `/ip4/0.0.0.0/tcp/4002/ws`
+- **Messaging**: GossipSub (planned)
+- **CRDT Transport**: Yjs over y-websocket (active), y-indexeddb (offline persistence)
+- **Bootstrap Peers**: `P2P_BOOTSTRAP_PEERS` env var — currently empty
+
+---
+
+## Deployment
+
+| Component | Platform | Config |
+|-----------|---------|--------|
+| PWA | Vercel | `vercel.json` |
+| Server | Docker / Any Node host | `docker-compose.yml` |
+| Database | PostgreSQL (managed or self-hosted) | `DATABASE_URL` |
+| Redis | Optional | `REDIS_URL` |
+| CI/CD | GitHub Actions | `server/.github/` |
+
+**Production Gate Items** (must fix before going live):
+1. Rotate `SESSION_SECRET`, `JWT_SECRET`, `ZAI_API_KEY`
+2. Configure `CORS_ORIGINS` to production domains only
+3. Enable `DATABASE_SSL_REQUIRED=true`
+4. Set `P2P_BOOTSTRAP_PEERS` for P2P functionality
+5. Enforce rate limiting across all endpoints
+6. Set up monitoring/alerting (Sentry DSN)
+7. Configure automated database backups
+8. Set up CDN for static assets

@@ -157,9 +157,11 @@ export function hasPermission(req, requiredPermissions = []) {
 // DID-BASED AUTHENTICATION (Phase 1)
 // ============================================================================
 
-import { verify } from 'tweetnacl';
-import { decodeBase64 } from 'tweetnacl-util';
-import { identityService } from '../services/identity-service.js';
+import nacl from 'tweetnacl';
+const { verify } = nacl;
+import naclUtil from 'tweetnacl-util';
+const { decodeBase64 } = naclUtil;
+import { identityService } from '../services/identity-service.ts';
 import { getUserDbPath, getUserClient } from '../lib/user-database-manager.js';
 
 /**

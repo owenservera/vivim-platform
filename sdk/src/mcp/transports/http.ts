@@ -29,7 +29,6 @@ export class HTTPTransport extends BaseTransport {
   
   private server?: http.Server;
   private client?: http.Agent;
-  private connections: Map<string, HTTPConnection> = new Map();
   private pendingRequests: Map<string, {
     resolve: (value: SendResult) => void;
     reject: (error: Error) => void;
@@ -142,7 +141,7 @@ export class HTTPTransport extends BaseTransport {
         this.messageHandler(message as JSONRPCRequest);
         
         // For notifications, just acknowledge
-        if (message.id === null || message.id === undefined) {
+        if (!('id' in message) || message.id === null || message.id === undefined) {
           res.writeHead(202);
           res.end();
           return;
@@ -150,13 +149,15 @@ export class HTTPTransport extends BaseTransport {
         
         // For requests, we need to wait for response
         // In synchronous mode, send empty response (client will poll or use SSE)
+        const id = 'id' in message ? message.id : null;
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ jsonrpc: '2.0', id: message.id }));
+        res.end(JSON.stringify({ jsonrpc: '2.0', id }));
       } catch (error) {
         res.writeHead(500, { 'Content-Type': 'application/json' });
+        const id = 'id' in message ? message.id : null;
         res.end(JSON.stringify({
           jsonrpc: '2.0',
-          id: message.id ?? null,
+          id: id ?? null,
           error: { code: -32603, message: 'Internal error' }
         }));
       }
@@ -222,22 +223,26 @@ export class HTTPTransport extends BaseTransport {
     }
   }
   
-  async send(message: TransportMessage): Promise<SendResult> {
+  // @ts-ignore - Dual transport implementation
+  async send(message: TransportMessage | JSONRPCResponse | JSONRPCNotification): Promise<SendResult | void> {
     try {
+      const isJsonRpc = 'jsonrpc' in message;
       // Convert transport message to JSON-RPC
-      const jsonRpc = this.messageToJSONRPC(message);
+      const jsonRpc = isJsonRpc ? (message as any) : this.messageToJSONRPC(message as TransportMessage);
       
       const response = await this.sendHTTPRequest(jsonRpc);
       
+      if (isJsonRpc) return;
       return {
         success: true,
-        messageId: message.id,
+        messageId: (message as TransportMessage).id,
         deliveredAt: Date.now(),
       };
     } catch (error) {
+      if ('jsonrpc' in message) return;
       return {
         success: false,
-        messageId: message.id,
+        messageId: (message as TransportMessage).id,
         error: error as Error,
       };
     }
@@ -326,10 +331,12 @@ export class HTTPTransport extends BaseTransport {
   }
 }
 
+import { EventEmitter } from 'node:events';
+
 /**
  * HTTP Connection implementation
  */
-class HTTPConnection implements TransportConnection {
+class HTTPConnection extends EventEmitter implements TransportConnection {
   readonly peerId: PeerId;
   readonly remoteAddress: string;
   readonly localAddress: string;
@@ -343,6 +350,7 @@ class HTTPConnection implements TransportConnection {
     port: number,
     agent?: http.Agent
   ) {
+    super();
     this.peerId = peerId;
     this.remoteAddress = `http://${host}:${port}`;
     this.localAddress = `http://localhost:${port}`;
@@ -365,11 +373,15 @@ class HTTPConnection implements TransportConnection {
   
   async close(): Promise<void> {
     this._state = 'disconnected';
+    this.emit('state', 'disconnected');
     this.stream?.close();
   }
   
   setState(state: ConnectionState): void {
-    this._state = state;
+    if (this._state !== state) {
+      this._state = state;
+      this.emit('state', state);
+    }
   }
 }
 

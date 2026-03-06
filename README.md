@@ -119,6 +119,7 @@ vivim-app/
 - [Bun](https://bun.sh) >= 1.0.0
 - [Node.js](https://nodejs.org) >= 20.0.0
 - [Git](https://git-scm.com)
+- [PostgreSQL](https://www.postgresql.org) >= 14 (for server database)
 
 ### Installation
 
@@ -134,18 +135,47 @@ bun run setup:deps
 bun run setup:db
 ```
 
+### Environment Setup
+
+```bash
+# Create .env files for each sub-package (copy from .env.example)
+cp server/.env.example server/.env
+cp pwa/.env.example pwa/.env
+cp network/.env.example network/.env
+cp admin-panel/.env.example admin-panel/.env
+
+# Optional: Create root .env for reference
+cp .env.example .env
+```
+
+**Configuration Notes:**
+- Default values work for local development
+- Update `server/.env` with your database URL and secrets for production
+- Each service has isolated configuration - no overlapping settings
+
 ### Development
 
 ```bash
-# Run all services concurrently
+# Run all core services concurrently (PWA, Server, Network, Admin)
 bun run dev
 
-# Or run individual services
-bun run dev:pwa        # PWA frontend
-bun run dev:server     # API server
-bun run dev:network    # Network engine
-bun run dev:admin      # Admin panel
+# Run individual services
+bun run dev:pwa        # PWA frontend (http://localhost:5173)
+bun run dev:server     # API server (http://localhost:3000)
+bun run dev:network    # Network engine (ws://localhost:1235)
+bun run dev:admin      # Admin panel (http://localhost:5174)
+
+# Run with debug logging
+bun run dev:debug
 ```
+
+**Service Ports:**
+| Service | Port | URL |
+|---------|------|-----|
+| PWA | 5173 | http://localhost:5173 |
+| Admin Panel | 5174 | http://localhost:5174 |
+| API Server | 3000 | http://localhost:3000 |
+| Network WS | 1235 | ws://localhost:1235 |
 
 ### Build
 

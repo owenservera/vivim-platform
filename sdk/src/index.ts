@@ -1,86 +1,51 @@
 /**
- * VIVIM SDK
+ * VIVIM SDK - Distributed Social AI Network
  * 
- * Open-Source E2E Self-Contained Toolkit for Decentralized Applications
- * 
- * @packageDocumentation
+ * Main entry point for the VIVIM SDK.
  */
-
-// Main SDK
-export { VivimSDK } from './core/sdk.js';
 
 // Core types and constants
 export * from './core/index.js';
 
+// Main SDK
+export { VivimSDK } from './core/sdk.js';
+
+// Resolve ambiguities by explicitly re-exporting conflicting names from core
+export { 
+  TrustLevel, 
+  ValidationResult, 
+  MessageDirection, 
+  MessagePriority,
+  MessageEnvelope,
+  MessageFlags,
+  Timestamp,
+  PROTOCOL_VERSION
+} from './core/index.js';
+
+// Resolve Cache-related ambiguities from utils
+export {
+  CacheConfig,
+  CacheEntry,
+  createCache
+} from './utils/index.js';
+
 // Nodes
 export * from './nodes/index.js';
 
-// Graph
-export * from './graph/index.js';
+// Protocols
+export * from './protocols/index.js';
 
-// Registry
-export * from './registry/index.js';
-
-// Extension
-export * from './extension/index.js';
-
-// Apps
-export * from './apps/ai-documentation/index.js';
-export * from './apps/ai-git/index.js';
-export * from './apps/crypto-engine/index.js';
-export * from './apps/acu-processor/index.js';
-export * from './apps/omni-feed/index.js';
-export * from './apps/circle-engine/index.js';
-export * from './apps/assistant-engine/index.js';
-export * from './apps/tool-engine/index.js';
-export * from './apps/public-dashboard/index.js';
-export * from './apps/publishing-agent/index.js';
-export * from './apps/roadmap-engine/index.js';
+// Skills
+export * from './skills/index.js';
 
 // Utilities
 export * from './utils/index.js';
 
-// Protocols (Exit Node, Sync, Chat, Storage)
-export * from './protocols/index.js';
+// Apps
+export * from './apps/index.js';
 
-// Assistant & Tool UI standard types
-export * from './core/assistant.js';
-export { VivimAssistantRuntime } from './core/assistant-runtime.js';
-export * from './extension/assistant-ui-adapter.js';
+// Extension
+export * from './extension/index.js';
 
-// Re-export commonly used types
-export type {
-  Identity,
-  VivimSDKConfig,
-  APINodeDefinition,
-  NodeInfo,
-  SDKEventMap,
-
-  // Wallet types
-  SmartWallet,
-  SmartWalletConfig,
-  UserOperation,
-  Call,
-  FeeQuote,
-  SessionKey,
-  RecoveryConfig,
-  LinkedAccount,
-  VivimUserID,
-  WalletType,
-  SmartAccountType,
-  WalletEventMap,
-  CreateWalletOptions,
-  WalletServiceConfig,
-} from './core/index.js';
-
-// Version
-export const SDK_VERSION = '1.0.0';
-
-// MCP Server for AI Agent Integration
+// MCP
 export * from './mcp/index.js';
-
-// Skills for AI Agent Workflows
-export * from './skills/index.js';
-
-// Token Infrastructure for Tokenization Platform
-export * from './tokens/index.js';

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { VivimChainClient, DistributedContentClient } from '@vivim/network-engine';
+import { VivimChainClient, DistributedContentClient } from '../lib/network-mocks';
 import { getChainClient } from '../lib/chain-client';
 import { getContentClient } from '../lib/content-client';
 import { logger } from '../lib/logger';

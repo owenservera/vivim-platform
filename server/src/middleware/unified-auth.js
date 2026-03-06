@@ -4,7 +4,7 @@
  */
 
 import passport from './google-auth.js';
-import { identityService } from '../services/identity-service.js';
+import { identityService } from '../services/identity-service.ts';
 import { canUserAccess } from '../services/account-lifecycle-service.js';
 import { apiKeyService } from '../services/api-key-service.js';
 import jwt from 'jsonwebtoken';

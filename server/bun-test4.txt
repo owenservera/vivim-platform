@@ -1,0 +1,152 @@
+Imported logger
+Imported config
+Imported terminalIntelligence
+Imported errorHandler
+Imported database
+
+Importing ./routes/capture.js...
+[32mINFO[39m [2026-03-05 21:23:12.725 +0100]: [36mPrisma client initialized with enhanced observability[39m
+Success: ./routes/capture.js loaded ok
+
+Importing ./routes/health.js...
+Success: ./routes/health.js loaded ok
+
+Importing ./routes/conversations.js...
+Success: ./routes/conversations.js loaded ok
+
+Importing ./routes/logs.js...
+Success: ./routes/logs.js loaded ok
+
+Importing ./routes/identity.js...
+[33mWARN[39m [2026-03-05 21:23:15.276 +0100]: [36mRedis connection failed, using in-memory cache fallback[39m
+    error: ""
+Success: ./routes/identity.js loaded ok
+
+Importing ./routes/acus.js...
+Success: ./routes/acus.js loaded ok
+
+Importing ./routes/sync.js...
+Success: ./routes/sync.js loaded ok
+
+Importing ./routes/feed.js...
+Success: ./routes/feed.js loaded ok
+
+Importing ./routes/ai.js...
+Success: ./routes/ai.js loaded ok
+
+Importing ./routes/ai-chat.js...
+[32mINFO[39m [2026-03-05 21:23:15.725 +0100]: [36mUsing Z.AI LLM service with glm-4.7-flash[39m
+[32mINFO[39m [2026-03-05 21:23:15.729 +0100]: [36mUsing Z.AI embedding service with glm-4.7-flash[39m
+[32mINFO[39m [2026-03-05 21:23:15.730 +0100]: [36mLibrarian Worker initialized[39m
+    [35menabled[39m: true
+    [35mbatchSize[39m: 20
+    [35mcooldownMinutes[39m: 30
+Success: ./routes/ai-chat.js loaded ok
+
+Importing ./routes/ai-settings.js...
+Success: ./routes/ai-settings.js loaded ok
+
+Importing ./routes/omni.js...
+Success: ./routes/omni.js loaded ok
+
+Importing ./routes/zai-mcp.js...
+Success: ./routes/zai-mcp.js loaded ok
+
+Importing ./routes/context-settings.ts...
+Success: ./routes/context-settings.ts loaded ok
+
+Importing ./routes/errors.js...
+Success: ./routes/errors.js loaded ok
+
+Importing ./docs/swagger.js...
+Success: ./docs/swagger.js loaded ok
+
+Importing ./lib/logBroadcaster.js...
+Success: ./lib/logBroadcaster.js loaded ok
+
+Importing ./routes/identity-v2.js...
+Success: ./routes/identity-v2.js loaded ok
+
+Importing ./routes/circles.js...
+Success: ./routes/circles.js loaded ok
+
+Importing ./routes/sharing.js...
+Success: ./routes/sharing.js loaded ok
+
+Importing ./routes/feed-v2.js...
+Success: ./routes/feed-v2.js loaded ok
+
+Importing ./routes/feed-analytics.ts...
+Success: ./routes/feed-analytics.ts loaded ok
+
+Importing ./routes/unified-api.js...
+Success: ./routes/unified-api.js loaded ok
+
+Importing ./routes/portability.js...
+Success: ./routes/portability.js loaded ok
+
+Importing ./routes/auth.js...
+Success: ./routes/auth.js loaded ok
+
+Importing ./routes/account.js...
+Success: ./routes/account.js loaded ok
+
+Importing ./routes/context-v2.js...
+Success: ./routes/context-v2.js loaded ok
+
+Importing ./routes/memory.js...
+Success: ./routes/memory.js loaded ok
+
+Importing ./routes/memory-search.js...
+[32mINFO[39m [2026-03-05 21:23:16.222 +0100]: [36mUsing Z.AI embedding service with glm-4.7-flash[39m
+[32mINFO[39m [2026-03-05 21:23:16.223 +0100]: [36mUsing Z.AI LLM service with glm-4.7-flash[39m
+Success: ./routes/memory-search.js loaded ok
+
+Importing ./routes/context-recipes.js...
+[33mWARN[39m [2026-03-05 21:23:16.298 +0100]: [36mOpenAI API Key not configured. AI features disabled.[39m
+Success: ./routes/context-recipes.js loaded ok
+
+Importing ./routes/debug.js...
+Success: ./routes/debug.js loaded ok
+
+Importing ./routes/collections.js...
+Success: ./routes/collections.js loaded ok
+
+Importing ./routes/social.js...
+Success: ./routes/social.js loaded ok
+
+Importing ./routes/moderation.js...
+Success: ./routes/moderation.js loaded ok
+
+Importing ./routes/integrations.ts...
+Success: ./routes/integrations.ts loaded ok
+
+Importing ./routes/admin/network.js...
+[32mINFO[39m [2026-03-05 21:23:16.331 +0100]: [36mUsing Z.AI embedding service with glm-4.7-flash[39m
+Success: ./routes/admin/network.js loaded ok
+
+Importing ./routes/admin/database.js...
+Success: ./routes/admin/database.js loaded ok
+
+Importing ./routes/admin/system.js...
+Success: ./routes/admin/system.js loaded ok
+
+Importing ./routes/admin/crdt.js...
+Success: ./routes/admin/crdt.js loaded ok
+
+Importing ./routes/admin/pubsub.js...
+Success: ./routes/admin/pubsub.js loaded ok
+
+Importing ./routes/admin/dataflow.js...
+Success: ./routes/admin/dataflow.js loaded ok
+
+Importing ./routes/context-engine.ts...
+Success: ./routes/context-engine.ts loaded ok
+
+Importing ./routes/doc-search.ts...
+Success: ./routes/doc-search.ts loaded ok
+
+Importing ./services/context-startup.ts...
+Success: ./services/context-startup.ts loaded ok
+
+All dynamic imports finished successfully.

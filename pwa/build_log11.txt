@@ -1,0 +1,55 @@
+$ bun --bun vite build
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[plugin vite:resolve] Module "net" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/express@4.22.1/node_modules/express/lib/request.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "http" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/express@4.22.1/node_modules/express/lib/request.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "http" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/express@4.22.1/node_modules/express/lib/response.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "querystring" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/body-parser@1.20.4/node_modules/body-parser/lib/types/urlencoded.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "fs" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/send@0.19.2/node_modules/send/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "async_hooks" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/on-finished@2.4.1/node_modules/on-finished/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "querystring" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/express@4.22.1/node_modules/express/lib/utils.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "zlib" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/body-parser@1.20.4/node_modules/body-parser/lib/read.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "fs" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/destroy@1.2.0/node_modules/destroy/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "zlib" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/destroy@1.2.0/node_modules/destroy/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "fs" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/etag@1.8.1/node_modules/etag/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "vm" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/asn1.js@4.10.1/node_modules/asn1.js/lib/asn1/api.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "http" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/express@4.22.1/node_modules/express/lib/application.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "async_hooks" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/raw-body@2.5.3/node_modules/raw-body/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "fs" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/express@4.22.1/node_modules/express/lib/view.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "fs" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/mime@1.6.0/node_modules/mime/mime.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "bun" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/apps/ai-git/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "fs/promises" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/apps/ai-git/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "fs/promises" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/core/self-design.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "child_process" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/core/self-design.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "bun" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/apps/publishing-agent/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "node:http" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/mcp/transports/http.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+../sdk/dist/core/self-design.js (284:17): "mkdir" is not exported by "__vite-browser-external", imported by "../sdk/dist/core/self-design.js".
+../sdk/dist/core/self-design.js (289:21): "mkdir" is not exported by "__vite-browser-external", imported by "../sdk/dist/core/self-design.js".
+../sdk/dist/core/self-design.js (290:21): "writeFile" is not exported by "__vite-browser-external", imported by "../sdk/dist/core/self-design.js".
+../sdk/dist/core/self-design.js (345:21): "rm" is not exported by "__vite-browser-external", imported by "../sdk/dist/core/self-design.js".
+[32mΓ£ô[39m 7750 modules transformed.
+Γ£ù Build failed in 1m 1s
+error during build:
+[vite-plugin-pwa:build] There was an error during the build:
+  ../sdk/dist/core/self-design.js (11:9): "execSync" is not exported by "__vite-browser-external", imported by "../sdk/dist/core/self-design.js".
+Additionally, handling the error in the 'buildEnd' hook caused the following error:
+  ../sdk/dist/core/self-design.js (11:9): "execSync" is not exported by "__vite-browser-external", imported by "../sdk/dist/core/self-design.js".
+file: C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/core/self-design.js:11:9
+
+ 9: import * as fs from 'fs/promises';
+10: import * as path from 'path';
+11: import { execSync } from 'child_process';
+             ^
+12: /**
+13:  * Self-Design Module
+
+    at getRollupError (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\rollup@4.59.0\node_modules\rollup\dist\es\shared\parseAst.js:402:45)
+    at <anonymous> (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\rollup@4.59.0\node_modules\rollup\dist\es\shared\node-entry.js:23467:39)
+    at async catchUnfinishedHookActions (unknown)
+    at async rollupInternal (unknown)
+    at async buildEnvironment (unknown)
+    at async build (unknown)
+    at async buildApp (unknown)
+    at unknown
+    at processTicksAndRejections (native:7:39)
+error: script "build:vite" exited with code 1

@@ -38,10 +38,50 @@ export type {
 } from './sync.js';
 
 // Chat Protocol (assistant-ui-VIVIM patterns)
-export * from './chat/index.js';
+export {
+  createMessage,
+  extractTextContent,
+  extractToolCalls,
+  validateMessage,
+  serializeMessage,
+  deserializeMessage,
+} from './chat/index.js';
+
+export type {
+  VivimMessage,
+  VivimMessageType,
+  ContentBlock,
+  ContentBlockType,
+  BaseContentBlock,
+  TextContentBlock,
+  ImageContentBlock,
+  ToolCallContentBlock,
+  ToolResultContentBlock,
+  ThinkingContentBlock,
+  CodeContentBlock,
+  ResourceContentBlock,
+  ResourceLinkContentBlock,
+  MessageMetadata,
+  MessageEnvelopeHeader,
+  // MessagePriority, // Use core
+  // MessageRole, // Use core
+  // MessageDirection, // Use core
+  // ToolApprovalStatus, // Use core
+} from './chat/index.js';
 
 // Storage Protocol (distributed storage)
-export * from './storage/index.js';
+export {
+  DistributedConversationStorage,
+  IPFSStorage,
+  createDistributedStorage,
+  createIPFSStorage,
+} from './storage/index.js';
+
+export type {
+  IPFSStorageConfig,
+  ACUData,
+  QueuedMessage as StorageQueuedMessage,
+} from './storage/index.js';
 
 // ActivityPub Protocol (W3C federation standard)
 export {

@@ -154,6 +154,7 @@ export class ChunkedTransfer extends EventEmitter {
       createdAt: Date.now(),
       expiresAt: Date.now() + this.sessionTimeout,
       data: content,
+      chunks: new Map(),
       chunkSize: this.defaultChunkSize,
     };
     
@@ -405,7 +406,7 @@ export class ChunkedTransfer extends EventEmitter {
    * Compute content CID (simplified - would use proper IPFS-style hashing)
    */
   private async computeCID(data: Uint8Array): Promise<string> {
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data as any);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     return `sha256-${hashHex.substring(0, 32)}`;

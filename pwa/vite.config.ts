@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import { consoleForwardPlugin } from 'vite-console-forward-plugin'
 import * as path from 'path'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 const isVerbose = process.env.VITE_DEBUG === 'true';
@@ -104,10 +105,35 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    // Plugin to suppress expected proxy errors during server startup
+    {
+      name: 'suppress-proxy-errors',
+      configureServer(server) {
+        const originalError = server.config.logger.error;
+        
+        // Wrap logger to suppress expected proxy errors
+        server.config.logger.error = (msg, options) => {
+          const msgStr = typeof msg === 'string' ? msg : String(msg);
+          // Suppress ECONNREFUSED errors during startup (expected)
+          if (msgStr.includes('ECONNREFUSED') || msgStr.includes('http proxy error')) {
+            return; // Suppress
+          }
+          originalError(msg, options);
+        };
+      }
+    },
     consoleForwardPlugin({
       enabled: isDevelopment || isCI,
       endpoint: '/api/debug/client-logs',
       levels: getConsoleLevels(),
+    }),
+    nodePolyfills({
+      include: ['events', 'crypto', 'stream', 'buffer', 'util', 'path'],
+      globals: {
+        Buffer: true,
+        global: true,
+        process: true,
+      },
     }),
     VitePWA({
       registerType: 'autoUpdate',
@@ -211,7 +237,7 @@ export default defineConfig({
         ]
       },
       devOptions: {
-        enabled: true
+        enabled: false
       }
     }),
     {
@@ -310,7 +336,7 @@ export default defineConfig({
     noExternal: ['@vitejs/plugin-react', 'vite-plugin-pwa']
   },
   optimizeDeps: {
-    include: ['@testing-library/react', '@testing-library/jest-dom', 'katex', 'mermaid']
+    include: ['@testing-library/react', '@testing-library/jest-dom', 'katex', 'mermaid', 'immer', 'zustand']
   },
   server: {
     port: 5173,
@@ -323,6 +349,8 @@ export default defineConfig({
         target: 'http://localhost:3000',
         changeOrigin: true,
         ws: true,
+        // Add timeout and error handling for server startup delay
+        timeout: 30000, // 30 second timeout
         configure: (proxy, _options) => {
             proxy.on('proxyReq', (proxyReq, req) => {
               if (req.headers.cookie) {
@@ -332,7 +360,7 @@ export default defineConfig({
             proxy.on('proxyRes', (proxyRes) => {
               const cookies = proxyRes.headers['set-cookie'];
               if (cookies) {
-                proxyRes.headers['set-cookie'] = cookies.map((cookie: string) => 
+                proxyRes.headers['set-cookie'] = cookies.map((cookie: string) =>
                   cookie.replace(/; Secure/, '; Secure').replace(/; SameSite=None/, '; SameSite=Lax')
                 );
               }

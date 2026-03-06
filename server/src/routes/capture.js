@@ -8,6 +8,7 @@
 import { Router } from 'express';
 import PQueue from 'p-queue';
 import { createRequestLogger } from '../lib/logger.js';
+import terminalIntelligence from '../lib/terminal-intelligence.js';
 import { ValidationError } from '../middleware/errorHandler.js';
 import { validateRequest, captureRequestSchema, bulkCaptureRequestSchema, syncInitSchema } from '../validators/schemas.js';
 import { extractConversation, detectProvider } from '../services/extractor.js';
@@ -260,6 +261,16 @@ router.post('/capture', async (req, res, next) => {
         MAX_BACKOFF_MS
       );
 
+      // Print AI extraction visualization
+      const extractionDuration = Date.now() - extractionStartTime;
+      const messageCount = conversation?.messages?.length || 0;
+      terminalIntelligence.printAIVisualization(
+        'Extraction Engine',
+        `Capture: ${url.slice(0, 50)}...`,
+        messageCount,
+        extractionDuration
+      );
+
       debugReporter.trackExtraction(
         provider,
         url,
@@ -279,12 +290,13 @@ router.post('/capture', async (req, res, next) => {
       );
     } catch (extractError) {
       log.warn({ error: extractError.message }, 'Failed during extraction');
+      terminalIntelligence.printErrorVisualization(extractError, {
+        operation: 'extractConversation',
+        url,
+        provider,
+      });
       throw extractError;
     }
-
-    console.log(
-      `✅ [EXTRACTION COMPLETE] Retrieved ${conversation?.messages?.length || 0} messages`
-    );
 
     // Ensure ownerId is set - look up user from DID if needed
     let validUserId = req.userId || req.user?.userId;

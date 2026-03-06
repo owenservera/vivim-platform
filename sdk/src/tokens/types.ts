@@ -475,15 +475,15 @@ export interface TokenEconomics {
  * Token event types
  */
 export interface TokenEventMap {
-  'token:minted': { tokenId: bigint; owner: string; amount: bigint };
-  'token:transferred': { tokenId: bigint; from: string; to: string; amount: bigint };
-  'token:burned': { tokenId: bigint; from: string; amount: bigint };
-  'token:approved': { owner: string; spender: string; amount: bigint };
+  'token:minted': { tokenId: bigint; owner: string; amount: bigint; timestamp: number };
+  'token:transferred': { tokenId: bigint; from: string; to: string; amount: bigint; timestamp: number };
+  'token:burned': { tokenId: bigint; from: string; amount: bigint; timestamp: number };
+  'token:approved': { owner: string; spender: string; amount: bigint; timestamp: number };
   'token:paused': { tokenId: bigint };
   'token:unpaused': { tokenId: bigint };
   'token:frozen': { tokenId: bigint; account: string };
   'token:unfrozen': { tokenId: bigint; account: string };
-  'token:slashed': { tokenId: bigint; account: string; amount: bigint; reason: string };
+  'token:slashed': { tokenId: bigint; account: string; amount: bigint; reason: string; timestamp: number };
 }
 
 // ============================================

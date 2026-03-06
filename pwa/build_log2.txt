@@ -1,0 +1,26 @@
+$ bun --bun vite build
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 5 modules transformed.
+Γ£ù Build failed in 1.80s
+error during build:
+[vite-plugin-pwa:build] [plugin vite-plugin-pwa:build] There was an error during the build:
+  [vite]: Rollup failed to resolve import "vite-plugin-node-polyfills/shims/process" from "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/common/error-reporting.js".
+This is most likely unintended because it can break your application at runtime.
+If you do want to externalize this module explicitly add it to
+`build.rollupOptions.external`
+Additionally, handling the error in the 'buildEnd' hook caused the following error:
+  [vite]: Rollup failed to resolve import "vite-plugin-node-polyfills/shims/process" from "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/common/error-reporting.js".
+This is most likely unintended because it can break your application at runtime.
+If you do want to externalize this module explicitly add it to
+`build.rollupOptions.external`
+    at getRollupError (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\rollup@4.59.0\node_modules\rollup\dist\es\shared\parseAst.js:402:45)
+    at <anonymous> (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\rollup@4.59.0\node_modules\rollup\dist\es\shared\node-entry.js:23467:39)
+    at async catchUnfinishedHookActions (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\rollup@4.59.0\node_modules\rollup\dist\es\shared\node-entry.js:22925:30)
+    at async rollupInternal (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\rollup@4.59.0\node_modules\rollup\dist\es\shared\node-entry.js:23450:11)
+    at async buildEnvironment (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\vite@7.3.1+c288ea4a255697be\node_modules\vite\dist\node\chunks\config.js:33541:18)
+    at async build (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\vite@7.3.1+c288ea4a255697be\node_modules\vite\dist\node\chunks\config.js:33900:25)
+    at async buildApp (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\vite@7.3.1+c288ea4a255697be\node_modules\vite\dist\node\chunks\config.js:33897:167)
+    at async <anonymous> (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\vite@7.3.1+c288ea4a255697be\node_modules\vite\dist\node\cli.js:639:13)
+    at processTicksAndRejections (native:7:39)
+error: script "build:vite" exited with code 1

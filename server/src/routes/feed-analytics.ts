@@ -6,9 +6,9 @@
  */
 
 import { Router } from 'express';
-import { prisma } from '../lib/prisma.js';
+import { prisma } from '../lib/database.js';
 import { logger } from '../lib/logger.js';
-import { requireAuth } from '../middleware/auth.js';
+import { requireAuth } from '../middleware/unified-auth.js';
 import { z } from 'zod';
 
 const router = Router();

@@ -4,6 +4,11 @@
  * Installable skills for AI agent workflows
  */
 
+import { SkillRegistry } from './registry.js';
+import { createMemorySkillLoader } from './memory/index.js';
+import { createContentSkillLoader } from './content/index.js';
+import { createResearchSkillLoader } from './research/index.js';
+
 export * from './types.js';
 export { SkillRegistry, globalSkillRegistry } from './registry.js';
 

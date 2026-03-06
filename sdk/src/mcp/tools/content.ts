@@ -64,13 +64,13 @@ export const contentCreateHandler: MCPToolHandler = async (
     const contentNode = await sdk.getContentNode();
     
     const content = await contentNode.create(
-      (params.type as 'post' | 'comment' | 'article') || 'post',
+      (params.type as any) || 'post',
       { text: params.text as string },
-      { 
-        visibility: (params.visibility as 'public' | 'circle' | 'friends' | 'private') || 'public',
-        circleId: params.circleId as string | undefined,
-      }
-    );
+        {
+          visibility: (params.visibility as any) || 'public',
+          circleIds: params.circleId ? [params.circleId as string] : undefined,
+        }
+      );
 
     return {
       content: [{
@@ -80,7 +80,7 @@ export const contentCreateHandler: MCPToolHandler = async (
           id: content.id,
           type: content.type,
           visibility: content.visibility,
-          createdAt: content.createdAt,
+          timestamp: content.timestamp,
         }),
       }],
     };
@@ -143,11 +143,10 @@ export const contentFeedHandler: MCPToolHandler = async (
 
   try {
     const contentNode = await sdk.getContentNode();
-    
-    const feed = await contentNode.getFeed({
-      type: (params.type as 'following' | 'popular' | 'recent') || 'recent',
-      limit: (params.limit as number) || 20,
-    });
+        const feed = await contentNode.getFeed({
+        type: (params.type === 'popular' ? 'trending' : params.type === 'recent' ? 'discover' : params.type as any) || 'discover',
+        limit: (params.limit as number) || 20,
+      });
 
     return {
       content: [{
@@ -156,11 +155,11 @@ export const contentFeedHandler: MCPToolHandler = async (
           count: feed.length,
           posts: feed.map(p => ({
             id: p.id,
-            authorId: p.authorId,
+            author: p.author,
             type: p.type,
-            content: p.content,
+            text: p.text,
             visibility: p.visibility,
-            createdAt: p.createdAt,
+            timestamp: p.timestamp,
           })),
         }),
       }],
@@ -235,7 +234,7 @@ export const contentSearchHandler: MCPToolHandler = async (
     const results = await contentNode.search({
       text: params.query as string,
       author: params.author as string | undefined,
-      type: params.type ? [params.type as string] : undefined,
+      type: params.type ? [params.type as any] : undefined,
     });
 
     return {
@@ -245,10 +244,10 @@ export const contentSearchHandler: MCPToolHandler = async (
           count: results.length,
           posts: results.map(p => ({
             id: p.id,
-            authorId: p.authorId,
+            author: p.author,
             type: p.type,
-            content: p.content,
-            createdAt: p.createdAt,
+            text: p.text,
+            timestamp: p.timestamp,
           })),
         }),
       }],

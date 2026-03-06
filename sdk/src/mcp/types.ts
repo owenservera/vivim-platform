@@ -1,8 +1,4 @@
-/**
- * VIVIM SDK - MCP Types
- * 
- * Type definitions for MCP server implementation
- */
+import type { VivimSDKConfig } from '../core/types.js';
 
 /**
  * MCP Server Configuration
@@ -11,20 +7,13 @@ export interface MCPConfig {
   serverName: string;
   serverVersion: string;
   transport: 'stdio' | 'http' | 'streamable' | 'libp2p';
-  serverName: string;
-  serverVersion: string;
-  transport: 'stdio' | 'http' | 'streamable';
   port?: number;
   host?: string;
   allowedTools?: string[];
   deniedTools?: string[];
   readOnly?: boolean;
   logLevel?: 'debug' | 'info' | 'warn' | 'error';
-  sdkConfig?: {
-    identity?: { did?: string; seed?: string };
-    network?: { enableP2P?: boolean };
-    storage?: { encryption?: boolean };
-  };
+  sdkConfig?: VivimSDKConfig;
 }
 
 /**
@@ -81,7 +70,7 @@ export interface MCPContext {
   sessionId: string;
   config: MCPConfig;
   // SDK instance will be added at runtime
-  sdk?: unknown;
+  sdk?: any;
 }
 
 /**
@@ -162,4 +151,18 @@ export interface InitializeResult {
     resources?: Record<string, unknown>;
     prompts?: Record<string, unknown>;
   };
+}
+
+/**
+ * Transport configuration
+ */
+export interface TransportConfig {
+  /** Enable debugging */
+  debug?: boolean;
+  /** Message timeout in ms */
+  timeout?: number;
+  /** Retry attempts */
+  retryAttempts?: number;
+  /** Retry delay in ms */
+  retryDelay?: number;
 }

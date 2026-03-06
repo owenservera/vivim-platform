@@ -111,7 +111,6 @@ export class ContextGraph {
         },
         importanceScore: topic.importanceScore,
         lastActiveAt: topic.lastEngagedAt,
-        embedding: topic.embedding.length > 0 ? topic.embedding : undefined,
         edges: [],
       };
 
@@ -148,7 +147,6 @@ export class ContextGraph {
         },
         importanceScore: entity.importanceScore,
         lastActiveAt: entity.lastMentionedAt ?? entity.createdAt,
-        embedding: entity.embedding.length > 0 ? entity.embedding : undefined,
         edges: [],
       };
 

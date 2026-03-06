@@ -8,7 +8,8 @@
  */
 
 import * as Y from 'yjs';
-import type { Hash, DID, Timestamp, VectorClock } from './db-schema.js';
+import type { Hash, DID, Timestamp } from './db-schema.js';
+import { VectorClock } from './db-schema.js';
 
 // ============================================================================
 // BASE CRDT TYPES
@@ -427,55 +428,7 @@ export namespace MemoryCRDT {
 
 // ============================================================================
 // VECTOR CLOCK (for ordering)
-// ============================================================================
 
-export namespace VectorClock {
-  /** Increment the clock for a node */
-  export function increment(clock: VectorClock, nodeId: string): VectorClock {
-    return {
-      ...clock,
-      [nodeId]: (clock[nodeId] || 0) + 1,
-    };
-  }
-
-  /** Merge two vector clocks (take max of each) */
-  export function merge(a: VectorClock, b: VectorClock): VectorClock {
-    const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
-    const merged: VectorClock = {};
-    
-    for (const key of keys) {
-      merged[key] = Math.max(a[key] || 0, b[key] || 0);
-    }
-    
-    return merged;
-  }
-
-  /** Compare two vector clocks */
-  export function compare(a: VectorClock, b: VectorClock): 'before' | 'after' | 'concurrent' | 'equal' {
-    let aGreater = false;
-    let bGreater = false;
-    
-    const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
-    
-    for (const key of keys) {
-      const aVal = a[key] || 0;
-      const bVal = b[key] || 0;
-      
-      if (aVal > bVal) aGreater = true;
-      if (bVal > aVal) bGreater = true;
-    }
-    
-    if (aGreater && bGreater) return 'concurrent';
-    if (aGreater) return 'after';
-    if (bGreater) return 'before';
-    return 'equal';
-  }
-
-  /** Check if clock A happened before clock B */
-  export function happenedBefore(a: VectorClock, b: VectorClock): boolean {
-    return compare(a, b) === 'before';
-  }
-}
 
 // ============================================================================
 // MERKLE CRDT (for content-addressed storage)
@@ -612,7 +565,7 @@ export class CRDTDocumentManager {
       this.syncStates.set(docId, {
         docId,
         version: 0,
-        stateVector: doc.encodeStateVector(),
+        stateVector: Y.encodeStateVector(doc),
         lastSyncedAt: new Date().toISOString() as Timestamp,
         status: 'synced',
       });

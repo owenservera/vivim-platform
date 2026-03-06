@@ -477,6 +477,86 @@ export class CommunicationProtocol {
     const age = Date.now() - envelope.header.timestamp;
     return age > envelope.header.ttl;
   }
+
+  /**
+   * Send a message through the protocol
+   */
+  async sendMessage<T>(
+    type: string, 
+    payload: T, 
+    options: Partial<Omit<MessageHeader, 'id' | 'type' | 'version' | 'timestamp'>> = {}
+  ): Promise<MessageEnvelope<T>> {
+    let envelope = this.createEnvelope(type, payload, {
+      ...options,
+      direction: 'outbound'
+    });
+
+    // Execute before_send hooks
+    envelope = await this.executeHooks('before_send', envelope as MessageEnvelope) as MessageEnvelope<T>;
+
+    // Record metrics
+    this.recordMessageSent(envelope.header.priority);
+
+    // Emit event
+    this.emitEvent({
+      type: 'message_sent',
+      nodeId: this.nodeId,
+      messageId: envelope.header.id,
+      timestamp: envelope.header.timestamp,
+    });
+
+    // Execute after_send hooks
+    envelope = await this.executeHooks('after_send', envelope as MessageEnvelope) as MessageEnvelope<T>;
+
+    return envelope;
+  }
+
+  /**
+   * Process an incoming message
+   */
+  async processMessage<T>(envelope: MessageEnvelope<T>): Promise<MessageEnvelope<T>> {
+    const startTime = Date.now();
+    let result = envelope;
+
+    // Record receipt
+    this.recordMessageReceived();
+
+    // Validate
+    const validation = this.validateEnvelope(result as MessageEnvelope);
+    if (!validation.valid) {
+      this.recordMessageError('validation_error');
+      this.emitEvent({
+        type: 'message_error',
+        nodeId: this.nodeId,
+        messageId: result.header.id,
+        timestamp: Date.now(),
+        error: `Validation failed: ${validation.errors.join(', ')}`,
+      });
+      throw new Error(`Invalid envelope: ${validation.errors.join(', ')}`);
+    }
+
+    // Execute before_process hooks
+    result = await this.executeHooks('before_process', result as MessageEnvelope) as MessageEnvelope<T>;
+
+    // Execute middlewares
+    result = await this.executeMiddlewares(result as MessageEnvelope) as MessageEnvelope<T>;
+
+    // Record processing
+    this.recordMessageProcessed(Date.now() - startTime);
+
+    // Emit event
+    this.emitEvent({
+      type: 'message_processed',
+      nodeId: this.nodeId,
+      messageId: result.header.id,
+      timestamp: Date.now(),
+    });
+
+    // Execute after_process hooks
+    result = await this.executeHooks('after_process', result as MessageEnvelope) as MessageEnvelope<T>;
+
+    return result;
+  }
 }
 
 /**

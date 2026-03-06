@@ -772,36 +772,42 @@ export class ErrorReporter {
 
     // Node.js environment
     if (typeof process !== 'undefined') {
-      process.on('uncaughtException', (error) => {
-        this.report({
-          level: 'critical',
-          component: 'server',
-          category: 'runtime',
-          source: 'server',
-          message: error.message,
-          stack: error.stack,
-          context: {
-            memoryUsage: process.memoryUsage?.().heapUsed,
-            cpuUsage: process.cpuUsage ? process.cpuUsage().user : undefined
-          },
-          severity: 'critical'
-        } as any);
-      });
+      try {
+        if (typeof process.on === 'function') {
+          process.on('uncaughtException', (error) => {
+            this.report({
+              level: 'critical',
+              component: 'server',
+              category: 'runtime',
+              source: 'server',
+              message: error.message,
+              stack: error.stack,
+              context: {
+                memoryUsage: process.memoryUsage?.().heapUsed,
+                cpuUsage: process.cpuUsage ? process.cpuUsage().user : undefined
+              },
+              severity: 'critical'
+            } as any);
+          });
 
-      process.on('unhandledRejection', (reason) => {
-        this.report({
-          level: 'critical',
-          component: 'server',
-          category: 'runtime',
-          source: 'server',
-          message: `Unhandled promise rejection: ${this.extractErrorMessage(reason)}`,
-          stack: reason instanceof Error ? reason.stack : undefined,
-          context: {
-            memoryUsage: process.memoryUsage?.().heapUsed
-          },
-          severity: 'critical'
-        } as any);
-      });
+          process.on('unhandledRejection', (reason) => {
+            this.report({
+              level: 'critical',
+              component: 'server',
+              category: 'runtime',
+              source: 'server',
+              message: `Unhandled promise rejection: ${this.extractErrorMessage(reason)}`,
+              stack: reason instanceof Error ? reason.stack : undefined,
+              context: {
+                memoryUsage: process.memoryUsage?.().heapUsed
+              },
+              severity: 'critical'
+            } as any);
+          });
+        }
+      } catch (e) {
+        // Silently fail if process.on is restricted or missing
+      }
     }
   }
 
@@ -814,12 +820,14 @@ export class ErrorReporter {
       // @ts-ignore
       if ('memory' in perf) {
         setInterval(() => {
-          // @ts-ignore
-          const memInfo = perf.memory;
-          this.performanceMetrics.memoryUsage = memInfo.usedJSHeapSize;
+          // @ts-ignore - Performance memory is non-standard
+          const memInfo = (perf as any).memory;
+          if (!memInfo) return;
+          
+          this.performanceMetrics.memoryUsage = memInfo.usedJSHeapSize || 0;
 
           // Alert if memory usage is too high
-          if (memInfo.usedJSHeapSize > memInfo.jsHeapSizeLimit * 0.9) {
+          if (memInfo.usedJSHeapSize && memInfo.jsHeapSizeLimit && memInfo.usedJSHeapSize > memInfo.jsHeapSizeLimit * 0.9) {
             this.report({
               level: 'warning',
               component: 'pwa',

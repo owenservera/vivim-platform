@@ -5,7 +5,7 @@
  * Replaces OpenAI API for all AI operations.
  */
 
-import CircuitBreaker from 'opossum';
+import CircuitBreaker, { type CircuitBreakerOptions } from 'opossum';
 import type { IEmbeddingService, ILLMService } from '../types';
 import { logger } from '../../lib/logger.js';
 
@@ -420,10 +420,10 @@ export class CircuitBreakerLLMService implements ILLMService {
   private service: ILLMService;
   private breaker: CircuitBreaker;
 
-  constructor(service: ILLMService, options: CircuitBreaker.Options = {}) {
+  constructor(service: ILLMService, options: CircuitBreakerOptions = {}) {
     this.service = service;
 
-    const defaultOptions: CircuitBreaker.Options = {
+    const defaultOptions: CircuitBreakerOptions = {
       timeout: 30000, // 30 seconds
       errorThresholdPercentage: 50, // 50% failure rate opens the circuit
       resetTimeout: 30000, // Wait 30 seconds before trying again

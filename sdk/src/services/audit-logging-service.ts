@@ -94,6 +94,8 @@ export interface AuditEvent {
   correlationId?: string;
   /** Metadata */
   metadata: Record<string, unknown>;
+  /** Severity level */
+  severity: AuditSeverity;
   /** Hash of previous event (for chain integrity) */
   previousHash?: string;
   /** Event hash */
@@ -358,6 +360,7 @@ export class AuditLoggingService implements AuditLoggingAPI {
       action: `auth.${action}`,
       result,
       metadata: {},
+      severity: action === 'failed' ? 'warning' : 'info',
     });
   }
 
@@ -383,6 +386,7 @@ export class AuditLoggingService implements AuditLoggingAPI {
       action: `data.${action}`,
       result,
       metadata: {},
+      severity: 'info',
     });
   }
 
@@ -407,6 +411,7 @@ export class AuditLoggingService implements AuditLoggingAPI {
       action: `share.${action}`,
       result,
       metadata: {},
+      severity: 'info',
     });
   }
 
@@ -533,6 +538,7 @@ export class AuditLoggingService implements AuditLoggingAPI {
       report.byType[event.type] = (report.byType[event.type] || 0) + 1;
       report.byActor[event.actorDid] = (report.byActor[event.actorDid] || 0) + 1;
       report.byResult[event.result]++;
+      report.bySeverity[event.severity] = (report.bySeverity[event.severity] || 0) + 1;
     }
 
     // Generate timeline (daily)
@@ -729,6 +735,7 @@ export class AuditLoggingService implements AuditLoggingAPI {
       action: 'gdpr_erasure_request',
       result: 'success',
       metadata: { actorDid },
+      severity: 'notice',
     });
 
     // In a real implementation, this would anonymize or delete personal data

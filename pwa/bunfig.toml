@@ -5,10 +5,8 @@
 lockfile = true
 # Use Bun's trusted dependencies for faster installs
 trusted = ["esbuild", "rolldown-vite"]
-# Set cache directory explicitly
-cache = "C:\\Users\\VIVIM.inc\\AppData\\Local\\Temp\\bun-cache"
-# Set global cache directory
-globalCacheDir = "C:\\Users\\VIVIM.inc\\AppData\\Local\\Temp\\bun-cache\\global"
+# Set cache directory relative to project root or use defaults
+# cache = ".bun-cache"
 
 # Preload commonly used packages (add under [install] if needed)
 # preload = ["@types/node", "vite"]

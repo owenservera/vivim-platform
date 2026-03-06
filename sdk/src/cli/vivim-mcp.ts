@@ -115,30 +115,30 @@ async function main(): Promise<void> {
 
   // Override with CLI args if provided
   if (values.transport) {
-    (server as unknown as { config: { transport: string } }).config.transport = values.transport as 'stdio' | 'http' | 'streamable';
+    (server as unknown as { config: { transport: string } }).config.transport = String(values.transport) as 'stdio' | 'http' | 'streamable';
   }
   if (values.port) {
-    (server as unknown as { config: { port: number } }).config.port = parseInt(values.port, 10);
+    (server as unknown as { config: { port: number } }).config.port = parseInt(String(values.port), 10);
   }
   if (values.host) {
-    (server as unknown as { config: { host: string } }).config.host = values.host;
+    (server as unknown as { config: { host: string } }).config.host = String(values.host);
   }
   if (values['read-only']) {
     (server as unknown as { config: { readOnly: boolean } }).config.readOnly = true;
   }
-  if (values.allow) {
+  if (values.allow && typeof values.allow === 'string') {
     (server as unknown as { config: { allowedTools: string[] } }).config.allowedTools = values.allow.split(',');
   }
-  if (values.deny) {
+  if (values.deny && typeof values.deny === 'string') {
     (server as unknown as { config: { deniedTools: string[] } }).config.deniedTools = values.deny.split(',');
   }
-  if (values['log-level']) {
+  if (values['log-level'] && typeof values['log-level'] === 'string') {
     (server as unknown as { config: { logLevel: string } }).config.logLevel = values['log-level'];
   }
 
   // Handle errors
   server.on('error', (error) => {
-    logger.error({ error }, 'MCP server error');
+    logger.error('MCP server error', { error });
     process.exit(1);
   });
 
@@ -151,7 +151,7 @@ async function main(): Promise<void> {
   try {
     await server.initialize();
   } catch (error) {
-    logger.error({ error }, 'Failed to initialize MCP server');
+    logger.error('Failed to initialize MCP server', { error });
     console.error(`[VIVIM MCP] Error: ${error instanceof Error ? error.message : String(error)}`);
     process.exit(1);
   }

@@ -1,0 +1,23 @@
+$ bun --bun vite build
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[plugin vite:resolve] Module "async_hooks" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/on-finished@2.4.1/node_modules/on-finished/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "async_hooks" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/raw-body@2.5.3/node_modules/raw-body/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[plugin vite:resolve] Module "bun" has been externalized for browser compatibility, imported by "C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/sdk/dist/apps/ai-git/index.js". See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+[32mΓ£ô[39m 4075 modules transformed.
+Γ£ù Build failed in 31.00s
+error during build:
+[vite-plugin-pwa:build] [plugin vite-plugin-pwa:build] There was an error during the build:
+  Could not load C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\node-stdlib-browser@1.3.1\node_modules\node-stdlib-browser\esm\mock\empty.js/promises (imported by ../sdk/dist/core/self-design.js): ENOENT: no such file or directory, open 'C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\node-stdlib-browser@1.3.1\node_modules\node-stdlib-browser\esm\mock\empty.js/promises'
+Additionally, handling the error in the 'buildEnd' hook caused the following error:
+  Could not load C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\node-stdlib-browser@1.3.1\node_modules\node-stdlib-browser\esm\mock\empty.js/promises (imported by ../sdk/dist/core/self-design.js): ENOENT: no such file or directory, open 'C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\node-stdlib-browser@1.3.1\node_modules\node-stdlib-browser\esm\mock\empty.js/promises'
+    at getRollupError (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\rollup@4.59.0\node_modules\rollup\dist\es\shared\parseAst.js:402:45)
+    at <anonymous> (C:\0-BlackBoxProject-0\vivim-app-og\vivim-app\node_modules\.bun\rollup@4.59.0\node_modules\rollup\dist\es\shared\node-entry.js:23467:39)
+    at async catchUnfinishedHookActions (unknown)
+    at async rollupInternal (unknown)
+    at async buildEnvironment (unknown)
+    at async build (unknown)
+    at async buildApp (unknown)
+    at unknown
+    at processTicksAndRejections (native:7:39)
+error: script "build:vite" exited with code 1

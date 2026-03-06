@@ -15,7 +15,7 @@ import { sha256 } from '@noble/hashes/sha256';
 import { bytesToHex } from '@noble/hashes/utils';
 import type { VivimSDK } from './sdk.js';
 import { SDK_VERSION } from './constants.js';
-import type { TrustLevel } from './anchor.js';
+import { TrustLevel } from './anchor.js';
 
 /**
  * L0 Document Types
@@ -352,12 +352,12 @@ export class L0StorageManager {
       },
       chainOfTrust: {
         trustLevels: [
-          { level: 'genesis', name: 'GENESIS', description: 'Root anchor node', requirements: ['Initial network bootstrap'] },
-          { level: 'bootstrap', name: 'BOOTSTRAP', description: 'Relay/bridge nodes', requirements: ['Network infrastructure'] },
-          { level: 'primary', name: 'PRIMARY', description: 'Main SDK instances', requirements: ['Full identity', 'Storage'] },
-          { level: 'secondary', name: 'SECONDARY', description: 'Verified clones', requirements: ['Trust delegation from primary'] },
-          { level: 'unverified', name: 'UNVERIFIED', description: 'New nodes', requirements: ['Initial state', 'No trust'] },
-          { level: 'suspended', name: 'SUSPENDED', description: 'Revoked trust', requirements: ['Trust revoked'] },
+          { level: TrustLevel.GENESIS, name: 'GENESIS', description: 'Root anchor node', requirements: ['Initial network bootstrap'] },
+          { level: TrustLevel.BOOTSTRAP, name: 'BOOTSTRAP', description: 'Relay/bridge nodes', requirements: ['Network infrastructure'] },
+          { level: TrustLevel.PRIMARY, name: 'PRIMARY', description: 'Main SDK instances', requirements: ['Full identity', 'Storage'] },
+          { level: TrustLevel.SECONDARY, name: 'SECONDARY', description: 'Verified clones', requirements: ['Trust delegation from primary'] },
+          { level: TrustLevel.UNVERIFIED, name: 'UNVERIFIED', description: 'New nodes', requirements: ['Initial state', 'No trust'] },
+          { level: TrustLevel.SUSPENDED, name: 'SUSPENDED', description: 'Revoked trust', requirements: ['Trust revoked'] },
         ],
         anchorProtocol: 'AnchorProtocol provides on-chain state anchoring with merkle roots',
         migrationPath: 'Stage 1: Centralized → Stage 2: Federated → Stage 3: Distributed → Stage 4: Decentralized'
@@ -403,7 +403,7 @@ export class L0StorageManager {
       entries: [
         {
           did: 'L0.GENESIS',
-          trustLevel: 'genesis',
+          trustLevel: TrustLevel.GENESIS,
           name: 'L0 Core Storage',
           capabilities: ['*'],
           validFrom: Date.now()
@@ -451,7 +451,7 @@ export class L0StorageManager {
       documentType,
       version: '1.0.0',
       contentCid,
-      trustLevel: 'genesis', // L0 entries are always genesis level
+      trustLevel: TrustLevel.GENESIS, // L0 entries are always genesis level
       createdAt: now,
       updatedAt: now,
       validFrom: now,

@@ -5,9 +5,9 @@
  * Provides a unified interface for token operations
  */
 
-import { StorageToken, type StorageTokenConfig } from './standards/storage-token.js';
-import { AccessToken, type AccessTokenConfig } from './standards/access-token.js';
-import { SoulboundToken, type SoulboundTokenConfig } from './standards/soulbound-token.js';
+import { StorageToken, type StorageTokenConfig } from '../standards/storage-token.js';
+import { AccessToken, type AccessTokenConfig } from '../standards/access-token.js';
+import { SoulboundToken, type SoulboundTokenConfig } from '../standards/soulbound-token.js';
 import type {
   TokenType,
   TokenStandard,
@@ -15,7 +15,7 @@ import type {
   MintTokenParams,
   MintStorageTokenParams,
   MintAccessTokenParams,
-} from './types.js';
+} from '../types.js';
 
 /**
  * Token Factory configuration

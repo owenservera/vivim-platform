@@ -7,7 +7,7 @@
 
 import { EventEmitter } from 'events';
 import * as readline from 'readline';
-import type { VivimSDK } from '../core/sdk.js';
+import { VivimSDK } from '../core/sdk.js';
 import type { Identity, Memory, Conversation, ContentObject, Circle } from '../core/types.js';
 import { getLogger, Logger } from '../utils/logger.js';
 
@@ -333,7 +333,7 @@ export class AIAgentCLI extends EventEmitter {
         }
 
         const chatNode = await this.sdk.getAIChatNode();
-        const response = await chatNode.sendMessage(context.currentConversation, message);
+        const response = await chatNode.sendChatMessage(context.currentConversation, message);
         return this.success(response);
       },
     });
@@ -441,7 +441,7 @@ export class AIAgentCLI extends EventEmitter {
     });
   }
 
-  private register(command: CLICommand): void {
+  public register(command: CLICommand): void {
     this.commands.set(command.name, command);
     for (const alias of command.aliases) {
       this.commands.set(alias, command);
@@ -527,7 +527,7 @@ export class AIAgentCLI extends EventEmitter {
   private success<T>(data: T, message?: string): CommandResult<T> {
     return {
       success: true,
-      data: message ? { message, ...(data as object) } : data,
+      data: (message ? { message, ...(data as object) } : data) as T,
     };
   }
 
@@ -721,7 +721,7 @@ export class AIAgentCLI extends EventEmitter {
       results.push(result);
       
       if (!result.success) {
-        this.logger.warn({ command: line, error: result.error }, 'Command failed');
+        this.logger.warn('Command failed', { command: line, error: result.error });
       }
     }
     

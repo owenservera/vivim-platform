@@ -177,22 +177,32 @@ export class SimpleTokenEstimator implements ITokenEstimator {
     return Math.ceil(wordCount / this.wordsPerToken);
   }
 
-  estimateMessageTokens(message: { parts: any[] }, model?: string): number {
-    if (!message.parts || message.parts.length === 0) return 0;
+  estimateMessageTokens(message: { role?: string; content: any }, model?: string): number {
+    if (!message.content) return 0;
 
     let totalTokens = 0;
+    const content = message.content;
 
-    for (const part of message.parts) {
-      if (typeof part === 'string') {
-        totalTokens += this.estimateTokens(part);
-      } else if (part && typeof part.text === 'string') {
-        totalTokens += this.estimateTokens(part.text);
-      } else if (part && typeof part.content === 'string') {
-        totalTokens += this.estimateTokens(part.content);
+    if (typeof content === 'string') {
+      totalTokens += this.estimateTokens(content);
+    } else if (Array.isArray(content)) {
+      for (const part of content) {
+        if (typeof part === 'string') {
+          totalTokens += this.estimateTokens(part);
+        } else if (part && typeof part.text === 'string') {
+          totalTokens += this.estimateTokens(part.text);
+        } else if (part && typeof part.content === 'string') {
+          totalTokens += this.estimateTokens(part.content);
+        }
       }
     }
 
     return totalTokens;
+  }
+
+  estimateConversationTokens(messages: Array<{ role?: string; content: any }>, model?: string): number {
+    if (messages.length === 0) return 0;
+    return messages.reduce((total, msg) => total + this.estimateMessageTokens(msg, model), 0) + 3;
   }
 }
 

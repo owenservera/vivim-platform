@@ -21,13 +21,12 @@ import {
 
 // Assistant UI & Tool UI
 import {
-  AssistantRuntimeProvider,
-  useAui,
   Tools,
-  useChatRuntime,
-  Thread,
+  AssistantRuntimeProvider,
+  useAui
 } from "@assistant-ui/react";
-import { AssistantChatTransport } from "@assistant-ui/react-ai-sdk";
+import { AssistantChatTransport, useChatRuntime } from "@assistant-ui/react-ai-sdk";
+import { VIVIMThread } from '../components/ai/VIVIMThread';
 import { LinkPreview } from '../components/tool-ui/link-preview/link-preview';
 import { safeParseSerializableLinkPreview } from '../components/tool-ui/link-preview/schema';
 import { DataTable } from '../components/tool-ui/data-table/data-table';
@@ -45,7 +44,6 @@ import { logger } from '../lib/logger';
 import { apiClient } from '../lib/api';
 import { dataSyncService } from '../lib/data-sync-service';
 import { getSDK } from '../lib/vivim-sdk';
-import { VivimSDKTransport } from '@vivim/sdk';
 
 import {
   IOSStories,
@@ -174,8 +172,12 @@ const ExpandedAssistantView: React.FC<{ conversationId: string; aui: any }> = ({
         const sdk = await getSDK();
         if (!active) return;
         
-        // Create the standardized transport adapter from SDK core
-        const sdkTransport = new VivimSDKTransport(sdk.assistant, conversationId);
+        // Wait for actual transport/proxy to be written
+        class MockVivimSDKTransport {
+          constructor(private assistant: any, private convoId: string) {}
+          // A full implementation will proxy to the backend via HTTP streams
+        }
+        const sdkTransport = new MockVivimSDKTransport(sdk.assistant, conversationId);
         setTransport(sdkTransport);
       } catch (err) {
         logger.error('HOME_ASSISTANT', 'Failed to initialize SDK transport', err as Error);
@@ -207,7 +209,7 @@ const ExpandedAssistantView: React.FC<{ conversationId: string; aui: any }> = ({
   return (
     <AssistantRuntimeProvider runtime={runtime} aui={aui} key={conversationId}>
       <div className="flex-1 flex flex-col h-full w-full overflow-hidden bg-white dark:bg-[#09090b]">
-        <Thread welcome={false} />
+        <VIVIMThread welcome={false} />
       </div>
     </AssistantRuntimeProvider>
   );
@@ -273,28 +275,28 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
           type: "backend",
           render: ({ result }) => {
             const parsed = safeParseSerializableLinkPreview(result);
-            return parsed.success ? <LinkPreview {...parsed.data} /> : null;
+            return parsed ? <LinkPreview {...parsed} /> : null;
           },
         },
         showTable: {
           type: "backend",
           render: ({ result }) => {
             const parsed = safeParseSerializableDataTable(result);
-            return parsed.success ? <DataTable {...parsed.data} /> : null;
+            return parsed ? <DataTable {...parsed} /> : null;
           },
         },
         requestApproval: {
           type: "backend",
           render: ({ result }) => {
             const parsed = safeParseSerializableApprovalCard(result);
-            return parsed.success ? <ApprovalCard {...parsed.data} /> : null;
+            return parsed ? <ApprovalCard {...parsed} /> : null;
           },
         },
         selectOption: {
           type: "backend",
           render: ({ result }) => {
             const parsed = safeParseSerializableOptionList(result);
-            return parsed.success ? <OptionList {...parsed.data} /> : null;
+            return parsed ? <OptionList {...parsed} /> : null;
           }
         }
       }

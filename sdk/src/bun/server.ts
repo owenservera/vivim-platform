@@ -15,7 +15,7 @@ export interface BunVivimServerOptions {
 export class BunVivimServer {
   public readonly sdk: VivimSDK;
   private port: number;
-  private server: Server | null = null;
+  private server: Server<any> | null = null;
   private logger = console; // Basic logger wrapper until network engine wired 
 
   constructor(options: BunVivimServerOptions = {}) {
@@ -40,7 +40,7 @@ export class BunVivimServer {
     this.logger.log(`🔗 WebSockets Listening for Sync (bun-native WS)`);
   }
 
-  private handleFetch(req: Request, server: Server): Response | undefined {
+  private handleFetch(req: Request, server: Server<any>): Response | undefined {
     // 1. WebSocket upgrades for Data Sync protocol
     if (server.upgrade(req)) {
       return; 

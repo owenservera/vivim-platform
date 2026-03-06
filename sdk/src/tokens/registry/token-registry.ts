@@ -11,7 +11,7 @@ import type {
   TokenRegistryEntry,
   TokenListingStatus,
   TokenMetadata,
-} from './types.js';
+} from '../types.js';
 
 /**
  * Token Registry Configuration

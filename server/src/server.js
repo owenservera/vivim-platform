@@ -12,7 +12,6 @@
  */
 
 import 'dotenv/config';
-console.log(`DEBUG: Server.js loaded - ${new Date().toISOString()}`);
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -22,6 +21,7 @@ import cookieParser from 'cookie-parser';
 
 import { logger } from './lib/logger.js';
 import { config, validateConfig } from './config/index.js';
+import terminalIntelligence from './lib/terminal-intelligence.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { csrfProtection, setCsrfCookie } from './middleware/csrf.js';
 import { serverErrorReporter, errorReportingMiddleware } from './utils/server-error-reporting.js';
@@ -81,6 +81,29 @@ try {
   logger.error('Configuration validation failed:', error);
   process.exit(1);
 }
+
+// ============================================================================
+// STARTUP BANNER - Enhanced Terminal Intelligence
+// ============================================================================
+terminalIntelligence.printStartupBanner('VIVIM Server', {
+  environment: config.nodeEnv,
+  port: config.port,
+  logLevel: config.logLevel,
+});
+
+console.log(terminalIntelligence.createBox(
+  '📋 CONFIGURATION STATUS',
+  [
+    '',
+    `${terminalIntelligence.colors.green}✓${terminalIntelligence.colors.reset} Database:        ${config.databaseUrl ? 'Connected' : 'Not configured'}`,
+    `${terminalIntelligence.colors.green}✓${terminalIntelligence.colors.reset} CORS:            ${config.corsOrigins.join(', ')}`,
+    `${terminalIntelligence.colors.green}✓${terminalIntelligence.colors.reset} Rate Limit:      ${config.rateLimitMax} req/15min`,
+    `${terminalIntelligence.colors.blue}ℹ${terminalIntelligence.colors.reset} Swagger:         ${config.enableSwagger ? 'Enabled' : 'Disabled'}`,
+    `${terminalIntelligence.colors.blue}ℹ${terminalIntelligence.colors.reset} P2P Network:     ${config.p2pBootstrapPeers?.length > 0 ? 'Configured' : 'Local only'}`,
+    '',
+  ],
+  { color: terminalIntelligence.colors.green }
+));
 
 // Initialize Express app
 const app = express();
@@ -192,7 +215,7 @@ app.use(cors(corsOptions));
 
 app.use(cookieParser());
 
-const csrfExcludedPaths = ['/api/v1/auth/google/callback', '/stripe/webhook'];
+const csrfExcludedPaths = ['/api/v1/auth/google/callback', '/stripe/webhook', '/api/v1/errors', '/api/v1/debug', '/api/v1/feed-analytics', '/api/v2/feed', '/api/v2/context', '/api/v2/memories', '/api/v1/collections', '/api/v3/social', '/api/v1/integrations'];
 
 // Apply CSRF protection
 app.use((req, res, next) => {
@@ -380,7 +403,7 @@ app.use(logDevAuthStatus);
 // Request ID - Add unique identifier to each request
 app.use(requestId);
 
-// Enhanced Request Logger - Human-readable, structured logging
+// Enhanced Request Logger - Terminal Intelligence Visualization
 app.use((req, res, next) => {
   const startTime = Date.now();
   const reqId = req.id;
@@ -389,21 +412,13 @@ app.use((req, res, next) => {
   const { ip } = req;
   const userAgent = req.get('User-Agent') || 'Unknown';
 
-  // Log incoming request in a human-readable format
-  console.log('\n╔══════════════════════════════════════════════════════════════╗');
-  console.log('║                        REQUEST RECEIVED                      ║');
-  console.log('╠══════════════════════════════════════════════════════════════╣');
-  console.log(
-    `║  🆔 ID:        ${reqId.substring(0, 8)}...${reqId.substring(reqId.length - 4)}`
-  );
-  console.log(`║  🧭 METHOD:    ${method.padEnd(10)}`);
-  console.log(`║  📍 PATH:      ${path}`);
-  console.log(`║  🌐 FROM:      ${ip}`);
-  console.log(`║  ⏰ TIME:      ${new Date().toISOString()}`);
-  console.log(
-    `║  🤖 AGENT:     ${userAgent.substring(0, 40)}${userAgent.length > 40 ? '...' : ''}`
-  );
-  console.log('╚══════════════════════════════════════════════════════════════╝');
+  // Only log API requests to reduce noise
+  if (!path.startsWith('/api/')) {
+    return next();
+  }
+
+  // Print request visualization
+  terminalIntelligence.printRequestVisualization(req, res, 0);
 
   // Capture the original end method to log response
   const originalEnd = res.end;
@@ -411,34 +426,24 @@ app.use((req, res, next) => {
     const duration = Date.now() - startTime;
     const { statusCode } = res;
 
-    // Determine status category for readability
-    let statusCategory = 'UNKNOWN';
-    if (statusCode >= 200 && statusCode < 300) {
-      statusCategory = '✅ SUCCESS';
-    } else if (statusCode >= 300 && statusCode < 400) {
-      statusCategory = '🔄 REDIRECT';
-    } else if (statusCode >= 400 && statusCode < 500) {
-      statusCategory = '❌ CLIENT_ERROR';
-    } else if (statusCode >= 500) {
-      statusCategory = '💥 SERVER_ERROR';
-    }
+    // Print response visualization
+    terminalIntelligence.printRequestVisualization(req, res, duration);
 
-    // Log response in a human-readable format
-    console.log('╔══════════════════════════════════════════════════════════════╗');
-    console.log('║                        RESPONSE SENT                         ║');
-    console.log('╠══════════════════════════════════════════════════════════════╣');
-    console.log(
-      `║  🆔 ID:        ${reqId.substring(0, 8)}...${reqId.substring(reqId.length - 4)}`
+    // Log with pino for structured logging
+    const level = statusCode >= 400 ? 'warn' : 'info';
+    logger[level](
+      {
+        statusCode,
+        duration,
+        method,
+        path,
+        ip,
+        contentLength: res.getHeader('content-length'),
+      },
+      'Request completed'
     );
-    console.log(`║  🏷️  STATUS:    ${statusCode} ${statusCategory}`);
-    console.log(`║  ⏱️  DURATION:  ${duration}ms`);
-    console.log(`║  📦 SIZE:      ${chunk ? Buffer.byteLength(chunk) : 0} bytes`);
-    console.log(`║  🧭 METHOD:    ${method}`);
-    console.log(`║  📍 PATH:      ${path}`);
-    console.log('╚══════════════════════════════════════════════════════════════╝\n');
 
-    // Call the original end method
-    originalEnd.call(this, chunk, encoding, callback);
+    return originalEnd.call(this, chunk, encoding, callback);
   };
 
   next();
@@ -547,40 +552,30 @@ const server = app.listen(config.port, '0.0.0.0', () => {
   const localIp = getLocalIp();
   const startTime = new Date().toISOString();
 
-  console.log('\n╔══════════════════════════════════════════════════════════════╗');
-  console.log('║                    VIVIM SERVER STARTED                 ║');
-  console.log('╠══════════════════════════════════════════════════════════════╣');
-  console.log('║                                                              ║');
-  console.log('║  🚀 ENGINE STATUS:     OPERATIONAL                          ║');
-  console.log('║  🎯 CAPABILITIES:      AI Content Capture & Knowledge Vault  ║');
-  console.log('║  🔐 SECURITY LEVEL:    ENHANCED (CORS, Rate Limiting)       ║');
-  console.log('║                                                              ║');
-  console.log('╠══════════════════════════════════════════════════════════════╣');
-  console.log('║                           CONNECTIONS                        ║');
-  console.log('╠══════════════════════════════════════════════════════════════╣');
-  console.log(`║  🌐 NETWORK ACCESS:    http://${localIp}:${config.port}/api/v1   ║`);
-  console.log(`║  🏠 LOCAL ACCESS:      http://localhost:${config.port}           ║`);
-  console.log(`║  📚 API DOCUMENTATION: http://localhost:${config.port}/api-docs  ║`);
-  console.log('║                                                              ║');
-  console.log('╠══════════════════════════════════════════════════════════════╣');
-  console.log('║                           SYSTEM INFO                        ║');
-  console.log('╠══════════════════════════════════════════════════════════════╣');
-  console.log(`║  ⏱️  START TIME:        ${startTime}        ║`);
-  console.log(`║  💻 PLATFORM:          Node ${process.version} (${process.platform})     ║`);
-  console.log(`║  🆔 PROCESS ID:         PID: ${process.pid}                        ║`);
-  console.log(
-    `║  🏷️  MODE:              ${config.isDevelopment ? '🧪 DEVELOPMENT' : '🔒 PRODUCTION'}                 ║`
-  );
-  console.log('║                                                              ║');
-  console.log('╠══════════════════════════════════════════════════════════════╣');
-  console.log('║                    CONNECTION INSTRUCTIONS                   ║');
-  console.log('╠══════════════════════════════════════════════════════════════╣');
-  console.log('║  1. PWA should connect to: http://SERVER_IP:${config.port}/api/v1  ║');
-  console.log('║  2. API endpoints: /api/v1/capture, /api/v1/providers, etc.  ║');
-  console.log('║  3. Documentation: http://localhost:${config.port}/api-docs        ║');
-  console.log('║  4. Configure VITE_API_BASE_URL in PWA to match server URL   ║');
-  console.log('║                                                              ║');
-  console.log('╚══════════════════════════════════════════════════════════════╝\n');
+  console.log(terminalIntelligence.createBox(
+    '🚀 VIVIM SERVER STARTED',
+    [
+      '',
+      `${terminalIntelligence.colors.green}🚀${terminalIntelligence.colors.reset} ENGINE STATUS:     OPERATIONAL`,
+      `${terminalIntelligence.colors.green}🎯${terminalIntelligence.colors.reset} CAPABILITIES:      AI Content Capture & Knowledge Vault`,
+      `${terminalIntelligence.colors.green}🔐${terminalIntelligence.colors.reset} SECURITY LEVEL:    ENHANCED (CORS, Rate Limiting)`,
+      '',
+      `${terminalIntelligence.colors.blue}🌐${terminalIntelligence.colors.reset} NETWORK ACCESS:    http://${localIp}:${config.port}/api/v1`,
+      `${terminalIntelligence.colors.blue}🏠${terminalIntelligence.colors.reset} LOCAL ACCESS:      http://localhost:${config.port}`,
+      `${terminalIntelligence.colors.blue}📚${terminalIntelligence.colors.reset} API DOCS:          http://localhost:${config.port}/api-docs`,
+      '',
+      `${terminalIntelligence.colors.yellow}⏱️${terminalIntelligence.colors.reset} START TIME:        ${startTime}`,
+      `${terminalIntelligence.colors.yellow}💻${terminalIntelligence.colors.reset} PLATFORM:          Node ${process.version} (${process.platform})`,
+      `${terminalIntelligence.colors.yellow}🆔${terminalIntelligence.colors.reset} PROCESS ID:        PID: ${process.pid}`,
+      `${terminalIntelligence.colors.yellow}🏷️${terminalIntelligence.colors.reset} MODE:              ${config.isDevelopment ? '🧪 DEVELOPMENT' : '🔒 PRODUCTION'}`,
+      '',
+      `${terminalIntelligence.colors.magenta}💡${terminalIntelligence.colors.reset} PWA Connection:    http://${localIp}:${config.port}/api/v1`,
+      `${terminalIntelligence.colors.magenta}💡${terminalIntelligence.colors.reset} Endpoints:         /api/v1/capture, /api/v1/providers`,
+      '',
+    ],
+    { color: terminalIntelligence.colors.cyan, width: 72 }
+  ));
+  console.log('\n');
 
   logger.info(
     { port: config.port, env: config.nodeEnv, localIp },

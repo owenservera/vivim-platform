@@ -33,7 +33,12 @@ export type ActivityPubObjectType =
   | 'Profile'
   | 'Relationship'
   | 'Tombstone'
-  | 'Video';
+  | 'Video'
+  | 'Person'
+  | 'Organization'
+  | 'Service'
+  | 'Group'
+  | 'Application';
 
 /**
  * ActivityPub activity types
@@ -77,7 +82,7 @@ export type ActivityPubActorType = 'Person' | 'Organization' | 'Service' | 'Grou
  * ActivityPub object
  */
 export interface ActivityPubObject {
-  '@context': string | string[];
+  '@context': string | (string | Record<string, any>)[];
   id: string;
   type: ActivityPubObjectType;
   name?: string;
@@ -105,7 +110,7 @@ export interface ActivityPubObject {
  * ActivityPub activity
  */
 export interface ActivityPubActivity {
-  '@context': string | string[];
+  '@context': string | (string | Record<string, any>)[];
   id: string;
   type: ActivityPubActivityType;
   actor: string | ActivityPubActor;
@@ -125,7 +130,7 @@ export interface ActivityPubActivity {
  * ActivityPub actor
  */
 export interface ActivityPubActor {
-  '@context': string | string[];
+  '@context': string | (string | Record<string, any>)[];
   id: string;
   type: ActivityPubActorType;
   name?: string;
@@ -201,6 +206,7 @@ export interface ActivityPubCollection {
   type: 'Collection' | 'OrderedCollection';
   totalItems?: number;
   items?: unknown[];
+  orderedItems?: unknown[];
   first?: string | ActivityPubCollectionPage;
   last?: string | ActivityPubCollectionPage;
   next?: string | ActivityPubCollectionPage;
@@ -251,6 +257,7 @@ export interface WebFingerLink {
   rel: string;
   type?: string;
   href?: string;
+  template?: string;
   titles?: Record<string, string>;
   properties?: Record<string, string>;
 }
@@ -453,7 +460,7 @@ export class ActivityPubService implements ActivityPubAPI {
   private async handleCreate(activity: ActivityPubActivity): Promise<void> {
     console.log('[ActivityPub] Create activity received');
     if (typeof activity.object !== 'string' && activity.object) {
-      this.objects.set(activity.object.id, activity.object);
+      this.objects.set((activity.object as any).id, activity.object as any);
     }
   }
 

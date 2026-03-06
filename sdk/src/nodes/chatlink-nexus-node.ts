@@ -228,17 +228,17 @@ export class ChatLinkNexus implements ChatLinkNexusAPI {
 
   private setupEventListeners(): void {
     const unsubSent = this.communication.onEvent('import_started', (event) => {
-      console.log(`[ChatLinkNexus] Import started: ${event.importId}`);
+      console.log(`[ChatLinkNexus] Import started: ${event.data?.importId}`);
     });
     this.eventUnsubscribe.push(unsubSent);
 
     const unsubCompleted = this.communication.onEvent('import_completed', (event) => {
-      console.log(`[ChatLinkNexus] Import completed: ${event.importId}`);
+      console.log(`[ChatLinkNexus] Import completed: ${event.data?.importId}`);
     });
     this.eventUnsubscribe.push(unsubCompleted);
 
     const unsubFailed = this.communication.onEvent('import_failed', (event) => {
-      console.error(`[ChatLinkNexus] Import failed: ${event.importId}`, event.error);
+      console.error(`[ChatLinkNexus] Import failed: ${event.data?.importId}`, event.error);
     });
     this.eventUnsubscribe.push(unsubFailed);
   }

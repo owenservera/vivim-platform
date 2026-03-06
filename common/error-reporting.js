@@ -340,35 +340,42 @@ export class ErrorReporter {
         }
         // Node.js environment
         if (typeof process !== 'undefined') {
-            process.on('uncaughtException', (error) => {
-                this.report({
-                    level: 'critical',
-                    component: 'server',
-                    category: 'runtime',
-                    source: 'server',
-                    message: error.message,
-                    stack: error.stack,
-                    context: {
-                        memoryUsage: process.memoryUsage?.().heapUsed,
-                        cpuUsage: process.cpuUsage ? process.cpuUsage().user : undefined
-                    },
-                    severity: 'critical'
-                });
-            });
-            process.on('unhandledRejection', (reason) => {
-                this.report({
-                    level: 'critical',
-                    component: 'server',
-                    category: 'runtime',
-                    source: 'server',
-                    message: `Unhandled promise rejection: ${this.extractErrorMessage(reason)}`,
-                    stack: reason instanceof Error ? reason.stack : undefined,
-                    context: {
-                        memoryUsage: process.memoryUsage?.().heapUsed
-                    },
-                    severity: 'critical'
-                });
-            });
+            try {
+                if (typeof process.on === 'function') {
+                    process.on('uncaughtException', (error) => {
+                        this.report({
+                            level: 'critical',
+                            component: 'server',
+                            category: 'runtime',
+                            source: 'server',
+                            message: error.message,
+                            stack: error.stack,
+                            context: {
+                                memoryUsage: process.memoryUsage?.().heapUsed,
+                                cpuUsage: process.cpuUsage ? process.cpuUsage().user : undefined
+                            },
+                            severity: 'critical'
+                        });
+                    });
+                    process.on('unhandledRejection', (reason) => {
+                        this.report({
+                            level: 'critical',
+                            component: 'server',
+                            category: 'runtime',
+                            source: 'server',
+                            message: `Unhandled promise rejection: ${this.extractErrorMessage(reason)}`,
+                            stack: reason instanceof Error ? reason.stack : undefined,
+                            context: {
+                                memoryUsage: process.memoryUsage?.().heapUsed
+                            },
+                            severity: 'critical'
+                        });
+                    });
+                }
+            }
+            catch (e) {
+                // Silently fail if process.on is restricted or missing
+            }
         }
     }
     startPerformanceMonitoring() {

@@ -1,0 +1,19 @@
+SyntaxError: Named export 'decodeBase64' not found. The requested module 'tweetnacl-util' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'tweetnacl-util';
+const { decodeBase64, encodeBase64 } = pkg;
+
+file:///C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/server/src/services/identity-service.ts:23
+import { decodeBase64, encodeBase64 } from 'tweetnacl-util';
+         ^^^^^^^^^^^^
+SyntaxError: Named export 'decodeBase64' not found. The requested module 'tweetnacl-util' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'tweetnacl-util';
+const { decodeBase64, encodeBase64 } = pkg;
+
+    at #_instantiate (node:internal/modules/esm/module_job:254:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:369:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:671:26)
+    at async importModuleDynamicallyWrapper (node:internal/vm/module:525:15)

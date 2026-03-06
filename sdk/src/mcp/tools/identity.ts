@@ -104,8 +104,8 @@ export const identityCreateHandler: MCPToolHandler = async (
   try {
     const identity = await sdk.createIdentity({
       displayName: params.name as string | undefined,
-      seed: params.seed as string | undefined,
-      keyType: params.keyType as string | undefined,
+      seed: typeof params.seed === 'string' ? Uint8Array.from(atob(params.seed), c => c.charCodeAt(0)) : undefined,
+      keyType: (params.keyType as 'Ed25519' | 'secp256k1' | undefined) || 'Ed25519',
     });
 
     return {
@@ -298,237 +298,237 @@ export const verifySignatureHandler: MCPToolHandler = async (
 };
 
 // ============================================
-SQ|// WALLET TOOLS
-SQ|// ============================================
+// WALLET TOOLS
+// ============================================
 
 /**
-QT| * Get wallet info tool
+ * Get wallet info tool
 */
-SQ|export const walletInfoTool: MCPToolDefinition = {
-SZ|  name: 'wallet_info',
-SQ|  description: 'Get current smart wallet information including address and type',
-QK|  inputSchema: {
-SQ|    type: 'object',
-NP|    properties: {},
-SQ|    required: [],
-SQ|  },
+export const walletInfoTool: MCPToolDefinition = {
+  name: 'wallet_info',
+  description: 'Get current smart wallet information including address and type',
+  inputSchema: {
+    type: 'object',
+    properties: {},
+    required: [],
+  },
 };
 
 /**
-QT| * Wallet info handler
+ * Wallet info handler
 */
-NM|export const walletInfoHandler: MCPToolHandler = async (
-SZ|  params: Record<string, unknown>,
-SQ|  context: MCPContext
+export const walletInfoHandler: MCPToolHandler = async (
+  params: Record<string, unknown>,
+  context: MCPContext
 ): Promise<MCPResponse> => {
-SQ|  const sdk = context.sdk as VivimSDK | undefined;
-SQ|  
-SQ|  if (!sdk) {
-NM|    return {
-SQ|      content: [{
-SB|        type: 'text',
-NM|        text: JSON.stringify({ error: 'SDK not initialized' }),
-SQ|      }],
-SB|      isError: true,
-SQ|    };
-SQ|  }
+  const sdk = context.sdk as VivimSDK | undefined;
+  
+  if (!sdk) {
+    return {
+      content: [{
+        type: 'text',
+        text: JSON.stringify({ error: 'SDK not initialized' }),
+      }],
+      isError: true,
+    };
+  }
 
-SQ|  try {
-YQ|    const wallet = sdk.wallet.getSmartWallet();
-SQ|    return {
-SQ|      content: [{
-SQ|        type: 'text',
-SQ|        text: JSON.stringify({
-SQ|          hasWallet: !!wallet,
-SQ|          address: wallet?.address || null,
-SQ|          accountType: wallet?.accountType || null,
-SQ|          isDeployed: wallet?.isDeployed || false,
-SQ|          chainId: wallet?.chainId || null,
-SQ|        }),
-SQ|      }],
-SQ|    };
-SQ|  } catch (error) {
-SQ|    return {
-SQ|      content: [{
-SQ|        type: 'text',
-SQ|        text: JSON.stringify({
-NM|          error: error instanceof Error ? error.message : String(error),
-SQ|        }),
-SQ|      }],
-SQ|      isError: true,
-SQ|    };
-SQ|  }
+  try {
+    const wallet = sdk.wallet.getSmartWallet();
+    return {
+      content: [{
+        type: 'text',
+        text: JSON.stringify({
+          hasWallet: !!wallet,
+          address: wallet?.address || null,
+          accountType: wallet?.accountType || null,
+          isDeployed: wallet?.isDeployed || false,
+          chainId: wallet?.chainId || null,
+        }),
+      }],
+    };
+  } catch (error) {
+    return {
+      content: [{
+        type: 'text',
+        text: JSON.stringify({
+          error: error instanceof Error ? error.message : String(error),
+        }),
+      }],
+      isError: true,
+    };
+  }
 };
 
 /**
-SQ| * Create wallet tool
+ * Create wallet tool
 */
-QK|export const walletCreateTool: MCPToolDefinition = {
-SQ|  name: 'wallet_create',
-SQ|  description: 'Create a new ERC-4337 smart wallet',
-SQ|  inputSchema: {
-SQ|    type: 'object',
-SQ|    properties: {
-SQ|      accountType: {
-SQ|        type: 'string',
-SB|        description: 'Smart account type (simple, safe, kernel, light, biconomy)',
-SQ|        default: 'simple',
-SQ|      },
-SQ|      sponsorGas: {
-SQ|        type: 'boolean',
-SQ|        description: 'Enable gas sponsorship',
-SQ|        default: true,
-SQ|      },
-SQ|    },
-SQ|    required: [],
-SQ|  },
+export const walletCreateTool: MCPToolDefinition = {
+  name: 'wallet_create',
+  description: 'Create a new ERC-4337 smart wallet',
+  inputSchema: {
+    type: 'object',
+    properties: {
+      accountType: {
+        type: 'string',
+        description: 'Smart account type (simple, safe, kernel, light, biconomy)',
+        default: 'simple',
+      },
+      sponsorGas: {
+        type: 'boolean',
+        description: 'Enable gas sponsorship',
+        default: true,
+      },
+    },
+    required: [],
+  },
 };
 
 /**
-YQ| * Wallet create handler
+ * Wallet create handler
 */
-NM|export const walletCreateHandler: MCPToolHandler = async (
-SQ|  params: Record<string, unknown>,
-SQ|  context: MCPContext
+export const walletCreateHandler: MCPToolHandler = async (
+  params: Record<string, unknown>,
+  context: MCPContext
 ): Promise<MCPResponse> => {
-SQ|  const sdk = context.sdk as VivimSDK | undefined;
-SQ|  
-SQ|  if (!sdk) {
-SQ|    return {
-SQ|      content: [{
-SQ|        type: 'text',
-SQ|        text: JSON.stringify({ error: 'SDK not initialized' }),
-SQ|      }],
-SQ|      isError: true,
-SQ|    };
-SQ|  }
+  const sdk = context.sdk as VivimSDK | undefined;
+  
+  if (!sdk) {
+    return {
+      content: [{
+        type: 'text',
+        text: JSON.stringify({ error: 'SDK not initialized' }),
+      }],
+      isError: true,
+    };
+  }
 
-SQ|  try {
-SQ|    const identity = sdk.getIdentity();
-SB|    if (!identity) {
-SQ|      return {
-SQ|        content: [{
-SQ|          type: 'text',
-SQ|          text: JSON.stringify({ error: 'No identity available' }),
-SQ|        }],
-SQ|        isError: true,
-SQ|      };
-SQ|    }
+  try {
+    const identity = sdk.getIdentity();
+    if (!identity) {
+      return {
+        content: [{
+          type: 'text',
+          text: JSON.stringify({ error: 'No identity available' }),
+        }],
+        isError: true,
+      };
+    }
 
-SQ|    const wallet = await sdk.wallet.createWallet({
-SQ|      owners: [identity.publicKey],
-SQ|      accountType: (params.accountType as any) || 'simple',
-SQ|    });
+    const wallet = await sdk.wallet.createWallet({
+      owners: [identity.publicKey],
+      accountType: (params.accountType as any) || 'simple',
+    });
 
-SQ|    return {
-SQ|      content: [{
-SQ|        type: 'text',
-SQ|        text: JSON.stringify({
-SQ|          success: true,
-SQ|          address: wallet.address,
-SQ|          accountType: wallet.accountType,
-SQ|          isDeployed: wallet.isDeployed,
-SQ|        }),
-SQ|      }],
-SQ|    };
-SQ|  } catch (error) {
-SQ|    return {
-SQ|      content: [{
-SQ|        type: 'text',
-SQ|        text: JSON.stringify({
-SQ|          error: error instanceof Error ? error.message : String(error),
-SQ|        }),
-SQ|      }],
-SQ|      isError: true,
-SQ|    };
-SQ|  }
+    return {
+      content: [{
+        type: 'text',
+        text: JSON.stringify({
+          success: true,
+          address: wallet.address,
+          accountType: wallet.accountType,
+          isDeployed: wallet.isDeployed,
+        }),
+      }],
+    };
+  } catch (error) {
+    return {
+      content: [{
+        type: 'text',
+        text: JSON.stringify({
+          error: error instanceof Error ? error.message : String(error),
+        }),
+      }],
+      isError: true,
+    };
+  }
 };
 
 /**
-SQ| * Execute transaction tool
+ * Execute transaction tool
 */
-QK|export const walletExecuteTool: MCPToolDefinition = {
-SQ|  name: 'wallet_execute',
-SQ|  description: 'Execute a transaction through the smart wallet',
-SQ|  inputSchema: {
-SQ|    type: 'object',
-SQ|    properties: {
-SQ|      to: {
-SQ|        type: 'string',
-SQ|        description: 'Target contract address',
-SQ|      },
-SQ|      value: {
-SQ|        type: 'string',
-SQ|        description: 'Value to send in wei',
-SQ|        default: '0',
-SQ|      },
-SQ|      data: {
-SQ|        type: 'string',
-SQ|        description: 'Calldata (hex encoded)',
-SQ|        default: '0x',
-SQ|      },
-SQ|    },
-SQ|    required: ['to'],
-SQ|  },
+export const walletExecuteTool: MCPToolDefinition = {
+  name: 'wallet_execute',
+  description: 'Execute a transaction through the smart wallet',
+  inputSchema: {
+    type: 'object',
+    properties: {
+      to: {
+        type: 'string',
+        description: 'Target contract address',
+      },
+      value: {
+        type: 'string',
+        description: 'Value to send in wei',
+        default: '0',
+      },
+      data: {
+        type: 'string',
+        description: 'Calldata (hex encoded)',
+        default: '0x',
+      },
+    },
+    required: ['to'],
+  },
 };
 
 /**
-SQ| * Wallet execute handler
+ * Wallet execute handler
 */
-NM|export const walletExecuteHandler: MCPToolHandler = async (
-SQ|  params: Record<string, unknown>,
-SQ|  context: MCPContext
+export const walletExecuteHandler: MCPToolHandler = async (
+  params: Record<string, unknown>,
+  context: MCPContext
 ): Promise<MCPResponse> => {
-SQ|  const sdk = context.sdk as VivimSDK | undefined;
-SQ|  
-SQ|  if (!sdk) {
-SQ|    return {
-SQ|      content: [{
-SQ|        type: 'text',
-SQ|        text: JSON.stringify({ error: 'SDK not initialized' }),
-SQ|      }],
-SQ|      isError: true,
-SQ|    };
-SQ|  }
+  const sdk = context.sdk as VivimSDK | undefined;
+  
+  if (!sdk) {
+    return {
+      content: [{
+        type: 'text',
+        text: JSON.stringify({ error: 'SDK not initialized' }),
+      }],
+      isError: true,
+    };
+  }
 
-SQ|  try {
-SQ|    const wallet = sdk.wallet.getSmartWallet();
-SQ|    if (!wallet) {
-SQ|      return {
-SQ|        content: [{
-SQ|        type: 'text',
-SQ|        text: JSON.stringify({ error: 'No wallet initialized' }),
-SQ|        }],
-SQ|        isError: true,
-SQ|      };
-SQ|    }
+  try {
+    const wallet = sdk.wallet.getSmartWallet();
+    if (!wallet) {
+      return {
+        content: [{
+        type: 'text',
+        text: JSON.stringify({ error: 'No wallet initialized' }),
+        }],
+        isError: true,
+      };
+    }
 
-SQ|    const to = params.to as string;
-SQ|    const value = BigInt((params.value as string) || '0');
-SQ|    const data = (params.data as string) || '0x';
+    const to = params.to as string;
+    const value = BigInt((params.value as string) || '0');
+    const data = (params.data as string) || '0x';
 
-SQ|    const txHash = await sdk.wallet.execute([{ to, value, data }]);
+    const txHash = await sdk.wallet.execute([{ to, value, data }]);
 
-SQ|    return {
-SQ|      content: [{
-SQ|        type: 'text',
-SQ|        text: JSON.stringify({
-SQ|          success: true,
-SQ|          transactionHash: txHash,
-SQ|        }),
-SQ|      }],
-SQ|    };
-SQ|  } catch (error) {
-SQ|    return {
-SQ|      content: [{
-SQ|        type: 'text',
-SQ|        text: JSON.stringify({
-SQ|          error: error instanceof Error ? error.message : String(error),
-SQ|        }),
-SQ|      }],
-SQ|      isError: true,
-SQ|    };
-SQ|  }
+    return {
+      content: [{
+        type: 'text',
+        text: JSON.stringify({
+          success: true,
+          transactionHash: txHash,
+        }),
+      }],
+    };
+  } catch (error) {
+    return {
+      content: [{
+        type: 'text',
+        text: JSON.stringify({
+          error: error instanceof Error ? error.message : String(error),
+        }),
+      }],
+      isError: true,
+    };
+  }
 };
 
 /**
@@ -539,8 +539,8 @@ export function registerIdentityTools(registry: { register: (tool: MCPToolDefini
   registry.register(identityCreateTool, identityCreateHandler);
   registry.register(signDataTool, signDataHandler);
 registry.register(verifySignatureTool, verifySignatureHandler);
-SB|  // Wallet tools
-SQ|  registry.register(walletInfoTool, walletInfoHandler);
-SQ|  registry.register(walletCreateTool, walletCreateHandler);
-SQ|  registry.register(walletExecuteTool, walletExecuteHandler);
+  // Wallet tools
+  registry.register(walletInfoTool, walletInfoHandler);
+  registry.register(walletCreateTool, walletCreateHandler);
+  registry.register(walletExecuteTool, walletExecuteHandler);
 }

@@ -1,0 +1,34 @@
+src/mcp/transports/multi-transport.ts(272,3): error TS2416: Property 'removeAllListeners' in type 'FallbackTransportChain' is not assignable to the same property in base type 'EventEmitter<DefaultEventMap>'.
+  Type '() => void' is not assignable to type '(eventName?: string | symbol) => this'.
+    Type 'void' is not assignable to type 'this'.
+      'this' could be instantiated with an arbitrary type which could be unrelated to 'void'.
+src/mcp/transports/multi-transport.ts(272,3): error TS2416: Property 'removeAllListeners' in type 'FallbackTransportChain' is not assignable to the same property in base type 'TransportProtocol'.
+  Type '() => void' is not assignable to type '(eventName?: string | symbol) => this'.
+    Type 'void' is not assignable to type 'this'.
+      'this' could be instantiated with an arbitrary type which could be unrelated to 'void'.
+src/mcp/transports/websocket.ts(35,5): error TS2322: Type '(url: string) => WebSocket' is not assignable to type '(url: string) => import("C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/@types+ws@8.18.1/node_modules/@types/ws/index").default'.
+  Type 'WebSocket' is missing the following properties from type 'WebSocket': isPaused, ping, pong, terminate, and 17 more.
+src/nodes/chatlink-nexus-node.ts(231,60): error TS2339: Property 'importId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatlink-nexus-node.ts(236,62): error TS2339: Property 'importId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatlink-nexus-node.ts(241,61): error TS2339: Property 'importId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(372,68): error TS2339: Property 'jobId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(377,65): error TS2339: Property 'jobId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(377,82): error TS2339: Property 'progress' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(382,70): error TS2339: Property 'jobId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(387,69): error TS2339: Property 'jobId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(827,11): error TS2740: Type '{}' is missing the following properties from type 'Record<ExportFormat, number>': custom, "chatgpt-json", "claude-json", "claude-jsonl", and 3 more.
+src/nodes/federation-server-node.ts(236,9): error TS2393: Duplicate function implementation.
+src/nodes/federation-server-node.ts(548,9): error TS2393: Duplicate function implementation.
+src/nodes/health-monitoring-node.ts(455,77): error TS2339: Property 'heapLimit' does not exist on type 'MemoryUsage'.
+src/nodes/health-monitoring-node.ts(480,49): error TS2339: Property 'heapLimit' does not exist on type 'MemoryUsage'.
+src/nodes/sharing-policy-node.ts(760,9): error TS2322: Type 'boolean | "" | "audience" | "creator" | "nobody"' is not assignable to type 'never'.
+  Type 'false' is not assignable to type 'never'.
+src/nodes/sovereign-permissions-node.ts(564,25): error TS2339: Property 'metadata' does not exist on type 'CreateGrantOptions'.
+src/nodes/sovereign-permissions-node.ts(896,37): error TS2345: Argument of type 'PolicyTemplateType' is not assignable to parameter of type '"public_read" | "public_attributed" | "public_forkable" | "open"'.
+  Type '"private"' is not assignable to type '"public_read" | "public_attributed" | "public_forkable" | "open"'.
+src/protocols/activitypub.ts(463,44): error TS2345: Argument of type 'ActivityPubObject | ActivityPubActivity' is not assignable to parameter of type 'ActivityPubObject'.
+  Type 'ActivityPubActivity' is not assignable to type 'ActivityPubObject'.
+    Types of property 'type' are incompatible.
+      Type 'ActivityPubActivityType' is not assignable to type 'ActivityPubObjectType'.
+        Type '"Accept"' is not assignable to type 'ActivityPubObjectType'.
+src/services/audit-logging-service.ts(430,7): error TS2353: Object literal may only specify known properties, and 'severity' does not exist in type 'Omit<AuditEvent, "id" | "timestamp" | "hash" | "previousHash">'.

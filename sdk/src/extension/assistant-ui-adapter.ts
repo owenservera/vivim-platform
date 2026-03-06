@@ -17,7 +17,7 @@ import {
   MessageRole,
   VivimMessageSchema,
   extractTextContent
-} from '../chat/types.js';
+} from '../protocols/chat/types.js';
 
 /**
  * Stream parameters from assistant-ui

@@ -15,16 +15,6 @@ export const BUILTIN_NODES = {
   SOVEREIGN_PERMISSIONS: '@vivim/node-sovereign-permissions',
 } as const;
 
-  IDENTITY: '@vivim/node-identity',
-  STORAGE: '@vivim/node-storage',
-  CONTENT: '@vivim/node-content',
-  SOCIAL: '@vivim/node-social',
-  AI_CHAT: '@vivim/node-ai-chat',
-  MEMORY: '@vivim/node-memory',
-  CAPTURE: '@vivim/node-capture',
-  ANALYTICS: '@vivim/node-analytics',
-} as const;
-
 // Event types
 export const SDK_EVENTS = {
   // Identity

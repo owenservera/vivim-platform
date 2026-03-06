@@ -17,6 +17,7 @@ const configSchema = z.object({
   enableSwagger: z.boolean().default(false),
   browserWsEndpoint: z.string().optional(),
   skipAuthForDevelopment: z.boolean().default(false),
+  redisUrl: z.string().optional(),
   // P2P Configuration
   p2pListenAddresses: z.array(z.string()).default(['/ip4/0.0.0.0/tcp/4001']),
   p2pBootstrapPeers: z.array(z.string()).default([]),
@@ -39,6 +40,7 @@ function loadConfig() {
     browserWsEndpoint: process.env.BROWSER_WS_ENDPOINT,
     skipAuthForDevelopment:
       process.env.SKIP_AUTH_FOR_DEVELOPMENT === 'true' || process.env.NODE_ENV === 'test',
+    redisUrl: process.env.REDIS_URL,
     // P2P Configuration
     p2pListenAddresses: process.env.P2P_LISTEN_ADDRESSES
       ? process.env.P2P_LISTEN_ADDRESSES.split(',').map((s) => s.trim())
@@ -141,6 +143,7 @@ export function validateConfig() {
       console.warn(
         'WARNING: P2P is configured but P2P_BOOTSTRAP_PEERS is empty. P2P networking will not be operational.'
       );
+    }
   }
 
   // Development-specific validations

@@ -54,6 +54,7 @@ const saveFindingCapability: SkillCapability = {
       const memory = await memoryNode.create({
         content,
         memoryType: 'semantic',
+        category: 'research',
         tags: ['research', String(params.topic).toLowerCase().replace(/\s+/g, '-')],
       });
 
@@ -172,7 +173,8 @@ const saveConceptCapability: SkillCapability = {
       
       const memory = await memoryNode.create({
         content,
-        memoryType: 'concept',
+        memoryType: 'semantic', // concept -> semantic
+        category: 'concept',
         tags: ['concept', 'knowledge', String(params.concept).toLowerCase().replace(/\s+/g, '-')],
       });
 

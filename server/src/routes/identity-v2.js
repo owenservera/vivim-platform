@@ -99,7 +99,8 @@ router.post('/auth/token', authenticateDID, async (req, res) => {
       data: { refreshTokenHash: hash }
     });
 
-    // Send refresh token as HttpOnly cookie for automatic rotation    res.cookie('refresh_token', refreshToken, {
+    // Send refresh token as HttpOnly cookie for automatic rotation
+    res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

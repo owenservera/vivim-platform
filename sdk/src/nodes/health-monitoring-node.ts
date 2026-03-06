@@ -452,7 +452,7 @@ export class HealthMonitoringNode implements HealthMonitoringAPI {
 
     return {
       memoryUsage,
-      memoryLimit: typeof process !== 'undefined' ? process.memoryUsage?.().heapLimit / 1024 / 1024 : undefined,
+      memoryLimit: typeof process !== 'undefined' ? (process.memoryUsage?.() as any).heapLimit || process.memoryUsage?.().heapTotal / 1024 / 1024 : undefined,
       cpuUsage: undefined, // Would require OS integration
       eventLoopLag: undefined, // Would require event loop monitoring
       activeConnections,
@@ -477,7 +477,7 @@ export class HealthMonitoringNode implements HealthMonitoringAPI {
   getMemoryUsage(): number {
     if (typeof process !== 'undefined' && process.memoryUsage) {
       const usage = process.memoryUsage();
-      return Math.round((usage.heapUsed / usage.heapLimit) * 100);
+      return Math.round((usage.heapUsed / ((usage as any).heapLimit || usage.heapTotal)) * 100);
     }
     // Browser fallback
     return 0;

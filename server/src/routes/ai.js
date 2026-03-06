@@ -21,7 +21,7 @@ import {
   structuredOutputSchema,
 } from '../validators/ai.js';
 import { ProviderType, ProviderConfig, getDefaultProvider } from '../types/ai.js';
-import { ContextSettingsService } from '../context/settings-service.js';
+import { ContextSettingsService } from '../context/settings-service.ts';
 import { DynamicContextAssembler } from '../context/context-assembler.js';
 import { unifiedContextService } from '../services/unified-context-service.js';
 import { systemPromptManager } from '../ai/system-prompts.js';

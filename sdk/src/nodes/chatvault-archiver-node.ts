@@ -369,22 +369,22 @@ export class ChatVaultArchiver implements ChatVaultArchiverAPI {
 
   private setupEventListeners(): void {
     const unsubStarted = this.communication.onEvent('import_job_started', (event) => {
-      console.log(`[ChatVaultArchiver] Import job started: ${event.jobId}`);
+      console.log(`[ChatVaultArchiver] Import job started: ${event.data?.jobId}`);
     });
     this.eventUnsubscribe.push(unsubStarted);
 
     const unsubProgress = this.communication.onEvent('import_job_progress', (event) => {
-      console.log(`[ChatVaultArchiver] Import progress: ${event.jobId} - ${event.progress}%`);
+      console.log(`[ChatVaultArchiver] Import progress: ${event.data?.jobId} - ${event.data?.progress}%`);
     });
     this.eventUnsubscribe.push(unsubProgress);
 
     const unsubCompleted = this.communication.onEvent('import_job_completed', (event) => {
-      console.log(`[ChatVaultArchiver] Import job completed: ${event.jobId}`);
+      console.log(`[ChatVaultArchiver] Import job completed: ${event.data?.jobId}`);
     });
     this.eventUnsubscribe.push(unsubCompleted);
 
     const unsubFailed = this.communication.onEvent('import_job_failed', (event) => {
-      console.error(`[ChatVaultArchiver] Import job failed: ${event.jobId}`, event.error);
+      console.error(`[ChatVaultArchiver] Import job failed: ${event.data?.jobId}`, event.error);
     });
     this.eventUnsubscribe.push(unsubFailed);
   }
@@ -824,7 +824,7 @@ export class ChatVaultArchiver implements ChatVaultArchiverAPI {
     }
 
     const messages = conversations.flatMap(c => c.messages);
-    const formatsUsed: Record<ExportFormat, number> = {};
+    const formatsUsed: Record<ExportFormat, number> = {} as any;
 
     conversations.forEach(c => {
       formatsUsed[c.format] = (formatsUsed[c.format] || 0) + 1;

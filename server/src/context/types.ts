@@ -303,9 +303,13 @@ export interface IEmbeddingService {
 export interface ILLMService {
   chat(params: {
     model: string;
-    messages: Array<{ role: string; content: string }>;
+    messages: Array<{ role: 'system' | 'user' | 'assistant' | string; content: string }>;
     response_format?: { type: string };
-  }): Promise<{ content: string }>;
+    temperature?: number;
+    maxTokens?: number;
+  }): Promise<{ content: string; usage?: { promptTokens: number; completionTokens: number; totalTokens: number } }>;
+  chatStream?: (params: any) => any;
+  getConfig?: () => any;
 }
 
 export interface ITokenEstimator {

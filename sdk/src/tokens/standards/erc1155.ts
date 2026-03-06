@@ -5,6 +5,7 @@
  * Supports both fungible and non-fungible tokens
  */
 
+import { TokenError } from '../types.js';
 import type {
   TokenType,
   TokenStandard,
@@ -12,9 +13,8 @@ import type {
   TokenBalance,
   TokenAllowance,
   TokenEventMap,
-  TokenError,
   TokenErrorCode,
-} from './types.js';
+} from '../types.js';
 
 // ERC-1155 Interface identifiers
 const ERC1155_INTERFACE_ID = '0x4e2312e0';
@@ -551,4 +551,4 @@ export abstract class ERC1155 {
 }
 
 // Export interface for type checking
-export type { IToken } from './types.js';
+export type { IToken } from '../types.js';

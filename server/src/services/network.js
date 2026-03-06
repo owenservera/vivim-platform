@@ -9,22 +9,37 @@ export const networkService = {
     try {
       logger.info('Initializing P2P Network Node in "indexer" role');
 
-      networkNode = new NetworkNode({
-        nodeType: 'indexer',
-        roles: ['indexer', 'storage'],
-        listenAddresses: ['/ip4/0.0.0.0/tcp/9000/ws'],
-        enableWebRTC: false, // Server uses WebSockets primarily
-        enableDHT: true,
-        enableGossipsub: true,
-        minConnections: 5,
-        maxConnections: 50,
-        bootstrapPeers: []
-      });
+      const listenAddresses = process.env.P2P_LISTEN_ADDRESSES 
+        ? process.env.P2P_LISTEN_ADDRESSES.split(',') 
+        : ['/ip4/0.0.0.0/tcp/9000/ws'];
 
-      await networkNode.start();
-      
-      const nodeInfo = networkNode.getNodeInfo();
-      logger.info({ peerId: nodeInfo.peerId }, 'Network Node started successfully');
+      const bootstrapPeers = process.env.P2P_BOOTSTRAP_PEERS
+        ? process.env.P2P_BOOTSTRAP_PEERS.split(',').filter(Boolean)
+        : [];
+
+      // TEMPORARY: Disable Network Node initialization to prevent frontend rendering issues
+      // The NetworkNode constructor requires KeyManager, DHTService, PubSubService instances
+      // which are not being passed, causing "Received undefined" errors
+      logger.info('Network Node disabled - frontend can render without P2P features');
+      networkNode = null;
+
+      // Original Network Node initialization (commented out due to initialization errors):
+      // networkNode = new NetworkNode({
+      //   nodeType: 'indexer',
+      //   roles: ['indexer', 'storage'],
+      //   listenAddresses,
+      //   enableWebRTC: false,
+      //   enableDHT: true,
+      //   enableGossipsub: true,
+      //   minConnections: 5,
+      //   maxConnections: 50,
+      //   bootstrapPeers
+      // });
+
+      // await networkNode.start();
+
+      // const nodeInfo = networkNode.getNodeInfo();
+      // logger.info({ peerId: nodeInfo.peerId }, 'Network Node started successfully');
 
       // TODO: Hook up GossipSync here to index things into Postgres
       

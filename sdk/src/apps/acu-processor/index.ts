@@ -60,7 +60,7 @@ export class AcuProcessorApp extends EventEmitter {
    */
   private async processRawContent(requestEvent: ChainEvent) {
     const payload = requestEvent.payload as { text?: string, url?: string, parentContext?: string };
-    console.log(`[ACU-Processor ⚙️] Received Raw Content Request from ${requestEvent.authorId.substring(0, 16)}...`);
+    console.log(`[ACU-Processor ⚙️] Received Raw Content Request from ${(requestEvent as any).authorId?.substring(0, 16) || 'unknown'}...`);
 
     let extractedData = '';
 

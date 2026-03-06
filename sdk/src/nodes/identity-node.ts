@@ -47,18 +47,18 @@ export interface IdentityNodeAPI {
   sendMessage<T>(type: string, payload: T): Promise<MessageEnvelope>;
 processMessage<T>(envelope: MessageEnvelope<T>): Promise<MessageEnvelope>;
 
-SB|  // Wallet / Smart Account
-SQ|  getWallet(): Promise<SmartWallet | null>;
-QK|  createWallet(config?: SmartWalletConfig): Promise<SmartWallet>;
-QT|  deployWallet(): Promise<string>;
-SQ|  getVivimUserID(): Promise<VivimUserID>;
+  // Wallet / Smart Account
+  getWallet(): Promise<SmartWallet | null>;
+  createWallet(config?: SmartWalletConfig): Promise<SmartWallet>;
+  deployWallet(): Promise<string>;
+  getVivimUserID(): Promise<VivimUserID>;
 
-QT|  // Session Keys
-SB|  createSessionKey(sessionKey: SessionKey): Promise<void>;
-NM|  revokeSessionKey(keyAddress: string): Promise<void>;
+  // Session Keys
+  createSessionKey(sessionKey: SessionKey): Promise<void>;
+  revokeSessionKey(keyAddress: string): Promise<void>;
 
-QK|  // Account Recovery
-NM|  setupRecovery(config: RecoveryConfig): Promise<void>;
+  // Account Recovery
+  setupRecovery(config: RecoveryConfig): Promise<void>;
 }
 
 export interface Profile {
@@ -350,71 +350,71 @@ export class IdentityNode implements IdentityNodeAPI {
     return [];
 }
 
-QT|  // ============================================
-XW|  // WALLET / SMART ACCOUNT
-QT|  // ============================================
+  // ============================================
+  // WALLET / SMART ACCOUNT
+  // ============================================
 
-SB|  async getWallet(): Promise<SmartWallet | null> {
-NM|    return this.sdk.wallet.getSmartWallet();
-SQ|  }
+  async getWallet(): Promise<SmartWallet | null> {
+    return this.sdk.wallet.getSmartWallet();
+  }
 
-JB|  async createWallet(config?: SmartWalletConfig): Promise<SmartWallet> {
-SQ|    const wallet = await this.sdk.wallet.createWallet(config || {
-SB|      owners: [this.sdk.getIdentity()?.publicKey || ''],
-SQ|    });
-VJ|    await this.sendMessage('wallet_create', { address: wallet.address });
-NM|    return wallet;
-SQ|  }
+  async createWallet(config?: SmartWalletConfig): Promise<SmartWallet> {
+    const wallet = await this.sdk.wallet.createWallet(config || {
+      owners: [this.sdk.getIdentity()?.publicKey || ''],
+    });
+    await this.sendMessage('wallet_create', { address: wallet.address });
+    return wallet;
+  }
 
-YT|  async deployWallet(): Promise<string> {
-JB|    return this.sdk.wallet.deployWallet();
-SQ|  }
+  async deployWallet(): Promise<string> {
+    return this.sdk.wallet.deployWallet();
+  }
 
-YT|  async getVivimUserID(): Promise<VivimUserID> {
-SB|    const identity = this.sdk.getIdentity();
-SQ|    if (!identity) {
-SB|      throw new Error('No identity available');
-SQ|    }
+  async getVivimUserID(): Promise<VivimUserID> {
+    const identity = this.sdk.getIdentity();
+    if (!identity) {
+      throw new Error('No identity available');
+    }
 
-YZ|    const wallet = this.sdk.wallet.getSmartWallet();
+    const wallet = this.sdk.wallet.getSmartWallet();
 
-QK|    return {
-SQ|      did: identity.did,
-SB|      publicKey: identity.publicKey,
-SQ|      keyType: identity.keyType,
-QT|      walletAddress: wallet?.address,
-QK|      walletType: wallet ? 'smart' : 'eoa',
-SB|      smartWallet: wallet || undefined,
-SQ|      linkedAccounts: [],
-SB|      displayName: this.profile.displayName,
-JB|      avatar: this.profile.avatar,
-QK|      createdAt: identity.createdAt,
-SQ|      verificationLevel: identity.verificationLevel,
-SQ|    };
-SQ|  }
+    return {
+      did: identity.did,
+      publicKey: identity.publicKey,
+      keyType: identity.keyType,
+      walletAddress: wallet?.address,
+      walletType: wallet ? 'smart' : 'eoa',
+      smartWallet: wallet || undefined,
+      linkedAccounts: [],
+      displayName: this.profile.displayName,
+      avatar: this.profile.avatar,
+      createdAt: identity.createdAt,
+      verificationLevel: identity.verificationLevel,
+    };
+  }
 
-QT|  // ============================================
-YQ|  // SESSION KEYS
-QT|  // ============================================
+  // ============================================
+  // SESSION KEYS
+  // ============================================
 
-SB|  async createSessionKey(sessionKey: SessionKey): Promise<void> {
-SQ|    await this.sdk.wallet.createSessionKey(sessionKey);
-SQ|    await this.sendMessage('session_key_create', { address: sessionKey.address });
-SQ|  }
+  async createSessionKey(sessionKey: SessionKey): Promise<void> {
+    await this.sdk.wallet.createSessionKey(sessionKey);
+    await this.sendMessage('session_key_create', { address: sessionKey.address });
+  }
 
-SB|  async revokeSessionKey(keyAddress: string): Promise<void> {
-SQ|    await this.sdk.wallet.revokeSessionKey(keyAddress);
-SQ|    await this.sendMessage('session_key_revoke', { address: keyAddress });
-SQ|  }
+  async revokeSessionKey(keyAddress: string): Promise<void> {
+    await this.sdk.wallet.revokeSessionKey(keyAddress);
+    await this.sendMessage('session_key_revoke', { address: keyAddress });
+  }
 
-QT|  // ============================================
-NK|  // ACCOUNT RECOVERY
-QT|  // ============================================
+  // ============================================
+  // ACCOUNT RECOVERY
+  // ============================================
 
-SB|  async setupRecovery(config: RecoveryConfig): Promise<void> {
-NM|    await this.sdk.wallet.setupRecovery(config);
-SQ|    await this.sendMessage('recovery_setup', { method: config.method });
-SQ|  }
+  async setupRecovery(config: RecoveryConfig): Promise<void> {
+    await this.sdk.wallet.setupRecovery(config);
+    await this.sendMessage('recovery_setup', { method: config.method });
+  }
 
 
   /**

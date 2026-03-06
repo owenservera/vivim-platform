@@ -73,7 +73,7 @@ export interface ConversationIndex {
   lastUpdated: number;
 }
 
-export interface QueuedMessage {
+export interface IPFSQueuedMessage {
   id: string;
   conversationId: string;
   message: VivimMessage;
@@ -95,7 +95,7 @@ export class IPFSStorage extends EventEmitter {
   private config: Required<IPFSStorageConfig>;
   private localCache: Map<string, { data: unknown; expiresAt: number }> = new Map();
   private encryptionKeys: Map<string, CryptoKey> = new Map();
-  private offlineQueue: QueuedMessage[] = [];
+  private offlineQueue: IPFSQueuedMessage[] = [];
   private syncPeers: Map<string, SyncPeer> = new Map();
   private ipnsKeys: Map<string, Uint8Array> = new Map();
 
@@ -524,7 +524,7 @@ export class IPFSStorage extends EventEmitter {
   // ============== Offline Queue ==============
 
   private async queueForSync(conversationId: string, message: VivimMessage): Promise<void> {
-    const queued: QueuedMessage = {
+    const queued: IPFSQueuedMessage = {
       id: `queue_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
       conversationId,
       message,
@@ -547,7 +547,7 @@ export class IPFSStorage extends EventEmitter {
     let successful = 0;
     let failed = 0;
     
-    const remaining: QueuedMessage[] = [];
+    const remaining: IPFSQueuedMessage[] = [];
     
     for (const item of this.offlineQueue) {
       if (item.retries >= (this.config.offlineQueue.maxRetries || 3)) {
@@ -576,7 +576,7 @@ export class IPFSStorage extends EventEmitter {
     return { processed, successful, failed };
   }
 
-  getOfflineQueue(): QueuedMessage[] {
+  getOfflineQueue(): IPFSQueuedMessage[] {
     return [...this.offlineQueue];
   }
 

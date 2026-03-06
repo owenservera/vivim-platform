@@ -1,4 +1,4 @@
-import { DistributedContentClient } from '@vivim/network-engine';
+import { DistributedContentClient } from './network-mocks';
 import { getChainClient } from './chain-client';
 import { p2pService } from './p2p-service';
 import { logger } from './logger';

@@ -269,10 +269,11 @@ class FallbackTransportChain extends EventEmitter implements TransportProtocol {
     return result;
   }
   
-  removeAllListeners(): void {
+  removeAllListeners(event?: string | symbol): this {
     for (const transport of this.transports) {
-      transport.removeAllListeners();
+      transport.removeAllListeners(event);
     }
+    return this;
   }
   
   async connect(peerId: PeerId | string): Promise<TransportConnection> {

@@ -7,7 +7,6 @@
 
 import { ERC1155 } from './erc1155.js';
 import type {
-  StorageToken,
   MintStorageTokenParams,
   MonetizationTerms,
   RevenueShare,
@@ -287,6 +286,7 @@ export class StorageToken extends ERC1155 {
       tokenId,
       account: tokenData.storageProvider,
       amount: slashAmount,
+      reason,
       timestamp: Date.now(),
     });
   }

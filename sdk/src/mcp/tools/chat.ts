@@ -196,7 +196,7 @@ export const chatSendHandler: MCPToolHandler = async (
 
   try {
     const chatNode = await sdk.getAIChatNode();
-    const response = await chatNode.sendMessage(
+    const response = await chatNode.sendChatMessage(
       params.conversationId as string,
       params.message as string
     );
@@ -268,9 +268,10 @@ export const chatGetHandler: MCPToolHandler = async (
 
   try {
     const chatNode = await sdk.getAIChatNode();
-    const conversation = await chatNode.getConversation(
+    const conversation = await chatNode.getConversation(params.conversationId as string);
+    const messages = await chatNode.getMessages(
       params.conversationId as string,
-      (params.limit as number) || 50
+      { limit: (params.limit as number) || 50 }
     );
 
     return {
@@ -280,10 +281,10 @@ export const chatGetHandler: MCPToolHandler = async (
           id: conversation.id,
           title: conversation.title,
           model: conversation.model,
-          messages: conversation.messages?.map(m => ({
+          messages: messages.map(m => ({
             role: m.role,
             content: m.content,
-            createdAt: m.createdAt,
+            timestamp: m.timestamp,
           })),
         }),
       }],

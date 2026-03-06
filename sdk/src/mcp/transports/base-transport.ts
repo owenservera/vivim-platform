@@ -30,7 +30,7 @@ export abstract class BaseTransport extends EventEmitter implements TransportPro
   protected _localPeerId?: PeerId;
   protected config: TransportConfig;
   
-  private connections: Map<string, TransportConnection> = new Map();
+  protected connections: Map<string, TransportConnection> = new Map();
   
   constructor(config: TransportConfig = {}) {
     super();
@@ -178,7 +178,7 @@ export class InMemoryConnection extends EventEmitter implements TransportConnect
 /**
  * Simple transport stream implementation
  */
-export class SimpleTransportStream implements TransportStream {
+export class SimpleTransportStream extends EventEmitter implements TransportStream {
   readonly id: string;
   readonly peerId: PeerId;
   private _closed = false;
@@ -186,6 +186,7 @@ export class SimpleTransportStream implements TransportStream {
   private resolvers: ((msg: TransportMessage | null) => void)[] = [];
   
   constructor(options: { id: string; peerId: PeerId }) {
+    super();
     this.id = options.id;
     this.peerId = options.peerId;
   }
@@ -206,6 +207,8 @@ export class SimpleTransportStream implements TransportStream {
     if (this._closed) {
       throw new Error('Stream is closed');
     }
+    
+    this.emit('data', message);
     
     const resolver = this.resolvers.shift();
     if (resolver) {
@@ -252,7 +255,7 @@ export function createTransportMessage(
 /**
  * Helper to serialize transport message
  */
-export function serializeMessage(message: TransportMessage): string {
+export function serializeMessage(message: any): string {
   return JSON.stringify(message);
 }
 

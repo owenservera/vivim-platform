@@ -152,6 +152,26 @@ class Logger {
   warn(module: string, message: string, data?: unknown) { this.log(LogLevel.WARN, module, message, 'client', data); }
   error(module: string, message: string, error?: Error, data?: unknown) { this.log(LogLevel.ERROR, module, message, 'client', data, error); }
 
+  child(metadata: { module: string }): {
+    debug: (message: string, data?: unknown) => void;
+    info: (message: string, data?: unknown) => void;
+    warn: (message: string, data?: unknown) => void;
+    error: (options: object | Error, message: string, ...args: any[]) => void;
+  } {
+    return {
+      debug: (msg, data) => this.debug(metadata.module, msg, data),
+      info: (msg, data) => this.info(metadata.module, msg, data),
+      warn: (msg, data) => this.warn(metadata.module, msg, data),
+      error: (options, msg) => {
+        if (options instanceof Error) {
+          this.error(metadata.module, msg || options.message, options);
+        } else {
+          this.error(metadata.module, msg || 'Error', undefined, options);
+        }
+      }
+    };
+  }
+
   getLogs(): LogEntry[] {
     return [...this.logs].reverse();
   }

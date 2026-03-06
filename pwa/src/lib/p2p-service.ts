@@ -5,7 +5,7 @@
  */
 
 import * as Y from 'yjs';
-import { NetworkNode, type NetworkNodeConfig, Libp2pYjsProvider } from '@vivim/network-engine';
+import { NetworkNode, type NetworkNodeConfig, Libp2pYjsProvider } from './network-mocks';
 import { useSyncStore } from './sync/sync-engine';
 import { useIdentityStore } from './stores';
 import { logger } from './logger';
@@ -41,10 +41,12 @@ class P2PService {
         enableGossipsub: true,
         enableMDNS: false, // MDNS doesn't work in browser
         listenAddresses: [], // Browsers can't listen for incoming connections directly
-        bootstrapPeers: [
-          // Local development bootstrap node (if running)
-          '/ip4/127.0.0.1/tcp/1235/ws/p2p/12D3KooWGatBqP8vQidpGfV8eC5m5XwZ8U8XQkYQkYQkYQkYQkYQ'
-        ]
+        bootstrapPeers: import.meta.env.VITE_P2P_BOOTSTRAP_PEER 
+          ? [import.meta.env.VITE_P2P_BOOTSTRAP_PEER]
+          : [
+            // Local development bootstrap node (if running on standard port)
+            '/ip4/127.0.0.1/tcp/4002/ws/p2p/12D3KooWGatBqP8vQidpGfV8eC5m5XwZ8U8XQkYQkYQkYQkYQkYQ'
+          ]
       };
 
       this.node = new NetworkNode(config);

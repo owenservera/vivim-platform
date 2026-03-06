@@ -36,6 +36,55 @@ export type PublicKey = string & { readonly __publicKey: unique symbol };
 /** Vector clock for CRDT ordering */
 export type VectorClock = Record<string, number>;
 
+/** Vector clock utilities */
+export namespace VectorClock {
+  /** Increment the clock for a node */
+  export function increment(clock: VectorClock, nodeId: string): VectorClock {
+    return {
+      ...clock,
+      [nodeId]: (clock[nodeId] || 0) + 1,
+    };
+  }
+
+  /** Merge two vector clocks (take max of each) */
+  export function merge(a: VectorClock, b: VectorClock): VectorClock {
+    const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+    const merged: VectorClock = {};
+    
+    for (const key of keys) {
+      merged[key] = Math.max(a[key] || 0, b[key] || 0);
+    }
+    
+    return merged;
+  }
+
+  /** Compare two vector clocks */
+  export function compare(a: VectorClock, b: VectorClock): 'before' | 'after' | 'concurrent' | 'equal' {
+    let aGreater = false;
+    let bGreater = false;
+    
+    const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+    
+    for (const key of keys) {
+      const aVal = a[key] || 0;
+      const bVal = b[key] || 0;
+      
+      if (aVal > bVal) aGreater = true;
+      if (bVal > aVal) bGreater = true;
+    }
+    
+    if (aGreater && bGreater) return 'concurrent';
+    if (aGreater) return 'after';
+    if (bGreater) return 'before';
+    return 'equal';
+  }
+
+  /** Check if clock A happened before clock B */
+  export function happenedBefore(a: VectorClock, b: VectorClock): boolean {
+    return compare(a, b) === 'before';
+  }
+}
+
 // ============================================================================
 // IDENTITY & AUTHENTICATION
 // ============================================================================
@@ -482,7 +531,9 @@ export namespace Memory {
 
   /** Memory link (association) */
   export interface MemoryLink {
-    targetMemoryId: string;
+    id: string;
+    sourceId: string;
+    targetId: string;
     relationType: string;   // 'related_to', 'part_of', 'caused_by', etc.
     weight: number;         // 0-1
   }
@@ -837,7 +888,7 @@ export namespace Storage {
 
 export namespace Error {
   /** Base error */
-  export class VivimError extends Error {
+  export class VivimError extends globalThis.Error {
     code: string;
     statusCode?: number;
 

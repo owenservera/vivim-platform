@@ -52,9 +52,20 @@ const rememberCapability: SkillCapability = {
     try {
       const memoryNode = await context.sdk.getMemoryNode();
       
+      const getMemoryType = (type: string): any => {
+        switch (type) {
+          case 'fact': return 'factual';
+          case 'concept': return 'semantic';
+          case 'procedure': return 'procedural';
+          case 'error': return 'analytical';
+          case 'semantic': return 'semantic';
+          default: return 'factual';
+        }
+      };
+
       const memory = await memoryNode.create({
         content: params.content as string,
-        memoryType: (params.type as 'fact' | 'concept' | 'procedure' | 'error' | 'semantic') || 'fact',
+        memoryType: getMemoryType((params.type as string) || 'fact'),
         category: 'general',
         tags: (params.tags as string[]) || [],
       });
@@ -105,9 +116,20 @@ const recallCapability: SkillCapability = {
     try {
       const memoryNode = await context.sdk.getMemoryNode();
       
+      const getMemoryType = (type: string): any => {
+        switch (type) {
+          case 'fact': return 'factual';
+          case 'concept': return 'semantic';
+          case 'procedure': return 'procedural';
+          case 'error': return 'analytical';
+          case 'semantic': return 'semantic';
+          default: return undefined;
+        }
+      };
+
       const results = await memoryNode.search({
         text: params.query as string,
-        types: params.type ? [params.type as string] : undefined,
+        types: params.type ? [getMemoryType(params.type as string)].filter(Boolean) : undefined,
         limit: (params.limit as number) || 10,
       });
 
@@ -165,7 +187,8 @@ const rememberErrorCapability: SkillCapability = {
       
       const memory = await memoryNode.create({
         content,
-        memoryType: 'error',
+        memoryType: 'semantic',
+        category: 'error',
         tags: ['bugfix', 'error', 'fix'],
       });
 
@@ -218,6 +241,7 @@ const rememberCodeCapability: SkillCapability = {
       const memory = await memoryNode.create({
         content,
         memoryType: 'procedural',
+        category: 'code',
         tags: ['code', 'pattern', params.language as string || 'programming'].filter(Boolean),
       });
 

@@ -10,7 +10,7 @@
  * - Low importance (<0.5): expires in 1 month
  */
 
-import { prisma } from '../lib/prisma.js';
+import { prisma } from '../lib/database.js';
 import { logger } from '../lib/logger.js';
 
 const TTL_CONFIG = {

@@ -5,12 +5,12 @@
  * @see docs/SOCIAL_TRANSPORT_LAYER.md
  */
 
-import type { EventEmitter } from 'events';
+import { EventEmitter } from 'events';
 
 /**
  * Transport types supported by VIVIM
  */
-export type TransportType = 'websocket' | 'webrtc' | 'http' | 'https' | 'libp2p' | 'tor' | 'stdio' | 'streamable';
+export type TransportType = 'websocket' | 'webrtc' | 'http' | 'https' | 'libp2p' | 'tor' | 'stdio' | 'streamable' | 'multi' | 'fallback';
 
 /**
  * Connection states
@@ -73,7 +73,7 @@ export interface TransportStream {
 /**
  * Connection to a peer
  */
-export interface TransportConnection {
+export interface TransportConnection extends EventEmitter {
   readonly peerId: PeerId;
   readonly state: ConnectionState;
   readonly remoteAddress: string;
@@ -245,26 +245,14 @@ export interface MultiTransportConfig extends TransportConfig {
   fallbackTimeout?: number;
 }
 
-/**
- * Multi-transport configuration
- */
-export interface MultiTransportConfig extends TransportConfig {
-  /** Transports to use */
-  transports: TransportProtocol[];
-  /** Default transport preference order */
-  preferenceOrder?: TransportType[];
-  /** Enable automatic fallback */
-  autoFallback?: boolean;
-  /** Fallback timeout in ms */
-  fallbackTimeout?: number;
-}
+
 
 /**
  * LibP2P transport configuration
  */
 export interface LibP2PTransportConfig extends TransportConfig {
   /** Network node instance */
-  networkNode?: unknown;
+  networkNode?: any;
   /** Custom protocol prefix */
   protocolPrefix?: string;
   /** Enable DHT for peer discovery */
@@ -276,7 +264,7 @@ export interface LibP2PTransportConfig extends TransportConfig {
   /** Listen addresses */
   listenAddresses?: string[];
   /** Node type */
-  nodeType?: 'bootstrap' | 'relay' | 'indexer' | 'storage' | 'edge' | 'client';
+  nodeType?: string;
   /** Roles */
   roles?: string[];
 }

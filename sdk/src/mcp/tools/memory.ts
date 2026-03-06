@@ -147,7 +147,7 @@ export const memorySearchHandler: MCPToolHandler = async (
     
     const results = await memoryNode.search({
       text: params.query as string,
-      types: params.type ? [params.type as string] : undefined,
+      types: params.type ? [params.type as any] : undefined,
       limit: (params.limit as number) || 10,
     });
 
@@ -231,7 +231,7 @@ export const memoryListHandler: MCPToolHandler = async (
     const memoryNode = await sdk.getMemoryNode();
     
     const results = await memoryNode.search({
-      types: params.type ? [params.type as string] : undefined,
+      types: params.type ? [params.type as any] : undefined,
       limit: (params.limit as number) || 50,
     });
 

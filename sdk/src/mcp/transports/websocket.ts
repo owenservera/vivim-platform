@@ -1,13 +1,7 @@
-/**
- * VIVIM SDK - WebSocket Transport
- * 
- * WebSocket transport for real-time bidirectional communication
- */
-
 import { randomUUID } from 'crypto';
-import * as ws from 'ws';
+import { WebSocket as WS, WebSocketServer, type RawData } from 'ws';
 import type { IncomingMessage } from 'node:http';
-import type { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
 import type {
   WebSocketTransportConfig,
   TransportMessage,
@@ -27,18 +21,18 @@ import { BaseTransport, SimpleTransportStream } from './base-transport.js';
 export class WebSocketTransport extends BaseTransport {
   readonly type = 'websocket' as const;
   
-  private wsConnections: Map<string, ws> = new Map();
-  private server?: ws.Server;
-  private localWebSocket?: ws;
+  private wsConnections: Map<string, WS> = new Map();
+  private server?: WebSocketServer;
+  private localWebSocket?: WS;
   private url?: string;
   private secure: boolean;
-  private wsFactory?: (url: string) => ws;
+  private wsFactory?: (url: string) => WS;
   
   constructor(config: WebSocketTransportConfig = {}) {
     super(config);
     this.url = config.url;
     this.secure = config.secure ?? false;
-    this.wsFactory = config.wsFactory;
+    this.wsFactory = config.wsFactory as any;
   }
   
   async start(): Promise<void> {
@@ -60,22 +54,22 @@ export class WebSocketTransport extends BaseTransport {
   
   private async startServer(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.server = new ws.Server({ port: 0 }); // Port 0 = random available port
+      this.server = new WebSocketServer({ port: 0 }); // Port 0 = random available port
       
-      this.server.on('connection', (wsConnection, req) => {
+      this.server!.on('connection', (wsConnection, req) => {
         const peerId = this.extractPeerId(req);
-        this.handleConnection(peerId, wsConnection);
+        this.handleConnection(peerId, wsConnection as WS);
       });
       
-      this.server.on('error', (error) => {
+      this.server!.on('error', (error: Error) => {
         this.emitError(error);
         reject(error);
       });
       
-      this.server.on('listening', () => {
+      this.server!.on('listening', () => {
         const address = this.server!.address();
         if (address && typeof address === 'object') {
-          this.log('WebSocket server listening', { port: address.port });
+          this.log('WebSocket server listening', { port: (address as any).port });
         }
         resolve();
       });
@@ -84,12 +78,12 @@ export class WebSocketTransport extends BaseTransport {
   
   private async connectAsClient(url: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      let wsConnection: ws;
+      let wsConnection: WS;
       
       if (this.wsFactory) {
         wsConnection = this.wsFactory(url);
       } else {
-        wsConnection = new ws(url);
+        wsConnection = new WS(url);
       }
       
       wsConnection.on('open', () => {
@@ -122,7 +116,7 @@ export class WebSocketTransport extends BaseTransport {
     return { id: peerId ?? `ws-${randomUUID()}` };
   }
   
-  private handleConnection(peerId: PeerId, wsConnection: ws): void {
+  private handleConnection(peerId: PeerId, wsConnection: WS): void {
     this.wsConnections.set(peerId.id, wsConnection);
     
     const connection = new WebSocketConnection(
@@ -147,11 +141,13 @@ export class WebSocketTransport extends BaseTransport {
     });
   }
   
-  private handleMessage(data: ws.RawData, peerId?: PeerId): void {
+  private handleMessage(data: RawData, peerId?: PeerId): void {
     try {
-      const message: TransportMessage = typeof data === 'string'
-        ? JSON.parse(data)
-        : JSON.parse(new TextDecoder().decode(data));
+      const message: TransportMessage = data instanceof Buffer
+                ? JSON.parse(data.toString())
+                : typeof data === 'string'
+                    ? JSON.parse(data)
+                    : JSON.parse(new TextDecoder().decode(data as any));
       
       this.emit('message', { 
         message,
@@ -270,16 +266,17 @@ export class WebSocketTransport extends BaseTransport {
 /**
  * WebSocket Connection
  */
-class WebSocketConnection implements TransportConnection {
+class WebSocketConnection extends EventEmitter implements TransportConnection {
   readonly peerId: PeerId;
   readonly remoteAddress: string;
   readonly localAddress: string;
   private _state: ConnectionState = 'connected';
-  private ws: ws;
+  private ws: WS;
   private transport: WebSocketTransport;
   private stream?: SimpleTransportStream;
   
-  constructor(peerId: PeerId, wsConnection: ws, transport: WebSocketTransport) {
+  constructor(peerId: PeerId, wsConnection: WS, transport: WebSocketTransport) {
+    super();
     this.peerId = peerId;
     this.remoteAddress = `ws://${peerId.id}`;
     this.localAddress = 'ws://local';
@@ -305,10 +302,14 @@ class WebSocketConnection implements TransportConnection {
     this._state = 'disconnected';
     this.ws.close();
     this.stream?.close();
+    this.emit('state', 'disconnected');
   }
   
   setState(state: ConnectionState): void {
-    this._state = state;
+    if (this._state !== state) {
+      this._state = state;
+      this.emit('state', state);
+    }
   }
 }
 

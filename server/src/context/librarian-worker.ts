@@ -16,8 +16,10 @@ import { getPrismaClient } from '../lib/database.js';
 import { ZAILLMService, ZAIEmbeddingService, createEmbeddingService } from './utils/zai-service.js';
 import { logger } from '../lib/logger.js';
 import type { TopicProfile, EntityProfile, AtomicChatUnit } from '@prisma/client';
+import { getContextEventBus } from './index.js';
 
 const prisma = getPrismaClient();
+const eventBus = getContextEventBus();
 
 interface LibrarianConfig {
   enabled?: boolean;
@@ -611,15 +613,9 @@ Only include topics with confidence > 0.7.`;
     return markedCount;
   }
 
-import { getContextEventBus } from './index.js';
-
-// ... (config and other imports)
-
-const eventBus = getContextEventBus();
-
-/**
- * Mark ACUs as processed by the librarian
- */
+  /**
+   * Mark ACUs as processed by the librarian
+   */
   private async markACUsProcessed(userId: string, analyses: ACUAnalysis[]): Promise<void> {
     const acuIds = analyses.map((a) => a.acuId).filter((id) => id.length > 0);
 

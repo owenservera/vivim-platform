@@ -14,14 +14,13 @@ import type {
   InitializeParams,
   InitializeResult,
   MCPToolDefinition,
+  MCPResponse,
 } from './types.js';
 import { ToolRegistry, globalToolRegistry } from './registry.js';
 import { StdioTransport } from './transports/stdio.js';
 import { HTTPTransport } from './transports/http.js';
 import { StreamableTransport } from './transports/streamable.js';
 import { LibP2PTransport } from './transports/libp2p-transport.js';
-import { HTTPTransport } from './transports/http.js';
-import { StreamableTransport } from './transports/streamable.js';
 import { createToolRegistry } from './tools/index.js';
 import { VivimSDK } from '../core/sdk.js';
 
@@ -91,7 +90,7 @@ export class MCPServer extends EventEmitter {
           host: this.config.host,
         });
         httpTransport.onMessage((msg) => this.handleMessage(msg));
-        this.transport = httpTransport;
+        this.transport = httpTransport as unknown as MCPTransport;
         await this.transport.start();
         break;
       }
@@ -102,7 +101,7 @@ export class MCPServer extends EventEmitter {
           maxFrameSize: 1024 * 1024,
         });
         streamableTransport.onMessage((msg) => this.handleMessage(msg));
-        this.transport = streamableTransport;
+        this.transport = streamableTransport as unknown as MCPTransport;
         await this.transport.start();
         break;
       }
@@ -113,31 +112,11 @@ export class MCPServer extends EventEmitter {
           enableDHT: true,
           enableGossipsub: true,
         });
-        libp2pTransport.onMessage((msg) => this.handleMessage(msg));
-        this.transport = libp2pTransport;
+        libp2pTransport.onMessage((msg) => this.handleMessage(msg as any));
+        this.transport = libp2pTransport as unknown as MCPTransport;
         await this.transport.start();
         break;
       }
-    }
-        const streamableTransport = new StreamableTransport({
-          encoding: 'json',
-          maxFrameSize: 1024 * 1024,
-        });
-        streamableTransport.onMessage((msg) => this.handleMessage(msg));
-        this.transport = streamableTransport;
-        await this.transport.start();
-        break;
-      }
-    }
-
-    this.initialized = true;
-    if (this.config.transport === 'stdio') {
-      this.transport = new StdioTransport({
-        onMessage: (msg) => this.handleMessage(msg),
-        onClose: () => this.handleClose(),
-        onError: (err) => this.emit('error', err),
-      });
-      await this.transport.start();
     }
 
     this.initialized = true;
@@ -305,7 +284,7 @@ export class MCPServer extends EventEmitter {
   /**
    * Register additional tools
    */
-  registerTool(tool: MCPToolDefinition, handler: (params: Record<string, unknown>, context: MCPContext) => Promise<unknown>): void {
+  registerTool(tool: MCPToolDefinition, handler: (params: Record<string, unknown>, context: MCPContext) => Promise<MCPResponse>): void {
     this.toolRegistry.register(tool, handler);
   }
 
@@ -340,8 +319,8 @@ export class MCPServer extends EventEmitter {
    * Log message
    */
   private log(level: string, message: string): void {
-    if (this.config.logLevel === 'debug' || 
-        (level === 'info' && this.config.logLevel !== 'debug')) {
+    if ((this.config.logLevel as string) === 'debug' || 
+        (level === 'info' && (this.config.logLevel as string) !== 'debug')) {
       console.error(`[MCP:${level.toUpperCase()}] ${message}`);
     }
   }
@@ -364,7 +343,7 @@ export function createMCPServerFromEnv(): MCPServer {
     sdkConfig: {
       identity: {
         did: process.env.VIVIM_DID,
-        seed: process.env.VIVIM_SEED,
+        seed: process.env.VIVIM_SEED ? new TextEncoder().encode(process.env.VIVIM_SEED) : undefined,
       },
       network: {
         enableP2P: process.env.VIVIM_P2P_ENABLED !== 'false',

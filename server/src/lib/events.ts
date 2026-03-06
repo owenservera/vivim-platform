@@ -7,7 +7,7 @@ class AppEventBus extends EventEmitter {
     this.setMaxListeners(20);
   }
 
-  emit(event, ...args) {
+  emit(event: string, ...args: any[]) {
     logger.debug({ event }, 'EventBus: emit');
     return super.emit(event, ...args);
   }

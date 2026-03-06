@@ -16,7 +16,7 @@ import {
 /**
  * Friend status
  */
-export type FriendStatus = 'pending' | 'rejected' | '' | 'acceptedblocked';
+export type FriendStatus = 'pending' | 'rejected' | 'accepted' | 'blocked';
 
 /**
  * Follow status
@@ -195,6 +195,7 @@ export class SocialNode implements SocialNodeAPI {
         nodeId: this.getNodeId(),
         messageId: envelope.header.id,
         timestamp: Date.now(),
+        data: payload as any
       });
 
       const latency = Date.now() - startTime;

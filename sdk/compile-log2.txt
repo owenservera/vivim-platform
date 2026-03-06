@@ -1,0 +1,408 @@
+$ tsc
+src/apps/acu-processor/index.ts(63,86): error TS2551: Property 'authorId' does not exist on type 'ChainEvent'. Did you mean 'author'?
+src/bun/server.ts(18,19): error TS2314: Generic type 'Server<WebSocketData>' requires 1 type argument(s).
+src/bun/server.ts(43,45): error TS2314: Generic type 'Server<WebSocketData>' requires 1 type argument(s).
+src/cli/agent-cli.ts(336,41): error TS2551: Property 'sendMessage' does not exist on type 'AIChatNode'. Did you mean 'editMessage'?
+src/cli/agent-cli.ts(530,7): error TS2322: Type 'T | { message: string; }' is not assignable to type 'T'.
+  'T' could be instantiated with an arbitrary type which could be unrelated to 'T | { message: string; }'.
+src/cli/agent-cli.ts(724,26): error TS2345: Argument of type '{ command: string; error: string; }' is not assignable to parameter of type 'string'.
+src/cli/agent-cli.ts(794,19): error TS1361: 'VivimSDK' cannot be used as a value because it was imported using 'import type'.
+src/cli/self-design-commands.ts(24,7): error TS2341: Property 'register' is private and only accessible within class 'AIAgentCLI'.
+src/cli/self-design-commands.ts(48,7): error TS2341: Property 'register' is private and only accessible within class 'AIAgentCLI'.
+src/cli/self-design-commands.ts(88,7): error TS2341: Property 'register' is private and only accessible within class 'AIAgentCLI'.
+src/cli/self-design-commands.ts(110,7): error TS2341: Property 'register' is private and only accessible within class 'AIAgentCLI'.
+src/cli/self-design-commands.ts(131,7): error TS2341: Property 'register' is private and only accessible within class 'AIAgentCLI'.
+src/cli/self-design-commands.ts(159,7): error TS2341: Property 'register' is private and only accessible within class 'AIAgentCLI'.
+src/cli/self-design-commands.ts(185,7): error TS2341: Property 'register' is private and only accessible within class 'AIAgentCLI'.
+src/cli/self-design-commands.ts(213,7): error TS2341: Property 'register' is private and only accessible within class 'AIAgentCLI'.
+src/cli/self-design-commands.ts(241,7): error TS2341: Property 'register' is private and only accessible within class 'AIAgentCLI'.
+src/cli/self-design-commands.ts(270,7): error TS2341: Property 'register' is private and only accessible within class 'AIAgentCLI'.
+src/cli/self-design-commands.ts(291,7): error TS2341: Property 'register' is private and only accessible within class 'AIAgentCLI'.
+src/cli/self-design-commands.ts(324,7): error TS2341: Property 'register' is private and only accessible within class 'AIAgentCLI'.
+src/cli/self-design-commands.ts(348,7): error TS2341: Property 'register' is private and only accessible within class 'AIAgentCLI'.
+src/cli/self-design-commands.ts(369,7): error TS2341: Property 'register' is private and only accessible within class 'AIAgentCLI'.
+src/cli/self-design-commands.ts(390,7): error TS2341: Property 'register' is private and only accessible within class 'AIAgentCLI'.
+src/cli/self-design-commands.ts(406,7): error TS2341: Property 'register' is private and only accessible within class 'AIAgentCLI'.
+src/cli/vivim-mcp.ts(121,80): error TS2345: Argument of type 'string | true' is not assignable to parameter of type 'string'.
+  Type 'boolean' is not assignable to type 'string'.
+src/cli/vivim-mcp.ts(124,5): error TS2322: Type 'string | true' is not assignable to type 'string'.
+  Type 'boolean' is not assignable to type 'string'.
+src/cli/vivim-mcp.ts(130,102): error TS2339: Property 'split' does not exist on type 'string | true'.
+  Property 'split' does not exist on type 'true'.
+src/cli/vivim-mcp.ts(133,99): error TS2339: Property 'split' does not exist on type 'string | true'.
+  Property 'split' does not exist on type 'true'.
+src/cli/vivim-mcp.ts(136,5): error TS2322: Type 'string | true' is not assignable to type 'string'.
+  Type 'boolean' is not assignable to type 'string'.
+src/cli/vivim-mcp.ts(141,18): error TS2345: Argument of type '{ error: any; }' is not assignable to parameter of type 'string'.
+src/cli/vivim-mcp.ts(154,18): error TS2345: Argument of type '{ error: any; }' is not assignable to parameter of type 'string'.
+src/core/anchor.ts(11,15): error TS2459: Module '"./sdk.js"' declares 'Identity' locally, but it is not exported.
+src/core/anchor.ts(501,3): error TS2484: Export declaration conflicts with exported declaration of 'AnchorEvents'.
+src/core/anchor.ts(502,3): error TS2484: Export declaration conflicts with exported declaration of 'AnchorConfig'.
+src/core/anchor.ts(503,3): error TS2484: Export declaration conflicts with exported declaration of 'StateManifest'.
+src/core/crdt-schema.ts(11,37): error TS2395: Individual declarations in merged declaration 'VectorClock' must be all exported or all local.
+src/core/crdt-schema.ts(432,18): error TS2395: Individual declarations in merged declaration 'VectorClock' must be all exported or all local.
+src/core/crdt-schema.ts(615,26): error TS2339: Property 'encodeStateVector' does not exist on type 'Doc'.
+src/core/database.ts(530,16): error TS2339: Property 'sourceId' does not exist on type 'MemoryLink'.
+src/core/database.ts(530,40): error TS2339: Property 'targetId' does not exist on type 'MemoryLink'.
+src/core/database.ts(538,25): error TS2339: Property 'id' does not exist on type 'MemoryLink'.
+src/core/database.ts(543,22): error TS2339: Property 'sourceId' does not exist on type 'MemoryLink'.
+src/core/database.ts(543,49): error TS2339: Property 'targetId' does not exist on type 'MemoryLink'.
+src/core/db-schema.ts(840,35): error TS2507: Type 'typeof Error' is not a constructor function type.
+src/core/db-schema.ts(846,12): error TS2339: Property 'name' does not exist on type 'VivimError'.
+src/core/db-schema.ts(856,12): error TS2339: Property 'name' does not exist on type 'SignatureError'.
+src/core/db-schema.ts(864,12): error TS2339: Property 'name' does not exist on type 'NotFoundError'.
+src/core/db-schema.ts(872,12): error TS2339: Property 'name' does not exist on type 'ValidationError'.
+src/core/db-schema.ts(880,12): error TS2339: Property 'name' does not exist on type 'StorageError'.
+src/core/db-schema.ts(888,12): error TS2339: Property 'name' does not exist on type 'SyncError'.
+src/core/l0-storage.ts(355,13): error TS2322: Type '"genesis"' is not assignable to type 'TrustLevel'.
+src/core/l0-storage.ts(356,13): error TS2322: Type '"bootstrap"' is not assignable to type 'TrustLevel'.
+src/core/l0-storage.ts(357,13): error TS2322: Type '"primary"' is not assignable to type 'TrustLevel'.
+src/core/l0-storage.ts(358,13): error TS2322: Type '"secondary"' is not assignable to type 'TrustLevel'.
+src/core/l0-storage.ts(359,13): error TS2322: Type '"unverified"' is not assignable to type 'TrustLevel'.
+src/core/l0-storage.ts(360,13): error TS2322: Type '"suspended"' is not assignable to type 'TrustLevel'.
+src/core/l0-storage.ts(454,7): error TS2322: Type '"genesis"' is not assignable to type 'TrustLevel'.
+src/core/sdk.ts(33,76): error TS2344: Type 'SDKEventMap' does not satisfy the constraint 'EventMap'.
+  Index signature for type 'string' is missing in type 'SDKEventMap'.
+src/core/sdk.ts(435,10): error TS2339: Property 'removeAllListeners' does not exist on type 'VivimSDK'.
+src/core/types.ts(6,34): error TS2307: Cannot find module 'json-schema' or its corresponding type declarations.
+src/core/wallet-service.ts(150,19): error TS2345: Argument of type 'keyof WalletEventMap' is not assignable to parameter of type 'keyof SDKEventMap'.
+  Type '"wallet:created"' is not assignable to type 'keyof SDKEventMap'.
+src/core/wallet-service.ts(186,19): error TS2345: Argument of type 'keyof WalletEventMap' is not assignable to parameter of type 'keyof SDKEventMap'.
+  Type '"wallet:created"' is not assignable to type 'keyof SDKEventMap'.
+src/core/wallet-service.ts(354,19): error TS2345: Argument of type 'keyof WalletEventMap' is not assignable to parameter of type 'keyof SDKEventMap'.
+  Type '"wallet:created"' is not assignable to type 'keyof SDKEventMap'.
+src/core/wallet-service.ts(374,19): error TS2345: Argument of type 'keyof WalletEventMap' is not assignable to parameter of type 'keyof SDKEventMap'.
+  Type '"wallet:created"' is not assignable to type 'keyof SDKEventMap'.
+src/core/wallet-service.ts(394,19): error TS2345: Argument of type 'keyof WalletEventMap' is not assignable to parameter of type 'keyof SDKEventMap'.
+  Type '"wallet:created"' is not assignable to type 'keyof SDKEventMap'.
+src/extension/tool-ui-adapter.ts(66,14): error TS2322: Type 'ZodObject<{ title: ZodString; description: ZodString; action_type: ZodString; risk_level: ZodEnum<["low", "medium", "high", "critical"]>; requested_by: ZodString; details: ZodRecord<...>; suggestions: ZodOptional<...>; alternatives: ZodOptional<...>; }, "strip", ZodTypeAny, { ...; }, { ...; }>' is not assignable to type 'ZodType<ApprovalCardPayload, ZodTypeDef, ApprovalCardPayload>'.
+  Types of property '_type' are incompatible.
+    Type '{ description?: string; title?: string; action_type?: string; risk_level?: "critical" | "high" | "low" | "medium"; requested_by?: string; details?: Record<string, unknown>; suggestions?: string[]; alternatives?: string[]; }' is not assignable to type 'ApprovalCardPayload'.
+      Property 'title' is optional in type '{ description?: string; title?: string; action_type?: string; risk_level?: "critical" | "high" | "low" | "medium"; requested_by?: string; details?: Record<string, unknown>; suggestions?: string[]; alternatives?: string[]; }' but required in type 'ApprovalCardPayload'.
+src/extension/tool-ui-adapter.ts(131,14): error TS2322: Type 'ZodObject<{ title: ZodString; columns: ZodArray<ZodObject<{ key: ZodString; header: ZodString; type: ZodEnum<["text", "number", "date", "boolean", "link"]>; sortable: ZodOptional<...>; filterable: ZodOptional<...>; width: ZodOptional<...>; }, "strip", ZodTypeAny, { ...; }, { ...; }>, "many">; rows: ZodArray<...>; to...' is not assignable to type 'ZodType<DataTablePayload, ZodTypeDef, DataTablePayload>'.
+  Types of property '_type' are incompatible.
+    Type '{ title?: string; columns?: { type?: "number" | "boolean" | "text" | "link" | "date"; header?: string; key?: string; sortable?: boolean; filterable?: boolean; width?: string; }[]; rows?: Record<string, unknown>[]; total_rows?: number; page?: number; page_size?: number; }' is not assignable to type 'DataTablePayload'.
+      Property 'title' is optional in type '{ title?: string; columns?: { type?: "number" | "boolean" | "text" | "link" | "date"; header?: string; key?: string; sortable?: boolean; filterable?: boolean; width?: string; }[]; rows?: Record<string, unknown>[]; total_rows?: number; page?: number; page_size?: number; }' but required in type 'DataTablePayload'.
+src/extension/tool-ui-adapter.ts(188,14): error TS2322: Type 'ZodObject<{ title: ZodString; type: ZodEnum<["line", "bar", "pie", "scatter", "area"]>; x_axis: ZodString; y_axis: ZodString; series: ZodArray<ZodObject<{ name: ZodString; data: ZodArray<...>; color: ZodOptional<...>; }, "strip", ZodTypeAny, { ...; }, { ...; }>, "many">; labels: ZodOptional<...>; options: ZodOptiona...' is not assignable to type 'ZodType<ChartPayload, ZodTypeDef, ChartPayload>'.
+  Types of property '_type' are incompatible.
+    Type '{ type?: "line" | "bar" | "pie" | "scatter" | "area"; options?: { stacked?: boolean; legend?: boolean; grid?: boolean; }; title?: string; x_axis?: string; y_axis?: string; series?: { name?: string; data?: number[]; color?: string; }[]; labels?: string[]; }' is not assignable to type 'ChartPayload'.
+      Property 'title' is optional in type '{ type?: "line" | "bar" | "pie" | "scatter" | "area"; options?: { stacked?: boolean; legend?: boolean; grid?: boolean; }; title?: string; x_axis?: string; y_axis?: string; series?: { name?: string; data?: number[]; color?: string; }[]; labels?: string[]; }' but required in type 'ChartPayload'.
+src/extension/tool-ui-adapter.ts(239,14): error TS2322: Type 'ZodObject<{ code: ZodString; language: ZodString; filename: ZodOptional<ZodString>; highlights: ZodOptional<ZodArray<ZodNumber, "many">>; showLineNumbers: ZodOptional<...>; theme: ZodOptional<...>; }, "strip", ZodTypeAny, { ...; }, { ...; }>' is not assignable to type 'ZodType<CodeBlockPayload, ZodTypeDef, CodeBlockPayload>'.
+  Types of property '_type' are incompatible.
+    Type '{ code?: string; language?: string; filename?: string; highlights?: number[]; showLineNumbers?: boolean; theme?: "light" | "dark"; }' is not assignable to type 'CodeBlockPayload'.
+      Property 'code' is optional in type '{ code?: string; language?: string; filename?: string; highlights?: number[]; showLineNumbers?: boolean; theme?: "light" | "dark"; }' but required in type 'CodeBlockPayload'.
+src/index.ts(16,1): error TS2308: Module './core/index.js' has already exported a member named 'TrustLevel'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(25,1): error TS2308: Module './core/index.js' has already exported a member named 'ValidationResult'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(44,1): error TS2308: Module './core/index.js' has already exported a member named 'MessageDirection'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(44,1): error TS2308: Module './core/index.js' has already exported a member named 'MessageEnvelope'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(44,1): error TS2308: Module './core/index.js' has already exported a member named 'MessageFlags'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(44,1): error TS2308: Module './core/index.js' has already exported a member named 'MessagePriority'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(44,1): error TS2308: Module './core/index.js' has already exported a member named 'PROTOCOL_VERSION'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(44,1): error TS2308: Module './core/index.js' has already exported a member named 'Timestamp'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(44,1): error TS2308: Module './utils/index.js' has already exported a member named 'CacheConfig'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(44,1): error TS2308: Module './utils/index.js' has already exported a member named 'CacheEntry'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(44,1): error TS2308: Module './utils/index.js' has already exported a member named 'createCache'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(47,1): error TS2308: Module './protocols/index.js' has already exported a member named 'MessageMetadata'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(47,1): error TS2308: Module './protocols/index.js' has already exported a member named 'MessageRole'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(60,3): error TS2305: Module '"./core/index.js"' has no exported member 'SmartWallet'.
+src/index.ts(61,3): error TS2305: Module '"./core/index.js"' has no exported member 'SmartWalletConfig'.
+src/index.ts(62,3): error TS2305: Module '"./core/index.js"' has no exported member 'UserOperation'.
+src/index.ts(63,3): error TS2305: Module '"./core/index.js"' has no exported member 'Call'.
+src/index.ts(64,3): error TS2305: Module '"./core/index.js"' has no exported member 'FeeQuote'.
+src/index.ts(65,3): error TS2305: Module '"./core/index.js"' has no exported member 'SessionKey'.
+src/index.ts(66,3): error TS2305: Module '"./core/index.js"' has no exported member 'RecoveryConfig'.
+src/index.ts(67,3): error TS2305: Module '"./core/index.js"' has no exported member 'LinkedAccount'.
+src/index.ts(68,3): error TS2305: Module '"./core/index.js"' has no exported member 'VivimUserID'.
+src/index.ts(69,3): error TS2305: Module '"./core/index.js"' has no exported member 'WalletType'.
+src/index.ts(70,3): error TS2305: Module '"./core/index.js"' has no exported member 'SmartAccountType'.
+src/index.ts(71,3): error TS2305: Module '"./core/index.js"' has no exported member 'WalletEventMap'.
+src/index.ts(72,3): error TS2305: Module '"./core/index.js"' has no exported member 'CreateWalletOptions'.
+src/mcp/server.ts(68,29): error TS2345: Argument of type '{ identity?: { did?: string; seed?: string; }; network?: { enableP2P?: boolean; }; storage?: { encryption?: boolean; }; }' is not assignable to parameter of type 'VivimSDKConfig'.
+  The types of 'identity.seed' are incompatible between these types.
+    Type 'string' is not assignable to type 'Uint8Array<ArrayBufferLike>'.
+src/mcp/server.ts(77,9): error TS2741: Property 'onMessage' is missing in type 'StdioTransport' but required in type 'MCPTransport'.
+src/mcp/server.ts(92,9): error TS2322: Type 'HTTPTransport' is not assignable to type 'MCPTransport'.
+  Types of property 'send' are incompatible.
+    Type '(message: TransportMessage) => Promise<SendResult>' is not assignable to type '(message: JSONRPCResponse | JSONRPCNotification) => void'.
+      Types of parameters 'message' and 'message' are incompatible.
+        Type 'JSONRPCResponse | JSONRPCNotification' is not assignable to type 'TransportMessage'.
+          Type 'JSONRPCResponse' is missing the following properties from type 'TransportMessage': type, payload, timestamp
+src/mcp/server.ts(103,9): error TS2322: Type 'StreamableTransport' is not assignable to type 'MCPTransport'.
+  Types of property 'send' are incompatible.
+    Type '(message: TransportMessage) => Promise<SendResult>' is not assignable to type '(message: JSONRPCResponse | JSONRPCNotification) => void'.
+      Types of parameters 'message' and 'message' are incompatible.
+        Type 'JSONRPCResponse | JSONRPCNotification' is not assignable to type 'TransportMessage'.
+          Type 'JSONRPCResponse' is missing the following properties from type 'TransportMessage': type, payload, timestamp
+src/mcp/server.ts(114,25): error TS2339: Property 'onMessage' does not exist on type 'LibP2PTransport'.
+src/mcp/server.ts(115,9): error TS2741: Property 'onMessage' is missing in type 'LibP2PTransport' but required in type 'MCPTransport'.
+src/mcp/server.ts(287,38): error TS2345: Argument of type '(params: Record<string, unknown>, context: MCPContext) => Promise<unknown>' is not assignable to parameter of type 'MCPToolHandler'.
+  Type 'Promise<unknown>' is not assignable to type 'Promise<MCPResponse>'.
+    Property 'content' is missing in type '{}' but required in type 'MCPResponse'.
+src/mcp/server.ts(322,30): error TS2367: This comparison appears to be unintentional because the types '"error" | "info" | "warn"' and '"debug"' have no overlap.
+src/mcp/tools/chat.ts(199,37): error TS2551: Property 'sendMessage' does not exist on type 'AIChatNode'. Did you mean 'editMessage'?
+src/mcp/tools/chat.ts(273,7): error TS2554: Expected 1 arguments, but got 2.
+src/mcp/tools/chat.ts(283,34): error TS2339: Property 'messages' does not exist on type 'Conversation'.
+src/mcp/tools/content.ts(67,7): error TS2345: Argument of type '"comment" | "post" | "article"' is not assignable to parameter of type 'ContentType'.
+  Type '"comment"' is not assignable to type 'ContentType'.
+src/mcp/tools/content.ts(83,30): error TS2339: Property 'createdAt' does not exist on type 'ContentObject'.
+src/mcp/tools/content.ts(148,7): error TS2322: Type '"following" | "popular" | "recent"' is not assignable to type '"circle" | "following" | "discover" | "trending"'.
+  Type '"popular"' is not assignable to type '"circle" | "following" | "discover" | "trending"'.
+src/mcp/tools/content.ts(159,25): error TS2551: Property 'authorId' does not exist on type 'ContentObject'. Did you mean 'author'?
+src/mcp/tools/content.ts(161,24): error TS2339: Property 'content' does not exist on type 'ContentObject'.
+src/mcp/tools/content.ts(163,26): error TS2339: Property 'createdAt' does not exist on type 'ContentObject'.
+src/mcp/tools/content.ts(238,7): error TS2322: Type 'string[]' is not assignable to type 'ContentType[]'.
+  Type 'string' is not assignable to type 'ContentType'.
+src/mcp/tools/content.ts(248,25): error TS2551: Property 'authorId' does not exist on type 'ContentObject'. Did you mean 'author'?
+src/mcp/tools/content.ts(250,24): error TS2339: Property 'content' does not exist on type 'ContentObject'.
+src/mcp/tools/content.ts(251,26): error TS2339: Property 'createdAt' does not exist on type 'ContentObject'.
+src/mcp/tools/identity.ts(107,7): error TS2322: Type 'string' is not assignable to type 'Uint8Array<ArrayBufferLike>'.
+src/mcp/tools/identity.ts(108,7): error TS2322: Type 'string' is not assignable to type '"Ed25519" | "secp256k1"'.
+src/mcp/tools/memory.ts(150,7): error TS2322: Type 'string[]' is not assignable to type 'MemoryType[]'.
+  Type 'string' is not assignable to type 'MemoryType'.
+src/mcp/tools/memory.ts(234,7): error TS2322: Type 'string[]' is not assignable to type 'MemoryType[]'.
+  Type 'string' is not assignable to type 'MemoryType'.
+src/mcp/tools/social.ts(329,47): error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.
+src/mcp/tools/social.ts(331,47): error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.
+src/mcp/tools/social.ts(334,55): error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.
+src/mcp/tools/social.ts(335,55): error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.
+src/mcp/tools/social.ts(336,57): error TS2339: Property 'did' does not exist on type 'string'.
+src/mcp/tools/social.ts(337,58): error TS2339: Property 'did' does not exist on type 'string'.
+src/mcp/tools/storage.ts(114,21): error TS2339: Property 'name' does not exist on type 'PinInfo'.
+src/mcp/tools/storage.ts(116,23): error TS2339: Property 'status' does not exist on type 'PinInfo'.
+src/mcp/tools/storage.ts(117,26): error TS2339: Property 'createdAt' does not exist on type 'PinInfo'.
+src/mcp/tools/storage.ts(178,64): error TS2554: Expected 1 arguments, but got 2.
+src/mcp/tools/storage.ts(187,23): error TS2339: Property 'cid' does not exist on type 'void'.
+src/mcp/tools/storage.ts(188,26): error TS2339: Property 'status' does not exist on type 'void'.
+src/mcp/transports/base-transport.ts(77,16): error TS2339: Property 'on' does not exist on type 'TransportConnection'.
+src/mcp/transports/chunked-transfer.ts(148,11): error TS2741: Property 'chunks' is missing in type '{ sessionId: `${string}-${string}-${string}-${string}-${string}`; contentId: string; totalChunks: number; uploadedChunks: number; totalSize: number; createdAt: number; expiresAt: number; data: Uint8Array<ArrayBufferLike>; chunkSize: number; }' but required in type 'UploadSessionImpl'.
+src/mcp/transports/chunked-transfer.ts(408,62): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+src/mcp/transports/http.ts(27,14): error TS2415: Class 'HTTPTransport' incorrectly extends base class 'BaseTransport'.
+  Types have separate declarations of a private property 'connections'.
+src/mcp/transports/http.ts(145,21): error TS2339: Property 'id' does not exist on type 'JSONRPCRequest | JSONRPCNotification'.
+  Property 'id' does not exist on type 'JSONRPCNotification'.
+src/mcp/transports/http.ts(145,44): error TS2339: Property 'id' does not exist on type 'JSONRPCRequest | JSONRPCNotification'.
+  Property 'id' does not exist on type 'JSONRPCNotification'.
+src/mcp/transports/http.ts(154,62): error TS2339: Property 'id' does not exist on type 'JSONRPCRequest | JSONRPCNotification'.
+  Property 'id' does not exist on type 'JSONRPCNotification'.
+src/mcp/transports/http.ts(159,23): error TS2339: Property 'id' does not exist on type 'JSONRPCRequest | JSONRPCNotification'.
+  Property 'id' does not exist on type 'JSONRPCNotification'.
+src/mcp/transports/index.ts(18,10): error TS2300: Duplicate identifier 'MultiTransport'.
+src/mcp/transports/index.ts(18,26): error TS2300: Duplicate identifier 'createMultiTransport'.
+src/mcp/transports/index.ts(22,10): error TS2300: Duplicate identifier 'MultiTransport'.
+src/mcp/transports/index.ts(22,26): error TS2300: Duplicate identifier 'createMultiTransport'.
+src/mcp/transports/libp2p-transport.ts(75,14): error TS2415: Class 'LibP2PTransport' incorrectly extends base class 'BaseTransport'.
+  Types have separate declarations of a private property 'connections'.
+src/mcp/transports/libp2p-transport.ts(153,39): error TS2339: Property 'remoteAddresses' does not exist on type 'TransportConfig'.
+src/mcp/transports/libp2p-transport.ts(162,44): error TS2345: Argument of type '{ nodeType: string; roles: string[]; listenAddresses: string[]; bootstrapPeers: any; enableWebRTC: boolean; enableDHT: boolean; enableGossipsub: boolean; enableMDNS: boolean; minConnections: number; maxConnections: number; }' is not assignable to parameter of type 'Partial<NetworkNodeConfig>'.
+  Types of property 'nodeType' are incompatible.
+    Type 'string' is not assignable to type '"bootstrap" | "relay" | "indexer" | "storage" | "edge" | "client"'.
+src/mcp/transports/multi-transport.ts(29,12): error TS2416: Property 'type' in type 'MultiTransport' is not assignable to the same property in base type 'BaseTransport'.
+  Type '"multi"' is not assignable to type 'TransportType'.
+src/mcp/transports/multi-transport.ts(242,12): error TS2416: Property 'type' in type 'FallbackTransportChain' is not assignable to the same property in base type 'TransportProtocol'.
+  Type '"fallback"' is not assignable to type 'TransportType'.
+src/mcp/transports/multi-transport.ts(272,3): error TS2416: Property 'removeAllListeners' in type 'FallbackTransportChain' is not assignable to the same property in base type 'EventEmitter<DefaultEventMap>'.
+  Type '() => void' is not assignable to type '(eventName?: string | symbol) => this'.
+    Type 'void' is not assignable to type 'this'.
+      'this' could be instantiated with an arbitrary type which could be unrelated to 'void'.
+src/mcp/transports/multi-transport.ts(272,3): error TS2416: Property 'removeAllListeners' in type 'FallbackTransportChain' is not assignable to the same property in base type 'TransportProtocol'.
+  Type '() => void' is not assignable to type '(eventName?: string | symbol) => this'.
+    Type 'void' is not assignable to type 'this'.
+      'this' could be instantiated with an arbitrary type which could be unrelated to 'void'.
+src/mcp/transports/social-transport.ts(210,21): error TS2300: Duplicate identifier 'isActive'.
+src/mcp/transports/social-transport.ts(211,21): error TS2300: Duplicate identifier 'localDID'.
+src/mcp/transports/social-transport.ts(216,7): error TS2300: Duplicate identifier 'isActive'.
+src/mcp/transports/social-transport.ts(220,7): error TS2300: Duplicate identifier 'localDID'.
+src/mcp/transports/social-transport.ts(254,14): error TS2654: Non-abstract class 'SocialTransportAdapter' is missing implementations for the following members of 'BaseSocialTransport': 'isActive', 'localDID'.
+src/mcp/transports/social-transport.ts(293,9): error TS2353: Object literal may only specify known properties, and 'message' does not exist in type 'TransportMessage'.
+src/mcp/transports/social-transport.ts(310,9): error TS2353: Object literal may only specify known properties, and 'message' does not exist in type 'TransportMessage'.
+src/mcp/transports/social-transport.ts(328,9): error TS2353: Object literal may only specify known properties, and 'event' does not exist in type 'TransportMessage'.
+src/mcp/transports/social-transport.ts(343,9): error TS2353: Object literal may only specify known properties, and 'from' does not exist in type 'TransportMessage'.
+src/mcp/transports/social-transport.ts(367,9): error TS2353: Object literal may only specify known properties, and 'userId' does not exist in type 'TransportMessage'.
+src/mcp/transports/social-transport.ts(382,9): error TS2353: Object literal may only specify known properties, and 'userId' does not exist in type 'TransportMessage'.
+src/mcp/transports/stdio.ts(8,3): error TS2305: Module '"./types.js"' has no exported member 'MCPTransport'.
+src/mcp/transports/stdio.ts(9,3): error TS2305: Module '"./types.js"' has no exported member 'JSONRPCRequest'.
+src/mcp/transports/stdio.ts(10,3): error TS2305: Module '"./types.js"' has no exported member 'JSONRPCResponse'.
+src/mcp/transports/stdio.ts(11,3): error TS2305: Module '"./types.js"' has no exported member 'JSONRPCNotification'.
+src/mcp/transports/stdio.ts(57,38): error TS2552: Cannot find name 'trimed'. Did you mean 'trimmed'?
+src/mcp/transports/streamable.ts(70,16): error TS2339: Property 'on' does not exist on type 'StreamSession'.
+src/mcp/transports/streamable.ts(76,16): error TS2339: Property 'on' does not exist on type 'StreamSession'.
+src/mcp/transports/streamable.ts(205,36): error TS2304: Cannot find name 'EventEmitter'.
+src/mcp/transports/streamable.ts(251,10): error TS2339: Property 'emit' does not exist on type 'StreamSession'.
+src/mcp/transports/streamable.ts(272,16): error TS2339: Property 'emit' does not exist on type 'StreamSession'.
+src/mcp/transports/streamable.ts(274,16): error TS2339: Property 'emit' does not exist on type 'StreamSession'.
+src/mcp/transports/streamable.ts(293,12): error TS2339: Property 'on' does not exist on type 'SimpleTransportStream'.
+src/mcp/transports/streamable.ts(317,10): error TS2339: Property 'emit' does not exist on type 'StreamSession'.
+src/mcp/transports/streamable.ts(335,36): error TS2304: Cannot find name 'EventEmitter'.
+src/mcp/transports/streamable.ts(365,10): error TS2339: Property 'emit' does not exist on type 'StreamableConnection'.
+src/mcp/transports/websocket.ts(8,21): error TS2307: Cannot find module 'ws' or its corresponding type declarations.
+src/mcp/transports/websocket.ts(158,35): error TS2341: Property 'connections' is private and only accessible within class 'BaseTransport'.
+src/mcp/transports/websocket.ts(197,27): error TS2341: Property 'connections' is private and only accessible within class 'BaseTransport'.
+src/mcp/transports/websocket.ts(266,28): error TS2341: Property 'connections' is private and only accessible within class 'BaseTransport'.
+src/mcp/types.ts(11,3): error TS2300: Duplicate identifier 'serverName'.
+src/mcp/types.ts(12,3): error TS2300: Duplicate identifier 'serverVersion'.
+src/mcp/types.ts(13,3): error TS2300: Duplicate identifier 'transport'.
+src/mcp/types.ts(14,3): error TS2300: Duplicate identifier 'serverName'.
+src/mcp/types.ts(15,3): error TS2300: Duplicate identifier 'serverVersion'.
+src/mcp/types.ts(16,3): error TS2300: Duplicate identifier 'transport'.
+src/mcp/types.ts(16,3): error TS2717: Subsequent property declarations must have the same type.  Property 'transport' must be of type '"libp2p" | "stdio" | "http" | "streamable"', but here has type '"stdio" | "http" | "streamable"'.
+src/nodes/ai-chat-node.ts(240,9): error TS2393: Duplicate function implementation.
+src/nodes/ai-chat-node.ts(392,9): error TS2393: Duplicate function implementation.
+src/nodes/chatlink-nexus-node.ts(231,60): error TS2339: Property 'importId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatlink-nexus-node.ts(236,62): error TS2339: Property 'importId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatlink-nexus-node.ts(241,61): error TS2339: Property 'importId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(372,68): error TS2339: Property 'jobId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(377,65): error TS2339: Property 'jobId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(377,82): error TS2339: Property 'progress' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(382,70): error TS2339: Property 'jobId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(387,69): error TS2339: Property 'jobId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(827,11): error TS2740: Type '{}' is missing the following properties from type 'Record<ExportFormat, number>': custom, "chatgpt-json", "claude-json", "claude-jsonl", and 3 more.
+src/nodes/federation-client-node.ts(573,31): error TS2339: Property 'sendMessage' does not exist on type 'CommunicationProtocol'.
+src/nodes/federation-client-node.ts(577,31): error TS2339: Property 'processMessage' does not exist on type 'CommunicationProtocol'.
+src/nodes/federation-server-node.ts(236,9): error TS2393: Duplicate function implementation.
+src/nodes/federation-server-node.ts(545,31): error TS2339: Property 'sendMessage' does not exist on type 'CommunicationProtocol'.
+src/nodes/federation-server-node.ts(548,9): error TS2393: Duplicate function implementation.
+src/nodes/federation-server-node.ts(549,31): error TS2339: Property 'processMessage' does not exist on type 'CommunicationProtocol'.
+src/nodes/health-monitoring-node.ts(455,77): error TS2339: Property 'heapLimit' does not exist on type 'MemoryUsage'.
+src/nodes/health-monitoring-node.ts(480,49): error TS2339: Property 'heapLimit' does not exist on type 'MemoryUsage'.
+src/nodes/health-monitoring-node.ts(685,31): error TS2339: Property 'sendMessage' does not exist on type 'CommunicationProtocol'.
+src/nodes/health-monitoring-node.ts(689,31): error TS2339: Property 'processMessage' does not exist on type 'CommunicationProtocol'.
+src/nodes/network-monitoring-node.ts(970,31): error TS2339: Property 'sendMessage' does not exist on type 'CommunicationProtocol'.
+src/nodes/network-monitoring-node.ts(974,31): error TS2339: Property 'processMessage' does not exist on type 'CommunicationProtocol'.
+src/nodes/sharing-policy-node.ts(760,9): error TS2322: Type 'boolean | "" | "audience" | "creator" | "nobody"' is not assignable to type 'never'.
+  Type 'false' is not assignable to type 'never'.
+src/nodes/sharing-policy-node.ts(792,31): error TS2339: Property 'sendMessage' does not exist on type 'CommunicationProtocol'.
+src/nodes/sharing-policy-node.ts(796,31): error TS2339: Property 'processMessage' does not exist on type 'CommunicationProtocol'.
+src/nodes/social-node.ts(326,5): error TS2322: Type '"accepted"' is not assignable to type 'FriendStatus'.
+src/nodes/social-node.ts(353,11): error TS2367: This comparison appears to be unintentional because the types 'FriendStatus' and '"accepted"' have no overlap.
+src/nodes/social-node.ts(360,11): error TS2322: Type '"accepted"' is not assignable to type 'FriendStatus'.
+src/nodes/social-node.ts(385,9): error TS2367: This comparison appears to be unintentional because the types 'FriendStatus' and '"accepted"' have no overlap.
+src/nodes/sovereign-permissions-node.ts(564,25): error TS2339: Property 'metadata' does not exist on type 'CreateGrantOptions'.
+src/nodes/sovereign-permissions-node.ts(896,37): error TS2345: Argument of type 'PolicyTemplateType' is not assignable to parameter of type '"public_read" | "public_attributed" | "public_forkable" | "open"'.
+  Type '"private"' is not assignable to type '"public_read" | "public_attributed" | "public_forkable" | "open"'.
+src/protocols/activitypub.ts(325,7): error TS2322: Type '(string | { schema: string; toot: string; fediverse: string; })[]' is not assignable to type 'string | string[]'.
+  Type '(string | { schema: string; toot: string; fediverse: string; })[]' is not assignable to type 'string[]'.
+    Type 'string | { schema: string; toot: string; fediverse: string; }' is not assignable to type 'string'.
+      Type '{ schema: string; toot: string; fediverse: string; }' is not assignable to type 'string'.
+src/protocols/activitypub.ts(352,74): error TS2345: Argument of type 'ActivityPubActor' is not assignable to parameter of type 'string | ActivityPubObject'.
+  Type 'ActivityPubActor' is not assignable to type 'ActivityPubObject'.
+    Types of property 'type' are incompatible.
+      Type 'ActivityPubActorType' is not assignable to type 'ActivityPubObjectType'.
+        Type '"Person"' is not assignable to type 'ActivityPubObjectType'.
+src/protocols/activitypub.ts(368,7): error TS2322: Type '(string | { schema: string; toot: string; fediverse: string; })[]' is not assignable to type 'string | string[]'.
+  Type '(string | { schema: string; toot: string; fediverse: string; })[]' is not assignable to type 'string[]'.
+    Type 'string | { schema: string; toot: string; fediverse: string; }' is not assignable to type 'string'.
+      Type '{ schema: string; toot: string; fediverse: string; }' is not assignable to type 'string'.
+src/protocols/activitypub.ts(456,44): error TS2345: Argument of type 'ActivityPubObject | ActivityPubActivity' is not assignable to parameter of type 'ActivityPubObject'.
+  Type 'ActivityPubActivity' is not assignable to type 'ActivityPubObject'.
+    Types of property 'type' are incompatible.
+      Type 'ActivityPubActivityType' is not assignable to type 'ActivityPubObjectType'.
+        Type '"Accept"' is not assignable to type 'ActivityPubObjectType'.
+src/protocols/activitypub.ts(508,7): error TS2322: Type '(string | { schema: string; toot: string; fediverse: string; })[]' is not assignable to type 'string | string[]'.
+  Type '(string | { schema: string; toot: string; fediverse: string; })[]' is not assignable to type 'string[]'.
+    Type 'string | { schema: string; toot: string; fediverse: string; }' is not assignable to type 'string'.
+      Type '{ schema: string; toot: string; fediverse: string; }' is not assignable to type 'string'.
+src/protocols/activitypub.ts(543,9): error TS2322: Type '(string | { schema: string; toot: string; fediverse: string; })[]' is not assignable to type 'string | string[]'.
+  Type '(string | { schema: string; toot: string; fediverse: string; })[]' is not assignable to type 'string[]'.
+    Type 'string | { schema: string; toot: string; fediverse: string; }' is not assignable to type 'string'.
+      Type '{ schema: string; toot: string; fediverse: string; }' is not assignable to type 'string'.
+src/protocols/activitypub.ts(585,7): error TS2353: Object literal may only specify known properties, and 'orderedItems' does not exist in type 'ActivityPubOutbox'.
+src/protocols/activitypub.ts(597,7): error TS2353: Object literal may only specify known properties, and 'orderedItems' does not exist in type 'ActivityPubInbox'.
+src/protocols/activitypub.ts(639,11): error TS2353: Object literal may only specify known properties, and 'template' does not exist in type 'WebFingerLink'.
+src/protocols/activitypub.ts(701,7): error TS2322: Type '(string | { schema: string; toot: string; fediverse: string; })[]' is not assignable to type 'string | string[]'.
+  Type '(string | { schema: string; toot: string; fediverse: string; })[]' is not assignable to type 'string[]'.
+    Type 'string | { schema: string; toot: string; fediverse: string; }' is not assignable to type 'string'.
+      Type '{ schema: string; toot: string; fediverse: string; }' is not assignable to type 'string'.
+src/protocols/activitypub.ts(723,7): error TS2322: Type '(string | { schema: string; toot: string; fediverse: string; })[]' is not assignable to type 'string | string[]'.
+  Type '(string | { schema: string; toot: string; fediverse: string; })[]' is not assignable to type 'string[]'.
+    Type 'string | { schema: string; toot: string; fediverse: string; }' is not assignable to type 'string'.
+      Type '{ schema: string; toot: string; fediverse: string; }' is not assignable to type 'string'.
+src/protocols/activitypub.ts(741,7): error TS2322: Type '(string | { schema: string; toot: string; fediverse: string; })[]' is not assignable to type 'string | string[]'.
+  Type '(string | { schema: string; toot: string; fediverse: string; })[]' is not assignable to type 'string[]'.
+    Type 'string | { schema: string; toot: string; fediverse: string; }' is not assignable to type 'string'.
+      Type '{ schema: string; toot: string; fediverse: string; }' is not assignable to type 'string'.
+src/protocols/activitypub.ts(759,7): error TS2322: Type '(string | { schema: string; toot: string; fediverse: string; })[]' is not assignable to type 'string | string[]'.
+  Type '(string | { schema: string; toot: string; fediverse: string; })[]' is not assignable to type 'string[]'.
+    Type 'string | { schema: string; toot: string; fediverse: string; }' is not assignable to type 'string'.
+      Type '{ schema: string; toot: string; fediverse: string; }' is not assignable to type 'string'.
+src/protocols/exit-node.ts(11,31): error TS2307: Cannot find module './sdk.js' or its corresponding type declarations.
+src/protocols/exit-node.ts(12,69): error TS2307: Cannot find module './anchor.js' or its corresponding type declarations.
+src/protocols/exit-node.ts(342,7): error TS2741: Property 'endpoints' is missing in type '{ approved: false; cloneId: string; denialReason: string; }' but required in type 'CloneRegistrationResponse'.
+src/protocols/exit-node.ts(351,7): error TS2741: Property 'endpoints' is missing in type '{ approved: false; cloneId: string; denialReason: string; }' but required in type 'CloneRegistrationResponse'.
+src/protocols/exit-node.ts(360,7): error TS2741: Property 'endpoints' is missing in type '{ approved: false; cloneId: string; denialReason: string; }' but required in type 'CloneRegistrationResponse'.
+src/protocols/exit-node.ts(370,7): error TS2741: Property 'endpoints' is missing in type '{ approved: false; cloneId: string; denialReason: string; }' but required in type 'CloneRegistrationResponse'.
+src/protocols/exit-node.ts(381,9): error TS2741: Property 'endpoints' is missing in type '{ approved: false; cloneId: string; denialReason: string; }' but required in type 'CloneRegistrationResponse'.
+src/protocols/exit-node.ts(391,7): error TS2741: Property 'endpoints' is missing in type '{ approved: false; cloneId: string; denialReason: string; }' but required in type 'CloneRegistrationResponse'.
+src/protocols/exit-node.ts(400,7): error TS2741: Property 'endpoints' is missing in type '{ approved: false; cloneId: string; denialReason: string; }' but required in type 'CloneRegistrationResponse'.
+src/protocols/exit-node.ts(645,3): error TS2484: Export declaration conflicts with exported declaration of 'ExitNodeEvents'.
+src/protocols/exit-node.ts(646,3): error TS2484: Export declaration conflicts with exported declaration of 'ExitNodeConfig'.
+src/protocols/index.ts(44,1): error TS2308: Module './chat/index.js' has already exported a member named 'MessagePriority'. Consider explicitly re-exporting to resolve the ambiguity.
+src/protocols/index.ts(44,1): error TS2308: Module './chat/index.js' has already exported a member named 'MessageRole'. Consider explicitly re-exporting to resolve the ambiguity.
+src/protocols/index.ts(44,1): error TS2308: Module './chat/index.js' has already exported a member named 'ToolApprovalStatus'. Consider explicitly re-exporting to resolve the ambiguity.
+src/protocols/storage/index.ts(10,1): error TS2308: Module './distributed-storage.js' has already exported a member named 'QueuedMessage'. Consider explicitly re-exporting to resolve the ambiguity.
+src/protocols/sync.ts(11,31): error TS2307: Cannot find module './sdk.js' or its corresponding type declarations.
+src/protocols/sync.ts(13,28): error TS2307: Cannot find module './anchor.js' or its corresponding type declarations.
+src/protocols/sync.ts(550,3): error TS2484: Export declaration conflicts with exported declaration of 'SyncEvents'.
+src/protocols/sync.ts(551,3): error TS2484: Export declaration conflicts with exported declaration of 'SyncConfig'.
+src/protocols/sync.ts(552,3): error TS2484: Export declaration conflicts with exported declaration of 'SyncEndpoints'.
+src/protocols/sync.ts(553,3): error TS2484: Export declaration conflicts with exported declaration of 'StateUpdate'.
+src/protocols/sync.ts(554,3): error TS2484: Export declaration conflicts with exported declaration of 'UpdateType'.
+src/services/audit-logging-service.ts(430,7): error TS2353: Object literal may only specify known properties, and 'severity' does not exist in type 'Omit<AuditEvent, "id" | "timestamp" | "hash" | "previousHash">'.
+src/services/error-reporting-service.ts(837,31): error TS2339: Property 'sendMessage' does not exist on type 'CommunicationProtocol'.
+src/services/error-reporting-service.ts(841,31): error TS2339: Property 'processMessage' does not exist on type 'CommunicationProtocol'.
+src/services/sharing-encryption-service.ts(224,9): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+src/services/sharing-encryption-service.ts(283,55): error TS2339: Property 'length' does not exist on type 'ArrayBuffer'.
+src/services/sharing-encryption-service.ts(283,74): error TS2339: Property 'length' does not exist on type 'ArrayBuffer'.
+src/services/sharing-encryption-service.ts(284,25): error TS2345: Argument of type 'ArrayBuffer' is not assignable to parameter of type 'ArrayLike<number>'.
+  Property 'length' is missing in type 'ArrayBuffer' but required in type 'ArrayLike<number>'.
+src/services/sharing-encryption-service.ts(286,27): error TS2345: Argument of type 'ArrayBuffer' is not assignable to parameter of type 'ArrayLike<number>'.
+  Property 'length' is missing in type 'ArrayBuffer' but required in type 'ArrayLike<number>'.
+src/services/sharing-encryption-service.ts(286,47): error TS2339: Property 'length' does not exist on type 'ArrayBuffer'.
+src/services/sharing-encryption-service.ts(488,45): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(format: "jwk", keyData: JsonWebKey, algorithm: AlgorithmIdentifier | RsaHashedImportParams | EcKeyImportParams | HmacImportParams | AesKeyAlgorithm, extractable: boolean, keyUsages: readonly KeyUsage[]): Promise<...>', gave the following error.
+    Argument of type '"raw"' is not assignable to parameter of type '"jwk"'.
+  Overload 2 of 2, '(format: "raw" | "pkcs8" | "spki", keyData: BufferSource, algorithm: AlgorithmIdentifier | RsaHashedImportParams | EcKeyImportParams | HmacImportParams | AesKeyAlgorithm, extractable: boolean, keyUsages: KeyUsage[]): Promise<...>', gave the following error.
+    Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+      Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+        Types of property 'buffer' are incompatible.
+          Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+            Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+src/services/sharing-encryption-service.ts(558,31): error TS2339: Property 'sendMessage' does not exist on type 'CommunicationProtocol'.
+src/services/sharing-encryption-service.ts(562,31): error TS2339: Property 'processMessage' does not exist on type 'CommunicationProtocol'.
+src/skills/content/index.ts(51,11): error TS2561: Object literal may only specify known properties, but 'circleId' does not exist in type 'ContentOptions'. Did you mean to write 'circleIds'?
+src/skills/content/index.ts(97,9): error TS2322: Type '"following" | "popular" | "recent"' is not assignable to type '"circle" | "following" | "discover" | "trending"'.
+  Type '"popular"' is not assignable to type '"circle" | "following" | "discover" | "trending"'.
+src/skills/content/index.ts(107,25): error TS2551: Property 'authorId' does not exist on type 'ContentObject'. Did you mean 'author'?
+src/skills/content/index.ts(108,24): error TS2339: Property 'content' does not exist on type 'ContentObject'.
+src/skills/content/index.ts(109,26): error TS2339: Property 'createdAt' does not exist on type 'ContentObject'.
+src/skills/content/index.ts(162,25): error TS2551: Property 'authorId' does not exist on type 'ContentObject'. Did you mean 'author'?
+src/skills/content/index.ts(163,24): error TS2339: Property 'content' does not exist on type 'ContentObject'.
+src/skills/content/index.ts(164,26): error TS2339: Property 'createdAt' does not exist on type 'ContentObject'.
+src/skills/index.ts(18,49): error TS2304: Cannot find name 'SkillRegistry'.
+src/skills/index.ts(19,50): error TS2304: Cannot find name 'createMemorySkillLoader'.
+src/skills/index.ts(20,51): error TS2304: Cannot find name 'createContentSkillLoader'.
+src/skills/index.ts(21,52): error TS2304: Cannot find name 'createResearchSkillLoader'.
+src/skills/memory/index.ts(57,9): error TS2322: Type '"fact" | "error" | "semantic" | "concept" | "procedure"' is not assignable to type 'MemoryType'.
+  Type '"fact"' is not assignable to type 'MemoryType'.
+src/skills/memory/index.ts(110,9): error TS2322: Type 'string[]' is not assignable to type 'MemoryType[]'.
+  Type 'string' is not assignable to type 'MemoryType'.
+src/skills/memory/index.ts(168,9): error TS2322: Type '"error"' is not assignable to type 'MemoryType'.
+src/skills/memory/index.ts(218,46): error TS2345: Argument of type '{ content: string; memoryType: "procedural"; tags: string[]; }' is not assignable to parameter of type 'MemoryData'.
+  Property 'category' is missing in type '{ content: string; memoryType: "procedural"; tags: string[]; }' but required in type 'MemoryData'.
+src/skills/research/index.ts(54,46): error TS2345: Argument of type '{ content: string; memoryType: "semantic"; tags: string[]; }' is not assignable to parameter of type 'MemoryData'.
+  Property 'category' is missing in type '{ content: string; memoryType: "semantic"; tags: string[]; }' but required in type 'MemoryData'.
+src/skills/research/index.ts(175,9): error TS2322: Type '"concept"' is not assignable to type 'MemoryType'.
+src/tokens/standards/access-token.ts(10,3): error TS2395: Individual declarations in merged declaration 'AccessToken' must be all exported or all local.
+src/tokens/standards/access-token.ts(10,3): error TS2440: Import declaration conflicts with local declaration of 'AccessToken'.
+src/tokens/standards/access-token.ts(75,14): error TS2395: Individual declarations in merged declaration 'AccessToken' must be all exported or all local.
+src/tokens/standards/storage-token.ts(10,3): error TS2395: Individual declarations in merged declaration 'StorageToken' must be all exported or all local.
+src/tokens/standards/storage-token.ts(10,3): error TS2440: Import declaration conflicts with local declaration of 'StorageToken'.
+src/tokens/standards/storage-token.ts(75,14): error TS2395: Individual declarations in merged declaration 'StorageToken' must be all exported or all local.
+src/tokens/standards/storage-token.ts(290,7): error TS2353: Object literal may only specify known properties, and 'timestamp' does not exist in type '{ tokenId: bigint; account: string; amount: bigint; reason: string; }'.

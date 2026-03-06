@@ -11,8 +11,8 @@ import type {
   TokenAllowance,
   MintTokenParams,
   BurnTokenParams,
-} from './types.js';
-import { TokenFactory } from './factory/token-factory.js';
+} from '../types.js';
+import { TokenFactory } from '../factory/token-factory.js';
 
 /**
  * Token Wallet Configuration
@@ -331,5 +331,12 @@ export class TokenWallet {
    */
   get tokenFactory(): TokenFactory {
     return this.config.tokenFactory;
+  }
+  /**
+   * Get token balances tokenType
+   */
+  private async _getTokenBalances(tokenType: TokenType): Promise<TokenBalance[]> {
+    // Stub implementation
+    return [];
   }
 }

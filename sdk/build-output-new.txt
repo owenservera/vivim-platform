@@ -1,0 +1,164 @@
+$ tsc
+src/apps/acu-processor/index.ts(63,86): error TS2551: Property 'authorId' does not exist on type 'ChainEvent'. Did you mean 'author'?
+src/apps/publishing-agent/index.ts(4,10): error TS2305: Module '"../../index.js"' has no exported member 'AIGitIntegration'.
+src/bun/server.ts(18,19): error TS2314: Generic type 'Server<WebSocketData>' requires 1 type argument(s).
+src/bun/server.ts(43,45): error TS2314: Generic type 'Server<WebSocketData>' requires 1 type argument(s).
+src/cli/vivim-mcp.ts(121,80): error TS2345: Argument of type 'string | true' is not assignable to parameter of type 'string'.
+  Type 'boolean' is not assignable to type 'string'.
+src/cli/vivim-mcp.ts(124,5): error TS2322: Type 'string | true' is not assignable to type 'string'.
+  Type 'boolean' is not assignable to type 'string'.
+src/cli/vivim-mcp.ts(141,18): error TS2345: Argument of type '{ error: any; }' is not assignable to parameter of type 'string'.
+src/cli/vivim-mcp.ts(154,18): error TS2345: Argument of type '{ error: any; }' is not assignable to parameter of type 'string'.
+src/cli/vivim-node.ts(11,3): error TS2305: Module '"../index.js"' has no exported member 'AcuProcessorApp'.
+src/cli/vivim-node.ts(12,3): error TS2305: Module '"../index.js"' has no exported member 'OmniFeedApp'.
+src/cli/vivim-node.ts(13,3): error TS2305: Module '"../index.js"' has no exported member 'CircleEngineApp'.
+src/cli/vivim-node.ts(14,3): error TS2305: Module '"../index.js"' has no exported member 'AiDocumentationApp'.
+src/cli/vivim-node.ts(15,3): error TS2305: Module '"../index.js"' has no exported member 'CryptoEngineApp'.
+src/cli/vivim-node.ts(16,3): error TS2305: Module '"../index.js"' has no exported member 'AssistantEngineApp'.
+src/cli/vivim-node.ts(17,3): error TS2305: Module '"../index.js"' has no exported member 'ToolEngineApp'.
+src/cli/vivim-node.ts(18,3): error TS2305: Module '"../index.js"' has no exported member 'PublicDashboardApp'.
+src/cli/vivim-node.ts(19,3): error TS2305: Module '"../index.js"' has no exported member 'PublishingAgentApp'.
+src/cli/vivim-node.ts(20,3): error TS2305: Module '"../index.js"' has no exported member 'RoadmapEngineApp'.
+src/core/crdt-schema.ts(11,37): error TS2395: Individual declarations in merged declaration 'VectorClock' must be all exported or all local.
+src/core/crdt-schema.ts(432,18): error TS2395: Individual declarations in merged declaration 'VectorClock' must be all exported or all local.
+src/core/crdt-schema.ts(615,26): error TS2339: Property 'encodeStateVector' does not exist on type 'Doc'.
+src/extension/tool-ui-adapter.ts(66,14): error TS2322: Type 'ZodObject<{ title: ZodString; description: ZodString; action_type: ZodString; risk_level: ZodEnum<["low", "medium", "high", "critical"]>; requested_by: ZodString; details: ZodRecord<...>; suggestions: ZodOptional<...>; alternatives: ZodOptional<...>; }, "strip", ZodTypeAny, { ...; }, { ...; }>' is not assignable to type 'ZodType<ApprovalCardPayload, ZodTypeDef, ApprovalCardPayload>'.
+  Types of property '_type' are incompatible.
+    Type '{ description?: string; title?: string; action_type?: string; risk_level?: "critical" | "high" | "low" | "medium"; requested_by?: string; details?: Record<string, unknown>; suggestions?: string[]; alternatives?: string[]; }' is not assignable to type 'ApprovalCardPayload'.
+      Property 'title' is optional in type '{ description?: string; title?: string; action_type?: string; risk_level?: "critical" | "high" | "low" | "medium"; requested_by?: string; details?: Record<string, unknown>; suggestions?: string[]; alternatives?: string[]; }' but required in type 'ApprovalCardPayload'.
+src/extension/tool-ui-adapter.ts(131,14): error TS2322: Type 'ZodObject<{ title: ZodString; columns: ZodArray<ZodObject<{ key: ZodString; header: ZodString; type: ZodEnum<["text", "number", "date", "boolean", "link"]>; sortable: ZodOptional<...>; filterable: ZodOptional<...>; width: ZodOptional<...>; }, "strip", ZodTypeAny, { ...; }, { ...; }>, "many">; rows: ZodArray<...>; to...' is not assignable to type 'ZodType<DataTablePayload, ZodTypeDef, DataTablePayload>'.
+  Types of property '_type' are incompatible.
+    Type '{ title?: string; columns?: { type?: "number" | "boolean" | "text" | "link" | "date"; header?: string; key?: string; sortable?: boolean; filterable?: boolean; width?: string; }[]; rows?: Record<string, unknown>[]; total_rows?: number; page?: number; page_size?: number; }' is not assignable to type 'DataTablePayload'.
+      Property 'title' is optional in type '{ title?: string; columns?: { type?: "number" | "boolean" | "text" | "link" | "date"; header?: string; key?: string; sortable?: boolean; filterable?: boolean; width?: string; }[]; rows?: Record<string, unknown>[]; total_rows?: number; page?: number; page_size?: number; }' but required in type 'DataTablePayload'.
+src/extension/tool-ui-adapter.ts(188,14): error TS2322: Type 'ZodObject<{ title: ZodString; type: ZodEnum<["line", "bar", "pie", "scatter", "area"]>; x_axis: ZodString; y_axis: ZodString; series: ZodArray<ZodObject<{ name: ZodString; data: ZodArray<...>; color: ZodOptional<...>; }, "strip", ZodTypeAny, { ...; }, { ...; }>, "many">; labels: ZodOptional<...>; options: ZodOptiona...' is not assignable to type 'ZodType<ChartPayload, ZodTypeDef, ChartPayload>'.
+  Types of property '_type' are incompatible.
+    Type '{ type?: "line" | "bar" | "pie" | "scatter" | "area"; options?: { stacked?: boolean; legend?: boolean; grid?: boolean; }; title?: string; x_axis?: string; y_axis?: string; series?: { data?: number[]; name?: string; color?: string; }[]; labels?: string[]; }' is not assignable to type 'ChartPayload'.
+      Property 'title' is optional in type '{ type?: "line" | "bar" | "pie" | "scatter" | "area"; options?: { stacked?: boolean; legend?: boolean; grid?: boolean; }; title?: string; x_axis?: string; y_axis?: string; series?: { data?: number[]; name?: string; color?: string; }[]; labels?: string[]; }' but required in type 'ChartPayload'.
+src/extension/tool-ui-adapter.ts(239,14): error TS2322: Type 'ZodObject<{ code: ZodString; language: ZodString; filename: ZodOptional<ZodString>; highlights: ZodOptional<ZodArray<ZodNumber, "many">>; showLineNumbers: ZodOptional<...>; theme: ZodOptional<...>; }, "strip", ZodTypeAny, { ...; }, { ...; }>' is not assignable to type 'ZodType<CodeBlockPayload, ZodTypeDef, CodeBlockPayload>'.
+  Types of property '_type' are incompatible.
+    Type '{ code?: string; language?: string; filename?: string; highlights?: number[]; showLineNumbers?: boolean; theme?: "light" | "dark"; }' is not assignable to type 'CodeBlockPayload'.
+      Property 'code' is optional in type '{ code?: string; language?: string; filename?: string; highlights?: number[]; showLineNumbers?: boolean; theme?: "light" | "dark"; }' but required in type 'CodeBlockPayload'.
+src/mcp/tools/chat.ts(199,37): error TS2551: Property 'sendMessage' does not exist on type 'AIChatNode'. Did you mean 'editMessage'?
+src/mcp/tools/chat.ts(273,7): error TS2554: Expected 1 arguments, but got 2.
+src/mcp/tools/chat.ts(283,34): error TS2339: Property 'messages' does not exist on type 'Conversation'.
+src/mcp/tools/content.ts(67,7): error TS2345: Argument of type '"comment" | "post" | "article"' is not assignable to parameter of type 'ContentType'.
+  Type '"comment"' is not assignable to type 'ContentType'.
+src/mcp/tools/content.ts(83,30): error TS2339: Property 'createdAt' does not exist on type 'ContentObject'.
+src/mcp/tools/content.ts(148,7): error TS2322: Type '"following" | "popular" | "recent"' is not assignable to type '"circle" | "following" | "discover" | "trending"'.
+  Type '"popular"' is not assignable to type '"circle" | "following" | "discover" | "trending"'.
+src/mcp/tools/content.ts(159,25): error TS2551: Property 'authorId' does not exist on type 'ContentObject'. Did you mean 'author'?
+src/mcp/tools/content.ts(161,24): error TS2339: Property 'content' does not exist on type 'ContentObject'.
+src/mcp/tools/content.ts(163,26): error TS2339: Property 'createdAt' does not exist on type 'ContentObject'.
+src/mcp/tools/content.ts(238,7): error TS2322: Type 'string[]' is not assignable to type 'ContentType[]'.
+  Type 'string' is not assignable to type 'ContentType'.
+src/mcp/tools/content.ts(248,25): error TS2551: Property 'authorId' does not exist on type 'ContentObject'. Did you mean 'author'?
+src/mcp/tools/content.ts(250,24): error TS2339: Property 'content' does not exist on type 'ContentObject'.
+src/mcp/tools/content.ts(251,26): error TS2339: Property 'createdAt' does not exist on type 'ContentObject'.
+src/mcp/tools/identity.ts(107,7): error TS2322: Type 'string' is not assignable to type 'Uint8Array<ArrayBufferLike>'.
+src/mcp/tools/identity.ts(108,7): error TS2322: Type 'string' is not assignable to type '"Ed25519" | "secp256k1"'.
+src/mcp/tools/memory.ts(150,7): error TS2322: Type 'string[]' is not assignable to type 'MemoryType[]'.
+  Type 'string' is not assignable to type 'MemoryType'.
+src/mcp/tools/memory.ts(234,7): error TS2322: Type 'string[]' is not assignable to type 'MemoryType[]'.
+  Type 'string' is not assignable to type 'MemoryType'.
+src/mcp/tools/social.ts(329,47): error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.
+src/mcp/tools/social.ts(331,47): error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.
+src/mcp/tools/social.ts(334,55): error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.
+src/mcp/tools/social.ts(335,55): error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.
+src/mcp/tools/social.ts(336,57): error TS2339: Property 'did' does not exist on type 'string'.
+src/mcp/tools/social.ts(337,58): error TS2339: Property 'did' does not exist on type 'string'.
+src/mcp/tools/storage.ts(114,21): error TS2339: Property 'name' does not exist on type 'PinInfo'.
+src/mcp/tools/storage.ts(116,23): error TS2339: Property 'status' does not exist on type 'PinInfo'.
+src/mcp/tools/storage.ts(117,26): error TS2339: Property 'createdAt' does not exist on type 'PinInfo'.
+src/mcp/tools/storage.ts(178,64): error TS2554: Expected 1 arguments, but got 2.
+src/mcp/tools/storage.ts(187,23): error TS2339: Property 'cid' does not exist on type 'void'.
+src/mcp/tools/storage.ts(188,26): error TS2339: Property 'status' does not exist on type 'void'.
+src/mcp/transports/chunked-transfer.ts(148,11): error TS2741: Property 'chunks' is missing in type '{ sessionId: `${string}-${string}-${string}-${string}-${string}`; contentId: string; totalChunks: number; uploadedChunks: number; totalSize: number; createdAt: number; expiresAt: number; data: Uint8Array<ArrayBufferLike>; chunkSize: number; }' but required in type 'UploadSessionImpl'.
+src/mcp/transports/chunked-transfer.ts(408,62): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+src/mcp/transports/multi-transport.ts(29,12): error TS2416: Property 'type' in type 'MultiTransport' is not assignable to the same property in base type 'BaseTransport'.
+  Type '"multi"' is not assignable to type 'TransportType'.
+src/mcp/transports/multi-transport.ts(242,12): error TS2416: Property 'type' in type 'FallbackTransportChain' is not assignable to the same property in base type 'TransportProtocol'.
+  Type '"fallback"' is not assignable to type 'TransportType'.
+src/mcp/transports/multi-transport.ts(272,3): error TS2416: Property 'removeAllListeners' in type 'FallbackTransportChain' is not assignable to the same property in base type 'EventEmitter<DefaultEventMap>'.
+  Type '() => void' is not assignable to type '(eventName?: string | symbol) => this'.
+    Type 'void' is not assignable to type 'this'.
+      'this' could be instantiated with an arbitrary type which could be unrelated to 'void'.
+src/mcp/transports/multi-transport.ts(272,3): error TS2416: Property 'removeAllListeners' in type 'FallbackTransportChain' is not assignable to the same property in base type 'TransportProtocol'.
+  Type '() => void' is not assignable to type '(eventName?: string | symbol) => this'.
+    Type 'void' is not assignable to type 'this'.
+      'this' could be instantiated with an arbitrary type which could be unrelated to 'void'.
+src/mcp/transports/social-transport.ts(210,21): error TS2300: Duplicate identifier 'isActive'.
+src/mcp/transports/social-transport.ts(211,21): error TS2300: Duplicate identifier 'localDID'.
+src/mcp/transports/social-transport.ts(216,7): error TS2300: Duplicate identifier 'isActive'.
+src/mcp/transports/social-transport.ts(220,7): error TS2300: Duplicate identifier 'localDID'.
+src/mcp/transports/social-transport.ts(254,14): error TS2654: Non-abstract class 'SocialTransportAdapter' is missing implementations for the following members of 'BaseSocialTransport': 'isActive', 'localDID'.
+src/mcp/transports/social-transport.ts(293,9): error TS2353: Object literal may only specify known properties, and 'message' does not exist in type 'TransportMessage'.
+src/mcp/transports/social-transport.ts(310,9): error TS2353: Object literal may only specify known properties, and 'message' does not exist in type 'TransportMessage'.
+src/mcp/transports/social-transport.ts(328,9): error TS2353: Object literal may only specify known properties, and 'event' does not exist in type 'TransportMessage'.
+src/mcp/transports/social-transport.ts(343,9): error TS2353: Object literal may only specify known properties, and 'from' does not exist in type 'TransportMessage'.
+src/mcp/transports/social-transport.ts(367,9): error TS2353: Object literal may only specify known properties, and 'userId' does not exist in type 'TransportMessage'.
+src/mcp/transports/social-transport.ts(382,9): error TS2353: Object literal may only specify known properties, and 'userId' does not exist in type 'TransportMessage'.
+src/mcp/transports/websocket.ts(35,5): error TS2322: Type '(url: string) => WebSocket' is not assignable to type '(url: string) => import("C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/@types+ws@8.18.1/node_modules/@types/ws/index").default'.
+  Type 'WebSocket' is missing the following properties from type 'WebSocket': isPaused, ping, pong, terminate, and 17 more.
+src/nodes/chatlink-nexus-node.ts(231,60): error TS2339: Property 'importId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatlink-nexus-node.ts(236,62): error TS2339: Property 'importId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatlink-nexus-node.ts(241,61): error TS2339: Property 'importId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(372,68): error TS2339: Property 'jobId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(377,65): error TS2339: Property 'jobId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(377,82): error TS2339: Property 'progress' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(382,70): error TS2339: Property 'jobId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(387,69): error TS2339: Property 'jobId' does not exist on type 'CommunicationEvent'.
+src/nodes/chatvault-archiver-node.ts(827,11): error TS2740: Type '{}' is missing the following properties from type 'Record<ExportFormat, number>': custom, "chatgpt-json", "claude-json", "claude-jsonl", and 3 more.
+src/nodes/federation-server-node.ts(236,9): error TS2393: Duplicate function implementation.
+src/nodes/federation-server-node.ts(548,9): error TS2393: Duplicate function implementation.
+src/nodes/health-monitoring-node.ts(455,77): error TS2339: Property 'heapLimit' does not exist on type 'MemoryUsage'.
+src/nodes/health-monitoring-node.ts(480,49): error TS2339: Property 'heapLimit' does not exist on type 'MemoryUsage'.
+src/nodes/sharing-policy-node.ts(760,9): error TS2322: Type 'boolean | "" | "audience" | "creator" | "nobody"' is not assignable to type 'never'.
+  Type 'false' is not assignable to type 'never'.
+src/nodes/social-node.ts(326,5): error TS2322: Type '"accepted"' is not assignable to type 'FriendStatus'.
+src/nodes/social-node.ts(353,11): error TS2367: This comparison appears to be unintentional because the types 'FriendStatus' and '"accepted"' have no overlap.
+src/nodes/social-node.ts(360,11): error TS2322: Type '"accepted"' is not assignable to type 'FriendStatus'.
+src/nodes/social-node.ts(385,9): error TS2367: This comparison appears to be unintentional because the types 'FriendStatus' and '"accepted"' have no overlap.
+src/nodes/sovereign-permissions-node.ts(564,25): error TS2339: Property 'metadata' does not exist on type 'CreateGrantOptions'.
+src/nodes/sovereign-permissions-node.ts(896,37): error TS2345: Argument of type 'PolicyTemplateType' is not assignable to parameter of type '"public_read" | "public_attributed" | "public_forkable" | "open"'.
+  Type '"private"' is not assignable to type '"public_read" | "public_attributed" | "public_forkable" | "open"'.
+src/protocols/activitypub.ts(463,44): error TS2345: Argument of type 'ActivityPubObject | ActivityPubActivity' is not assignable to parameter of type 'ActivityPubObject'.
+  Type 'ActivityPubActivity' is not assignable to type 'ActivityPubObject'.
+    Types of property 'type' are incompatible.
+      Type 'ActivityPubActivityType' is not assignable to type 'ActivityPubObjectType'.
+        Type '"Accept"' is not assignable to type 'ActivityPubObjectType'.
+src/protocols/storage/index.ts(10,1): error TS2308: Module './distributed-storage.js' has already exported a member named 'QueuedMessage'. Consider explicitly re-exporting to resolve the ambiguity.
+src/services/audit-logging-service.ts(430,7): error TS2353: Object literal may only specify known properties, and 'severity' does not exist in type 'Omit<AuditEvent, "id" | "timestamp" | "hash" | "previousHash">'.
+src/services/sharing-encryption-service.ts(224,9): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+  Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+    Types of property 'buffer' are incompatible.
+      Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+        Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+src/services/sharing-encryption-service.ts(283,55): error TS2339: Property 'length' does not exist on type 'ArrayBuffer'.
+src/services/sharing-encryption-service.ts(283,74): error TS2339: Property 'length' does not exist on type 'ArrayBuffer'.
+src/services/sharing-encryption-service.ts(284,25): error TS2345: Argument of type 'ArrayBuffer' is not assignable to parameter of type 'ArrayLike<number>'.
+  Property 'length' is missing in type 'ArrayBuffer' but required in type 'ArrayLike<number>'.
+src/services/sharing-encryption-service.ts(286,27): error TS2345: Argument of type 'ArrayBuffer' is not assignable to parameter of type 'ArrayLike<number>'.
+  Property 'length' is missing in type 'ArrayBuffer' but required in type 'ArrayLike<number>'.
+src/services/sharing-encryption-service.ts(286,47): error TS2339: Property 'length' does not exist on type 'ArrayBuffer'.
+src/services/sharing-encryption-service.ts(488,45): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(format: "jwk", keyData: JsonWebKey, algorithm: AlgorithmIdentifier | RsaHashedImportParams | EcKeyImportParams | HmacImportParams | AesKeyAlgorithm, extractable: boolean, keyUsages: readonly KeyUsage[]): Promise<...>', gave the following error.
+    Argument of type '"raw"' is not assignable to parameter of type '"jwk"'.
+  Overload 2 of 2, '(format: "raw" | "pkcs8" | "spki", keyData: BufferSource, algorithm: AlgorithmIdentifier | RsaHashedImportParams | EcKeyImportParams | HmacImportParams | AesKeyAlgorithm, extractable: boolean, keyUsages: KeyUsage[]): Promise<...>', gave the following error.
+    Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'BufferSource'.
+      Type 'Uint8Array<ArrayBufferLike>' is not assignable to type 'ArrayBufferView<ArrayBuffer>'.
+        Types of property 'buffer' are incompatible.
+          Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+            Property 'resize' is missing in type 'SharedArrayBuffer' but required in type 'ArrayBuffer'.
+src/skills/content/index.ts(51,11): error TS2561: Object literal may only specify known properties, but 'circleId' does not exist in type 'ContentOptions'. Did you mean to write 'circleIds'?
+src/skills/content/index.ts(97,9): error TS2322: Type '"following" | "popular" | "recent"' is not assignable to type '"circle" | "following" | "discover" | "trending"'.
+  Type '"popular"' is not assignable to type '"circle" | "following" | "discover" | "trending"'.
+src/skills/content/index.ts(107,25): error TS2551: Property 'authorId' does not exist on type 'ContentObject'. Did you mean 'author'?
+src/skills/content/index.ts(108,24): error TS2339: Property 'content' does not exist on type 'ContentObject'.
+src/skills/content/index.ts(109,26): error TS2339: Property 'createdAt' does not exist on type 'ContentObject'.
+src/skills/content/index.ts(162,25): error TS2551: Property 'authorId' does not exist on type 'ContentObject'. Did you mean 'author'?
+src/skills/content/index.ts(163,24): error TS2339: Property 'content' does not exist on type 'ContentObject'.
+src/skills/content/index.ts(164,26): error TS2339: Property 'createdAt' does not exist on type 'ContentObject'.

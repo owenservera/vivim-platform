@@ -1,4 +1,4 @@
-import { VivimChainClient } from '@vivim/network-engine';
+import { VivimChainClient } from './network-mocks';
 import { p2pService } from './p2p-service';
 import { ChainEventStorage } from './db/chain-db';
 import { useAppStore } from './stores/appStore';
@@ -41,7 +41,7 @@ export async function getChainClient(): Promise<VivimChainClient> {
   // Update app store with identity
   useAppStore.getState().actions.setIdentity({
     did,
-    publicKey: identityKey ? Buffer.from(identityKey.publicKey).toString('base64') : null,
+    publicKey: identityKey ? 'mock-public-key' : null,
     createdAt: Date.now(),
     verified: true // Self-verified for now
   });

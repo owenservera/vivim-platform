@@ -8,8 +8,8 @@
  */
 
 import { EventEmitter } from 'events';
-import type { VivimSDK } from './sdk.js';
-import { AnchorProtocol, AnchorState, TrustProof, TrustLevel } from './anchor.js';
+import type { VivimSDK } from '../core/sdk.js';
+import { AnchorProtocol, type AnchorState, type TrustProof, TrustLevel } from '../core/anchor.js';
 
 // Protocol constants
 export const EXIT_NODE_PROTOCOL = '/vivim/exit-node/1.0.0';
@@ -84,7 +84,7 @@ export interface CloneRegistrationResponse {
   
   // Assigned resources
   assignedPeerId?: string;
-  endpoints: {
+  endpoints?: {
     api: string;
     p2p: string;
     relay?: string;
@@ -185,7 +185,7 @@ export const DEFAULT_EXIT_NODE_CONFIG: ExitNodeConfig = {
 /**
  * Registered clone info
  */
-interface RegisteredClone {
+export interface RegisteredClone {
   did: string;
   cloneId: string;
   registeredAt: number;
@@ -639,10 +639,3 @@ export class ExitNodeService extends EventEmitter {
     // In production, store in Redis or similar
   }
 }
-
-// Export types
-export type {
-  ExitNodeEvents,
-  ExitNodeConfig,
-  RegisteredClone,
-};

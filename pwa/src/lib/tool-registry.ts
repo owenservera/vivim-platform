@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { getInitializedChainClient } from './chain-client';
 import { getInitializedContentClient } from './content-client';
-import { ContentType } from '@vivim/network-engine';
+import { ContentType } from './network-mocks';
 
 export interface RegisteredTool {
   name: string;

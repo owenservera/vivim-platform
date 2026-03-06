@@ -101,7 +101,7 @@ export interface FederationServerAPI {
   isRunning(): boolean;
   
   // Message handling
-  processMessage(message: FederationMessage): Promise<void>;
+  processFederationMessage(message: FederationMessage): Promise<void>;
   validateMessage(message: FederationMessage): Promise<boolean>;
   
   // Actor management
@@ -233,7 +233,7 @@ export class FederationServer implements FederationServerAPI {
   /**
    * Process incoming federation message
    */
-  async processMessage(message: FederationMessage): Promise<void> {
+  async processFederationMessage(message: FederationMessage): Promise<void> {
     // Validate message
     const isValid = await this.validateMessage(message);
     if (!isValid) {

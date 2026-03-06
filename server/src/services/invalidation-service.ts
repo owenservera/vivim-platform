@@ -13,7 +13,7 @@
  */
 
 import { ContextEventBus, ContextEvent } from '../context/context-event-bus.js';
-import { prisma } from '../lib/prisma.js';
+import { prisma } from '../lib/database.js';
 import { logger } from '../lib/logger.js';
 
 export class InvalidationService {
@@ -34,29 +34,79 @@ export class InvalidationService {
     }
 
     // Subscribe to events that should trigger bundle invalidation
-    this.eventBus.subscribe('memory:created', this.handleMemoryChange.bind(this));
-    this.eventBus.subscribe('memory:updated', this.handleMemoryChange.bind(this));
-    this.eventBus.subscribe('memory:deleted', this.handleMemoryChange.bind(this));
+    this.eventBus.on('memory:created', this.handleMemoryChange.bind(this));
+    this.eventBus.on('memory:updated', this.handleMemoryChange.bind(this));
+    this.eventBus.on('memory:deleted', this.handleMemoryChange.bind(this));
 
-    this.eventBus.subscribe('acu:processed', this.handleACUChange.bind(this));
-    this.eventBus.subscribe('acu:deleted', this.handleACUChange.bind(this));
+    this.eventBus.on('acu:processed', this.handleACUChange.bind(this));
+    this.eventBus.on('acu:deleted', this.handleACUChange.bind(this));
 
-    this.eventBus.subscribe('conversation:message_added', this.handleConversationChange.bind(this));
-    this.eventBus.subscribe('conversation:archived', this.handleConversationChange.bind(this));
-    this.eventBus.subscribe('conversation:deleted', this.handleConversationChange.bind(this));
+    this.eventBus.on('conversation:message_added', this.handleConversationChange.bind(this));
+    this.eventBus.on('conversation:archived', this.handleConversationChange.bind(this));
+    this.eventBus.on('conversation:deleted', this.handleConversationChange.bind(this));
 
-    this.eventBus.subscribe('topic:created', this.handleTopicChange.bind(this));
-    this.eventBus.subscribe('topic:updated', this.handleTopicChange.bind(this));
-    this.eventBus.subscribe('topic:merged', this.handleTopicChange.bind(this));
+    this.eventBus.on('topic:created', this.handleTopicChange.bind(this));
+    this.eventBus.on('topic:updated', this.handleTopicChange.bind(this));
+    this.eventBus.on('topic:merged', this.handleTopicChange.bind(this));
 
-    this.eventBus.subscribe('entity:created', this.handleEntityChange.bind(this));
-    this.eventBus.subscribe('entity:updated', this.handleEntityChange.bind(this));
-    this.eventBus.subscribe('entity:merged', this.handleEntityChange.bind(this));
+    this.eventBus.on('entity:created', this.handleEntityChange.bind(this));
+    this.eventBus.on('entity:updated', this.handleEntityChange.bind(this));
+    this.eventBus.on('entity:merged', this.handleEntityChange.bind(this));
 
-    this.eventBus.subscribe('settings:updated', this.handleSettingsChange.bind(this));
+    this.eventBus.on('settings:updated', this.handleSettingsChange.bind(this));
 
     this.isInitialized = true;
     logger.info('InvalidationService initialized');
+  }
+
+  /**
+   * Manually trigger invalidation for a specific event
+   */
+  public async invalidate(params: {
+    eventType: string;
+    userId: string;
+    relatedIds: string[];
+    timestamp?: Date;
+  }): Promise<void> {
+    const { eventType, userId, relatedIds } = params;
+    
+    // Convert generic event types to specific invalidation logic
+    if (eventType.startsWith('memory')) {
+      await this.handleMemoryChange({ 
+        type: 'memory:updated', 
+        userId, 
+        timestamp: Date.now(), 
+        payload: { memoryId: relatedIds[0] } 
+      });
+    } else if (eventType.startsWith('acu')) {
+      await this.handleACUChange({ 
+        type: 'acu:processed', 
+        userId, 
+        timestamp: Date.now(), 
+        payload: { acuId: relatedIds[0] } 
+      });
+    } else if (eventType.startsWith('conversation')) {
+      await this.handleConversationChange({ 
+        type: 'conversation:message_added', 
+        userId, 
+        timestamp: Date.now(), 
+        payload: { conversationId: relatedIds[0] } 
+      });
+    }
+  }
+
+  /**
+   * Get health status for monitoring
+   */
+  public async getHealth(): Promise<{ dirtyBundles: number; queueLength: number }> {
+    const dirtyCount = await prisma.contextBundle.count({
+      where: { isDirty: true }
+    });
+    
+    return {
+      dirtyBundles: dirtyCount,
+      queueLength: 0 // No async queue in this simple implementation
+    };
   }
 
   /**
@@ -240,4 +290,7 @@ export class InvalidationService {
   }
 }
 
+import { getContextEventBus } from '../context/index.js';
+
+export const invalidationService = new InvalidationService(getContextEventBus());
 export default InvalidationService;

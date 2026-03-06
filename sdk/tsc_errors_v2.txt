@@ -1,0 +1,2 @@
+src/mcp/transports/websocket.ts(35,5): error TS2322: Type '(url: string) => WebSocket' is not assignable to type '(url: string) => import("C:/0-BlackBoxProject-0/vivim-app-og/vivim-app/node_modules/.bun/@types+ws@8.18.1/node_modules/@types/ws/index").default'.
+  Type 'WebSocket' is missing the following properties from type 'WebSocket': isPaused, ping, pong, terminate, and 17 more.

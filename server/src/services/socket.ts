@@ -1,17 +1,24 @@
-import { Server as SocketIOServer } from 'socket.io';
+import { Server as SocketIOServer, Socket } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import { logger } from '../lib/logger.js';
 import { eventBus, EVENTS } from '../lib/events.js';
 import { config } from '../config/index.js';
 import { getPrismaClient } from '../lib/database.js';
+import type { Server as HttpServer } from 'http';
+
+interface SocketUser {
+  id: string;
+  did?: string;
+  [key: string]: any;
+}
 
 class SocketService {
-  constructor() {
-    this.io = null;
-    this.connectedUsers = new Map(); // userId -> Set<socketId>
-  }
+  private io: SocketIOServer | null = null;
+  private connectedUsers: Map<string, Set<string>> = new Map(); // userId -> Set<socketId>
 
-  initialize(httpServer) {
+  constructor() {}
+
+  initialize(httpServer: HttpServer) {
     this.io = new SocketIOServer(httpServer, {
       cors: {
         origin: config.corsOrigins || '*',
@@ -30,7 +37,7 @@ class SocketService {
     logger.info('✅ Socket Service initialized');
   }
 
-  async authenticateSocket(socket, next) {
+  async authenticateSocket(socket: Socket, next: (err?: Error) => void) {
     try {
       const token =
         socket.handshake.auth.token || socket.handshake.headers.authorization?.split(' ')[1];
@@ -45,9 +52,9 @@ class SocketService {
 
       // Verify token
       // Verify token with proper signature validation
-      const decoded = jwt.verify(token, process.env.JWT_SECRET, {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || '', {
         algorithms: ['HS256', 'RS256'],
-      });
+      }) as any;
 
       if (!decoded || !decoded.sub) {
         return next(new Error('Invalid token'));
@@ -62,7 +69,7 @@ class SocketService {
     }
   }
 
-  handleConnection(socket) {
+  handleConnection(socket: Socket) {
     const userId = socket.data.user?.id || 'guest';
     const socketId = socket.id;
 
@@ -119,11 +126,11 @@ class SocketService {
     });
   }
 
-  broadcastEntityChange(action, { userId, type, data, timestamp }) {
+  broadcastEntityChange(action: string, { userId, type, data, timestamp }: any) {
     if (!userId) return;
 
     const room = `user:${userId}`;
-    this.io.to(room).emit('feed:delta', {
+    this.io?.to(room).emit('feed:delta', {
       action,
       type, // e.g., 'conversation', 'message'
       data,
@@ -133,7 +140,7 @@ class SocketService {
     logger.debug({ userId, action, type }, 'Broadcasted entity change');
   }
 
-  async handleSyncPull(socket, { since, types }) {
+  async handleSyncPull(socket: Socket, { since, types }: { since?: string; types?: string[] }) {
     if (socket.data.isGuest) {
       return socket.emit('sync:error', { message: 'Unauthorized' });
     }
@@ -201,7 +208,7 @@ class SocketService {
     }
   }
 
-  async handleSyncPush(socket, { changes }) {
+  async handleSyncPush(socket: Socket, { changes }: { changes: any[] }) {
     if (socket.data.isGuest) {
       return socket.emit('sync:error', { message: 'Unauthorized' });
     }
@@ -317,20 +324,20 @@ class SocketService {
   }
 
   // Preserve the signaling logic from the old file
-  handleSignaling(socket) {
-    socket.on('join', ({ room, peerId }) => {
+  handleSignaling(socket: Socket) {
+    socket.on('join', ({ room, peerId }: { room: string; peerId: string }) => {
       socket.join(room);
       socket.to(room).emit('peer-joined', { peerId, socketId: socket.id });
     });
 
-    socket.on('leave', ({ room, peerId }) => {
+    socket.on('leave', ({ room, peerId }: { room: string; peerId: string }) => {
       socket.leave(room);
       socket.to(room).emit('peer-left', { peerId, socketId: socket.id });
     });
 
-    socket.on('offer', (data) => socket.to(data.to).emit('offer', { from: socket.id, ...data }));
-    socket.on('answer', (data) => socket.to(data.to).emit('answer', { from: socket.id, ...data }));
-    socket.on('ice', (data) => socket.to(data.to).emit('ice', { from: socket.id, ...data }));
+    socket.on('offer', (data: any) => socket.to(data.to).emit('offer', { from: socket.id, ...data }));
+    socket.on('answer', (data: any) => socket.to(data.to).emit('answer', { from: socket.id, ...data }));
+    socket.on('ice', (data: any) => socket.to(data.to).emit('ice', { from: socket.id, ...data }));
   }
 }
 

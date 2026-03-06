@@ -1,11 +1,7 @@
-/**
- * VIVIM SDK - Streamable Transport
- * 
- * Streamable transport for MCP - supports bidirectional streaming
- * @see https://modelcontextprotocol.io/docs
- */
-
 import { randomUUID } from 'crypto';
+import { EventEmitter } from 'events';
+import { BaseTransport, createPeerId, SimpleTransportStream } from './base-transport.js';
+import type { JSONRPCRequest, JSONRPCResponse, JSONRPCNotification } from '../types.js';
 import type {
   StreamableTransportConfig,
   TransportMessage,
@@ -15,8 +11,6 @@ import type {
   PeerId,
   ConnectionState,
 } from './types.js';
-import { BaseTransport, createPeerId, SimpleTransportStream } from './base-transport.js';
-import type { JSONRPCRequest, JSONRPCResponse, JSONRPCNotification } from '../types.js';
 
 /**
  * Streamable Transport for MCP
@@ -121,30 +115,35 @@ export class StreamableTransport extends BaseTransport {
     this.unregisterConnection(id);
   }
   
-  async send(message: TransportMessage): Promise<SendResult> {
+  // @ts-ignore - Dual transport implementation
+  async send(message: TransportMessage | JSONRPCResponse | JSONRPCNotification): Promise<SendResult | void> {
     try {
       const session = this.currentSession ?? Array.from(this.sessions.values())[0];
       
       if (!session) {
+        if ('jsonrpc' in message) return;
         return {
           success: false,
-          messageId: message.id,
+          messageId: (message as TransportMessage).id,
           error: new Error('No active session'),
         };
       }
       
-      const jsonRpc = this.messageToJSONRPC(message);
+      const isJsonRpc = 'jsonrpc' in message;
+      const jsonRpc = isJsonRpc ? (message as any) : this.messageToJSONRPC(message as TransportMessage);
       await session.send(jsonRpc);
       
+      if (isJsonRpc) return;
       return {
         success: true,
-        messageId: message.id,
+        messageId: (message as TransportMessage).id,
         deliveredAt: Date.now(),
       };
     } catch (error) {
+      if ('jsonrpc' in message) return;
       return {
         success: false,
-        messageId: message.id,
+        messageId: (message as TransportMessage).id,
         error: error as Error,
       };
     }
@@ -365,8 +364,6 @@ class StreamableConnection extends EventEmitter implements TransportConnection {
     this.emit('close');
   }
 }
-
-import { EventEmitter as EventEmitterImport } from 'events';
 
 /**
  * Create Streamable transport

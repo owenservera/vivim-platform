@@ -1,31 +1,17 @@
-# Bun Configuration for OpenScroll Server
+# Bun configuration for server
+# Reference: https://bun.sh/docs/bundler/watch
 
-[install]
-# Lockfile settings
-lockfile = true
-# Use Bun's trusted dependencies for faster installs
-trusted = ["esbuild", "prisma", "vitest"]
-# Set cache directory explicitly to fix Windows tempdir permission issues
-cache = "C:\\Users\\VIVIM.inc\\AppData\\Local\\Temp\\bun-cache-server"
-# Set global cache directory
-globalCacheDir = "C:\\Users\\VIVIM.inc\\AppData\\Local\\Temp\\bun-cache-server\\global"
-
-[run]
-# Main entry point
-main = "src/server.js"
-# Working directory
-cwd = "."
-
-[test]
-# Test configuration matches vitest.config.js
-root = "./tests"
-preload = ["./tests/setup.js"]
-
-[define]
-# Define runtime constants
-NODE_ENV = "development"
-
-[env]
-# Environment for development
-development = { NODE_ENV = "development" }
-production = { NODE_ENV = "production" }
+[watch]
+# Watch these additional paths beyond the entry point
+include = [
+  "src/**/*",
+  "../common/**/*"
+]
+# Exclude these patterns
+exclude = [
+  "**/node_modules/**",
+  "**/dist/**",
+  "**/*.test.*",
+  "**/*.spec.*",
+  "../network/dist/**"
+]

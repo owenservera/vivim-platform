@@ -1,7 +1,10 @@
 import { useState, useCallback, useEffect } from 'react';
 import { getSDK } from '../lib/vivim-sdk';
-import { VivimAssistantRuntime } from '@vivim/sdk';
-import type { SDKMessage, SDKContentPart } from '@vivim/sdk';
+
+// Mock types to decouple the frontend from the Node.js SDK
+export type SDKContentPart = any;
+export type SDKMessage = any;
+export type VivimAssistantRuntime = any;
 
 /**
  * useVivimAssistant
