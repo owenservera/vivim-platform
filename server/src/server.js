@@ -71,6 +71,7 @@ import adminPubsubRouter from './routes/admin/pubsub.js';
 import adminDataflowRouter from './routes/admin/dataflow.js';
 import contextEngineRouter from './routes/context-engine.ts';
 import docSearchRouter from './routes/doc-search.ts';
+import { importRouter } from './routes/import.js';
 import { bootContextSystem } from './services/context-startup.ts';
 
 // Validate configuration on startup
@@ -215,7 +216,7 @@ app.use(cors(corsOptions));
 
 app.use(cookieParser());
 
-const csrfExcludedPaths = ['/api/v1/auth/google/callback', '/stripe/webhook', '/api/v1/errors', '/api/v1/debug', '/api/v1/feed-analytics', '/api/v2/feed', '/api/v2/context', '/api/v2/memories', '/api/v1/collections', '/api/v3/social', '/api/v1/integrations', '/api/v1/handshake', '/api/v1/capture', '/api/v1/capture-sync/init'];
+const csrfExcludedPaths = ['/api/v1/auth/google/callback', '/stripe/webhook', '/api/v1/errors', '/api/v1/debug', '/api/v1/feed-analytics', '/api/v2/feed', '/api/v2/context', '/api/v2/memories', '/api/v1/collections', '/api/v3/social', '/api/v1/integrations', '/api/v1/handshake', '/api/v1/capture', '/api/v1/capture-sync/init', '/api/v1/import'];
 
 // Apply CSRF protection
 app.use((req, res, next) => {
@@ -498,6 +499,9 @@ app.use('/api/admin/system', adminSystemRouter);
 app.use('/api/admin/crdt', adminCrdtRouter);
 app.use('/api/admin/pubsub', adminPubsubRouter);
 app.use('/api/admin/dataflow', adminDataflowRouter);
+
+// Import routes
+app.use('/api/v1/import', importRouter);
 
 // Enhanced Dynamic Context Engine routes
 app.use('/api/v2/context-engine', contextEngineRouter);

@@ -21,6 +21,7 @@ const Receive = lazy(() => import('@/pages/Receive').then(m => ({ default: m.Rec
 const AIConversationsPage = lazy(() => import('@/pages/AIConversationsPage').then(m => ({ default: m.AIConversationsPage })));
 const ErrorDashboard = lazy(() => import('@/pages/ErrorDashboard').then(m => ({ default: m.default })));
 const Account = lazy(() => import('@/pages/Account').then(m => ({ default: m.AccountPage })));
+const Import = lazy(() => import('@/pages/Import').then(m => ({ default: m.ImportPage })));
 
 function PageSkeleton() {
   return (
@@ -51,6 +52,7 @@ export function AppRoutes() {
         <Route path="/receive/:code" element={<Receive />} />
         <Route path="/errors" element={<ErrorDashboard />} />
         <Route path="/account" element={<Account />} />
+        <Route path="/import" element={<Import />} />
       </Routes>
     </Suspense>
   );

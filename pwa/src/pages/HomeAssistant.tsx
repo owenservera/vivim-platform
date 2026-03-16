@@ -16,7 +16,7 @@ import {
   Plus, Bot, RefreshCw, WifiOff, Database, AlertCircle, CloudOff,
   Search, Grid2x2, List, Pin, Archive, MessageSquare, LayoutList,
   BookOpen, Sparkles, X, SlidersHorizontal, Clock, BarChart2,
-  FileCode, ImageIcon, ChevronDown, ChevronUp
+  FileCode, ImageIcon, ChevronDown, ChevronUp, Upload
 } from 'lucide-react';
 
 // Assistant UI & Tool UI
@@ -1148,6 +1148,20 @@ export const HomeAssistant: React.FC = () => {
                 <span className="home-fab-mini-label">Capture</span>
                 <span className="home-fab-mini-icon" style={{ background: 'linear-gradient(135deg,#10b981,#059669)' }}>
                   <Plus className="w-5 h-5" />
+                </span>
+              </motion.button>
+              <motion.button
+                initial={{ opacity: 0, y: 15, scale: 0.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.8 }}
+                transition={{ duration: 0.2, delay: 0.08 }}
+                className="home-fab-mini"
+                onClick={() => { setFabExpanded(false); navigate('/import'); }}
+                id="fab-import"
+              >
+                <span className="home-fab-mini-label">Import</span>
+                <span className="home-fab-mini-icon" style={{ background: 'linear-gradient(135deg,#f59e0b,#d97706)' }}>
+                  <Upload className="w-5 h-5" />
                 </span>
               </motion.button>
               <motion.button

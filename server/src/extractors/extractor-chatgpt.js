@@ -20,24 +20,84 @@ async function extractChatgptConversation(url, options = {}) {
   } = options;
 
   let tempFilePath = null;
+  let capturedImages = [];
 
   try {
     logger.info(`Starting ChatGPT extraction for ${url} using Playwright...`);
 
     // Capture the live page using Playwright (with stealth mode)
-    tempFilePath = await captureWithPlaywright(url, 'chatgpt', {
+    const captureResult = await captureWithPlaywright(url, 'chatgpt', {
       timeout,
       headless,
       waitForSelector: 'h1, [data-message-author-role]',
       waitForTimeout: waitForTimeout,
     });
 
+    tempFilePath = captureResult.path;
+    capturedImages = captureResult.images || [];
+    
     logger.info(`Reading captured ChatGPT HTML from: ${tempFilePath}`);
+    logger.info(`Found ${capturedImages.length} captured images`);
     const html = await fs.readFile(tempFilePath, 'utf8');
     const $ = cheerio.load(html);
 
+    // Check if we actually have conversation content before processing
+    const hasContent = checkForConversationContent($, html);
+    
+    if (!hasContent) {
+      logger.warn('No conversation content found in captured HTML');
+      
+      // Return a structured result instead of failing
+      const emptyConversation = {
+        id: uuidv4(),
+        provider: 'chatgpt',
+        sourceUrl: url,
+        title: 'ChatGPT Conversation (No Content)',
+        model: 'ChatGPT',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        capturedAt: new Date().toISOString(),
+        messages: [], // Add empty messages array for validation
+        metadata: {
+          provider: 'chatgpt',
+          model: 'ChatGPT',
+          requiresAuth: detectAuthenticationStatus(html),
+          extractionMethod: 'empty-content',
+          debugInfo: {
+            hasMessageElements: $('[data-message-author-role], article, .markdown, .prose').length,
+            hasStreamData: html.includes('conversation') && !html.includes('P21:[{}]'),
+            authStatus: detectAuthenticationStatus(html),
+            htmlSize: html.length
+          }
+        },
+        stats: {
+          messageCount: 0,
+          userMessageCount: 0,
+          aiMessageCount: 0,
+          totalWords: 0,
+          totalCharacters: 0,
+        }
+      };
+      
+      // If metadata only, return early
+      if (metadataOnly) {
+        return {
+          id: emptyConversation.id,
+          provider: emptyConversation.provider,
+          sourceUrl: emptyConversation.sourceUrl,
+          title: emptyConversation.title,
+          createdAt: emptyConversation.createdAt,
+          exportedAt: emptyConversation.exportedAt,
+          metadata: emptyConversation.metadata,
+          stats: emptyConversation.stats,
+        };
+      }
+      
+      return emptyConversation;
+    }
+
     // Extract conversation data for ChatGPT
-    const conversation = extractChatgptData($, url, html, richFormatting);
+    const conversation = extractChatgptData($, url, html, richFormatting, capturedImages);
 
     if (conversation.messages.length === 0) {
       const debugPath = `debug-chatgpt-${Date.now()}.html`;
@@ -50,6 +110,7 @@ async function extractChatgptConversation(url, options = {}) {
     conversation.sourceUrl = url;
     conversation.provider = 'chatgpt';
     conversation.exportedAt = new Date().toISOString();
+    conversation.images = capturedImages; // Add captured images to conversation
 
     // If metadata only, return early
     if (metadataOnly) {
@@ -79,14 +140,56 @@ async function extractChatgptConversation(url, options = {}) {
 }
 
 /**
+ * Check if HTML contains actual conversation content
+ */
+function checkForConversationContent($, html) {
+  // Check for message elements
+  const messageElements = $('[data-message-author-role], article, .markdown, .prose').length;
+  
+  // Check for React stream data with actual conversation (not empty)
+  const hasStreamData = html.includes('conversation') && 
+                       !html.includes('P21:[{}]') && 
+                       !html.includes('"authStatus":"logged_out"');
+  
+  // Check for text content that looks like conversation
+  const textContent = $.text().trim();
+  const hasConversationText = textContent.length > 1000 && 
+                             (textContent.includes('User:') || 
+                              textContent.includes('ChatGPT:') ||
+                              textContent.includes('Assistant:'));
+  
+  return messageElements > 0 || hasStreamData || hasConversationText;
+}
+
+/**
+ * Detect authentication status from HTML
+ */
+function detectAuthenticationStatus(html) {
+  if (html.includes('"authStatus":"logged_out"')) {
+    return 'logged_out';
+  } else if (html.includes('"authStatus":"logged_in"')) {
+    return 'logged_in';
+  } else if (html.includes('login') || html.includes('sign-in')) {
+    return 'login_required';
+  }
+  return 'unknown';
+}
+
+/**
  * Extract ChatGPT conversation data
  */
-function extractChatgptData($, url, html, richFormatting = true) {
+function extractChatgptData($, url, html, richFormatting = true, capturedImagesParam = []) {
+  console.log('[EXTRACTOR-DEBUG] Function called with capturedImagesParam:', capturedImagesParam);
+  console.log('[EXTRACTOR-DEBUG] Type:', typeof capturedImagesParam);
+  console.log('[EXTRACTOR-DEBUG] Is array:', Array.isArray(capturedImagesParam));
+  
   const title = $('title').text().replace(' - ChatGPT', '').trim() || 'ChatGPT Conversation';
   const messages = [];
 
   // Method 1: Extraction from React Router stream (Newer ChatGPT layout)
   try {
+    console.log('[STREAM-DEBUG] Starting React stream parsing...');
+    
     // 1. Robustly extract enqueue arguments (JSON strings)
     const chunks = [];
     const searchStr = 'streamController.enqueue("';
@@ -128,35 +231,51 @@ function extractChatgptData($, url, html, richFormatting = true) {
       }
     }
 
+    console.log(`[STREAM-DEBUG] Found ${chunks.length} stream chunks`);
+
     // 2. Concatenate and Parse
     let combinedJsonStr = '';
-    chunks.forEach((jsonPart) => {
+    chunks.forEach((jsonPart, index) => {
       try {
         // Unescape the string literal content
         const unescaped = JSON.parse(`"${jsonPart}"`);
-        // Filter out React Flight data chunks
+        console.log(`[STREAM-DEBUG] Chunk ${index + 1}: length=${unescaped.length}, preview=${unescaped.substring(0, 100)}`);
+        
+        // Filter out React Flight data chunks (references like "A0:[...]")
         if (!unescaped.trim().match(/^[A-Z0-9]+:\[/)) {
           combinedJsonStr += unescaped;
+        } else {
+          console.log(`[STREAM-DEBUG] Skipping React Flight reference chunk: ${unescaped.substring(0, 30)}`);
         }
       } catch (e) {
-        // Ignore unescape errors
+        console.log(`[STREAM-DEBUG] Failed to parse chunk ${index + 1}: ${e.message}`);
       }
     });
 
+    console.log(`[STREAM-DEBUG] Combined JSON length: ${combinedJsonStr.length}`);
+
     let root = null;
     try {
-      root = JSON.parse(combinedJsonStr);
+      if (combinedJsonStr.trim()) {
+        root = JSON.parse(combinedJsonStr);
+        console.log(`[STREAM-DEBUG] Successfully parsed combined JSON, type=${Array.isArray(root) ? 'array' : typeof root}`);
+      }
     } catch (e) {
-      // Tolerant parsing if possible
+      console.log(`[STREAM-DEBUG] Failed to parse combined JSON: ${e.message}`);
+      console.log(`[STREAM-DEBUG] Combined JSON preview: ${combinedJsonStr.substring(0, 200)}`);
     }
 
     // 3. Resolve References and Extract Messages
     if (root && Array.isArray(root)) {
+      console.log(`[STREAM-DEBUG] Processing React Flight array with ${root.length} elements`);
+      
       const mappingIdx = root.indexOf('mapping');
       if (mappingIdx !== -1 && mappingIdx + 1 < root.length) {
         const mapping = root[mappingIdx + 1];
+        console.log(`[STREAM-DEBUG] Found mapping with ${Object.keys(mapping).length} entries`);
 
-        Object.values(mapping).forEach((nodeOrRef) => {
+        let messageCount = 0;
+        Object.values(mapping).forEach((nodeOrRef, idx) => {
           let node = nodeOrRef;
           // Reference resolution
           if (typeof nodeOrRef === 'number') {
@@ -164,8 +283,11 @@ function extractChatgptData($, url, html, richFormatting = true) {
           }
 
           if (node && node.message) {
+            messageCount++;
             const msgData = node.message;
             const role = msgData.author?.role;
+
+            console.log(`[STREAM-DEBUG] Message ${messageCount}: role=${role}, hasContent=${!!msgData.content}`);
 
             if (role === 'user' || role === 'assistant' || role === 'system') {
               let parts = [];
@@ -196,7 +318,13 @@ function extractChatgptData($, url, html, richFormatting = true) {
             }
           }
         });
+        
+        console.log(`[STREAM-DEBUG] Extracted ${messageCount} messages from React stream`);
+      } else {
+        console.log(`[STREAM-DEBUG] No mapping found in React Flight data`);
       }
+    } else {
+      console.log(`[STREAM-DEBUG] No valid React Flight array structure found`);
     }
   } catch (e) {
     logger.error(`Error parsing ChatGPT stream: ${e.message}`);
@@ -226,7 +354,7 @@ function extractChatgptData($, url, html, richFormatting = true) {
         const $target = $content.length > 0 ? $content : $art;
 
         // Extract parts using rich content extractor
-        const parts = extractChatgptRichContent($target, $, richFormatting);
+        const parts = extractChatgptRichContent($target, $, richFormatting, capturedImagesParam);
 
         if (parts.length > 0) {
           messages.push({
@@ -248,7 +376,7 @@ function extractChatgptData($, url, html, richFormatting = true) {
       const $el = $(el);
       const role = $el.attr('data-message-author-role');
       if (role === 'user' || role === 'assistant') {
-        const parts = extractChatgptRichContent($el, $, richFormatting);
+        const parts = extractChatgptRichContent($el, $, richFormatting, capturedImagesParam);
         if (parts.length > 0) {
           messages.push({
             id: uuidv4(),
@@ -287,7 +415,7 @@ function extractChatgptData($, url, html, richFormatting = true) {
 /**
  * Extract rich content from ChatGPT message element
  */
-function extractChatgptRichContent($el, $, richFormatting = true) {
+function extractChatgptRichContent($el, $, richFormatting = true, capturedImagesParam = []) {
   if (!richFormatting) {
     return [{ type: 'text', content: $el.text().trim() }];
   }
@@ -331,7 +459,23 @@ function extractChatgptRichContent($el, $, richFormatting = true) {
     }
   });
 
-  // 3. Identify images
+  // 3. Process captured images
+  const imageMap = new Map();
+  if (capturedImagesParam && Array.isArray(capturedImagesParam)) {
+    capturedImagesParam.forEach(img => {
+      if (img.metadata && img.metadata.originalUrl) {
+        imageMap.set(img.metadata.originalUrl, img);
+      }
+    });
+  }
+  
+  // Debug: Log imageMap status
+  if (capturedImagesParam && capturedImagesParam.length > 0) {
+    console.log(`[DEBUG] ImageMap populated with ${imageMap.size} entries`);
+  } else {
+    console.log(`[DEBUG] ImageMap empty - images disabled or no images found`);
+  }
+
   $clone.find('img').each((index, elem) => {
     const $elem = $(elem);
     const src = $elem.attr('src');
@@ -341,11 +485,35 @@ function extractChatgptRichContent($el, $, richFormatting = true) {
       !src.includes('avatar') &&
       !src.includes('data:image/svg')
     ) {
-      contentBlocks.push({
-        type: 'image',
-        content: src,
-        metadata: { alt: $elem.attr('alt') || '' },
-      });
+      // Use captured image data if available, otherwise fall back to URL
+      let imageData = imageMap.get(src);
+      if (!imageData && src.startsWith('/')) {
+        const absoluteUrl = new URL(src, url).href;
+        imageData = imageMap.get(absoluteUrl);
+      }
+      
+      if (imageData) {
+        contentBlocks.push({
+          type: 'image',
+          content: imageData.content,
+          metadata: { 
+            alt: $elem.attr('alt') || '',
+            filename: imageData.metadata.filename,
+            originalUrl: imageData.metadata.originalUrl,
+            hash: imageData.metadata.hash,
+            encoding: imageData.metadata.encoding,
+            width: imageData.width,
+            height: imageData.height
+          },
+        });
+      } else {
+        // Fallback to URL if capture failed
+        contentBlocks.push({
+          type: 'image',
+          content: src,
+          metadata: { alt: $elem.attr('alt') || '' },
+        });
+      }
     }
     $elem.remove();
   });

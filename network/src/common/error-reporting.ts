@@ -730,43 +730,41 @@ export class ErrorReporter {
 
   private setupGlobalErrorHandlers(): void {
     // Browser environment
-    // @ts-ignore - window is checked at runtime
     if (typeof window !== 'undefined') {
-      // @ts-ignore
-      window.addEventListener('error', (event: any) => {
+      window.addEventListener('error', (event: Event | ErrorEvent) => {
+        const errorEvent = event as ErrorEvent;
         this.report({
           level: 'error',
           component: 'pwa',
           category: 'runtime',
           source: 'client',
-          message: event.message,
-          stack: event.error?.stack,
+          message: errorEvent.message,
+          stack: errorEvent.error?.stack,
           context: {
-            fileName: event.filename,
-            lineNumber: event.lineno,
-            columnNumber: event.colno,
+            fileName: errorEvent.filename,
+            lineNumber: errorEvent.lineno,
+            columnNumber: errorEvent.colno,
             userAction: this.getLastUserAction(),
             userJourney: [...this.userJourney]
           },
           severity: 'high'
-        } as any);
+        });
       });
-
-      // @ts-ignore
-      window.addEventListener('unhandledrejection', (event: any) => {
+    
+      window.addEventListener('unhandledrejection', (event: PromiseRejectionEvent) => {
         this.report({
           level: 'error',
           component: 'pwa',
           category: 'runtime',
           source: 'client',
           message: `Unhandled promise rejection: ${this.extractErrorMessage(event.reason)}`,
-          stack: event.reason?.stack,
+          stack: event.reason instanceof Error ? event.reason.stack : undefined,
           context: {
             userAction: this.getLastUserAction(),
             userJourney: [...this.userJourney]
           },
           severity: 'high'
-        } as any);
+        });
       });
     }
 
@@ -774,7 +772,7 @@ export class ErrorReporter {
     if (typeof process !== 'undefined') {
       try {
         if (typeof process.on === 'function') {
-          process.on('uncaughtException', (error) => {
+          process.on('uncaughtException', (error: Error) => {
             this.report({
               level: 'critical',
               component: 'server',
@@ -787,10 +785,10 @@ export class ErrorReporter {
                 cpuUsage: process.cpuUsage ? process.cpuUsage().user : undefined
               },
               severity: 'critical'
-            } as any);
+            });
           });
 
-          process.on('unhandledRejection', (reason) => {
+          process.on('unhandledRejection', (reason: unknown) => {
             this.report({
               level: 'critical',
               component: 'server',
@@ -802,7 +800,7 @@ export class ErrorReporter {
                 memoryUsage: process.memoryUsage?.().heapUsed
               },
               severity: 'critical'
-            } as any);
+            });
           });
         }
       } catch (e) {
@@ -812,20 +810,20 @@ export class ErrorReporter {
   }
 
   private startPerformanceMonitoring(): void {
-    // @ts-ignore
     if (typeof window !== 'undefined' && window.performance) {
       // Monitor memory usage
-      // @ts-ignore
       const perf = window.performance;
-      // @ts-ignore
       if ('memory' in perf) {
         setInterval(() => {
-          // @ts-ignore
-          const memInfo = perf.memory;
-          this.performanceMetrics.memoryUsage = memInfo.usedJSHeapSize;
-
+          // Performance.memory is available in browsers when the permission is granted
+          const memInfo = (perf as any).memory;
+          if (!memInfo) return;
+          
+          // Update memory metrics
+          this.performanceMetrics.memoryUsage = memInfo.usedJSHeapSize || 0;
+          
           // Alert if memory usage is too high
-          if (memInfo.usedJSHeapSize > memInfo.jsHeapSizeLimit * 0.9) {
+          if (memInfo.usedJSHeapSize && memInfo.jsHeapSizeLimit && memInfo.usedJSHeapSize > memInfo.jsHeapSizeLimit * 0.9) {
             this.report({
               level: 'warning',
               component: 'pwa',
@@ -834,12 +832,12 @@ export class ErrorReporter {
               message: 'High memory usage detected',
               context: {
                 memoryUsage: memInfo.usedJSHeapSize,
-                memoryLimit: memInfo.jsHeapSizeLimit,
-                memoryPercent: (memInfo.usedJSHeapSize / memInfo.jsHeapSizeLimit) * 100
-              },
-              severity: 'medium'
-            } as any);
-          }
+                 memoryLimit: memInfo.jsHeapSizeLimit,
+                 memoryPercent: (memInfo.usedJSHeapSize / memInfo.jsHeapSizeLimit) * 100
+               },
+               severity: 'medium'
+             });
+           }
         }, 30000);
       }
     }
@@ -1227,11 +1225,14 @@ export class ErrorReporter {
     let success = false;
 
     while (retries < (this.config.maxRetries || 3) && !success) {
-      try {
-        const fullUrl = this.config.endpoint.startsWith('http')
-          ? this.config.endpoint
-          // @ts-ignore
-          : `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost'}${this.config.endpoint}`;
+       try {
+         let origin = 'http://localhost';
+         if (typeof window !== 'undefined' && window.location) {
+           origin = window.location.origin;
+         }
+         const fullUrl = this.config.endpoint.startsWith('http')
+           ? this.config.endpoint
+           : `${origin}${this.config.endpoint}`;
 
         const response = await fetch(fullUrl, {
           method: 'POST',
@@ -1244,9 +1245,8 @@ export class ErrorReporter {
             reports,
             metadata: {
               clientTime: new Date().toISOString(),
-              timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-              // @ts-ignore
-              language: typeof navigator !== 'undefined' ? navigator.language : 'unknown'
+               timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                language: (typeof window !== 'undefined' && window.navigator && window.navigator.language) ? window.navigator.language : 'unknown'
             }
           })
         });

@@ -7,17 +7,22 @@ import { unifiedDebugService } from './lib/unified-debug-service'
 import { errorReporter } from '../../common/error-reporting'
 
 // Polyfills for libp2p and crypto
-// @ts-ignore
+declare global {
+  interface Window {
+    Buffer: typeof Buffer;
+    global: typeof globalThis;
+    process: { env: {} };
+    unifiedDebugService: any;
+    errorReporter: any;
+  }
+}
+
 window.Buffer = Buffer;
-// @ts-ignore
 window.global = window;
-// @ts-ignore
 window.process = { env: {} };
 
 // Expose debug services to window for E2E testing and debugging
-// @ts-ignore
 window.unifiedDebugService = unifiedDebugService;
-// @ts-ignore
 window.errorReporter = errorReporter;
 
 createRoot(document.getElementById('root')!).render(

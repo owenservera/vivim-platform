@@ -1,0 +1,711 @@
+./common/error-reporting.ts:733:    // @ts-ignore - window is checked at runtime
+./common/error-reporting.ts:735:      // @ts-ignore
+./common/error-reporting.ts:755:      // @ts-ignore
+./common/error-reporting.ts:815:    // @ts-ignore
+./common/error-reporting.ts:818:      // @ts-ignore
+./common/error-reporting.ts:820:      // @ts-ignore
+./common/error-reporting.ts:823:          // @ts-ignore - Performance memory is non-standard
+./common/error-reporting.ts:1235:          // @ts-ignore
+./common/error-reporting.ts:1250:              // @ts-ignore
+./github-frontend/node_modules/hast-util-to-jsx-runtime/lib/types.d.ts:143:// @ts-ignore: conditionally defined;
+./github-frontend/node_modules/hast-util-to-jsx-runtime/lib/types.d.ts:151:// @ts-ignore: conditionally defined;
+./github-frontend/node_modules/hast-util-to-jsx-runtime/lib/types.d.ts:159:// @ts-ignore: conditionally defined;
+./network/src/common/error-reporting.ts:733:    // @ts-ignore - window is checked at runtime
+./network/src/common/error-reporting.ts:735:      // @ts-ignore
+./network/src/common/error-reporting.ts:755:      // @ts-ignore
+./network/src/common/error-reporting.ts:815:    // @ts-ignore
+./network/src/common/error-reporting.ts:818:      // @ts-ignore
+./network/src/common/error-reporting.ts:820:      // @ts-ignore
+./network/src/common/error-reporting.ts:823:          // @ts-ignore
+./network/src/common/error-reporting.ts:1233:          // @ts-ignore
+./network/src/common/error-reporting.ts:1248:              // @ts-ignore
+./network/src/crdt/Libp2pYjsProvider.ts:67:    // @ts-ignore
+./network/src/crdt/Libp2pYjsProvider.ts:87:      // @ts-ignore
+./network/src/crdt/Libp2pYjsProvider.ts:112:      // @ts-ignore
+./network/src/p2p/NetworkNode.ts:19:// @ts-ignore - libp2p type import issue
+./network/src/p2p/NetworkNode.ts:111:        // @ts-ignore - libp2p type compatibility issue
+./network/src/p2p/NetworkNode.ts:115:        // @ts-ignore - libp2p type compatibility issue
+./network/src/p2p/NetworkNode.ts:133:        // @ts-ignore - libp2p PeerId type compatibility issue
+./network/src/p2p/NetworkNode.ts:138:      // @ts-ignore - libp2p return type compatibility issue
+./network/src/p2p/NetworkNode.ts:269:      // @ts-ignore - libp2p validator type compatibility issue
+./network/src/p2p/NetworkNode.ts:274:            // @ts-ignore
+./node_modules/.bun/@braintree+sanitize-url@7.1.2/node_modules/@braintree/sanitize-url/src/__tests__/index.test.ts:82:    // @ts-ignore
+./node_modules/.bun/@mswjs+interceptors@0.41.3/node_modules/@mswjs/interceptors/src/Interceptor.ts:19:    // @ts-ignore https://github.com/Microsoft/TypeScript/issues/24587
+./node_modules/.bun/@mswjs+interceptors@0.41.3/node_modules/@mswjs/interceptors/src/Interceptor.ts:25:  // @ts-ignore
+./node_modules/.bun/@mswjs+interceptors@0.41.3/node_modules/@mswjs/interceptors/src/Interceptor.ts:30:  // @ts-ignore
+./node_modules/.bun/@noble+ciphers@0.4.1/node_modules/@noble/ciphers/src/webcrypto/cryptoNode.ts:4:// @ts-ignore
+./node_modules/.bun/@noble+ciphers@1.3.0/node_modules/@noble/ciphers/src/cryptoNode.ts:8:// @ts-ignore
+./node_modules/.bun/@noble+ciphers@1.3.0/node_modules/@noble/ciphers/src/utils.ts:96:  // @ts-ignore
+./node_modules/.bun/@noble+ciphers@1.3.0/node_modules/@noble/ciphers/src/utils.ts:110:  // @ts-ignore
+./node_modules/.bun/@noble+ciphers@1.3.0/node_modules/@noble/ciphers/src/utils.ts:135:  // @ts-ignore
+./node_modules/.bun/@noble+ciphers@2.1.1/node_modules/@noble/ciphers/src/chacha.ts:90:// @ts-ignore
+./node_modules/.bun/@noble+ciphers@2.1.1/node_modules/@noble/ciphers/src/chacha.ts:94:// @ts-ignore
+./node_modules/.bun/@noble+ciphers@2.1.1/node_modules/@noble/ciphers/src/salsa.ts:91:// @ts-ignore
+./node_modules/.bun/@noble+ciphers@2.1.1/node_modules/@noble/ciphers/src/salsa.ts:95:// @ts-ignore
+./node_modules/.bun/@noble+ciphers@2.1.1/node_modules/@noble/ciphers/src/utils.ts:91:  // @ts-ignore
+./node_modules/.bun/@noble+ciphers@2.1.1/node_modules/@noble/ciphers/src/utils.ts:105:  // @ts-ignore
+./node_modules/.bun/@noble+ciphers@2.1.1/node_modules/@noble/ciphers/src/utils.ts:130:  // @ts-ignore
+./node_modules/.bun/@noble+ciphers@2.1.1/node_modules/@noble/ciphers/src/utils.ts:483:      // @ts-ignore
+./node_modules/.bun/@noble+curves@1.9.7/node_modules/@noble/curves/src/abstract/curve.ts:686:    // @ts-ignore
+./node_modules/.bun/@noble+curves@1.9.7/node_modules/@noble/curves/src/abstract/hash-to-curve.ts:300:      // @ts-ignore
+./node_modules/.bun/@noble+curves@1.9.7/node_modules/@noble/curves/src/abstract/tower.ts:279:    // @ts-ignore
+./node_modules/.bun/@noble+curves@1.9.7/node_modules/@noble/curves/src/abstract/weierstrass.ts:169:    // @ts-ignore
+./node_modules/.bun/@noble+curves@2.0.1/node_modules/@noble/curves/src/abstract/bls.ts:395:        // @ts-ignore
+./node_modules/.bun/@noble+curves@2.0.1/node_modules/@noble/curves/src/abstract/curve.ts:613:    // @ts-ignore
+./node_modules/.bun/@noble+curves@2.0.1/node_modules/@noble/curves/src/abstract/hash-to-curve.ts:286:      // @ts-ignore
+./node_modules/.bun/@noble+curves@2.0.1/node_modules/@noble/curves/src/abstract/tower.ts:278:    // @ts-ignore
+./node_modules/.bun/@noble+curves@2.0.1/node_modules/@noble/curves/src/abstract/weierstrass.ts:205:    // @ts-ignore
+./node_modules/.bun/@noble+ed25519@2.3.0/node_modules/@noble/ed25519/index.ts:142:  // @ts-ignore
+./node_modules/.bun/@noble+hashes@1.8.0/node_modules/@noble/hashes/src/blake2.ts:194:    // @ts-ignore
+./node_modules/.bun/@noble+hashes@1.8.0/node_modules/@noble/hashes/src/cryptoNode.ts:8:// @ts-ignore
+./node_modules/.bun/@noble+hashes@1.8.0/node_modules/@noble/hashes/src/utils.ts:126:  // @ts-ignore
+./node_modules/.bun/@noble+hashes@1.8.0/node_modules/@noble/hashes/src/utils.ts:140:  // @ts-ignore
+./node_modules/.bun/@noble+hashes@1.8.0/node_modules/@noble/hashes/src/utils.ts:165:  // @ts-ignore
+./node_modules/.bun/@noble+hashes@2.0.1/node_modules/@noble/hashes/src/blake2.ts:193:    // @ts-ignore
+./node_modules/.bun/@noble+hashes@2.0.1/node_modules/@noble/hashes/src/utils.ts:125:  // @ts-ignore
+./node_modules/.bun/@noble+hashes@2.0.1/node_modules/@noble/hashes/src/utils.ts:139:  // @ts-ignore
+./node_modules/.bun/@noble+hashes@2.0.1/node_modules/@noble/hashes/src/utils.ts:164:  // @ts-ignore
+./node_modules/.bun/@tanstack+table-core@8.21.3/node_modules/@tanstack/table-core/src/features/ColumnFiltering.ts:305:          : // @ts-ignore
+./node_modules/.bun/@testing-library+react@16.3.2+6e3ec85d10ff6d93/node_modules/@testing-library/react/types/index.d.ts:11://@ts-ignore
+./node_modules/.bun/chevrotain@10.5.0/node_modules/chevrotain/src/parse/parser/traits/lexer_adapter.ts:24:    // @ts-ignore - `this parameter` not supported in setters/getters
+./node_modules/.bun/chevrotain@10.5.0/node_modules/chevrotain/src/parse/parser/traits/lexer_adapter.ts:31:    // @ts-ignore - `this parameter` not supported in setters/getters
+./node_modules/.bun/chevrotain@11.1.2/node_modules/chevrotain/src/parse/parser/traits/lexer_adapter.ts:24:    // @ts-ignore - `this parameter` not supported in setters/getters
+./node_modules/.bun/chevrotain@11.1.2/node_modules/chevrotain/src/parse/parser/traits/lexer_adapter.ts:31:    // @ts-ignore - `this parameter` not supported in setters/getters
+./node_modules/.bun/consola@3.4.2/node_modules/consola/dist/basic.d.ts:21:// @ts-ignore
+./node_modules/.bun/consola@3.4.2/node_modules/consola/dist/browser.d.ts:21:// @ts-ignore
+./node_modules/.bun/consola@3.4.2/node_modules/consola/dist/index.d.ts:22:// @ts-ignore
+./node_modules/.bun/dexie-react-hooks@1.1.7+f57107cc6297b61c/node_modules/dexie-react-hooks/src/usePermissions.ts:108:    // @ts-ignore
+./node_modules/.bun/dompurify@3.3.1/node_modules/dompurify/dist/purify.cjs.d.ts:449:// @ts-ignore
+./node_modules/.bun/effect@3.18.4/node_modules/effect/src/Graph.ts:2800:  // @ts-ignore
+./node_modules/.bun/entities@7.0.1/node_modules/entities/decode.d.ts:2:// @ts-ignore
+./node_modules/.bun/entities@7.0.1/node_modules/entities/escape.d.ts:2:// @ts-ignore
+./node_modules/.bun/happy-dom@15.11.7/node_modules/happy-dom/src/intersection-observer/IntersectionObserver.ts:11:	// @ts-ignore
+./node_modules/.bun/happy-dom@15.11.7/node_modules/happy-dom/src/intersection-observer/IntersectionObserver.ts:13:	// @ts-ignore
+./node_modules/.bun/hast-util-to-jsx-runtime@2.3.6/node_modules/hast-util-to-jsx-runtime/lib/types.d.ts:143:// @ts-ignore: conditionally defined;
+./node_modules/.bun/hast-util-to-jsx-runtime@2.3.6/node_modules/hast-util-to-jsx-runtime/lib/types.d.ts:151:// @ts-ignore: conditionally defined;
+./node_modules/.bun/hast-util-to-jsx-runtime@2.3.6/node_modules/hast-util-to-jsx-runtime/lib/types.d.ts:159:// @ts-ignore: conditionally defined;
+./node_modules/.bun/immer@11.1.4/node_modules/immer/src/core/proxy.ts:206:		// @ts-ignore
+./node_modules/.bun/immer@11.1.4/node_modules/immer/src/core/proxy.ts:261:	// @ts-ignore
+./node_modules/.bun/immer@11.1.4/node_modules/immer/src/core/proxy.ts:271:	// @ts-ignore
+./node_modules/.bun/immer@11.1.4/node_modules/immer/src/core/scope.ts:77:	// @ts-ignore
+./node_modules/.bun/immer@11.1.4/node_modules/immer/src/plugins/mapset.ts:170:		// @ts-ignore
+./node_modules/.bun/immer@11.1.4/node_modules/immer/src/plugins/mapset.ts:294:		// @ts-ignore
+./node_modules/.bun/immer@11.1.4/node_modules/immer/src/plugins/patches.ts:182:			// @ts-ignore
+./node_modules/.bun/immer@11.1.4/node_modules/immer/src/plugins/patches.ts:366:							// @ts-ignore
+./node_modules/.bun/immer@11.1.4/node_modules/immer/src/utils/common.ts:132:	// @ts-ignore
+./node_modules/.bun/immer@11.1.4/node_modules/immer/src/utils/plugins.ts:61:	// @ts-ignore
+./node_modules/.bun/jose@6.1.3/node_modules/jose/dist/types/jwks/remote.d.ts:51: * // @ts-ignore
+./node_modules/.bun/jose@6.1.3/node_modules/jose/dist/types/jwks/remote.d.ts:54: *     // @ts-ignore
+./node_modules/.bun/jose@6.1.3/node_modules/jose/dist/types/jwks/remote.d.ts:76: * // @ts-ignore
+./node_modules/.bun/jose@6.1.3/node_modules/jose/dist/types/jwks/remote.d.ts:79: *     // @ts-ignore
+./node_modules/.bun/jose@6.1.3/node_modules/jose/dist/types/jwks/remote.d.ts:91: * // @ts-ignore
+./node_modules/.bun/jose@6.1.3/node_modules/jose/dist/types/jwks/remote.d.ts:94: *     // @ts-ignore
+./node_modules/.bun/mongodb@7.0.0/node_modules/mongodb/src/client-side-encryption/auto_encrypter.ts:330:      // @ts-ignore: TS complains as this always returns true on versions where it is present.
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/internal/shim-types.d.ts:8:/** @ts-ignore */
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/internal/shim-types.d.ts:10:/** @ts-ignore */
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/internal/types.d.ts:48:/** @ts-ignore For users with \@types/node */
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/internal/types.d.ts:50:/** @ts-ignore For users with undici */
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/internal/types.d.ts:52:/** @ts-ignore For users with \@types/bun */
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/internal/types.d.ts:54:/** @ts-ignore For users with node-fetch@2 */
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/internal/types.d.ts:56:/** @ts-ignore For users with node-fetch@3, doesn't need file extension because types are at ./@types/index.d.ts */
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/internal/types.d.ts:58:/** @ts-ignore For users who use Deno */
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/beta/realtime/internal-base.ts:63:      // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/beta/realtime/internal-base.ts:70:    // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/beta/realtime/websocket.ts:17:    // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/beta/realtime/websocket.ts:66:    // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/client.ts:502:        // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/core/error.ts:117:    // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/detect-platform.ts:7:    // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/detect-platform.ts:9:    // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/detect-platform.ts:11:    // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/errors.ts:19:        // @ts-ignore - not all envs have native support for cause yet
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/errors.ts:22:        // @ts-ignore - not all envs have native support for cause yet
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/qs/stringify.ts:174:      // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/qs/stringify.ts:181:    // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/qs/stringify.ts:204:        // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/qs/stringify.ts:278:    // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/qs/stringify.ts:299:    // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/qs/utils.ts:35:      // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/qs/utils.ts:81:    // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/qs/utils.ts:221:    // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/shim-types.ts:12:/** @ts-ignore */
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/shim-types.ts:15:/** @ts-ignore */
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/types.ts:66:/** @ts-ignore For users with \@types/node */
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/types.ts:68:/** @ts-ignore For users with undici */
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/types.ts:70:/** @ts-ignore For users with \@types/bun */
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/types.ts:72:/** @ts-ignore For users with node-fetch@2 */
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/types.ts:74:/** @ts-ignore For users with node-fetch@3, doesn't need file extension because types are at ./@types/index.d.ts */
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/internal/types.ts:76:/** @ts-ignore For users who use Deno */
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/lib/EventStream.ts:160:      // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/realtime/internal-base.ts:68:      // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/realtime/internal-base.ts:75:    // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/realtime/websocket.ts:17:    // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/realtime/websocket.ts:66:    // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/resources/responses/internal-base.ts:61:      // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/resources/responses/internal-base.ts:68:    // @ts-ignore
+./node_modules/.bun/openai@6.25.0+b3fbbbf71fef4743/node_modules/openai/src/resources/responses/ws.ts:41:          // @ts-ignore TS isn't smart enough to get the relationship right here
+./node_modules/.bun/pino-pretty@10.3.1/node_modules/pino-pretty/index.d.ts:11:// @ts-ignore fall back to any if pino is not available, i.e. when running pino tests
+./node_modules/.bun/pino-pretty@13.1.3/node_modules/pino-pretty/index.d.ts:11:// @ts-ignore fall back to any if pino is not available, i.e. when running pino tests
+./node_modules/.bun/pino-pretty@13.1.3/node_modules/pino-pretty/index.d.ts:229:  // @ts-ignore
+./node_modules/.bun/playwright-core@1.58.2/node_modules/playwright-core/types/types.d.ts:15819://@ts-ignore this will be any if electron is not installed
+./node_modules/.bun/react-native-webrtc@124.0.7+9070bf6821949693/node_modules/react-native-webrtc/src/EventEmitter.ts:2:// @ts-ignore
+./node_modules/.bun/react-native-webrtc@124.0.7+9070bf6821949693/node_modules/react-native-webrtc/src/RTCPeerConnection.ts:277:            // @ts-ignore
+./node_modules/.bun/rxjs@7.8.2/node_modules/rxjs/src/internal/observable/dom/WebSocketSubject.ts:158:  // @ts-ignore: Property has no initializer and is not definitely assigned
+./node_modules/.bun/rxjs@7.8.2/node_modules/rxjs/src/internal/observable/dom/WebSocketSubject.ts:162:  // @ts-ignore: Property has no initializer and is not definitely assigned
+./node_modules/.bun/rxjs@7.8.2/node_modules/rxjs/src/internal/scheduler/AsyncAction.ts:12:  // @ts-ignore: Property has no initializer and is not definitely assigned
+./node_modules/.bun/rxjs@7.8.2/node_modules/rxjs/src/internal/testing/ColdObservable.ts:14:  // @ts-ignore: Property has no initializer and is not definitely assigned
+./node_modules/.bun/rxjs@7.8.2/node_modules/rxjs/src/internal/testing/ColdObservable.ts:16:  // @ts-ignore: Property has no initializer and is not definitely assigned
+./node_modules/.bun/rxjs@7.8.2/node_modules/rxjs/src/internal/testing/HotObservable.ts:14:  // @ts-ignore: Property has no initializer and is not definitely assigned
+./node_modules/.bun/rxjs@7.8.2/node_modules/rxjs/src/internal/testing/HotObservable.ts:16:  // @ts-ignore: Property has no initializer and is not definitely assigned
+./node_modules/.bun/rxjs@7.8.2/node_modules/rxjs/src/internal/testing/SubscriptionLoggable.ts:6:  // @ts-ignore: Property has no initializer and is not definitely assigned
+./node_modules/.bun/type-detect@4.1.0/node_modules/type-detect/index.ts:18:  // @ts-ignore
+./node_modules/.bun/type-detect@4.1.0/node_modules/type-detect/index.ts:20:  // @ts-ignore
+./node_modules/.bun/vite-plugin-pwa@1.2.0+d51363fd897b6039/node_modules/vite-plugin-pwa/preact.d.ts:3:  // @ts-ignore ignore when preact/hooks is not installed
+./node_modules/.bun/vite-plugin-pwa@1.2.0+d51363fd897b6039/node_modules/vite-plugin-pwa/react.d.ts:3:  // @ts-ignore ignore when react is not installed
+./node_modules/.bun/vite-plugin-pwa@1.2.0+d51363fd897b6039/node_modules/vite-plugin-pwa/solid.d.ts:3:  // @ts-ignore ignore when solid-js is not installed
+./node_modules/.bun/vite-plugin-pwa@1.2.0+d51363fd897b6039/node_modules/vite-plugin-pwa/svelte.d.ts:3:  // @ts-ignore ignore when svelte is not installed
+./node_modules/.bun/vite-plugin-pwa@1.2.0+d51363fd897b6039/node_modules/vite-plugin-pwa/vue.d.ts:4:  // @ts-ignore ignore when vue is not installed
+./node_modules/.bun/vite@6.4.1+367700b39669b01c/node_modules/vite/types/internal/cssPreprocessorOptions.d.ts:3:// @ts-ignore `sass` may not be installed
+./node_modules/.bun/vite@6.4.1+367700b39669b01c/node_modules/vite/types/internal/cssPreprocessorOptions.d.ts:5:// @ts-ignore `sass-embedded` may not be installed
+./node_modules/.bun/vite@6.4.1+367700b39669b01c/node_modules/vite/types/internal/cssPreprocessorOptions.d.ts:7:// @ts-ignore `less` may not be installed
+./node_modules/.bun/vite@6.4.1+367700b39669b01c/node_modules/vite/types/internal/cssPreprocessorOptions.d.ts:9:// @ts-ignore `stylus` may not be installed
+./node_modules/.bun/vite@6.4.1+367700b39669b01c/node_modules/vite/types/internal/lightningcssOptions.d.ts:3:// @ts-ignore `lightningcss` may not be installed
+./node_modules/.bun/vite@7.3.1+367700b39669b01c/node_modules/vite/types/internal/cssPreprocessorOptions.d.ts:3:// @ts-ignore `sass` may not be installed
+./node_modules/.bun/vite@7.3.1+367700b39669b01c/node_modules/vite/types/internal/cssPreprocessorOptions.d.ts:5:// @ts-ignore `sass-embedded` may not be installed
+./node_modules/.bun/vite@7.3.1+367700b39669b01c/node_modules/vite/types/internal/cssPreprocessorOptions.d.ts:7:// @ts-ignore `less` may not be installed
+./node_modules/.bun/vite@7.3.1+367700b39669b01c/node_modules/vite/types/internal/cssPreprocessorOptions.d.ts:9:// @ts-ignore `stylus` may not be installed
+./node_modules/.bun/vite@7.3.1+367700b39669b01c/node_modules/vite/types/internal/lightningcssOptions.d.ts:3:// @ts-ignore `lightningcss` may not be installed
+./node_modules/.bun/vite@7.3.1+367700b39669b01c/node_modules/vite/types/internal/terserOptions.d.ts:3:// @ts-ignore `terser` may not be installed
+./node_modules/.bun/vite@7.3.1+367700b39669b01c/node_modules/vite/types/internal/terserOptions.d.ts:5:// @ts-ignore `terser` may not be installed
+./node_modules/.bun/vite@7.3.1+c288ea4a255697be/node_modules/vite/types/internal/cssPreprocessorOptions.d.ts:3:// @ts-ignore `sass` may not be installed
+./node_modules/.bun/vite@7.3.1+c288ea4a255697be/node_modules/vite/types/internal/cssPreprocessorOptions.d.ts:5:// @ts-ignore `sass-embedded` may not be installed
+./node_modules/.bun/vite@7.3.1+c288ea4a255697be/node_modules/vite/types/internal/cssPreprocessorOptions.d.ts:7:// @ts-ignore `less` may not be installed
+./node_modules/.bun/vite@7.3.1+c288ea4a255697be/node_modules/vite/types/internal/cssPreprocessorOptions.d.ts:9:// @ts-ignore `stylus` may not be installed
+./node_modules/.bun/vite@7.3.1+c288ea4a255697be/node_modules/vite/types/internal/lightningcssOptions.d.ts:3:// @ts-ignore `lightningcss` may not be installed
+./node_modules/.bun/vite@7.3.1+c288ea4a255697be/node_modules/vite/types/internal/terserOptions.d.ts:3:// @ts-ignore `terser` may not be installed
+./node_modules/.bun/vite@7.3.1+c288ea4a255697be/node_modules/vite/types/internal/terserOptions.d.ts:5:// @ts-ignore `terser` may not be installed
+./node_modules/.bun/vite@7.3.1+cf7178a6347135aa/node_modules/vite/types/internal/cssPreprocessorOptions.d.ts:3:// @ts-ignore `sass` may not be installed
+./node_modules/.bun/vite@7.3.1+cf7178a6347135aa/node_modules/vite/types/internal/cssPreprocessorOptions.d.ts:5:// @ts-ignore `sass-embedded` may not be installed
+./node_modules/.bun/vite@7.3.1+cf7178a6347135aa/node_modules/vite/types/internal/cssPreprocessorOptions.d.ts:7:// @ts-ignore `less` may not be installed
+./node_modules/.bun/vite@7.3.1+cf7178a6347135aa/node_modules/vite/types/internal/cssPreprocessorOptions.d.ts:9:// @ts-ignore `stylus` may not be installed
+./node_modules/.bun/vite@7.3.1+cf7178a6347135aa/node_modules/vite/types/internal/lightningcssOptions.d.ts:3:// @ts-ignore `lightningcss` may not be installed
+./node_modules/.bun/vite@7.3.1+cf7178a6347135aa/node_modules/vite/types/internal/terserOptions.d.ts:3:// @ts-ignore `terser` may not be installed
+./node_modules/.bun/vite@7.3.1+cf7178a6347135aa/node_modules/vite/types/internal/terserOptions.d.ts:5:// @ts-ignore `terser` may not be installed
+./node_modules/.bun/vitest@4.0.18+0acc6709d7d0756a/node_modules/vitest/browser/context.d.ts:1:// @ts-ignore -- @vitest/browser-playwright might not be installed
+./node_modules/.bun/vitest@4.0.18+0acc6709d7d0756a/node_modules/vitest/browser/context.d.ts:3:// @ts-ignore -- @vitest/browser-webdriverio might not be installed
+./node_modules/.bun/vitest@4.0.18+0acc6709d7d0756a/node_modules/vitest/browser/context.d.ts:5:// @ts-ignore -- @vitest/browser-preview might not be installed
+./node_modules/.bun/vitest@4.0.18+0acc6709d7d0756a/node_modules/vitest/optional-types.d.ts:3:// @ts-ignore optional peer dep
+./node_modules/.bun/vitest@4.0.18+0acc6709d7d0756a/node_modules/vitest/optional-types.d.ts:6:// @ts-ignore optional peer dep
+./node_modules/.bun/vitest@4.0.18+4d0f58d31c741fc4/node_modules/vitest/browser/context.d.ts:1:// @ts-ignore -- @vitest/browser-playwright might not be installed
+./node_modules/.bun/vitest@4.0.18+4d0f58d31c741fc4/node_modules/vitest/browser/context.d.ts:3:// @ts-ignore -- @vitest/browser-webdriverio might not be installed
+./node_modules/.bun/vitest@4.0.18+4d0f58d31c741fc4/node_modules/vitest/browser/context.d.ts:5:// @ts-ignore -- @vitest/browser-preview might not be installed
+./node_modules/.bun/vitest@4.0.18+4d0f58d31c741fc4/node_modules/vitest/optional-types.d.ts:3:// @ts-ignore optional peer dep
+./node_modules/.bun/vitest@4.0.18+4d0f58d31c741fc4/node_modules/vitest/optional-types.d.ts:6:// @ts-ignore optional peer dep
+./node_modules/.bun/vitest@4.0.18+dc960e4e3bf2774e/node_modules/vitest/browser/context.d.ts:1:// @ts-ignore -- @vitest/browser-playwright might not be installed
+./node_modules/.bun/vitest@4.0.18+dc960e4e3bf2774e/node_modules/vitest/browser/context.d.ts:3:// @ts-ignore -- @vitest/browser-webdriverio might not be installed
+./node_modules/.bun/vitest@4.0.18+dc960e4e3bf2774e/node_modules/vitest/browser/context.d.ts:5:// @ts-ignore -- @vitest/browser-preview might not be installed
+./node_modules/.bun/vitest@4.0.18+dc960e4e3bf2774e/node_modules/vitest/optional-types.d.ts:3:// @ts-ignore optional peer dep
+./node_modules/.bun/vitest@4.0.18+dc960e4e3bf2774e/node_modules/vitest/optional-types.d.ts:6:// @ts-ignore optional peer dep
+./node_modules/.bun/workbox-background-sync@7.4.0/node_modules/workbox-background-sync/src/_version.ts:1:// @ts-ignore
+./node_modules/.bun/workbox-broadcast-update@7.4.0/node_modules/workbox-broadcast-update/src/_version.ts:1:// @ts-ignore
+./node_modules/.bun/workbox-cacheable-response@7.4.0/node_modules/workbox-cacheable-response/src/_version.ts:1:// @ts-ignore
+./node_modules/.bun/workbox-core@7.4.0/node_modules/workbox-core/src/_version.ts:1:// @ts-ignore
+./node_modules/.bun/workbox-expiration@7.4.0/node_modules/workbox-expiration/src/_version.ts:1:// @ts-ignore
+./node_modules/.bun/workbox-google-analytics@7.4.0/node_modules/workbox-google-analytics/src/_version.ts:1:// @ts-ignore
+./node_modules/.bun/workbox-navigation-preload@7.4.0/node_modules/workbox-navigation-preload/src/_version.ts:1:// @ts-ignore
+./node_modules/.bun/workbox-precaching@7.4.0/node_modules/workbox-precaching/src/_version.ts:1:// @ts-ignore
+./node_modules/.bun/workbox-range-requests@7.4.0/node_modules/workbox-range-requests/src/_version.ts:1:// @ts-ignore
+./node_modules/.bun/workbox-recipes@7.4.0/node_modules/workbox-recipes/src/_version.ts:1:// @ts-ignore
+./node_modules/.bun/workbox-routing@7.4.0/node_modules/workbox-routing/src/_version.ts:1:// @ts-ignore
+./node_modules/.bun/workbox-strategies@7.4.0/node_modules/workbox-strategies/src/_version.ts:1:// @ts-ignore
+./node_modules/.bun/workbox-streams@7.4.0/node_modules/workbox-streams/src/_version.ts:1:// @ts-ignore
+./node_modules/.bun/workbox-window@7.4.0/node_modules/workbox-window/src/_version.ts:1:// @ts-ignore
+./node_modules/.bun/yaml@2.8.2/node_modules/yaml/dist/doc/Document.d.ts:14:    /** @ts-ignore The typing of directives fails in TS <= 4.2 */
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/all-errors.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/anyunknown.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/array.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/async-parsing.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/async-parsing.test.ts:266:// @ts-ignore
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/async-refinements.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/base.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/bigint.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/branded.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/catch.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/coerce.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/custom.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/custom.test.ts:16:  // @ts-ignore
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/date.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/deepmasking.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/default.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/description.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/discriminated-unions.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/enum.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/error.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/firstparty.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/firstpartyschematypes.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/function.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/generics.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/instanceof.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/intersection.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/literal.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/map.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/masking.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/mocker.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/nan.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/nativeEnum.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/nativeEnum.test.ts:26:  // @ts-ignore
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/nativeEnum.test.ts:40:    // @ts-ignore
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/nativeEnum.test.ts:74:    // @ts-ignore
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/nullable.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/number.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/object-augmentation.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/object-in-es5-env.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/object.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/optional.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/parser.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/parseUtil.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/partials.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/pickomit.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/pipeline.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/preprocess.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/primitive.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/promise.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/readonly.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/record.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/recursive.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/refine.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/safeparse.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/set.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/standard-schema.test.ts:2:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/string.test.ts:2:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/transformer.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/tuple.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/unions.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/validations.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v3/tests/void.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v4/classic/schemas.ts:1050:  /** @ts-ignore Cast variance */
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v4/classic/schemas.ts:1431:  /** @ts-ignore Cast variance */
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v4/classic/tests/async-parsing.test.ts:265:// @ts-ignore
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v4/classic/tests/enum.test.ts:32:  // @ts-ignore
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v4/classic/tests/enum.test.ts:51:    // @ts-ignore
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v4/classic/tests/file.test.ts:1:// @ts-ignore
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v4/classic/tests/optional.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v4/core/schemas.ts:1659:  /** @ts-ignore Cast variance */
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v4/core/schemas.ts:1673:  /** @ts-ignore Cast variance */
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v4/core/schemas.ts:2719:  /** @ts-ignore Cast variance */
+./node_modules/.bun/zod@3.25.76/node_modules/zod/src/v4/mini/schemas.ts:718:  /** @ts-ignore Cast variance */
+./node_modules/.bun/zod@3.25.76/node_modules/zod/v4/classic/schemas.d.ts:403:/** @ts-ignore Cast variance */
+./node_modules/.bun/zod@3.25.76/node_modules/zod/v4/classic/schemas.d.ts:495:/** @ts-ignore Cast variance */
+./node_modules/.bun/zod@3.25.76/node_modules/zod/v4/core/schemas.d.ts:580:/** @ts-ignore Cast variance */
+./node_modules/.bun/zod@3.25.76/node_modules/zod/v4/core/schemas.d.ts:591:/** @ts-ignore Cast variance */
+./node_modules/.bun/zod@3.25.76/node_modules/zod/v4/core/schemas.d.ts:737:/** @ts-ignore Cast variance */
+./node_modules/.bun/zod@3.25.76/node_modules/zod/v4/mini/schemas.d.ts:183:/** @ts-ignore Cast variance */
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/all-errors.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/anyunknown.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/array.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/async-parsing.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/async-parsing.test.ts:266:// @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/async-refinements.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/base.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/bigint.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/branded.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/catch.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/coerce.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/custom.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/custom.test.ts:16:  // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/date.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/deepmasking.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/default.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/description.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/discriminated-unions.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/enum.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/error.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/firstparty.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/firstpartyschematypes.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/function.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/generics.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/instanceof.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/intersection.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/literal.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/map.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/masking.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/mocker.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/nan.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/nativeEnum.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/nativeEnum.test.ts:26:  // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/nativeEnum.test.ts:40:    // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/nativeEnum.test.ts:74:    // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/nullable.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/number.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/object-augmentation.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/object-in-es5-env.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/object.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/optional.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/parser.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/parseUtil.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/partials.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/pickomit.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/pipeline.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/preprocess.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/primitive.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/promise.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/readonly.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/record.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/recursive.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/refine.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/safeparse.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/set.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/standard-schema.test.ts:2:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/string.test.ts:2:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/transformer.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/tuple.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/unions.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/validations.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/tests/void.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/types.ts:708:    // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v3/types.ts:879:          // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/classic/schemas.ts:1178:  /** @ts-ignore Cast variance */
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/classic/schemas.ts:1619:  /** @ts-ignore Cast variance */
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/classic/tests/async-parsing.test.ts:265:// @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/classic/tests/enum.test.ts:32:  // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/classic/tests/enum.test.ts:51:    // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/classic/tests/optional.test.ts:1:// @ts-ignore TS6133
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/core/schemas.ts:480:      // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/core/schemas.ts:768:      // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/core/schemas.ts:854:        // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/core/schemas.ts:874:    // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/core/schemas.ts:970:    // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/core/schemas.ts:1760:  /** @ts-ignore Cast variance */
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/core/schemas.ts:1776:  /** @ts-ignore Cast variance */
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/core/schemas.ts:3046:  /** @ts-ignore Cast variance */
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/core/schemas.ts:3231:    // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/core/util.ts:130:  // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/core/util.ts:372:  // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/core/util.ts:467:      // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/core/util.ts:857:  // @ts-ignore
+./node_modules/.bun/zod@4.3.6/node_modules/zod/src/v4/mini/schemas.ts:817:  /** @ts-ignore Cast variance */
+./node_modules/.bun/zod@4.3.6/node_modules/zod/v4/classic/schemas.d.ts:432:/** @ts-ignore Cast variance */
+./node_modules/.bun/zod@4.3.6/node_modules/zod/v4/classic/schemas.d.ts:537:/** @ts-ignore Cast variance */
+./node_modules/.bun/zod@4.3.6/node_modules/zod/v4/core/schemas.d.ts:600:/** @ts-ignore Cast variance */
+./node_modules/.bun/zod@4.3.6/node_modules/zod/v4/core/schemas.d.ts:613:/** @ts-ignore Cast variance */
+./node_modules/.bun/zod@4.3.6/node_modules/zod/v4/core/schemas.d.ts:772:/** @ts-ignore Cast variance */
+./node_modules/.bun/zod@4.3.6/node_modules/zod/v4/mini/schemas.d.ts:196:/** @ts-ignore Cast variance */
+./pwa/src/lib/storage-v2/secure-crypto.ts:355:    // @ts-ignore - check if browser supports SHA-3
+./pwa/src/lib/storage-v2/secure-crypto.ts:357:        // @ts-ignore
+./pwa/src/main.tsx:10:// @ts-ignore
+./pwa/src/main.tsx:12:// @ts-ignore
+./pwa/src/main.tsx:14:// @ts-ignore
+./pwa/src/main.tsx:18:// @ts-ignore
+./pwa/src/main.tsx:20:// @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/all-errors.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/anyunknown.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/array.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/async-parsing.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/async-parsing.test.ts:266:// @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/async-refinements.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/base.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/bigint.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/branded.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/catch.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/coerce.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/custom.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/custom.test.ts:16:  // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/date.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/deepmasking.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/default.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/description.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/discriminated-unions.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/enum.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/error.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/firstparty.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/firstpartyschematypes.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/function.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/generics.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/instanceof.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/intersection.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/literal.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/map.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/masking.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/mocker.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/nan.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/nativeEnum.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/nativeEnum.test.ts:26:  // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/nativeEnum.test.ts:40:    // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/nativeEnum.test.ts:74:    // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/nullable.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/number.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/object-augmentation.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/object-in-es5-env.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/object.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/optional.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/parser.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/parseUtil.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/partials.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/pickomit.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/pipeline.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/preprocess.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/primitive.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/promise.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/readonly.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/record.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/recursive.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/refine.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/safeparse.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/set.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/standard-schema.test.ts:2:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/string.test.ts:2:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/transformer.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/tuple.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/unions.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/validations.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/tests/void.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/types.ts:708:    // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v3/types.ts:879:          // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/classic/schemas.ts:1178:  /** @ts-ignore Cast variance */
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/classic/schemas.ts:1619:  /** @ts-ignore Cast variance */
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/classic/tests/async-parsing.test.ts:265:// @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/classic/tests/enum.test.ts:32:  // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/classic/tests/enum.test.ts:51:    // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/classic/tests/optional.test.ts:1:// @ts-ignore TS6133
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/core/schemas.ts:480:      // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/core/schemas.ts:768:      // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/core/schemas.ts:854:        // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/core/schemas.ts:874:    // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/core/schemas.ts:970:    // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/core/schemas.ts:1760:  /** @ts-ignore Cast variance */
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/core/schemas.ts:1776:  /** @ts-ignore Cast variance */
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/core/schemas.ts:3046:  /** @ts-ignore Cast variance */
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/core/schemas.ts:3231:    // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/core/util.ts:130:  // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/core/util.ts:372:  // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/core/util.ts:467:      // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/core/util.ts:857:  // @ts-ignore
+./sdk/apps/public-dashboard/node_modules/zod/src/v4/mini/schemas.ts:817:  /** @ts-ignore Cast variance */
+./sdk/apps/public-dashboard/node_modules/zod/v4/classic/schemas.d.ts:432:/** @ts-ignore Cast variance */
+./sdk/apps/public-dashboard/node_modules/zod/v4/classic/schemas.d.ts:537:/** @ts-ignore Cast variance */
+./sdk/apps/public-dashboard/node_modules/zod/v4/core/schemas.d.ts:600:/** @ts-ignore Cast variance */
+./sdk/apps/public-dashboard/node_modules/zod/v4/core/schemas.d.ts:613:/** @ts-ignore Cast variance */
+./sdk/apps/public-dashboard/node_modules/zod/v4/core/schemas.d.ts:772:/** @ts-ignore Cast variance */
+./sdk/apps/public-dashboard/node_modules/zod/v4/mini/schemas.d.ts:196:/** @ts-ignore Cast variance */
+./sdk/src/mcp/transports/http.ts:226:  // @ts-ignore - Dual transport implementation
+./sdk/src/mcp/transports/libp2p-transport.ts:276:  // @ts-ignore - Dual transport implementation
+./sdk/src/mcp/transports/streamable.ts:118:  // @ts-ignore - Dual transport implementation
+./vivim.docs.context/node_modules/@algolia/autocomplete-shared/dist/esm/preset-algolia/algoliasearch.d.ts:8:/** @ts-ignore */
+./vivim.docs.context/node_modules/@algolia/autocomplete-shared/dist/esm/preset-algolia/algoliasearch.d.ts:11:/** @ts-ignore */
+./vivim.docs.context/node_modules/@algolia/autocomplete-shared/dist/esm/preset-algolia/algoliasearch.d.ts:19:    /** @ts-ignore */
+./vivim.docs.context/node_modules/@algolia/autocomplete-shared/dist/esm/preset-algolia/algoliasearch.d.ts:21:    /** @ts-ignore */
+./vivim.docs.context/node_modules/@algolia/autocomplete-shared/dist/esm/preset-algolia/algoliasearch.d.ts:25:    /** @ts-ignore */
+./vivim.docs.context/node_modules/@algolia/autocomplete-shared/dist/esm/preset-algolia/algoliasearch.d.ts:27:    /** @ts-ignore */
+./vivim.docs.context/node_modules/@algolia/autocomplete-shared/dist/esm/preset-algolia/algoliasearch.d.ts:31:    /** @ts-ignore */
+./vivim.docs.context/node_modules/@algolia/autocomplete-shared/dist/esm/preset-algolia/algoliasearch.d.ts:33:    /** @ts-ignore */
+./vivim.docs.context/node_modules/@algolia/autocomplete-shared/dist/esm/preset-algolia/algoliasearch.d.ts:37:    /** @ts-ignore */
+./vivim.docs.context/node_modules/@algolia/autocomplete-shared/dist/esm/preset-algolia/algoliasearch.d.ts:39:    /** @ts-ignore */
+./vivim.docs.context/node_modules/@algolia/autocomplete-shared/dist/esm/preset-algolia/algoliasearch.d.ts:43:    /** @ts-ignore */
+./vivim.docs.context/node_modules/@algolia/autocomplete-shared/dist/esm/preset-algolia/algoliasearch.d.ts:45:    /** @ts-ignore */
+./vivim.docs.context/node_modules/@algolia/autocomplete-shared/dist/esm/preset-algolia/algoliasearch.d.ts:49:    /** @ts-ignore */
+./vivim.docs.context/node_modules/@algolia/autocomplete-shared/dist/esm/preset-algolia/algoliasearch.d.ts:51:    /** @ts-ignore */
+./vivim.docs.context/node_modules/@algolia/autocomplete-shared/dist/esm/preset-algolia/algoliasearch.d.ts:55:    /** @ts-ignore */
+./vivim.docs.context/node_modules/@algolia/autocomplete-shared/dist/esm/preset-algolia/algoliasearch.d.ts:57:    /** @ts-ignore */
+./vivim.docs.context/node_modules/@apidevtools/json-schema-ref-parser/lib/refs.ts:185:    // @ts-ignore
+./vivim.docs.context/node_modules/@apidevtools/json-schema-ref-parser/lib/util/url.ts:166:  // @ts-ignore
+./vivim.docs.context/node_modules/@braintree/sanitize-url/src/__tests__/index.test.ts:82:    // @ts-ignore
+./vivim.docs.context/node_modules/@colors/colors/index.d.ts:120:        // @ts-ignore
+./vivim.docs.context/node_modules/@docusaurus/theme-search-algolia/src/theme/SearchPage/index.tsx:310:    // @ts-ignore: why errors happens after upgrading to TS 5.5 ?
+./vivim.docs.context/node_modules/@noble/hashes/src/cryptoNode.ts:4:// @ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/bundle.ts:325:    // @ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/config/config-resolvers.ts:149:          // @ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/config/config-resolvers.ts:152:            // @ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/config/__tests__/config-resolvers.test.ts:367:        // @ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/config/__tests__/config-resolvers.test.ts:369:          // @ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/config/__tests__/config-resolvers.test.ts:372:        // @ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/config/__tests__/config-resolvers.test.ts:374:          // @ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/config/__tests__/config-resolvers.test.ts:438:    //@ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/config/__tests__/config-resolvers.test.ts:440:    //@ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/config/__tests__/config-resolvers.test.ts:468:    //@ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/config/__tests__/config-resolvers.test.ts:470:    //@ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/config/__tests__/config-resolvers.test.ts:507:    //@ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/config/__tests__/config-resolvers.test.ts:542:    //@ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/config/__tests__/config-resolvers.test.ts:544:    //@ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/config/__tests__/config-resolvers.test.ts:584:    //@ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/config/__tests__/config-resolvers.test.ts:625:    //@ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/config/__tests__/config-resolvers.test.ts:627:    //@ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/js-yaml/index.ts:3:// @ts-ignore
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/logger.ts:6:// @ts-ignore this works but some types are not working
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/rules/async2/index.ts:16:  //@ts-ignore TODO: This is depricated property `spec` and should be removed in the future
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/rules/async3/index.ts:16:  //@ts-ignore TODO: This is depricated property `spec` and should be removed in the future
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/rules/oas2/index.ts:52:  //@ts-ignore TODO: This is depricated property `spec` and should be removed in the future
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/rules/oas3/index.ts:64:  //@ts-ignore TODO: This is depricated property `spec` and should be removed in the future
+./vivim.docs.context/node_modules/@redocly/openapi-core/src/__tests__/resolve.test.ts:357:    // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/createReducer.ts:210:          // @ts-ignore createNextState() produces an Immutable<Draft<S>> rather
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/dynamicMiddleware/react/index.ts:69:    // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/react/buildHooks.ts:1818:          // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/react/buildHooks.ts:1821:              // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/react/module.ts:184:        // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/buildCreateApi.test.tsx:91:          // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/createApi.test.ts:175:    // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/createApi.test.ts:180:      // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/devWarnings.test.tsx:255:        // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/devWarnings.test.tsx:257:        // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/devWarnings.test.tsx:279:        // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/devWarnings.test.tsx:281:        // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/devWarnings.test.tsx:311:        // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/devWarnings.test.tsx:313:        // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/devWarnings.test.tsx:341:        // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/devWarnings.test.tsx:343:        // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/devWarnings.test.tsx:456:        // @ts-ignore TS doesn't like `() => never` for `tER`
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/devWarnings.test.tsx:458:          // @ts-ignore TS doesn't like `() => never` for `tER`
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/devWarnings.test.tsx:460:          // @ts-ignore TS doesn't like `() => never` for `tER`
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/errorHandling.test.tsx:49:        //@ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/fetchBaseQuery.test.tsx:80:      // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/fetchBaseQuery.test.tsx:775:              // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/query/tests/fetchBaseQuery.test.tsx:830:              // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/tests/combineSlices.test-d.ts:263:      // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/tests/createReducer.test.ts:84:          // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/tests/createReducer.test.ts:104:          // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/tests/createSlice.test.ts:29:        // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/tests/createSlice.test.ts:470:          // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/tests/createSlice.test.ts:490:          // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/tests/createSlice.test.ts:509:        // @ts-ignore
+./vivim.docs.context/node_modules/@reduxjs/toolkit/src/tests/getDefaultMiddleware.test.ts:50:    // @ts-ignore
+./vivim.docs.context/node_modules/@types/mdx/types.d.ts:6:// @ts-ignore JSX runtimes may optionally define JSX.ElementType. The MDX types need to work regardless whether this is
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:5:// @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:7:// @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:9:// @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:11:// @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:13:// @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:36:// @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:45:      // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:53:      // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:61:      // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:81:  : // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:99:  // @ts-ignore this doesn't exist as an exact type in v3
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:101:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:103:  // @ts-ignore the type in the v5 library is not yet correct https://github.com/algolia/api-clients-automation/issues/853
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:108:  // @ts-ignore this doesn't exist as an exact type in v3
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:110:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:112:  // @ts-ignore the type in the v5 library is not yet correct https://github.com/algolia/api-clients-automation/issues/853
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:118:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:120:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:125:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:127:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:130:    // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:136:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:154:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:156:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:161:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:163:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:165:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:171:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:173:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:179:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:181:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:192:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:194:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:196:    // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:203:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:206:    // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:213:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:216:    // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:223:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:226:    // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:233:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:236:    // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:275:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:277:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:279:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:285:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:291:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:297:  // @ts-ignore
+./vivim.docs.context/node_modules/algoliasearch-helper/types/algoliasearch.d.ts:305:  // @ts-ignore
+./vivim.docs.context/node_modules/chevrotain/src/parse/parser/traits/lexer_adapter.ts:24:    // @ts-ignore - `this parameter` not supported in setters/getters
+./vivim.docs.context/node_modules/chevrotain/src/parse/parser/traits/lexer_adapter.ts:31:    // @ts-ignore - `this parameter` not supported in setters/getters
+./vivim.docs.context/node_modules/consola/dist/basic.d.ts:21:// @ts-ignore
+./vivim.docs.context/node_modules/consola/dist/browser.d.ts:21:// @ts-ignore
+./vivim.docs.context/node_modules/consola/dist/index.d.ts:22:// @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-plugin-openapi-docs/src/markdown/schema.ts:26:      // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-plugin-openapi-docs/src/openapi/utils/loadAndResolveSpec.ts:13:// @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-plugin-openapi-docs/src/openapi/utils/loadAndResolveSpec.ts:48:      // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-plugin-openapi-docs/src/openapi/utils/loadAndResolveSpec.ts:50:      // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-plugin-openapi-docs/src/openapi/utils/loadAndResolveSpec.ts:53:      // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-plugin-openapi-docs/src/openapi/utils/loadAndResolveSpec.ts:57:    // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-plugin-openapi-docs/src/openapi/utils/loadAndResolveSpec.ts:158:  // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/markdown/schema.ts:26:      // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ApiExplorer/Body/index.tsx:344:          {/* @ts-ignore */}
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ApiExplorer/Body/index.tsx:362:          {/* @ts-ignore */}
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ApiExplorer/Body/index.tsx:385:          {/* @ts-ignore */}
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ApiExplorer/Body/index.tsx:405:              // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ApiExplorer/CodeSnippets/index.tsx:295:                        {/* @ts-ignore */}
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ApiExplorer/CodeSnippets/index.tsx:332:                      {/* @ts-ignore */}
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ApiExplorer/Response/index.tsx:113:            {/* @ts-ignore */}
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ApiExplorer/Response/index.tsx:122:              {/* @ts-ignore */}
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ApiExplorer/Response/index.tsx:138:            {/* @ts-ignore */}
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ApiExplorer/Response/index.tsx:146:              {/* @ts-ignore */}
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ApiItem/index.tsx:67:// @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/Example/index.tsx:149:    // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/RequestSchema/index.tsx:58:            // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/RequestSchema/index.tsx:120:      {/* @ts-ignore */}
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ResponseExamples/index.tsx:76:        // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ResponseExamples/index.tsx:115:    // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ResponseExamples/index.tsx:173:        // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ResponseExamples/index.tsx:192:      // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ResponseSchema/index.tsx:70:              // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ResponseSchema/index.tsx:83:            // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/ResponseSchema/index.tsx:86:                {/* @ts-ignore */}
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/Schema/index.tsx:213:            // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/Schema/index.tsx:394:              // @ts-ignore
+./vivim.docs.context/node_modules/docusaurus-theme-openapi-docs/src/theme/StatusCodes/index.tsx:39:          // @ts-ignore
+./vivim.docs.context/node_modules/dompurify/dist/purify.cjs.d.ts:449:// @ts-ignore
+./vivim.docs.context/node_modules/hast-util-to-jsx-runtime/lib/types.d.ts:143:// @ts-ignore: conditionally defined;
+./vivim.docs.context/node_modules/hast-util-to-jsx-runtime/lib/types.d.ts:151:// @ts-ignore: conditionally defined;
+./vivim.docs.context/node_modules/hast-util-to-jsx-runtime/lib/types.d.ts:159:// @ts-ignore: conditionally defined;
+./vivim.docs.context/node_modules/immer/src/core/proxy.ts:206:		// @ts-ignore
+./vivim.docs.context/node_modules/immer/src/core/proxy.ts:261:	// @ts-ignore
+./vivim.docs.context/node_modules/immer/src/core/proxy.ts:271:	// @ts-ignore
+./vivim.docs.context/node_modules/immer/src/core/scope.ts:77:	// @ts-ignore
+./vivim.docs.context/node_modules/immer/src/plugins/mapset.ts:170:		// @ts-ignore
+./vivim.docs.context/node_modules/immer/src/plugins/mapset.ts:294:		// @ts-ignore
+./vivim.docs.context/node_modules/immer/src/plugins/patches.ts:182:			// @ts-ignore
+./vivim.docs.context/node_modules/immer/src/plugins/patches.ts:366:							// @ts-ignore
+./vivim.docs.context/node_modules/immer/src/utils/common.ts:132:	// @ts-ignore
+./vivim.docs.context/node_modules/immer/src/utils/plugins.ts:61:	// @ts-ignore
+./vivim.docs.context/node_modules/listr2/node_modules/rxjs/src/internal/observable/dom/WebSocketSubject.ts:158:  // @ts-ignore: Property has no initializer and is not definitely assigned
+./vivim.docs.context/node_modules/listr2/node_modules/rxjs/src/internal/observable/dom/WebSocketSubject.ts:162:  // @ts-ignore: Property has no initializer and is not definitely assigned
+./vivim.docs.context/node_modules/listr2/node_modules/rxjs/src/internal/scheduler/AsyncAction.ts:12:  // @ts-ignore: Property has no initializer and is not definitely assigned
+./vivim.docs.context/node_modules/listr2/node_modules/rxjs/src/internal/testing/ColdObservable.ts:14:  // @ts-ignore: Property has no initializer and is not definitely assigned
+./vivim.docs.context/node_modules/listr2/node_modules/rxjs/src/internal/testing/ColdObservable.ts:16:  // @ts-ignore: Property has no initializer and is not definitely assigned
+./vivim.docs.context/node_modules/listr2/node_modules/rxjs/src/internal/testing/HotObservable.ts:14:  // @ts-ignore: Property has no initializer and is not definitely assigned
+./vivim.docs.context/node_modules/listr2/node_modules/rxjs/src/internal/testing/HotObservable.ts:16:  // @ts-ignore: Property has no initializer and is not definitely assigned
+./vivim.docs.context/node_modules/listr2/node_modules/rxjs/src/internal/testing/SubscriptionLoggable.ts:6:  // @ts-ignore: Property has no initializer and is not definitely assigned
+./vivim.docs.context/node_modules/react-redux/src/components/connect.tsx:449:    // @ts-ignore
+./vivim.docs.context/node_modules/react-redux/src/components/connect.tsx:512:      // @ts-ignore
+./vivim.docs.context/node_modules/react-redux/src/components/connect.tsx:541:              // @ts-ignore
+./vivim.docs.context/node_modules/react-redux/src/components/connect.tsx:694:            // @ts-ignore
+./vivim.docs.context/node_modules/react-redux/src/components/connect.tsx:751:          // @ts-ignore
+./vivim.docs.context/node_modules/react-redux/src/components/connect.tsx:796:          // @ts-ignore
+./vivim.docs.context/node_modules/react-redux/src/connect/mapDispatchToProps.ts:14:        // @ts-ignore
+./vivim.docs.context/node_modules/react-redux/src/connect/mapDispatchToProps.ts:22:        ? // @ts-ignore
+./vivim.docs.context/node_modules/react-redux/src/connect/mapStateToProps.ts:11:      ? // @ts-ignore
+./vivim.docs.context/node_modules/react-redux/src/connect/mergeProps.ts:17:  // @ts-ignore
+./vivim.docs.context/node_modules/react-redux/src/hooks/useDispatch.ts:62:  // @ts-ignore
+./vivim.docs.context/node_modules/react-redux/src/hooks/useSelector.ts:217:              // @ts-ignore
+./vivim.docs.context/node_modules/react-redux/src/hooks/useStore.ts:85:  // @ts-ignore
+./vivim.docs.context/node_modules/react-redux/src/hooks/useStore.ts:94:      : // @ts-ignore
+./vivim.docs.context/node_modules/reselect/src/createSelectorCreator.ts:391:      // @ts-ignore
+./vivim.docs.context/node_modules/reselect/src/createSelectorCreator.ts:411:      // @ts-ignore
+./vivim.docs.context/node_modules/reselect/src/lruMemoize.ts:216:      // @ts-ignore
+./vivim.docs.context/node_modules/reselect/src/utils.ts:120:    // @ts-ignore
+./vivim.docs.context/node_modules/workbox-background-sync/src/_version.ts:1:// @ts-ignore
+./vivim.docs.context/node_modules/workbox-broadcast-update/src/_version.ts:1:// @ts-ignore
+./vivim.docs.context/node_modules/workbox-cacheable-response/src/_version.ts:1:// @ts-ignore
+./vivim.docs.context/node_modules/workbox-core/src/_version.ts:1:// @ts-ignore
+./vivim.docs.context/node_modules/workbox-expiration/src/_version.ts:1:// @ts-ignore
+./vivim.docs.context/node_modules/workbox-google-analytics/src/_version.ts:1:// @ts-ignore
+./vivim.docs.context/node_modules/workbox-navigation-preload/src/_version.ts:1:// @ts-ignore
+./vivim.docs.context/node_modules/workbox-precaching/src/_version.ts:1:// @ts-ignore
+./vivim.docs.context/node_modules/workbox-range-requests/src/_version.ts:1:// @ts-ignore
+./vivim.docs.context/node_modules/workbox-recipes/src/_version.ts:1:// @ts-ignore
+./vivim.docs.context/node_modules/workbox-routing/src/_version.ts:1:// @ts-ignore
+./vivim.docs.context/node_modules/workbox-strategies/src/_version.ts:1:// @ts-ignore
+./vivim.docs.context/node_modules/workbox-streams/src/_version.ts:1:// @ts-ignore
+./vivim.docs.context/node_modules/workbox-window/src/_version.ts:1:// @ts-ignore
+./vivim.docs.context/sidebars.ts:2:// @ts-ignore

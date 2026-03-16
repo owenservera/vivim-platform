@@ -9,6 +9,7 @@ import * as Y from 'yjs';
 import { EventEmitter } from 'events';
 import type { NetworkNode } from '../p2p/NetworkNode.js';
 import { createModuleLogger } from '../utils/logger.js';
+import type { GossipSub } from '@chainsafe/libp2p-gossipsub';
 
 const log = createModuleLogger('libp2p-yjs');
 
@@ -49,24 +50,24 @@ export class Libp2pYjsProvider extends EventEmitter {
     this.doc.on('update', this.onDocUpdate);
   }
 
-  private subscribe() {
-    const libp2p = this.node.libp2p;
-    if (!libp2p || !libp2p.services.gossipsub) {
-      log.error('Gossipsub service not available on node');
-      return;
-    }
-
-    (libp2p.services.gossipsub as any).addEventListener('message', (event: any) => {
-      const { topic, data } = event.detail;
-      if (topic === this.topic) {
-        log.debug({ topic, length: data.length }, 'Received update via GossipSub');
-        Y.applyUpdate(this.doc, data, this);
-      }
-    });
-
-    // @ts-ignore
-    libp2p.services.gossipsub.subscribe(this.topic);
-    log.info({ topic: this.topic }, 'Subscribed to GossipSub topic');
+    private subscribe() {
+     const libp2p = this.node.libp2p;
+     if (!libp2p || !libp2p.services.gossipsub) {
+       log.error('Gossipsub service not available on node');
+       return;
+     }
+ 
+     const gossipsub = libp2p.services.gossipsub as GossipSub;
+     gossipsub.addEventListener('message', (event: any) => {
+       const { topic, data } = event.detail;
+       if (topic === this.topic) {
+         log.debug({ topic, length: data.length }, 'Received update via GossipSub');
+         Y.applyUpdate(this.doc, data, this);
+       }
+     });
+ 
+     gossipsub.subscribe(this.topic);
+     log.info({ topic: this.topic }, 'Subscribed to GossipSub topic');
 
     // Request state vector from peers to sync up
     this.broadcastStateVector();
@@ -82,13 +83,13 @@ export class Libp2pYjsProvider extends EventEmitter {
   private broadcast(data: Uint8Array) {
     if (this.isDestroyed || !this.node.running) return;
 
-    const libp2p = this.node.libp2p;
-    if (libp2p && libp2p.services.gossipsub) {
-      // @ts-ignore
-      libp2p.services.gossipsub.publish(this.topic, data).catch(err => {
-        log.error({ err: err.message }, 'Failed to publish to GossipSub');
-      });
-    }
+     const libp2p = this.node.libp2p;
+     if (libp2p && libp2p.services.gossipsub) {
+       const gossipsub = libp2p.services.gossipsub as GossipSub;
+       gossipsub.publish(this.topic, data).catch(err => {
+         log.error({ err: err.message }, 'Failed to publish to GossipSub');
+       });
+     }
   }
 
   private broadcastStateVector() {
@@ -107,11 +108,11 @@ export class Libp2pYjsProvider extends EventEmitter {
     this.isDestroyed = true;
     this.doc.off('update', this.onDocUpdate);
     
-    const libp2p = this.node.libp2p;
-    if (libp2p && libp2p.services.gossipsub) {
-      // @ts-ignore
-      libp2p.services.gossipsub.unsubscribe(this.topic);
-    }
+     const libp2p = this.node.libp2p;
+     if (libp2p && libp2p.services.gossipsub) {
+       const gossipsub = libp2p.services.gossipsub as GossipSub;
+       gossipsub.unsubscribe(this.topic);
+     }
     
     this.removeAllListeners();
     log.info({ room: this.roomName }, 'Libp2p Yjs Provider destroyed');

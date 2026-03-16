@@ -52,6 +52,7 @@ model Conversation {
   messages                Message[]
   captureAttempts        CaptureAttempt[]
   topicConversations      TopicConversation[]
+  importedConversations   ImportedConversation[]   @relation("ImportedConversations")
 
   @@index([provider])
   @@index([capturedAt(sort: Desc)])
@@ -199,6 +200,7 @@ model User {
   sharingPolicies    SharingPolicy[]
   contentStakeholders ContentStakeholder[]
   contextRecipes      ContextRecipe[]
+  importJobs          ImportJob[]          @relation("UserImportJobs")
   
   // Social network relations
   friendsRequested   Friend[]        @relation("FriendRequester")
@@ -2079,11 +2081,86 @@ model FeedImpression {
   clicked       Boolean  @default(false)
   shared        Boolean  @default(false)
   dismissed     Boolean  @default(false)
-  
+
   createdAt     DateTime @default(now()) @db.Timestamptz(6)
-  
+
   @@index([userId, viewedAt])
   @@index([contentId, contentType])
   @@index([userId, createdAt])
   @@map("feed_impressions")
+}
+
+// ============================================================================
+// IMPORT SYSTEM - Conversation Import Tracking
+// ============================================================================
+
+enum ImportJobStatus {
+  PENDING
+  UPLOADING
+  VALIDATING
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum ImportConversationState {
+  PENDING
+  VALIDATING
+  STORED
+  ACU_GENERATED
+  MEMORY_EXTRACTED
+  CONTEXT_ENRICHED
+  COMPLETED
+  FAILED
+}
+
+model ImportJob {
+  id                   String            @id @default(uuid())
+  userId               String
+  status               ImportJobStatus   @default(PENDING)
+  sourceProvider       String
+  format               String
+  fileHash             String            @unique  // SHA-256 of uploaded file
+  fileName             String
+  fileSize             Int
+  totalConversations   Int
+  processedConversations Int             @default(0)
+  failedConversations  Int               @default(0)
+  startedAt            DateTime?
+  completedAt          DateTime?
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  metadata             Json              @default("{}")
+  errors               Json              @default("[]")
+
+  user                 User              @relation(fields: [userId], references: [id], name: "UserImportJobs")
+  conversations        ImportedConversation[]
+
+  @@index([userId, status])
+  @@index([createdAt])
+  @@map("import_jobs")
+}
+
+model ImportedConversation {
+  id              String                @id @default(uuid())
+  importJobId     String
+  sourceId        String                // Original conversation ID from export
+  sourceUrl       String?
+  title           String
+  provider        String
+  state           ImportConversationState @default(PENDING)
+  messageCount    Int                   @default(0)
+  importedAt      DateTime?
+  metadata        Json                  @default("{}")
+  errors          Json                  @default("[]")
+
+  importJob       ImportJob             @relation(fields: [importJobId], references: [id], onDelete: Cascade)
+  conversation    Conversation?         @relation(fields: [conversationId], references: [id], name: "ImportedConversations")
+  conversationId  String?               // Link to actual Conversation after processing
+
+  @@unique([importJobId, sourceId])
+  @@index([importJobId, state])
+  @@map("imported_conversations")
 }

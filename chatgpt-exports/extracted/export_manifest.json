@@ -1,0 +1,108 @@
+{
+  "export_files": [
+    {
+      "path": "chat.html",
+      "size_bytes": 417975
+    },
+    {
+      "path": "conversations.json",
+      "size_bytes": 431167
+    },
+    {
+      "path": "file_000000001cf0720a943ebb3eee28d0d7-03-FEATURE-INVENTORY.md",
+      "size_bytes": 9067
+    },
+    {
+      "path": "file_0000000070f8720a91d34ab5e4bcf242-02-SYSTEM-ARCHITECTURE.md",
+      "size_bytes": 11327
+    },
+    {
+      "path": "file_00000000c73872438b6cd16f3c98e9d0-01-PROJECT-OVERVIEW.md",
+      "size_bytes": 5887
+    },
+    {
+      "path": "file_00000000fc78720abd3baa3187c50b1f-VIVIM-ARCHIVE-DESIGN-FRAMEWORK.md",
+      "size_bytes": 62670
+    },
+    {
+      "path": "user-scqTCthBeAqVg0huiP0dfsp4/file_00000000069c7246a9cbb19de417873b-f1549c13-6588-4901-b0f0-89d3bda791ca.png",
+      "size_bytes": 2497545
+    },
+    {
+      "path": "user-scqTCthBeAqVg0huiP0dfsp4/file_00000000a180720ab9c29b9ef9cc7522-34c69a94-a5a8-4095-9b33-2e2e3b20ecfa.png",
+      "size_bytes": 2796340
+    },
+    {
+      "path": "user.json",
+      "size_bytes": 131
+    },
+    {
+      "path": "user_settings.json",
+      "size_bytes": 1567
+    }
+  ],
+  "logical_files": {
+    "chat.html": {
+      "files": [
+        "chat.html"
+      ],
+      "sharded": false
+    },
+    "conversations.json": {
+      "files": [
+        "conversations.json"
+      ],
+      "sharded": false
+    },
+    "file_000000001cf0720a943ebb3eee28d0d7-03-FEATURE-INVENTORY.md": {
+      "files": [
+        "file_000000001cf0720a943ebb3eee28d0d7-03-FEATURE-INVENTORY.md"
+      ],
+      "sharded": false
+    },
+    "file_0000000070f8720a91d34ab5e4bcf242-02-SYSTEM-ARCHITECTURE.md": {
+      "files": [
+        "file_0000000070f8720a91d34ab5e4bcf242-02-SYSTEM-ARCHITECTURE.md"
+      ],
+      "sharded": false
+    },
+    "file_00000000c73872438b6cd16f3c98e9d0-01-PROJECT-OVERVIEW.md": {
+      "files": [
+        "file_00000000c73872438b6cd16f3c98e9d0-01-PROJECT-OVERVIEW.md"
+      ],
+      "sharded": false
+    },
+    "file_00000000fc78720abd3baa3187c50b1f-VIVIM-ARCHIVE-DESIGN-FRAMEWORK.md": {
+      "files": [
+        "file_00000000fc78720abd3baa3187c50b1f-VIVIM-ARCHIVE-DESIGN-FRAMEWORK.md"
+      ],
+      "sharded": false
+    },
+    "user-scqTCthBeAqVg0huiP0dfsp4/file_00000000069c7246a9cbb19de417873b-f1549c13-6588-4901-b0f0-89d3bda791ca.png": {
+      "files": [
+        "user-scqTCthBeAqVg0huiP0dfsp4/file_00000000069c7246a9cbb19de417873b-f1549c13-6588-4901-b0f0-89d3bda791ca.png"
+      ],
+      "sharded": false
+    },
+    "user-scqTCthBeAqVg0huiP0dfsp4/file_00000000a180720ab9c29b9ef9cc7522-34c69a94-a5a8-4095-9b33-2e2e3b20ecfa.png": {
+      "files": [
+        "user-scqTCthBeAqVg0huiP0dfsp4/file_00000000a180720ab9c29b9ef9cc7522-34c69a94-a5a8-4095-9b33-2e2e3b20ecfa.png"
+      ],
+      "sharded": false
+    },
+    "user.json": {
+      "files": [
+        "user.json"
+      ],
+      "sharded": false
+    },
+    "user_settings.json": {
+      "files": [
+        "user_settings.json"
+      ],
+      "sharded": false
+    }
+  },
+  "manifest_file": "export_manifest.json",
+  "version": 1
+}

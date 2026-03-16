@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1772842835216,
+  "lastScanned": 1773672139632,
   "projectRoot": "C:\\0-BlackBoxProject-0\\vivim-app-og\\vivim-app",
   "techStack": {
     "languages": [
@@ -78,14 +78,14 @@
       "path": "-p",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1772842835003,
+      "lastAccessed": 1773672139449,
       "keyFiles": []
     },
     "admin-panel": {
       "path": "admin-panel",
       "purpose": null,
       "fileCount": 12,
-      "lastAccessed": 1772842835006,
+      "lastAccessed": 1773672139453,
       "keyFiles": [
         "index.html",
         "package-lock.json",
@@ -94,11 +94,20 @@
         "tailwind.config.js"
       ]
     },
+    "chatgpt-exports": {
+      "path": "chatgpt-exports",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1773672139509,
+      "keyFiles": [
+        "50f21fc0eefd1bdbb9eda7bf5e7145d7f92921dcd853ac96c49096eaeeec95b5-2026-03-05-06-36-32-d5be5ff9b0fe4d368479fb705cd03a9d.zip"
+      ]
+    },
     "common": {
       "path": "common",
       "purpose": null,
       "fileCount": 10,
-      "lastAccessed": 1772842835069,
+      "lastAccessed": 1773672139511,
       "keyFiles": [
         "error-aggregator.ts",
         "error-alerting.ts",
@@ -111,14 +120,14 @@
       "path": "data",
       "purpose": "Data files",
       "fileCount": 0,
-      "lastAccessed": 1772842835071,
+      "lastAccessed": 1773672139513,
       "keyFiles": []
     },
     "github-frontend": {
       "path": "github-frontend",
       "purpose": null,
       "fileCount": 12,
-      "lastAccessed": 1772842835072,
+      "lastAccessed": 1773672139514,
       "keyFiles": [
         "bun.lock",
         "next-env.d.ts",
@@ -131,7 +140,7 @@
       "path": "network",
       "purpose": null,
       "fileCount": 4,
-      "lastAccessed": 1772842835075,
+      "lastAccessed": 1773672139517,
       "keyFiles": [
         "package.json",
         "tsconfig.json"
@@ -141,7 +150,7 @@
       "path": "PageIndex",
       "purpose": null,
       "fileCount": 7,
-      "lastAccessed": 1772842835080,
+      "lastAccessed": 1773672139521,
       "keyFiles": [
         "CHANGELOG.md",
         "LICENSE",
@@ -154,7 +163,7 @@
       "path": "plans",
       "purpose": null,
       "fileCount": 10,
-      "lastAccessed": 1772842835083,
+      "lastAccessed": 1773672139524,
       "keyFiles": [
         "enhance-error-debugging-service.md",
         "pwa-component-specifications.md",
@@ -167,7 +176,7 @@
       "path": "pwa",
       "purpose": null,
       "fileCount": 37,
-      "lastAccessed": 1772842835085,
+      "lastAccessed": 1773672139528,
       "keyFiles": [
         "build-log.txt",
         "build-log2.txt",
@@ -180,7 +189,7 @@
       "path": "screenshots",
       "purpose": null,
       "fileCount": 10,
-      "lastAccessed": 1772842835088,
+      "lastAccessed": 1773672139531,
       "keyFiles": [
         "app-test.png",
         "home-page-2.png",
@@ -193,7 +202,7 @@
       "path": "scripts",
       "purpose": "Build/utility scripts",
       "fileCount": 5,
-      "lastAccessed": 1772842835090,
+      "lastAccessed": 1773672139534,
       "keyFiles": [
         "deploy-ai-doc-provider.ts",
         "dev-with-cleanup.js",
@@ -206,7 +215,7 @@
       "path": "sdk",
       "purpose": null,
       "fileCount": 22,
-      "lastAccessed": 1772842835092,
+      "lastAccessed": 1773672139536,
       "keyFiles": [
         "build-output-3.txt",
         "build-output-fresh.txt",
@@ -218,34 +227,47 @@
     "server": {
       "path": "server",
       "purpose": null,
-      "fileCount": 37,
-      "lastAccessed": 1772842835094,
+      "fileCount": 56,
+      "lastAccessed": 1773672139538,
       "keyFiles": [
+        "analyze-deep.js",
+        "analyze-stream.js",
         "boot_err.log",
         "boot_out.log",
-        "bun-test.txt",
-        "bun-test2.txt",
-        "bun-test3.txt"
+        "bun-test.txt"
+      ]
+    },
+    "sovereign-memory": {
+      "path": "sovereign-memory",
+      "purpose": null,
+      "fileCount": 5,
+      "lastAccessed": 1773672139543,
+      "keyFiles": [
+        "COMPLETE_SUMMARY.md",
+        "DOCUMENTATION_SUMMARY.md",
+        "IMPLEMENTATION_STATUS.md",
+        "README.md",
+        "ROADMAP.md"
       ]
     },
     "vivim.docs.context": {
       "path": "vivim.docs.context",
       "purpose": null,
-      "fileCount": 10,
-      "lastAccessed": 1772842835096,
+      "fileCount": 12,
+      "lastAccessed": 1773672139545,
       "keyFiles": [
         "bun.lock",
+        "DOCS_ROADMAP.md",
         "DOCUMENTATION_GUIDE.md",
         "docusaurus.config.ts",
-        "openapi.yaml",
-        "package.json"
+        "DOC_ORGANIZATION.md"
       ]
     },
     "admin-panel\\dist": {
       "path": "admin-panel\\dist",
       "purpose": "Distribution/build output",
       "fileCount": 2,
-      "lastAccessed": 1772842835099,
+      "lastAccessed": 1773672139552,
       "keyFiles": [
         "index.html",
         "vite.svg"
@@ -255,14 +277,14 @@
       "path": "admin-panel\\node_modules",
       "purpose": "Dependencies",
       "fileCount": 0,
-      "lastAccessed": 1772842835101,
+      "lastAccessed": 1773672139556,
       "keyFiles": []
     },
     "admin-panel\\public": {
       "path": "admin-panel\\public",
       "purpose": "Public files",
       "fileCount": 1,
-      "lastAccessed": 1772842835103,
+      "lastAccessed": 1773672139558,
       "keyFiles": [
         "vite.svg"
       ]
@@ -271,14 +293,14 @@
       "path": "github-frontend\\node_modules",
       "purpose": "Dependencies",
       "fileCount": 1,
-      "lastAccessed": 1772842835110,
+      "lastAccessed": 1773672139581,
       "keyFiles": []
     },
     "network\\dist": {
       "path": "network\\dist",
       "purpose": "Distribution/build output",
       "fileCount": 8,
-      "lastAccessed": 1772842835112,
+      "lastAccessed": 1773672139586,
       "keyFiles": [
         "index.d.ts",
         "index.d.ts.map",
@@ -289,21 +311,21 @@
       "path": "network\\examples",
       "purpose": "Example code",
       "fileCount": 0,
-      "lastAccessed": 1772842835114,
+      "lastAccessed": 1773672139587,
       "keyFiles": []
     },
     "network\\node_modules": {
       "path": "network\\node_modules",
       "purpose": "Dependencies",
       "fileCount": 0,
-      "lastAccessed": 1772842835115,
+      "lastAccessed": 1773672139591,
       "keyFiles": []
     },
     "network\\src": {
       "path": "network\\src",
       "purpose": "Source code",
       "fileCount": 10,
-      "lastAccessed": 1772842835117,
+      "lastAccessed": 1773672139593,
       "keyFiles": [
         "index.d.ts",
         "index.d.ts.map",
@@ -314,7 +336,7 @@
       "path": "network\\tests",
       "purpose": "Test files",
       "fileCount": 1,
-      "lastAccessed": 1772842835122,
+      "lastAccessed": 1773672139596,
       "keyFiles": [
         "chain.test.ts"
       ]
@@ -323,14 +345,14 @@
       "path": "pwa\\assets",
       "purpose": "Static assets",
       "fileCount": 0,
-      "lastAccessed": 1772842835162,
+      "lastAccessed": 1773672139601,
       "keyFiles": []
     },
     "sdk\\bin": {
       "path": "sdk\\bin",
       "purpose": "Executable scripts",
       "fileCount": 1,
-      "lastAccessed": 1772842835193,
+      "lastAccessed": 1773672139606,
       "keyFiles": [
         "cli.js"
       ]
@@ -339,7 +361,7 @@
       "path": "vivim.docs.context\\build",
       "purpose": "Build output",
       "fileCount": 10,
-      "lastAccessed": 1772842835202,
+      "lastAccessed": 1773672139614,
       "keyFiles": [
         "404.html",
         "docs.json",
@@ -349,244 +371,15 @@
     "vivim.docs.context\\docs": {
       "path": "vivim.docs.context\\docs",
       "purpose": "Documentation",
-      "fileCount": 2,
-      "lastAccessed": 1772842835203,
+      "fileCount": 3,
+      "lastAccessed": 1773672139616,
       "keyFiles": [
         "ATOMIC_FEATURE_INVENTORY.md",
+        "README.md",
         "SDK_GAP_ANALYSIS.md"
       ]
-    },
-    "vivim.docs.context\\node_modules": {
-      "path": "vivim.docs.context\\node_modules",
-      "purpose": "Dependencies",
-      "fileCount": 0,
-      "lastAccessed": 1772842835216,
-      "keyFiles": []
     }
   },
-  "hotPaths": [
-    {
-      "path": "pwa/src/lib/auth-context.tsx",
-      "accessCount": 12,
-      "lastAccessed": 1772845082120,
-      "type": "file"
-    },
-    {
-      "path": "pwa\\src",
-      "accessCount": 7,
-      "lastAccessed": 1772844548213,
-      "type": "directory"
-    },
-    {
-      "path": "pwa/src/components/BackgroundSync.tsx",
-      "accessCount": 5,
-      "lastAccessed": 1772844889394,
-      "type": "file"
-    },
-    {
-      "path": "server\\src\\capture\\browser-pool-manager.js",
-      "accessCount": 5,
-      "lastAccessed": 1772845375833,
-      "type": "file"
-    },
-    {
-      "path": "pwa/src",
-      "accessCount": 4,
-      "lastAccessed": 1772844816984,
-      "type": "directory"
-    },
-    {
-      "path": "pwa",
-      "accessCount": 3,
-      "lastAccessed": 1772844436753,
-      "type": "directory"
-    },
-    {
-      "path": "server\\src\\capture-playwright.js",
-      "accessCount": 3,
-      "lastAccessed": 1772845375967,
-      "type": "file"
-    },
-    {
-      "path": "server\\src\\capture\\intelligent-queue.js",
-      "accessCount": 2,
-      "lastAccessed": 1772843027690,
-      "type": "file"
-    },
-    {
-      "path": "server/src/capture",
-      "accessCount": 1,
-      "lastAccessed": 1772842865460,
-      "type": "directory"
-    },
-    {
-      "path": "server\\src\\routes\\capture.js",
-      "accessCount": 1,
-      "lastAccessed": 1772842889522,
-      "type": "file"
-    },
-    {
-      "path": "server/src/services",
-      "accessCount": 1,
-      "lastAccessed": 1772842900333,
-      "type": "directory"
-    },
-    {
-      "path": "server\\src\\services\\extractor.js",
-      "accessCount": 1,
-      "lastAccessed": 1772842914691,
-      "type": "file"
-    },
-    {
-      "path": "server/src",
-      "accessCount": 1,
-      "lastAccessed": 1772842915264,
-      "type": "directory"
-    },
-    {
-      "path": "server\\src\\extractors\\extractor-chatgpt.js",
-      "accessCount": 1,
-      "lastAccessed": 1772842940961,
-      "type": "file"
-    },
-    {
-      "path": "server\\src\\config\\index.js",
-      "accessCount": 1,
-      "lastAccessed": 1772843073917,
-      "type": "file"
-    },
-    {
-      "path": "pwa\\src\\lib\\api.ts",
-      "accessCount": 1,
-      "lastAccessed": 1772844392498,
-      "type": "file"
-    },
-    {
-      "path": "server\\src\\server.js",
-      "accessCount": 1,
-      "lastAccessed": 1772844392552,
-      "type": "file"
-    },
-    {
-      "path": "server\\.env.example",
-      "accessCount": 1,
-      "lastAccessed": 1772844392602,
-      "type": "file"
-    },
-    {
-      "path": "pwa\\src\\pages\\Home.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1772844404740,
-      "type": "file"
-    },
-    {
-      "path": "pwa\\src\\components\\BackgroundSync.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1772844425623,
-      "type": "file"
-    },
-    {
-      "path": "pwa\\.env",
-      "accessCount": 1,
-      "lastAccessed": 1772844425775,
-      "type": "file"
-    },
-    {
-      "path": "pwa\\.env.local",
-      "accessCount": 1,
-      "lastAccessed": 1772844425791,
-      "type": "file"
-    },
-    {
-      "path": "pwa\\src\\main.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1772844447323,
-      "type": "file"
-    },
-    {
-      "path": "server\\src\\routes\\health.js",
-      "accessCount": 1,
-      "lastAccessed": 1772844447397,
-      "type": "file"
-    },
-    {
-      "path": "pwa\\vite.config.ts",
-      "accessCount": 1,
-      "lastAccessed": 1772844463890,
-      "type": "file"
-    },
-    {
-      "path": "pwa\\src\\lib\\logger.ts",
-      "accessCount": 1,
-      "lastAccessed": 1772844481729,
-      "type": "file"
-    },
-    {
-      "path": "pwa\\src\\App.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1772844529558,
-      "type": "file"
-    },
-    {
-      "path": "pwa\\src\\hooks\\useBackgroundSync.ts",
-      "accessCount": 1,
-      "lastAccessed": 1772844547349,
-      "type": "file"
-    },
-    {
-      "path": "pwa\\src\\router\\routes.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1772844547451,
-      "type": "file"
-    },
-    {
-      "path": "pwa/src/lib/api.ts",
-      "accessCount": 1,
-      "lastAccessed": 1772844802112,
-      "type": "file"
-    },
-    {
-      "path": "pwa/src/lib/debug/health-check.ts",
-      "accessCount": 1,
-      "lastAccessed": 1772844802141,
-      "type": "file"
-    },
-    {
-      "path": "pwa/src/lib/data-sync-service.ts",
-      "accessCount": 1,
-      "lastAccessed": 1772844808437,
-      "type": "file"
-    },
-    {
-      "path": "pwa/src/main.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1772844808449,
-      "type": "file"
-    },
-    {
-      "path": "pwa/src/App.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1772844816325,
-      "type": "file"
-    },
-    {
-      "path": "pwa/src/hooks/useBackgroundSync.ts",
-      "accessCount": 1,
-      "lastAccessed": 1772844821391,
-      "type": "file"
-    },
-    {
-      "path": "pwa\\playwright.config.ts",
-      "accessCount": 1,
-      "lastAccessed": 1772845375908,
-      "type": "file"
-    },
-    {
-      "path": "server\\package.json",
-      "accessCount": 1,
-      "lastAccessed": 1772845385905,
-      "type": "file"
-    }
-  ],
+  "hotPaths": [],
   "userDirectives": []
 }

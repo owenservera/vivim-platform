@@ -15,9 +15,8 @@ import { bootstrap } from '@libp2p/bootstrap';
 // import { mdns } from '@libp2p/mdns';
 import { identify } from '@libp2p/identify';
 import { ping } from '@libp2p/ping';
-import type { Libp2p } from '@libp2p/interface';
-// @ts-ignore - libp2p type import issue
-import type { PeerId } from '@libp2p/interface';
+import type { Libp2p } from 'libp2p';
+import type { PeerId } from 'libp2p';
 import { logger } from '../utils/logger.js';
 import { EventEmitter } from 'events';
 import { networkErrorReporter } from '../utils/error-reporter.js';
@@ -103,40 +102,36 @@ export class NetworkNode extends EventEmitter {
     try {
       log.info('Starting network node...');
       
-      const options: Libp2pOptions = {
-        // Transports
-        transports: await this.buildTransports(),
+       const options: Libp2pOptions = {
+         // Transports
+         transports: await this.buildTransports(),
 
-        // Connection encryption
-        // @ts-ignore - libp2p type compatibility issue
-        connectionEncryption: [noise()],
+         // Connection encryption
+         connectionEncryption: [noise()],
 
-        // Stream multiplexers
-        // @ts-ignore - libp2p type compatibility issue
-        streamMuxers: [yamux(), mplex()],
-        
-        // Peer discovery
-        peerDiscovery: this.buildPeerDiscovery(),
-        
-        // Services
-        services: this.buildServices(),
-        
-        // Connection manager
-        connectionManager: {
-          minConnections: this.config.minConnections,
-          maxConnections: this.config.maxConnections
-        }
-      };
+         // Stream multiplexers
+         streamMuxers: [yamux(), mplex()],
+
+         // Peer discovery
+         peerDiscovery: this.buildPeerDiscovery(),
+
+         // Services
+         services: this.buildServices(),
+
+         // Connection manager
+         connectionManager: {
+           minConnections: this.config.minConnections,
+           maxConnections: this.config.maxConnections
+         }
+       };
       
-      // Add custom peer ID if provided
-      if (this.config.peerId) {
-        // @ts-ignore - libp2p PeerId type compatibility issue
-        options.peerId = this.config.peerId;
-      }
+       // Add custom peer ID if provided
+       if (this.config.peerId) {
+         options.peerId = this.config.peerId;
+       }
 
-      // Create libp2p node
-      // @ts-ignore - libp2p return type compatibility issue
-      this.node = await createLibp2p(options);
+       // Create libp2p node
+       this.node = await createLibp2p(options);
       
       // Set up event handlers
       this.setupEventHandlers();
@@ -264,22 +259,23 @@ export class NetworkNode extends EventEmitter {
       ping: ping()
     };
     
-    // DHT for content routing
-    if (this.config.enableDHT) {
-      // @ts-ignore - libp2p validator type compatibility issue
-      services.dht = kadDHT({
-        clientMode: this.config.nodeType === 'client',
-        validators: {
-          '/vivim/content': {
-            // @ts-ignore
-            validate: (_data: Uint8Array) => {
-              // Custom validation logic
-              return true;
-            }
-          }
-        }
-      });
-    }
+     // DHT for content routing
+     if (this.config.enableDHT) {
+       services.dht = kadDHT({
+         clientMode: this.config.nodeType === 'client',
+         validators: {
+           '/vivim/content': {
+             // Fixed: Proper validator function signature
+             validate: async (_data: Uint8Array): Promise<void> => {
+               // Custom validation logic - throw error if invalid
+               // For now, always accept (equivalent to returning true)
+               // In production, implement actual validation and throw on failure
+               return;
+             }
+           }
+         }
+       });
+     }
     
     // Gossipsub for pub/sub
     if (this.config.enableGossipsub) {

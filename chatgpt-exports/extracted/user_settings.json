@@ -1,0 +1,48 @@
+[
+  {
+    "announcements": {
+      "oai/apps/hasSeenOnboarding": "2026-03-05T06:26:52.625829+00:00",
+      "oai/apps/hasSeenOnboardingFlow": "2026-03-05T06:26:50.189254+00:00"
+    },
+    "beta_settings": {},
+    "habitat_object_version": 27891980,
+    "settings": {
+      "a8voRl0kxc_enabled": true,
+      "bH2sVuQ5TJ_enabled": true,
+      "calpico_who_can_message_me": "everyone",
+      "can_consume_personal_credits_chatgpt": false,
+      "citron_mode_enabled": false,
+      "codex_training_allowed": false,
+      "codex_training_allowed_v2": false,
+      "connector_search_enabled": false,
+      "enable_device_code_auth": false,
+      "golden_hour": true,
+      "gxM2LY8iJn_enabled": false,
+      "h17180r_gmail": false,
+      "h17180r_google_calendar": false,
+      "h17180r_google_contacts": false,
+      "hive_referenced_in_internal_knowledge": false,
+      "is_memory_enabled_for_temp_chat": false,
+      "model_sticky_for_new_chats": false,
+      "moonshine": false,
+      "potion_enabled": false,
+      "precise_location_allowed": true,
+      "precise_location_device_settings": {
+        "devices": {}
+      },
+      "precise_location_eligible": false,
+      "precise_location_enabled_for_device": false,
+      "rKAMeJfyrM_settings": {
+        "enabled": false,
+        "end_time": null,
+        "start_time": null
+      },
+      "record_meeting_on_calendar": false,
+      "show_expanded_code_view": false,
+      "sunshine": false,
+      "training_allowed": true,
+      "wF9qLt3XpB_enabled": true
+    },
+    "user_id": "user-scqTCthBeAqVg0huiP0dfsp4"
+  }
+]

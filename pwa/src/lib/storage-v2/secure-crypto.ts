@@ -352,9 +352,7 @@ export async function sha3_256(data: string | Uint8Array): Promise<Hash> {
 
   try {
     // Try native WebCrypto if available (rarely supported for SHA-3 yet)
-    // @ts-ignore - check if browser supports SHA-3
     if (typeof window !== 'undefined' && window.crypto?.subtle?.digest) {
-        // @ts-ignore
         const hashBuffer = await window.crypto.subtle.digest('SHA3-256', bytes);
         return asHash(toHex(new Uint8Array(hashBuffer)));
     }

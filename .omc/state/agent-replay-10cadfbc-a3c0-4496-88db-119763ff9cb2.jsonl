@@ -1,0 +1,14 @@
+{"t":0,"agent":"system","event":"keyword_detected","keyword":"research"}
+{"t":0,"agent":"system","event":"keyword_detected","keyword":"research"}
+{"t":0,"agent":"system","event":"skill_invoked","skill_name":"oh-my-claudecode:external-context"}
+{"t":0,"agent":"a2a7682","agent_type":"document-specialist","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"a6ecb34","agent_type":"document-specialist","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"acf55fc","agent_type":"document-specialist","event":"agent_start","parent_mode":"none"}
+{"t":0,"agent":"acf55fc","agent_type":"document-specialist","event":"agent_stop","success":true,"duration_ms":132583}
+{"t":0,"agent":"a6ecb34","agent_type":"document-specialist","event":"agent_stop","success":true,"duration_ms":193851}
+{"t":0,"agent":"a79390b","agent_type":"document-specialist","event":"agent_stop","success":true}
+{"t":0,"agent":"a2a7682","agent_type":"document-specialist","event":"agent_stop","success":true,"duration_ms":338404}
+{"t":0,"agent":"a248078","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"system","event":"skill_invoked","skill_name":"oh-my-claudecode:hud"}
+{"t":0,"agent":"a6803ec","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"a5ed08c","agent_type":"unknown","event":"agent_stop","success":true}

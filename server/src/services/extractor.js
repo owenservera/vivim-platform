@@ -148,6 +148,7 @@ export async function extractConversation(url, options = {}) {
       richFormatting,
       metadataOnly,
       headless,
+      waitForTimeout: options.waitForTimeout,
       onStep: (stepMsg) => onProgress({ phase: 'EXTRACTION', percent: 65, message: stepMsg }),
     });
 

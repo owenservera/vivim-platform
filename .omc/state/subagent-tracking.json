@@ -1,7 +1,125 @@
 {
-  "agents": [],
-  "total_spawned": 0,
-  "total_completed": 0,
+  "agents": [
+    {
+      "agent_id": "a2a7682e2fbde220b",
+      "agent_type": "oh-my-claudecode:document-specialist",
+      "started_at": "2026-03-09T17:34:27.742Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-03-09T17:40:06.146Z",
+      "duration_ms": 338404
+    },
+    {
+      "agent_id": "a6ecb3434a0370b02",
+      "agent_type": "oh-my-claudecode:document-specialist",
+      "started_at": "2026-03-09T17:34:27.775Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-03-09T17:37:41.626Z",
+      "duration_ms": 193851
+    },
+    {
+      "agent_id": "acf55fcea527f22da",
+      "agent_type": "oh-my-claudecode:document-specialist",
+      "started_at": "2026-03-09T17:34:27.803Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-03-09T17:36:40.386Z",
+      "duration_ms": 132583
+    },
+    {
+      "agent_id": "ab54bbfbb3f6613bd",
+      "agent_type": "Explore",
+      "started_at": "2026-03-09T17:49:37.265Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-03-09T17:53:11.677Z",
+      "duration_ms": 214412
+    },
+    {
+      "agent_id": "ad2671ce1655bf8f1",
+      "agent_type": "oh-my-claudecode:analyst",
+      "started_at": "2026-03-09T17:59:10.917Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-03-09T18:01:29.319Z",
+      "duration_ms": 138402
+    },
+    {
+      "agent_id": "a89abd1ba04567e9e",
+      "agent_type": "oh-my-claudecode:architect",
+      "started_at": "2026-03-09T17:59:10.970Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-03-09T18:03:03.439Z",
+      "duration_ms": 232469
+    },
+    {
+      "agent_id": "a1b90816ea3c627ac",
+      "agent_type": "oh-my-claudecode:architect",
+      "started_at": "2026-03-09T18:06:08.888Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-03-09T18:11:32.140Z",
+      "duration_ms": 323252
+    },
+    {
+      "agent_id": "a7c39ca335a57d4da",
+      "agent_type": "oh-my-claudecode:critic",
+      "started_at": "2026-03-09T18:11:45.287Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-03-09T18:15:46.024Z",
+      "duration_ms": 240737
+    },
+    {
+      "agent_id": "a6a5180dd4cc863e9",
+      "agent_type": "oh-my-claudecode:architect",
+      "started_at": "2026-03-09T18:16:10.455Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-03-09T18:22:16.263Z",
+      "duration_ms": 365808
+    },
+    {
+      "agent_id": "a2633770d88ca2f2a",
+      "agent_type": "oh-my-claudecode:critic",
+      "started_at": "2026-03-09T18:22:30.853Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-03-09T18:29:16.260Z",
+      "duration_ms": 405407
+    },
+    {
+      "agent_id": "a3b461f64c0af38d6",
+      "agent_type": "oh-my-claudecode:code-reviewer",
+      "started_at": "2026-03-09T18:35:10.294Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-03-09T18:38:57.392Z",
+      "duration_ms": 227098
+    },
+    {
+      "agent_id": "a4763e3399c657eb8",
+      "agent_type": "oh-my-claudecode:security-reviewer",
+      "started_at": "2026-03-09T18:35:10.358Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-03-09T18:38:05.557Z",
+      "duration_ms": 175199
+    },
+    {
+      "agent_id": "a4cea23cc2a36944f",
+      "agent_type": "oh-my-claudecode:architect",
+      "started_at": "2026-03-09T18:35:10.502Z",
+      "parent_mode": "none",
+      "status": "completed",
+      "completed_at": "2026-03-09T18:37:26.852Z",
+      "duration_ms": 136350
+    }
+  ],
+  "total_spawned": 9,
+  "total_completed": 13,
   "total_failed": 0,
-  "last_updated": "2026-03-07T01:02:12.203Z"
+  "last_updated": "2026-03-09T18:41:47.107Z"
 }

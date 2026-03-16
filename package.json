@@ -55,5 +55,8 @@
   ],
   "engines": {
     "bun": ">=1.0.0"
+  },
+  "dependencies": {
+    "@types/multer": "2.1.0"
   }
 }
