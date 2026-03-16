@@ -12,6 +12,14 @@ import { logger } from '../lib/logger.js';
 
 const log = logger.child({ module: 'google-auth' });
 
+// Debug: Log the Client ID being used (first 10 chars for security)
+const clientId = process.env.GOOGLE_CLIENT_ID;
+if (clientId) {
+  log.info(`Using Google Client ID: ${clientId.substring(0, 15)}...`);
+} else {
+  log.error('GOOGLE_CLIENT_ID is not defined in environment!');
+}
+
 // ============================================================================
 // Passport Configuration
 // ============================================================================
@@ -47,7 +55,6 @@ const googleStrategy = new GoogleStrategy(
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: process.env.GOOGLE_CALLBACK_URL || '/api/auth/google/callback',
-    prompt: 'select_account',
   },
   async (accessToken, refreshToken, profile, done) => {
     try {

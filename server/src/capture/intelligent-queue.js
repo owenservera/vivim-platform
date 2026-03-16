@@ -14,15 +14,27 @@ class IntelligentQueue {
     
     // Hook into queue events for monitoring
     this.queue.on('active', () => {
-      logger.debug({ 
-        size: this.queue.size, 
-        pending: this.queue.pending 
+      logger.debug({
+        size: this.queue.size,
+        pending: this.queue.pending
       }, 'Queue item active');
       this.adjustConcurrency();
     });
 
     this.queue.on('idle', () => {
       logger.info('Intelligent capture queue is now idle');
+    });
+
+    this.queue.on('error', (error) => {
+      logger.error({ error: error.message }, 'Queue task failed');
+    });
+
+    this.queue.on('completed', () => {
+      logger.debug('Queue task completed successfully');
+    });
+
+    this.queue.on('failed', (error) => {
+      logger.error({ error: error.message }, 'Queue task failed');
     });
   }
 

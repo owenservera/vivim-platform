@@ -318,8 +318,8 @@ export async function captureUrlStream(
         });
 
         if (!initResponse.ok) {
-          const err = await initResponse.json();
-          throw new Error(err.message || 'Failed to get capture ticket');
+          const err = await initResponse.json().catch(() => ({}));
+          throw new Error(err.message || err.error || 'Failed to get capture ticket');
         }
 
         const { ticket } = await initResponse.json();

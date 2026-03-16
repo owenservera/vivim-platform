@@ -15,6 +15,7 @@ import { UnauthorizedError } from './errorHandler.js';
 // In production, API keys should be stored securely (e.g., environment variables, vault)
 const API_KEYS = process.env.API_KEYS?.split(',') || [];
 const MASTER_KEY = process.env.MASTER_API_KEY || null;
+const DEFAULT_DEV_KEY = 'sk-vivim-dev-key-123456789';
 
 // ============================================================================
 // AUTHENTICATION HELPERS
@@ -36,7 +37,16 @@ function isValidApiKey(apiKey) {
   }
 
   // Check individual API keys
-  return API_KEYS.includes(apiKey);
+  if (API_KEYS.includes(apiKey)) {
+    return true;
+  }
+
+  // Fallback for development/local environments
+  if (config.isDevelopment && apiKey === DEFAULT_DEV_KEY) {
+    return true;
+  }
+
+  return false;
 }
 
 /**

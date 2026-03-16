@@ -17,26 +17,35 @@ const server = spawn('bun', ['--watch', 'src/server.js'], {
   shell: true,
 });
 
+let stdoutBuffer = '';
 server.stdout.on('data', (data) => {
-  const output = data.toString();
-  const lines = output.split('\n');
-  
-  for (const line of lines) {
-    // Skip bun watch warnings
+  stdoutBuffer += data.toString();
+  let newlineIndex;
+  while ((newlineIndex = stdoutBuffer.indexOf('\n')) !== -1) {
+    const line = stdoutBuffer.slice(0, newlineIndex);
+    stdoutBuffer = stdoutBuffer.slice(newlineIndex + 1);
     if (BUN_WATCH_WARNINGS.some(pattern => pattern.test(line))) {
+      continue;
+    }
+    // Also catch wrapped warnings (crude check for the wrapped part)
+    if (line.includes('not in the project directory and will not be watched')) {
       continue;
     }
     process.stdout.write(line + '\n');
   }
 });
 
+let stderrBuffer = '';
 server.stderr.on('data', (data) => {
-  const output = data.toString();
-  const lines = output.split('\n');
-  
-  for (const line of lines) {
-    // Skip bun watch warnings
+  stderrBuffer += data.toString();
+  let newlineIndex;
+  while ((newlineIndex = stderrBuffer.indexOf('\n')) !== -1) {
+    const line = stderrBuffer.slice(0, newlineIndex);
+    stderrBuffer = stderrBuffer.slice(newlineIndex + 1);
     if (BUN_WATCH_WARNINGS.some(pattern => pattern.test(line))) {
+      continue;
+    }
+    if (line.includes('not in the project directory and will not be watched')) {
       continue;
     }
     process.stderr.write(line + '\n');

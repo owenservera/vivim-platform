@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import { consoleForwardPlugin } from 'vite-console-forward-plugin'
 import * as path from 'path'
+import * as fs from 'fs'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -139,6 +140,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg', 'pwa-192x192.svg', 'pwa-512x512.svg'],
       workbox: {
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff,woff2}'],
         runtimeCaching: [
           {
@@ -286,6 +288,10 @@ export default defineConfig({
                 if (stacks.length > 0) {
                   enhancedMessage += '\n' + stacks[0].split('\n').slice(0, 3).join('\n');
                 }
+
+                // Write to error dump file
+                const logEntry = `[${new Date().toISOString()}] ${enhancedMessage}\n`;
+                fs.appendFileSync(path.resolve(__dirname, '../dev-browser-dump.log'), logEntry);
 
                 switch (level) {
                   case 'error':

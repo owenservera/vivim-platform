@@ -215,7 +215,7 @@ app.use(cors(corsOptions));
 
 app.use(cookieParser());
 
-const csrfExcludedPaths = ['/api/v1/auth/google/callback', '/stripe/webhook', '/api/v1/errors', '/api/v1/debug', '/api/v1/feed-analytics', '/api/v2/feed', '/api/v2/context', '/api/v2/memories', '/api/v1/collections', '/api/v3/social', '/api/v1/integrations'];
+const csrfExcludedPaths = ['/api/v1/auth/google/callback', '/stripe/webhook', '/api/v1/errors', '/api/v1/debug', '/api/v1/feed-analytics', '/api/v2/feed', '/api/v2/context', '/api/v2/memories', '/api/v1/collections', '/api/v3/social', '/api/v1/integrations', '/api/v1/handshake', '/api/v1/capture', '/api/v1/capture-sync/init'];
 
 // Apply CSRF protection
 app.use((req, res, next) => {

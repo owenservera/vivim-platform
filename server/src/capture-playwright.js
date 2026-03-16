@@ -1,8 +1,6 @@
 /**
- * Playwright-based HTML Capture (Intelligent Queue & Pool Managed)
- *
- * Replaces the legacy process-spawning queue with a dynamic BrowserPoolManager
- * and IntelligentQueue for 10x capture performance.
+ * Playwright-based HTML Capture (Node.js Worker Based)
+ * Uses Node.js subprocess to avoid Bun + Playwright compatibility issues
  */
 
 import path from 'path';
@@ -13,49 +11,6 @@ import { logger } from './lib/logger.js';
 import { browserPoolManager } from './capture/browser-pool-manager.js';
 import { captureQueue } from './capture/intelligent-queue.js';
 
-async function handleGeminiConsent(page) {
-  try {
-    const currentUrl = page.url();
-    if (currentUrl.includes('consent.google.com')) {
-      logger.info('Consent page detected, attempting to accept');
-
-      const acceptSelectors = [
-        'button:has-text("Accept all")',
-        'button:has-text("I agree")',
-        'button:has-text("Yes, I agree")',
-        'button[aria-label*="Accept"]',
-        'form[action*="save"] button[type="submit"]',
-        '.VfPpkd-LgbsSe:has-text("Accept")',
-      ];
-
-      let accepted = false;
-      for (const selector of acceptSelectors) {
-        try {
-          const button = await page.locator(selector).first();
-          if (await button.isVisible({ timeout: 2000 })) {
-            await button.click();
-            logger.info(`Clicked accept button: ${selector}`);
-            accepted = true;
-            break;
-          }
-        } catch (e) {
-          // Try next
-        }
-      }
-
-      if (accepted) {
-        logger.info('Waiting for redirect...');
-        await page.waitForURL((url) => !url.includes('consent.google.com'), { timeout: 15000 });
-        logger.info('Redirected successfully');
-      } else {
-        logger.warn('Could not find accept button');
-      }
-    }
-  } catch (error) {
-    logger.error({ error: error.message }, 'Consent handler error');
-  }
-}
-
 /**
  * The core capture logic executed within a pooled context
  */
@@ -65,67 +20,45 @@ async function performCapture(config) {
     provider,
     timeout = 60000,
     tempDir = null,
-    waitForSelector,
-    waitForTimeout,
   } = config;
 
   let context = null;
-  let page = null;
   let tempFilePath = null;
 
   try {
+    console.log(`🎯 [CAPTURE] Starting capture for ${provider}: ${url}`);
+
     // 1. Setup Files
     const tempDirectory = path.resolve(tempDir || os.tmpdir());
     const tempFileName = `openscroll-pw-${provider}-${uuidv4()}.html`;
     tempFilePath = path.join(tempDirectory, tempFileName);
+    console.log(`📁 [CAPTURE] Temporary file: ${tempFilePath}`);
 
-    // 2. Acquire context from pool
+    // 2. Acquire browser worker from pool
+    console.log(`🌐 [CAPTURE] Acquiring browser context from pool...`);
+    const startTime = Date.now();
     context = await browserPoolManager.acquireContext();
-    page = await context.newPage();
+    const contextTime = Date.now() - startTime;
+    console.log(`✅ [CAPTURE] Browser context acquired in ${contextTime}ms`);
 
-    // 3. Navigate
-    logger.info(`Navigating to ${url}`);
-    try {
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout });
-    } catch (gotoError) {
-      logger.warn(`Initial navigation failed: ${gotoError.message}. Retrying with load...`);
-      await page.goto(url, { waitUntil: 'load', timeout });
-    }
+    // 3. Navigate using the worker
+    console.log(`📄 [CAPTURE] Navigating to ${url}...`);
+    const html = await browserPoolManager.navigate(context, url, timeout);
+    console.log(`✅ [CAPTURE] Page captured (${html.length} bytes)`);
 
-    // 4. Handle Provider Specifics
-    if (provider === 'gemini') {
-      await handleGeminiConsent(page);
-    }
-
-    // 5. Wait for Content
-    if (waitForSelector) {
-      logger.info(`Waiting for selector: ${waitForSelector}`);
-      try {
-        await page.waitForSelector(waitForSelector, { timeout: 15000, state: 'attached' });
-        await page.waitForTimeout(1000);
-      } catch (e) {
-        logger.warn('Selector wait timed out, continuing...');
-      }
-    }
-
-    if (waitForTimeout) {
-      await page.waitForTimeout(waitForTimeout);
-    }
-
-    // 6. Extract & Save
-    const html = await page.content();
+    // 4. Save to file
     await fs.writeFile(tempFilePath, html, 'utf8');
+    console.log(`💾 [CAPTURE] Saved to ${tempFilePath}`);
 
     return tempFilePath;
   } catch (error) {
     logger.error({ error: error.message, url }, 'Capture failed');
     throw error;
   } finally {
-    if (page) {
-      await page.close().catch(e => logger.warn({error: e.message}, 'Failed to close page'));
-    }
+    // 5. Release context back to pool
     if (context) {
       await browserPoolManager.releaseContext(context);
+      console.log(`🔄 [CAPTURE] Released browser context`);
     }
   }
 }

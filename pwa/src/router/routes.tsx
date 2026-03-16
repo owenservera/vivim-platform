@@ -3,16 +3,11 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from '../lib/auth-context';
-import DeviceProvider from '../lib/device-context';
 import { BackgroundSync } from '../components/BackgroundSync';
 import { DebugPanel } from '../components/DebugPanel';
-import { IOSDefaultTopBar } from '../components/ios';
-import { IOSBottomNav } from '../components/ios';
 import { IOSToastProvider } from '../components/ios';
-import { ResponsiveLayout } from '../components/responsive/ResponsiveLayout';
-import { SideNav } from '../components/layout/SideNav';
+import { AppLayout } from '../components/layout/AppLayout';
 import queryClient from '../lib/query-client';
-import { Bug } from 'lucide-react';
 import { GlobalSocketListener } from '../components/GlobalSocketListener';
 
 // Lazy load pages for better performance
@@ -38,6 +33,8 @@ const ForYou = lazy(() => import('../pages/ForYou'));
 const BYOKChat = lazy(() => import('../pages/BYOKChat'));
 const ContextComponents = lazy(() => import('../pages/ContextComponents'));
 const ContextRecipes = lazy(() => import('../pages/settings/ContextRecipes'));
+const AIProviders = lazy(() => import('../pages/settings/AIProviders'));
+const AdvancedSettings = lazy(() => import('../pages/settings/AdvancedSettings'));
 const ContextCockpitPage = lazy(() => import('../pages/ContextCockpitPage'));
 const BlockchainAIChat = lazy(() => import('../components/BlockchainAIChat').then(m => ({ default: m.BlockchainAIChat })));
 const IdentitySetup = lazy(() => import('../features/identity/components/IdentitySetup').then(m => ({ default: m.IdentitySetup })));
@@ -55,7 +52,7 @@ const ArchiveSearch = lazy(() => import('../components/archive/Search/ArchiveSea
 
 // Loading component
 const PageLoading = () => (
-  <div className="flex items-center justify-center min-h-screen">
+  <div className="flex items-center justify-center min-h-[400px]">
     <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
   </div>
 );
@@ -78,59 +75,17 @@ const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-// Layout wrapper
-const AppLayout = ({ children }: { children: React.ReactNode }) => {
-  const toggleDebug = () => {
-    window.dispatchEvent(new CustomEvent('openscroll:open-debug'));
-  };
-  
+// Layout wrapper for lazy loading
+const LayoutWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white font-sans antialiased selection:bg-indigo-500 selection:text-white">
-      {/* Desktop sidebar — hidden on mobile/tablet via CSS (lg:flex in SideNav) */}
-      <SideNav />
-
-      {/* Main content area — shifted right on desktop to account for sidebar */}
-      <div className="flex flex-col flex-1 min-h-screen lg:pl-[260px]">
-        {/* Top bar — hidden on lg+ because SideNav handles branding */}
-        <div className="lg:hidden">
-          <IOSDefaultTopBar />
-        </div>
-
-        <BackgroundSync />
-        <GlobalSocketListener />
-
-        <ResponsiveLayout
-          maxWidth="full"
-          padding="md"
-          className="flex-1"
-          mobileClassName="px-2"
-          desktopClassName="px-6"
-        >
-          {/* Mobile: pt-16 for TopBar + pb-20 for BottomNav; Desktop: pt-6 pb-6, no nav overlap */}
-          <main className="pt-16 pb-20 lg:pt-6 lg:pb-6 overflow-y-auto scrollbar-hide">
-            <Suspense fallback={<PageLoading />}>
-              {children}
-            </Suspense>
-          </main>
-        </ResponsiveLayout>
-
-        {/* BottomNav — mobile/tablet only */}
-        <div className="lg:hidden">
-          <IOSBottomNav />
-        </div>
-      </div>
-
+    <AppLayout>
+      <BackgroundSync />
+      <GlobalSocketListener />
+      <Suspense fallback={<PageLoading />}>
+        {children}
+      </Suspense>
       <DebugPanel />
-      {import.meta.env.DEV && (
-        <button
-          onClick={toggleDebug}
-          className="fixed bottom-[4.5rem] right-[4.5rem] z-[1020] p-2.5 rounded-full bg-gray-900 dark:bg-gray-100 border border-gray-700 dark:border-gray-300 shadow-lg hover:scale-110 active:scale-95 transition-transform text-gray-100 dark:text-gray-900 lg:bottom-6"
-          title="Toggle Debug Panel"
-        >
-          <Bug size={18} />
-        </button>
-      )}
-    </div>
+    </AppLayout>
   );
 };
 
@@ -140,9 +95,9 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <Home />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -151,9 +106,9 @@ const router = createBrowserRouter([
     path: "/assistant-home",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <HomeAssistant />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -162,9 +117,9 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: (
-      <AppLayout>
+      <LayoutWrapper>
         <Login />
-      </AppLayout>
+      </LayoutWrapper>
     ),
     errorElement: <ErrorBoundary />
   },
@@ -172,9 +127,9 @@ const router = createBrowserRouter([
     path: "/search",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <Search />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -183,9 +138,9 @@ const router = createBrowserRouter([
     path: "/analytics",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <Analytics />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -194,9 +149,9 @@ const router = createBrowserRouter([
     path: "/bookmarks",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <Bookmarks />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -205,9 +160,9 @@ const router = createBrowserRouter([
     path: "/capture",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <Capture />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -216,9 +171,9 @@ const router = createBrowserRouter([
     path: "/simple-capture",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <CaptureSimple />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -227,9 +182,9 @@ const router = createBrowserRouter([
     path: "/conversation/:id",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <ConversationView />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -237,9 +192,9 @@ const router = createBrowserRouter([
   {
     path: "/settings",
     element: (
-      <AppLayout>
+      <LayoutWrapper>
         <Settings />
-      </AppLayout>
+      </LayoutWrapper>
     ),
     errorElement: <ErrorBoundary />
   },
@@ -247,9 +202,9 @@ const router = createBrowserRouter([
     path: "/context-components",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <ContextComponents />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -257,18 +212,36 @@ const router = createBrowserRouter([
   {
     path: "/settings/ai",
     element: (
-      <AppLayout>
+      <LayoutWrapper>
         <ContextRecipes />
-      </AppLayout>
+      </LayoutWrapper>
+    ),
+    errorElement: <ErrorBoundary />
+  },
+  {
+    path: "/settings/providers",
+    element: (
+      <LayoutWrapper>
+        <AIProviders />
+      </LayoutWrapper>
+    ),
+    errorElement: <ErrorBoundary />
+  },
+  {
+    path: "/settings/advanced",
+    element: (
+      <LayoutWrapper>
+        <AdvancedSettings />
+      </LayoutWrapper>
     ),
     errorElement: <ErrorBoundary />
   },
   {
     path: "/context-cockpit",
     element: (
-      <AppLayout>
+      <LayoutWrapper>
         <ContextCockpitPage />
-      </AppLayout>
+      </LayoutWrapper>
     ),
     errorElement: <ErrorBoundary />
   },
@@ -276,9 +249,9 @@ const router = createBrowserRouter([
     path: "/account",
     element: (
       <AuthGuard>
-        <AppLayout>
-          <Account />
-        </AppLayout>
+        <LayoutWrapper>
+          <Settings />
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -287,9 +260,9 @@ const router = createBrowserRouter([
     path: "/collections",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <Collections />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -298,9 +271,9 @@ const router = createBrowserRouter([
     path: "/archive",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <Archive />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />,
@@ -339,9 +312,9 @@ const router = createBrowserRouter([
     path: "/chat",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <AIChat />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -350,9 +323,9 @@ const router = createBrowserRouter([
     path: "/chain-chat",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <BlockchainAIChat />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -360,9 +333,9 @@ const router = createBrowserRouter([
   {
     path: "/identity",
     element: (
-      <AppLayout>
+      <LayoutWrapper>
         <IdentitySetup />
-      </AppLayout>
+      </LayoutWrapper>
     ),
     errorElement: <ErrorBoundary />
   },
@@ -370,9 +343,9 @@ const router = createBrowserRouter([
     path: "/storage",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <StorageDashboard />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -381,9 +354,9 @@ const router = createBrowserRouter([
     path: "/ai-conversations",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <AIConversationsPage />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -392,9 +365,9 @@ const router = createBrowserRouter([
     path: "/ai/conversation/:id",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <AIConversationsPage />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -403,9 +376,9 @@ const router = createBrowserRouter([
     path: "/conversation/:id/share",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <Share />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -414,9 +387,9 @@ const router = createBrowserRouter([
     path: "/receive/:code",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <Receive />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -425,9 +398,9 @@ const router = createBrowserRouter([
     path: "/errors",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <ErrorDashboard />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -435,9 +408,9 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element: (
-      <AppLayout>
+      <LayoutWrapper>
         <AdminPanel />
-      </AppLayout>
+      </LayoutWrapper>
     ),
     errorElement: <ErrorBoundary />
   },
@@ -445,9 +418,9 @@ const router = createBrowserRouter([
     path: "/for-you",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <ForYou />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -456,9 +429,9 @@ const router = createBrowserRouter([
     path: "/byok",
     element: (
       <AuthGuard>
-        <AppLayout>
+        <LayoutWrapper>
           <BYOKChat />
-        </AppLayout>
+        </LayoutWrapper>
       </AuthGuard>
     ),
     errorElement: <ErrorBoundary />
@@ -466,18 +439,18 @@ const router = createBrowserRouter([
   {
     path: "*",
     element: (
-      <AppLayout>
-        <div className="flex flex-col items-center justify-center min-h-screen p-4">
+      <LayoutWrapper>
+        <div className="flex flex-col items-center justify-center min-h-[400px] p-4 text-center">
           <h1 className="text-2xl font-bold mb-4">404 - Page Not Found</h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">The page you're looking for doesn't exist.</p>
+          <p className="text-muted-foreground mb-6">The page you're looking for doesn't exist.</p>
           <button 
             onClick={() => window.location.href = '/'}
-            className="btn btn-primary"
+            className="px-6 py-2 bg-primary text-primary-foreground rounded-xl font-medium"
           >
             Go Home
           </button>
         </div>
-      </AppLayout>
+      </LayoutWrapper>
     ),
     errorElement: <ErrorBoundary />
   }
@@ -488,13 +461,11 @@ export const AppRouter = () => {
   return (
     <ErrorBoundary>
       <AuthProvider>
-        <DeviceProvider>
-          <QueryClientProvider client={queryClient}>
-            <IOSToastProvider>
-              <RouterProvider router={router} />
-            </IOSToastProvider>
-          </QueryClientProvider>
-        </DeviceProvider>
+        <QueryClientProvider client={queryClient}>
+          <IOSToastProvider>
+            <RouterProvider router={router} />
+          </IOSToastProvider>
+        </QueryClientProvider>
       </AuthProvider>
     </ErrorBoundary>
   );

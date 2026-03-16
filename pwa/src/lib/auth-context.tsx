@@ -1,10 +1,13 @@
 /**
  * Auth Context - Global authentication state management
- * 
+ *
+ * NOTE: Server sync operations disabled to allow running without backend
+ * But OAuth authentication still works when server is available
+ *
  * Provides:
- * - Session validation on app initialization
- * - Auto-login when valid session exists
- * - Sync between server session and client identity store
+ * - Session validation on app initialization (works with OAuth)
+ * - Auto-login when valid session exists (works with OAuth)
+ * - Sync between server session and client identity store (DISABLED)
  * - Auth state available to all components
  */
 
@@ -42,14 +45,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const clearIdentity = useIdentityStore((state) => state.clear);
   const unlock = useIdentityStore((state) => state.unlock);
 
-  // Validate session with server
+  // Validate session with server - keep for OAuth login but handle failures gracefully
   const validateSession = useCallback(async (): Promise<User | null> => {
     try {
       const validatedUser = await getCurrentUser();
       return validatedUser;
     } catch (err) {
       console.error('Session validation failed:', err);
-      return null;
+      return null; // Return null on failure instead of blocking
     }
   }, []);
 
@@ -62,6 +65,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setError(null);
 
       try {
+        // Try to validate session - allow failure to proceed
         const validatedUser = await validateSession();
 
         if (!mounted) return;
@@ -71,53 +75,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
           setUser(validatedUser);
           setIdentity(validatedUser.did, validatedUser.did, 1, validatedUser.id);
           unlock();
-
-          try {
-            // Add timeout to sync operations to prevent hanging
-            const needsSync = await Promise.race([
-              dataSyncService.needsFullSync(),
-              new Promise<boolean>((_, reject) =>
-                setTimeout(() => reject(new Error('needsFullSync timed out')), 30000)
-              )
-            ]);
-
-            if (needsSync) {
-              console.log('[Auth] Starting full database sync...');
-
-              // Add timeout to syncFullDatabase
-              const syncResult = await Promise.race([
-                dataSyncService.syncFullDatabase((progress) => {
-                  console.log(`[Sync] ${progress.phase}: ${progress.message}`);
-                }),
-                new Promise<never>((_, reject) =>
-                  setTimeout(() => reject(new Error('syncFullDatabase timed out after 180 seconds')), 180000)
-                )
-              ]);
-
-              if (syncResult.success) {
-                console.log(`[Auth] Full database sync completed: ${syncResult.syncedConversations} conversations synced`);
-              } else {
-                console.error('[Auth] Full database sync failed:', syncResult.errors);
-              }
-            } else {
-              console.log('[Auth] No full sync needed, data already present');
-            }
-          } catch (syncErr) {
-            if (syncErr instanceof Error && syncErr.message.includes('timed out')) {
-              console.warn('[Auth] Sync operation timed out - continuing anyway');
-            } else {
-              console.error('[Auth] Error during full database sync:', syncErr);
-            }
-            // Continue even if sync fails - user is authenticated
-          }
+          console.log('[Auth] Ready - user authenticated');
         } else {
-          console.log('[Auth] No valid session');
+          console.log('[Auth] No valid session - ready for login');
           setUser(null);
           clearIdentity();
         }
       } catch (err) {
         console.error('[Auth] Init failed:', err);
-        setError('Failed to validate session');
+        // Don't block the app if auth fails - just log and continue
+        console.log('[Auth] Ready - authentication unavailable');
         setUser(null);
         clearIdentity();
       } finally {
@@ -127,20 +94,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     };
 
-    // Safety timeout - force loading to false if init takes too long
-    const safetyTimeout = setTimeout(() => {
-      if (mounted && isLoading) {
-        console.warn('[Auth] Init timeout - forcing loading to false');
-        setIsLoading(false);
-        setError('Initialization timed out. Please refresh the page.');
-      }
-    }, 200000); // 200 seconds - slightly longer than sync timeout (180s)
-
     initAuth();
 
     return () => {
       mounted = false;
-      clearTimeout(safetyTimeout);
     };
   }, [validateSession, setIdentity, clearIdentity, unlock]);
 
