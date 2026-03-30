@@ -238,6 +238,11 @@ export async function getContextForChat(conversationId, options = {}) {
       : String(lastMsg.parts);
   }
 
+  const corpusContext = await searchCorpusContext(layers.L7, conversationId);
+  if (corpusContext) {
+    layers.L8_corpus = corpusContext;
+  }
+
   const systemPrompt = buildSystemPrompt(layers);
 
   return {
@@ -248,6 +253,37 @@ export async function getContextForChat(conversationId, options = {}) {
       tokenCount: tokenEstimator.estimateTokens(systemPrompt),
     },
   };
+}
+
+async function searchCorpusContext(userMessage, conversationId) {
+  if (!userMessage || userMessage.length < 3) return null;
+  
+  const tenantId = 'ac905297-af5f-483a-a18f-07fc4ac1348c';
+  
+  try {
+    const results = await prisma.$queryRaw`
+      SELECT title, "rawContent", category
+      FROM corpus_documents
+      WHERE "tenantId" = ${tenantId}
+        AND "isActive" = true
+        AND (
+          to_tsvector('english', title) @@ plainto_tsquery('english', ${userMessage})
+          OR to_tsvector('english', "rawContent") @@ plainto_tsquery('english', ${userMessage})
+        )
+      LIMIT 3
+    `;
+    
+    if (!results || results.length === 0) return null;
+    
+    const contextParts = results.map(doc => 
+      `## ${doc.title} (${doc.category})\n\n${doc.rawContent.slice(0, 1500)}...`
+    ).join('\n\n---\n\n');
+    
+    return `From VIVIM Documentation:\n\n${contextParts}`;
+  } catch (e) {
+    logger.warn({ error: e.message }, 'Corpus search failed');
+    return null;
+  }
 }
 
 async function getCachedBundle(bundleType, referenceId) {

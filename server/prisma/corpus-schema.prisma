@@ -1,0 +1,568 @@
+// ============================================================================
+// VIVIM Corpus-Chatbot Schema Extensions
+// ============================================================================
+// Purpose: Multi-tenant company chatbot with dual-engine orchestration
+// Created: March 27, 2026
+// 
+// This schema extends the main VIVIM schema with:
+// - Tenant management for multi-tenant deployments
+// - Corpus document storage and chunking
+// - Topic taxonomy for company knowledge
+// - FAQ pairs for Q&A matching
+// - Conversation indexing for recall
+// - User profile snapshots for evolution tracking
+// - Orchestration telemetry
+// ============================================================================
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+/**
+ * UserAvatar - Relationship maturity classification
+ * Used by Dual-Engine Orchestrator to weight user vs corpus context
+ */
+enum UserAvatar {
+  STRANGER      // First visit, 0 memories, 0 conversations
+  ACQUAINTANCE  // 2-5 visits, 1-10 memories, 1-5 conversations
+  FAMILIAR      // 6-20 visits, 11-50 memories, 6-20 conversations
+  KNOWN         // 20+ visits, 50+ memories, 20+ conversations
+}
+
+/**
+ * TopicScope - Distinguish user topics from corpus topics
+ */
+enum TopicScope {
+  USER    // User-specific interests (existing TopicProfile)
+  CORPUS  // Company knowledge taxonomy (new CorpusTopic)
+}
+
+/**
+ * ChunkContentType - Type of content in a corpus chunk
+ */
+enum ChunkContentType {
+  prose   // Regular text content
+  code    // Code blocks
+  table   // Data tables
+  list    // List items
+  mixed   // Combination of types
+}
+
+/**
+ * DocumentChangeType - Semantic versioning change classification
+ */
+enum DocumentChangeType {
+  major   // Breaking changes, major features
+  minor   // New features, backward compatible
+  patch   // Bug fixes, minor updates
+}
+
+/**
+ * OrchestrationIntent - User query intent classification
+ * Determines corpus vs user context weighting
+ */
+enum OrchestrationIntent {
+  CORPUS_QUERY        // General product/doc question
+  CORPUS_DEEP_DIVE    // Detailed technical question
+  SUPPORT_QUERY       // Issue/problem needing help
+  USER_RECALL         // Referencing past interactions
+  COMPARISON          // Comparing features/options
+  HOW_TO              // Step-by-step guidance
+  STATUS_CHECK        // Checking on previous request
+  GENERAL_CHAT        // Casual conversation
+  FEEDBACK            // User providing feedback
+  ACCOUNT_SPECIFIC    // Questions about their situation
+  CLARIFICATION       // Follow-up to previous answer
+  NAVIGATION          // "Where can I find X?"
+  ESCALATION          // "Let me talk to a human"
+}
+
+/**
+ * ConversationSentiment - Emotional tone of conversation
+ */
+enum ConversationSentiment {
+  positive
+  neutral
+  negative
+  mixed
+}
+
+/**
+ * ResolutionStatus - Issue resolution state
+ */
+enum ResolutionStatus {
+  resolved
+  pending
+  escalated
+  unknown
+}
+
+// ============================================================================
+// TENANT MANAGEMENT
+// ============================================================================
+
+/**
+ * Tenant - Multi-tenant company deployment
+ * Each tenant represents a company deploying the chatbot
+ */
+model Tenant {
+  id                  String    @id @default(uuid())
+  name                String
+  slug                String    @unique
+
+  // Chatbot configuration (stored as JSON for flexibility)
+  chatbotConfig       Json      @db.JsonB  // CompanyIdentityCore config
+  brandVoice          Json      @db.JsonB  // BrandVoiceConfig
+  guardrails          String[]             // Things bot should NEVER say
+
+  // Corpus settings
+  defaultModel        String    @default("gpt-4o")
+  embeddingModel      String    @default("text-embedding-3-small")
+  maxContextTokens    Int       @default(12000)
+
+  // Timestamps
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime  @updatedAt @db.Timestamptz(6)
+
+  // Relations
+  documents           CorpusDocument[]
+  topics              CorpusTopic[]
+  chunks              CorpusChunk[]
+  faqPairs            CorpusFAQ[]
+  virtualUsers        VirtualUser[]
+  orchestrationLogs   OrchestrationLog[]
+
+  @@index([slug])
+  @@map("tenants")
+}
+
+// ============================================================================
+// CORPUS DOCUMENTS
+// ============================================================================
+
+/**
+ * CorpusDocument - Company document storage
+ * Raw documents ingested into the corpus
+ */
+model CorpusDocument {
+  id                  String    @id @default(uuid())
+  tenantId            String
+  tenant              Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  // Content
+  title               String
+  description         String?
+  sourceUrl           String?             // Original doc URL
+  rawContent          String              @db.Text
+  contentHash         String              // SHA-256 for change detection
+  format              String              // markdown, html, pdf, api_spec
+
+  // Organization
+  category            String              // product_docs, api_reference, faq, etc.
+  topicId             String?
+  topic               CorpusTopic?        @relation(fields: [topicId], references: [id])
+
+  // Versioning
+  version             String              // "2.3.1"
+  isActive            Boolean             @default(true)
+  previousVersionId   String?
+
+  // Metadata
+  authors             String[]
+  lastPublishedAt     DateTime
+  wordCount           Int
+
+  // Timestamps
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime  @updatedAt @db.Timestamptz(6)
+  ingestedAt          DateTime  @default(now()) @db.Timestamptz(6)
+
+  // Relations
+  chunks              CorpusChunk[]
+  versions            CorpusDocumentVersion[]
+
+  @@index([tenantId, category])
+  @@index([tenantId, topicId])
+  @@index([contentHash])
+  @@map("corpus_documents")
+}
+
+/**
+ * CorpusDocumentVersion - Document version tracking
+ * Tracks changes between document versions
+ */
+model CorpusDocumentVersion {
+  id                  String    @id @default(uuid())
+  documentId          String
+  document            CorpusDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  version             String
+  contentHash         String
+  changeType          String              @default("patch") // major, minor, patch
+  changelog           String?             @db.Text // LLM-generated summary of changes
+  changedSections     String[]
+
+  addedChunkIds       String[]
+  modifiedChunkIds    String[]
+  removedChunkIds     String[]
+
+  isActive            Boolean   @default(false)
+  publishedAt         DateTime
+  ingestedAt          DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([documentId, version])
+  @@map("corpus_document_versions")
+}
+
+// ============================================================================
+// CORPUS CHUNKS
+// ============================================================================
+
+/**
+ * CorpusChunk - Chunked document content with embeddings
+ * The fundamental retrieval unit for the corpus
+ */
+model CorpusChunk {
+  id                  String    @id @default(uuid())
+  tenantId            String
+  tenant              Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  documentId          String
+  document            CorpusDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  // Content
+  content             String    @db.Text
+  summary             String?             // 1-line LLM summary
+
+  // Hierarchy
+  parentChunkId       String?
+  parentChunk         CorpusChunk?        @relation("ChunkHierarchy", fields: [parentChunkId], references: [id])
+  childChunks         CorpusChunk[]       @relation("ChunkHierarchy")
+  chunkIndex          Int                 // Position in document
+  totalChunks         Int
+
+  // Structure
+  sectionPath         String[]            // ["API Reference", "Auth", "OAuth"]
+  headingLevel        Int                 // H1=1, H2=2, etc.
+  contentType         String              @default("prose") // prose, code, table, list, mixed
+
+  // Embeddings
+  embedding           Unsupported("vector(1536)")?
+  embeddingModel      String?
+
+  // Metadata
+  keywords            String[]
+  topicSlug           String
+  difficulty          String              @default("intermediate") // beginner, intermediate, advanced
+
+  // Generated Q&A
+  generatedQuestions  String[]
+  generatedAnswer     String?             @db.Text
+  questionEmbeddings  Json?               @db.JsonB // Embeddings for each generated question
+
+  // Freshness
+  sourceUpdatedAt     DateTime
+  freshnessScore      Float   @default(1.0)
+
+  // Quality
+  qualityScore        Float   @default(0.5)
+
+  // Analytics
+  retrievalCount      Int     @default(0)
+  avgRelevanceScore   Float   @default(0.0)
+  lastRetrievedAt     DateTime?
+
+  // Status
+  isActive            Boolean @default(true)
+
+  // Timestamps
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime  @updatedAt @db.Timestamptz(6)
+
+  // FAQ relations
+  faqPairs            CorpusFAQ[]
+
+  @@index([tenantId, topicSlug])
+  @@index([tenantId, contentType])
+  @@index([documentId, chunkIndex])
+  @@index([tenantId, embedding])
+  @@index([isActive])
+  @@map("corpus_chunks")
+}
+
+// ============================================================================
+// CORPUS TOPICS
+// ============================================================================
+
+/**
+ * CorpusTopic - Company knowledge topic taxonomy
+ * Hierarchical organization of company knowledge
+ */
+model CorpusTopic {
+  id                  String    @id @default(uuid())
+  tenantId            String
+  tenant              Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  slug                String
+  name                String
+  description         String?   @db.Text
+
+  // Hierarchy
+  parentTopicId       String?
+  parentTopic         CorpusTopic?  @relation("TopicHierarchy", fields: [parentTopicId], references: [id])
+  childTopics         CorpusTopic[] @relation("TopicHierarchy")
+  path                String[]
+  depth               Int       @default(0)
+
+  // Content stats
+  documentCount       Int       @default(0)
+  chunkCount          Int       @default(0)
+  totalTokens         Int       @default(0)
+
+  // Embeddings
+  embedding           Unsupported("vector(1536)")?
+  representativeQuestions String[]
+
+  // Analytics
+  queryCount          Int       @default(0)
+  avgConfidence       Float     @default(0.0)
+  popularity          Float     @default(0.0)
+
+  // Freshness
+  lastUpdatedAt       DateTime  @default(now())
+
+  // Status
+  isActive            Boolean   @default(true)
+
+  // Relations
+  documents           CorpusDocument[]
+
+  @@unique([tenantId, slug])
+  @@index([tenantId, parentTopicId])
+  @@index([tenantId, embedding])
+  @@map("corpus_topics")
+}
+
+// ============================================================================
+// CORPUS FAQ
+// ============================================================================
+
+/**
+ * CorpusFAQ - FAQ pairs for Q&A matching
+ * Auto-generated or manually curated question/answer pairs
+ */
+model CorpusFAQ {
+  id                  String    @id @default(uuid())
+  tenantId            String
+  tenant              Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  question            String    @db.Text
+  answer              String    @db.Text
+
+  // Source
+  sourceChunkId       String?
+  sourceChunk         CorpusChunk? @relation(fields: [sourceChunkId], references: [id])
+  isManual            Boolean   @default(false)  // Manually curated vs auto-generated
+
+  // Embeddings
+  questionEmbedding   Unsupported("vector(1536)")?
+
+  // Metadata
+  topicSlug           String
+  category            String
+  confidence          Float     @default(0.8)
+
+  // Analytics
+  matchCount          Int       @default(0)
+  helpfulCount        Int       @default(0)
+  unhelpfulCount      Int       @default(0)
+
+  // Status
+  isActive            Boolean   @default(true)
+
+  // Timestamps
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime  @updatedAt @db.Timestamptz(6)
+
+  @@index([tenantId, topicSlug])
+  @@index([tenantId, questionEmbedding])
+  @@map("corpus_faqs")
+}
+
+// ============================================================================
+// CONVERSATION AWARENESS
+// ============================================================================
+
+/**
+ * ConversationIndex - Searchable conversation summaries
+ * Enables semantic search across past conversations for recall
+ */
+model ConversationIndex {
+  id                  String    @id @default(uuid())
+  virtualUserId       String
+  virtualUser         VirtualUser @relation(fields: [virtualUserId], references: [id], onDelete: Cascade)
+  conversationId      String    @unique
+
+  // Searchable summary
+  summary             String    @db.Text
+  embedding           Unsupported("vector(1536)")?
+
+  // Structured metadata
+  topics              String[]
+  keyFacts            Json      @db.JsonB  // KeyFact[]
+  questionsAsked      String[]
+  issuesDiscussed     String[]
+  decisionsReached    String[]
+  actionItems         String[]
+
+  // Metrics
+  messageCount        Int
+  duration            Int                 // minutes
+  sentiment           String              @default("neutral") // positive, neutral, negative, mixed
+  resolutionStatus    String              @default("unknown") // resolved, pending, escalated, unknown
+
+  // Temporal
+  startedAt           DateTime
+  endedAt             DateTime?
+  lastReferencedAt    DateTime?
+  referenceCount      Int       @default(0)
+
+  // Links
+  relatedConversationIds String[]
+  memoryIds           String[]
+
+  // Timestamps
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([virtualUserId, startedAt])
+  @@index([virtualUserId, embedding])
+  @@index([virtualUserId, topics])
+  @@map("conversation_indices")
+}
+
+// ============================================================================
+// USER PROFILE EVOLUTION
+// ============================================================================
+
+/**
+ * UserProfileSnapshot - Evolving user profile snapshots
+ * Versioned profile tracking user growth over time
+ */
+model UserProfileSnapshot {
+  id                  String    @id @default(uuid())
+  virtualUserId       String
+  virtualUser         VirtualUser @relation(fields: [virtualUserId], references: [id], onDelete: Cascade)
+
+  avatar              String    @default("STRANGER") // UserAvatar enum
+  version             Int       @default(1)
+
+  // Core identity (JSON for flexibility)
+  identity            Json      @db.JsonB
+  // { displayName, role, company, teamSize, plan, expertise }
+
+  // Preferences
+  preferences         Json      @db.JsonB
+  // { communicationStyle, technicalLevel, responseFormat, timezone, language }
+
+  // Topic expertise map
+  topicExpertise      Json      @db.JsonB
+  // Record<string, { level, questionsAsked, lastInteraction }>
+
+  // Behavioral patterns
+  behavior            Json      @db.JsonB
+  // { avgSessionLength, returnFrequency, escalationRate, ... }
+
+  // Active concerns
+  activeConcerns      Json      @db.JsonB
+  // { unresolvedIssues, featureRequests, actionItems }
+
+  // Evolution history
+  evolutionLog        Json      @db.JsonB
+  // Array of { timestamp, changes }
+
+  // Timestamps
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6)
+  lastEvolvedAt       DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([virtualUserId])
+  @@unique([virtualUserId, version])
+  @@map("user_profile_snapshots")
+}
+
+// ============================================================================
+// ORCHESTRATION TELEMETRY
+// ============================================================================
+
+/**
+ * OrchestrationLog - Dual-engine orchestration telemetry
+ * Tracks intent classification, weights, and performance
+ */
+model OrchestrationLog {
+  id                  String    @id @default(uuid())
+  tenantId            String
+  tenant              Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  virtualUserId       String
+  conversationId      String
+
+  // Classification
+  intent              String              // OrchestrationIntent enum
+  intentConfidence    Float
+  avatar              String              // UserAvatar enum
+
+  // Weights
+  corpusWeight        Float
+  userWeight          Float
+
+  // Performance
+  assemblyTimeMs      Int
+  totalTokens         Int
+  corpusTokens        Int
+  userTokens          Int
+  historyTokens       Int
+
+  // Quality
+  corpusConfidence    Float
+  chunksRetrieved     Int
+  memoriesUsed        Int
+  proactiveInsights   Int
+
+  // Outcome
+  userSatisfaction    String?             // thumbs_up, thumbs_down, null
+  followUpRequired    Boolean @default(false)
+  escalated           Boolean @default(false)
+
+  // Timestamps
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([tenantId, createdAt])
+  @@index([virtualUserId])
+  @@index([intent])
+  @@map("orchestration_logs")
+}
+
+// ============================================================================
+// EXISTING MODEL EXTENSIONS
+// ============================================================================
+
+// Note: These extensions should be merged into the existing models
+// in the main schema.prisma file. They are shown here for reference.
+
+// VirtualUser extensions (add to existing VirtualUser model):
+//
+// model VirtualUser {
+//   // ... existing fields ...
+//   
+//   // NEW: Tenant association (nullable, backward compatible)
+//   tenantId              String?
+//   tenant                Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+//   
+//   // NEW: Avatar classification
+//   currentAvatar         String    @default("STRANGER")
+//   profileVersion        Int       @default(0)
+//   
+//   // NEW: Relations
+//   conversationIndices   ConversationIndex[]
+//   profileSnapshots      UserProfileSnapshot[]
+// }
+
+// Note: The VirtualUser model extensions require manual merging
+// into the main schema.prisma file since VirtualUser is defined there.
