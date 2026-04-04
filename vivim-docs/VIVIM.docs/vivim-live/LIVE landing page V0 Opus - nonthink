@@ -1,0 +1,925 @@
+
+
+# VIVIM Website: Complete Enhancement Strategy (Revised)
+
+## Strategic Reassessment With Full Feature Context
+
+With the complete feature documentation and extensibility specs, the website strategy needs to account for something I underweighted in the initial enhancement: **VIVIM isn't just a consumer product with a developer story—it's a platform with four distinct product surfaces**, each of which needs representation on the site without creating confusion.
+
+The four surfaces are:
+
+1. **The consumer product** — capture, search, organize your AI conversations
+2. **The social platform** — share, fork, remix, circles, knowledge pulses
+3. **The context engine** — 8-layer personalization that makes your AI smarter over time
+4. **The developer platform** — SDK, plugins, self-hosting, MCP, autonomous agents
+
+Each surface appeals to a different visitor with different motivations. The website must flow naturally from the simplest story (you're losing your AI conversations) to the most complex (build decentralized AI memory applications on our infrastructure) without forcing anyone through content that isn't relevant to them.
+
+Here's how to restructure the entire site with this fuller picture.
+
+---
+
+## Revised Page Architecture
+
+The single-page narrative approach still holds, but the structure needs branching paths. Think of it as a river that starts narrow (one story everyone understands) and widens into tributaries (different depth for different audiences).
+
+```
+                    ┌─────────────────────┐
+                    │       HERO          │
+                    │  (Universal story)  │
+                    └──────────┬──────────┘
+                               │
+                    ┌──────────▼──────────┐
+                    │   INTERACTIVE DEMO  │
+                    │  (Universal proof)  │
+                    └──────────┬──────────┘
+                               │
+                    ┌──────────▼──────────┐
+                    │    POST-DEMO CTA    │
+                    └──────────┬──────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              │                │                │
+    ┌─────────▼─────────┐ ┌───▼────┐ ┌────────▼────────┐
+    │   HOW IT WORKS    │ │CONTEXT │ │  SOCIAL LAYER   │
+    │(Capture + Organize│ │ ENGINE │ │(Share + Fork +  │
+    │  + Search)        │ │ TEASER │ │  Collaborate)   │
+    └─────────┬─────────┘ └───┬────┘ └────────┬────────┘
+              │                │                │
+              └────────────────┼────────────────┘
+                               │
+                    ┌──────────▼──────────┐
+                    │  DEVELOPER PLATFORM │
+                    │  (SDK + API + Self  │
+                    │   Host preview)     │
+                    └──────────┬──────────┘
+                               │
+                    ┌──────────▼──────────┐
+                    │   TRUST & EVIDENCE  │
+                    └──────────┬──────────┘
+                               │
+                    ┌──────────▼──────────┐
+                    │   VISION/ROADMAP    │
+                    └──────────┬──────────┘
+                               │
+                    ┌──────────▼──────────┐
+                    │     FOOTER CTA      │
+                    └─────────────────────┘
+```
+
+The middle three sections (How It Works, Context Engine, Social Layer) should be presented as a horizontal tab or card system that the visitor can explore in any order, not forced sequential scrolling. This respects different visitor priorities: a user cares most about capture and search, an AI enthusiast is fascinated by the context engine, and a community-oriented person wants to understand the social layer first.
+
+---
+
+## Section-by-Section Deep Revision
+
+### Hero: Unchanged Core, Refined Details
+
+The "conversation graveyard" concept from the initial strategy remains the strongest hero approach. But with the full feature list in hand, we can make the floating conversation fragments more specific and more emotionally resonant.
+
+**The conversation fragments should include recognizable scenarios:**
+
+```
+"Can you help me debug this React hydration error?" — ChatGPT, 3 months ago
+"What's the best way to structure a seed pitch deck?" — Claude, 6 weeks ago  
+"Explain the difference between HNSW and IVF indexes" — Gemini, 2 months ago
+"Write a bedtime story about a dragon who's afraid of fire" — ChatGPT, last week
+"Help me plan a 10-day trip through Japan" — DeepSeek, 4 months ago
+"Review this pull request for security issues" — Claude, yesterday
+```
+
+The mix matters. Include technical, creative, personal, and professional conversations. Every visitor should see at least one fragment that mirrors their own AI usage. The provider labels (ChatGPT, Claude, Gemini, DeepSeek) immediately communicate multi-provider support without a feature bullet point.
+
+**After the animation resolves (conversations organize into a searchable grid), add a subtle detail:** small colored dots next to each conversation indicating the provider (green for ChatGPT, orange for Claude, blue for Gemini, etc.). This color-coding system should be consistent across the entire site—it becomes part of the visual language.
+
+**The headline refinement:**
+
+```
+Before animation:  "Your best ideas are trapped in 9 different apps."
+After animation:   "What if they weren't?"
+Sub-headline:      "VIVIM captures every AI conversation you've ever had.
+                    Search them. Share them. Own them."
+```
+
+The shift from "disappearing" (initial strategy) to "trapped" is intentional. "Trapped" implies the conversations still exist but are inaccessible—which is technically accurate and creates a stronger rescue narrative. "9 different apps" directly references the 9-provider capture capability without listing them.
+
+---
+
+### Interactive Demo: Significantly Enhanced
+
+With the full feature documentation, the demo can showcase much more without becoming overwhelming. The key is progressive depth—the visitor sees the core loop first, then can optionally explore deeper features.
+
+**Demo Structure: Three Tabs**
+
+The demo section has three tabs at the top:
+
+```
+[ Capture & Search ]  [ Knowledge Graph ]  [ Share & Fork ]
+```
+
+**Tab 1: Capture & Search (Default)**
+
+This is the core demo from the initial strategy, with refinements based on the feature docs:
+
+1. **Provider selection** — Show all 9 providers with their actual logos. Pre-select ChatGPT. When the visitor clicks "Connect," show the capture status progression from the feature docs: `capturing → processing → ready`, with the animated progress bar, spinning icon, and green checkmark.
+
+2. **Archive view** — After import completes, show the conversations in the unified archive. Include the zone tabs from the feature docs: "All Chats | Imported | Active | Shared | Collections." Default to "Imported" to show what just arrived.
+
+3. **View mode toggle** — In the top-right of the archive, show the four view options as icons: List, Grid, Canvas, Timeline. Default to List (most information-dense). Let the visitor click Grid to see the masonry layout. Canvas and Timeline are teasers for Tab 2.
+
+4. **Search** — The search bar supports all four modes from the feature docs. Pre-fill with a lexical search: `"email validation regex"`. Show results with ACU-level granularity—not just conversation titles, but specific message fragments highlighted with the quality score badge. Include the composable filters panel (collapsed by default, expandable): Provider, Model, Date Range, Has Code toggle, Quality Score slider.
+
+5. **AI Synthesis** — Below the search results, show the AI-generated summary from the feature docs: *"Across 4 conversations, you've explored email validation from 3 angles: RFC 5322 compliance, client-side UX, and backend sanitization..."*
+
+**Tab 2: Knowledge Graph**
+
+A dedicated view of the Canvas mode. This is the "wow" moment. Show 20-30 nodes (conversations) connected by semantic similarity edges. Nodes are:
+- Sized by token count (bigger = longer conversation)
+- Color-coded by provider
+- Labeled with conversation titles
+- Interactive: drag to reposition, hover to see details, click to expand
+
+Include a small legend in the corner showing provider colors. The edges should have varying opacity based on similarity strength—thick, opaque edges connect highly related conversations, thin faded edges connect loosely related ones.
+
+**Why this deserves its own tab:** The knowledge graph is the single most differentiated visual in VIVIM's product. It's the feature that makes investors lean forward. It's the screenshot that gets shared. Giving it a dedicated tab in the demo ensures every visitor sees it, but doesn't force it on visitors who just want to understand search.
+
+**Tab 3: Share & Fork**
+
+Demonstrate the social layer:
+
+1. Show a conversation with an "Share" button
+2. Click Share → show the three share types: Link, Circle, Direct
+3. Select "Link Share" → show the granular permissions from the feature docs: `canView ✓ | canAnnotate ✓ | canRemix ○ | canReshare ○`
+4. Generate a Knowledge Pulse preview: conversation overview, AI synthesis, ACU highlights
+5. Show the fork action: "Fork this conversation at message #7" → a new conversation branch appears in the archive with an attribution badge showing the original author's DID
+
+**The fork visualization is critical.** Show a small branch tree:
+```
+Original conversation (did:key:alice...)
+  └── Your fork (starts at message #7)
+       └── Your new messages continue...
+```
+
+This communicates the social layer's power without requiring explanation: conversations are forkable, attributable, and composable—like code on GitHub.
+
+**Implementation updates:**
+
+The three-tab demo is a single React component with tab state. Each tab lazy-loads its content. Tab 1 is ~80KB (search + mock data), Tab 2 is ~40KB (React Flow), Tab 3 is ~30KB (simpler UI). Total demo bundle: ~150KB, but only Tab 1 loads initially.
+
+The mock data layer needs expansion:
+
+```typescript
+// Enhanced demo data structure
+interface DemoConversation {
+  id: string;
+  provider: 'chatgpt' | 'claude' | 'gemini' | 'deepseek' | 'grok' | 'kimi' | 'mistral' | 'qwen' | 'zai';
+  title: string;
+  messageCount: number;
+  tokenCount: number;
+  model: string;
+  date: string;
+  status: 'ready' | 'processing';
+  tags: string[];
+  hasCode: boolean;
+  hasMath: boolean;
+  acus: DemoACU[];
+  qualityScore: number;
+}
+
+interface DemoACU {
+  id: string;
+  content: string;
+  type: 'code' | 'explanation' | 'tutorial' | 'creative' | 'analysis';
+  qualityOverall: number;
+  contentRichness: number;
+  uniqueness: number;
+  rediscoveryScore: number;
+  embedding: number[]; // Pre-computed 384-dim for client-side similarity
+}
+
+// Pre-computed graph data for Tab 2
+interface DemoGraphNode {
+  id: string;
+  conversationId: string;
+  position: { x: number; y: number }; // Pre-laid-out
+  provider: string;
+  tokenCount: number;
+  title: string;
+}
+
+interface DemoGraphEdge {
+  source: string;
+  target: string;
+  similarity: number; // 0-1, controls opacity
+}
+```
+
+For Tab 2 (Knowledge Graph), pre-compute the node positions using a force-directed layout algorithm at build time, not runtime. Store the positions in the demo data file. This means the graph renders instantly without the layout "settling" animation that React Flow's default force simulation creates. The graph appears fully formed—which is the right visual metaphor (VIVIM organizes your knowledge, it doesn't make you watch it organize).
+
+---
+
+### New Section: The Context Engine Showcase
+
+This is a feature that doesn't exist anywhere else. It deserves dedicated real estate on the site because it's the core technical differentiator and the reason VIVIM gets smarter over time.
+
+**The Concept: "Your AI Gets Smarter Every Conversation"**
+
+**Visual approach:** An animated diagram showing the 8 layers stacking up, with real examples of what each layer contributes.
+
+```
+┌───────────────────────────────────────────────────────┐
+│  THE VIVIM CONTEXT ENGINE                              │
+│  "Your AI remembers what you've learned together."    │
+│                                                        │
+│  ┌─────────────────────────────────────────────┐      │
+│  │ L7: Memories                                 │ ←── "You prefer TypeScript 
+│  ├─────────────────────────────────────────────┤      │   over JavaScript"
+│  │ L6: Related ACUs                             │ ←── "Your vector DB research
+│  ├─────────────────────────────────────────────┤      │   from last month"
+│  │ L5: Composite Context                        │      │
+│  ├─────────────────────────────────────────────┤      │
+│  │ L4: Current Conversation                     │      │
+│  ├─────────────────────────────────────────────┤      │
+│  │ L3: Your Entities                            │ ←── "You're building VIVIM,
+│  ├─────────────────────────────────────────────┤      │   a startup in SF"
+│  │ L2: Your Topics                              │ ←── "You're deep into 
+│  ├─────────────────────────────────────────────┤      │   distributed systems"
+│  │ L1: Global Preferences                       │ ←── "Concise responses,
+│  ├─────────────────────────────────────────────┤      │   code examples first"
+│  │ L0: Identity Core                            │ ←── "Senior engineer,
+│  └─────────────────────────────────────────────┘      │   3 years experience"
+│                                                        │
+│  Token Budget: ████████████░░░░ 8,247 / 12,000       │
+│                                                        │
+└───────────────────────────────────────────────────────┘
+```
+
+**The scroll-triggered animation:**
+
+As the visitor scrolls into this section, the layers build from L0 upward. Each layer slides in from the left with a brief description appearing to the right. The token budget bar fills proportionally as each layer adds its context. The final state shows all 8 layers with the budget nearly full.
+
+**The insight line below the diagram:**
+
+*"Every conversation you have makes the next one smarter. Your context isn't just a chat history—it's a living knowledge graph that grows with you."*
+
+**Context Recipes (optional expansion):**
+
+Below the diagram, show the four context recipes as clickable cards:
+
+```
+[ Default ]  [ Code Review ]  [ Research ]  [ Creative Writing ]
+```
+
+Clicking each one adjusts the layer diagram—Code Review emphasizes L4 and L6, Research maxes out L5-L7, Creative Writing amplifies L1 preferences. This demonstrates the configurability without requiring the visitor to understand every parameter.
+
+**The Context Cockpit tease:**
+
+A small screenshot or UI mockup showing the Context Cockpit settings panel: sliders for similarity thresholds, toggles for JIT retrieval and compression. Caption: *"Full control. Adjust every parameter, or let VIVIM optimize automatically."*
+
+---
+
+### New Section: The Social Layer
+
+The social features are a major differentiator that the initial strategy underrepresented. VIVIM isn't just a personal tool—it's a network. This needs dedicated storytelling.
+
+**The Concept: "Intelligence Multiplies When Shared"**
+
+**Visual approach:** A three-part narrative within this section.
+
+**Part 1: Sharing Controls**
+
+Show a conversation card with a "Share" button expanding to reveal the permissions matrix. Animate the transition from private (lock icon) to shared (link icon) to public (globe icon). Emphasize granularity: *"Share a single insight, not your entire history."*
+
+The Knowledge Pulse concept is particularly powerful for marketing. Show a mock Knowledge Pulse:
+
+```
+┌─────────────────────────────────────────┐
+│  🧠 Knowledge Pulse from @alice        │
+│                                          │
+│  "How to implement HNSW indexing"       │
+│                                          │
+│  AI Synthesis:                          │
+│  "Alice explored HNSW across 4          │
+│   conversations, comparing pgvector,    │
+│   Pinecone, and Qdrant..."             │
+│                                          │
+│  3 highlighted ACUs | 2,847 tokens      │
+│                                          │
+│  [ View Full ] [ Fork ] [ Save ]        │
+│                                          │
+│  ✓ Verified: did:key:z6Mk...           │
+│  ✓ Signed: Ed25519                      │
+└─────────────────────────────────────────┘
+```
+
+**Part 2: Social Graph**
+
+Show the social structures from the feature docs—not as a feature list, but as a visual:
+
+```
+You ──friend── Alice ──friend── Bob
+  │                      │
+  └──── Team: Engineering ────┘
+              │
+         Channel: #architecture
+              │
+         Shared Collection: "Vector DB Research"
+```
+
+Caption: *"Friends, teams, circles. Share with exactly who you want."*
+
+**Part 3: Fork & Remix**
+
+The fork concept is VIVIM's "GitHub moment." Show it as a visual branch tree:
+
+```
+Alice's conversation: "Designing a notification system"
+  │
+  ├── Your fork: "Adapting for real-time WebSocket notifications"
+  │     └── Bob's fork of your fork: "Adding push notification fallback"
+  │
+  └── Carol's fork: "Notification system for mobile-first"
+```
+
+Caption: *"Fork conversations like you fork code. Attribution built in. Knowledge compounds across people."*
+
+**Implementation:** This section is primarily illustrative (SVG diagrams + Framer Motion entrance animations), not interactive. Keep it lightweight. The Knowledge Pulse mockup should look exactly like it will in the product—same card component, same styling, same verification badges.
+
+---
+
+### Revised Developer Platform Section
+
+With the full SDK documentation, this section needs to do more than show a code snippet. It needs to communicate that VIVIM is a platform, not just a product.
+
+**The Concept: "Build on VIVIM"**
+
+**Structure: Three showcases**
+
+**Showcase 1: SDK Quick Start**
+
+A live code block showing the SDK initialization from the extensibility docs:
+
+```typescript
+import { VivimSDK } from '@vivim/sdk';
+
+const sdk = new VivimSDK({
+  identity: { did: 'my-app-node' },
+  storage: { encryption: true },
+});
+
+await sdk.initialize();
+
+// Search across a user's AI conversations
+const results = await sdk.search.hybrid({
+  query: 'vector database optimization',
+  filters: { provider: ['chatgpt', 'claude'] }
+});
+
+// Retrieve contextual memories
+const memories = await sdk.memory.retrieve(
+  'How did I implement caching last time?'
+);
+```
+
+The code block should have syntax highlighting matching your brand palette (the electric indigo for keywords, warm amber for strings). A "Copy" button in the top-right. Below the code: `bun add @vivim/sdk` with its own copy button.
+
+**Showcase 2: Use Cases Grid**
+
+Four cards showing what developers can build:
+
+```
+┌─────────────────────┐ ┌─────────────────────┐
+│  AI Memory Apps     │ │  Collaborative      │
+│                     │ │  Workspaces          │
+│  Personal AI that   │ │  Team knowledge     │
+│  remembers every    │ │  sharing with       │
+│  past interaction   │ │  granular control   │
+│  [See example →]    │ │  [See example →]    │
+└─────────────────────┘ └─────────────────────┘
+┌─────────────────────┐ ┌─────────────────────┐
+│  Autonomous Agents  │ │  Custom UIs         │
+│                     │ │                     │
+│  Agents with        │ │  Build your own     │
+│  persistent memory  │ │  interface on       │
+│  and context        │ │  VIVIM's data       │
+│  [See example →]    │ │  [See example →]    │
+└─────────────────────┘ └─────────────────────┘
+```
+
+Each card links to the relevant section in the full documentation.
+
+**Showcase 3: Integration Points**
+
+A horizontal row of integration badges:
+
+```
+REST API  •  WebSockets  •  Webhooks  •  MCP  •  Plugins  •  Self-Host
+```
+
+Each badge is clickable, expanding to show a one-liner description and a link to docs. The MCP (Model Context Protocol) badge deserves special emphasis—compatibility with Anthropic's standard is a significant credibility signal for the AI developer community.
+
+**Showcase 4: Plugin Ecosystem**
+
+Show the official plugins as a row of logos/icons:
+
+```
+Slack  •  Notion  •  GitHub  •  Discord
+```
+
+Caption: *"Official plugins for your existing tools. Or build your own—it's 50 lines of TypeScript."*
+
+Show the plugin interface code from the extensibility docs:
+
+```typescript
+class MyPlugin implements Plugin {
+  name = 'my-plugin';
+  
+  async install(sdk) {
+    sdk.myFeature = {
+      doSomething: () => { /* your logic */ }
+    };
+  }
+}
+
+sdk.plugins.use(new MyPlugin());
+```
+
+---
+
+### Revised Trust & Evidence Section
+
+With the full feature set documented, the trust section can be more specific and more compelling.
+
+**Technical Credibility: The Privacy Stack**
+
+Instead of generic "we care about privacy" messaging, show the actual cryptographic architecture as a visual:
+
+```
+Your Conversation
+       │
+       ▼
+  ┌────────────────┐
+  │  Ed25519 Sign  │ ← "Every message is signed by your DID"
+  └────────┬───────┘
+           │
+  ┌────────▼───────┐
+  │  XSalsa20      │ ← "Encrypted at rest with military-grade crypto"
+  │  Poly1305      │
+  └────────┬───────┘
+           │
+  ┌────────▼───────┐
+  │  ML-KEM-1024   │ ← "Quantum-resistant key exchange"
+  │  (Kyber)       │
+  └────────┬───────┘
+           │
+       ▼
+  Your Database (isolated, only yours)
+```
+
+Each step has a one-line explanation in plain language. The visual communicates: "We didn't just add encryption as a checkbox—we built a cryptographic system that will still be secure when quantum computers exist."
+
+**The Zero-Trust Verification Badge**
+
+Show the verification flow from the innovation docs as a visual:
+
+```
+✓ Signature valid (Ed25519)
+✓ Content hash matches (SHA-256)  
+✓ Author DID resolved
+✓ Verified on: local device | P2P network | IPFS | blockchain
+```
+
+Caption: *"Verification works everywhere. No trusted intermediary required."*
+
+**Data Portability as Trust**
+
+Show the five export formats from the feature docs as icons:
+
+```
+JSON  •  Markdown  •  HTML  •  ActivityPub  •  ATProtocol
+```
+
+Caption: *"Your data. Your format. Export everything, anytime. We make it easy to leave because we're confident you won't."*
+
+The ActivityPub and ATProtocol export options are significant signals for the decentralization-minded audience. Call them out explicitly.
+
+**Pricing Transparency**
+
+Include the pricing table from the vision document directly on the main page (not hidden in docs):
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                                                               │
+│  Free         Pro            Team           Enterprise       │
+│  $0           $9.99/mo       $29.99/user    Custom           │
+│                                                               │
+│  1 provider   9 providers    9 providers    9 providers      │
+│  50 convos    Unlimited      Unlimited      Unlimited        │
+│  Basic search Advanced       Advanced       Advanced         │
+│  4 context    8 context      8 context      8 context        │
+│  layers       layers         layers         layers           │
+│               Full sharing   API access     SSO + Self-host  │
+│                                                               │
+│  [Get Started] [Get Started] [Get Started]  [Contact Us]     │
+│                                                               │
+└──────────────────────────────────────────────────────────────┘
+```
+
+For an early-stage startup, showing pricing (even if the product isn't launched) signals seriousness and gives investors immediate unit economics comprehension. The free tier is generous enough to drive adoption; the Pro price is low enough to be impulse; Team pricing matches enterprise SaaS expectations.
+
+---
+
+### New: Provider-Specific Landing Sections
+
+This is a strategic addition not in the initial strategy but justified by the feature documentation and the SEO opportunity.
+
+**The Insight:** People searching "how to export ChatGPT conversations" or "backup Claude history" or "search across AI chats" are VIVIM's exact target users. Each of the 9 supported providers should have a dedicated mini-section (on the main page) or a dedicated page (linked from the main page) optimized for these search queries.
+
+**On the main page, this appears as a horizontal scroll section:**
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│  CAPTURE FROM EVERY PROVIDER                                    │
+│                                                                 │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌────────┐ │
+│  │ ChatGPT │ │ Claude  │ │ Gemini  │ │DeepSeek │ │  Grok  │ │
+│  │   ✅    │ │   ✅    │ │   ✅    │ │   ✅    │ │   ✅   │ │
+│  └─────────┘ └─────────┘ └─────────┘ └─────────┘ └────────┘ │
+│  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐           │
+│  │  Kimi   │ │ Mistral │ │  Qwen   │ │  Z.AI   │           │
+│  │   ✅    │ │   ✅    │ │   ✅    │ │   ✅    │           │
+│  └─────────┘ └─────────┘ └─────────┘ └─────────┘           │
+│                                                                 │
+│  Full conversation history • Metadata • Code • Images          │
+│  One-click OAuth • Bulk import • Retry on failure              │
+│                                                                 │
+└────────────────────────────────────────────────────────────────┘
+```
+
+Each provider card is clickable, linking to a dedicated page on the docs site: `docs.vivim.ai/providers/chatgpt`, etc. These pages detail the specific capture method, any provider-specific limitations, troubleshooting, and a step-by-step guide with screenshots.
+
+**SEO value:** These pages will rank for high-intent queries like "export ChatGPT history," "save Claude conversations," "backup Gemini chats." This is organic traffic from people actively looking for what VIVIM provides. Each page should include schema markup for how-to content.
+
+---
+
+### Revised Vision/Roadmap Section
+
+With the full phase breakdown from the vision document, the roadmap section should be more concrete and more visually compelling.
+
+**Visual: Interactive Timeline**
+
+A horizontal timeline with four phases, scroll-triggered:
+
+```
+Phase 1              Phase 2           Phase 3           Phase 4
+Individual           Social            Network           Infrastructure
+Intelligence         Layer             Effects           Layer
+───●─────────────────●─────────────────●─────────────────●───
+   │                  │                  │                  │
+   │ Capture from    │ Selective       │ Semantic search │ Developer SDK
+   │ 9 providers     │ sharing with    │ improves with  │ Enterprise
+   │ Unified search  │ granular perms  │ every user     │ self-hosting
+   │ ACU extraction  │ Fork & remix   │ Topic clusters │ Protocol layer
+   │ Context engine  │ Knowledge      │ emerge          │ Interoperability
+   │                 │ Pulses          │ Knowledge      │
+   │ ← WE ARE HERE  │                 │ graph maps     │
+   │                  │                 │ human-AI       │
+   │                  │                 │ collaboration  │
+```
+
+The "WE ARE HERE" marker on Phase 1 is honest and builds trust. Investors respect founders who are clear about their current stage. A pulsing indicator on Phase 1 draws attention.
+
+The phases should build visually—Phase 1 is fully colored, Phase 2 is partially colored (in progress), Phases 3-4 are outlined (future). As the visitor scrolls through each phase, the corresponding section fills with color and detail.
+
+**End the section with the vision statement:**
+
+```
+"The operating system for AI-powered minds."
+```
+
+Set in the largest type on the page (140px+), appearing with a slow fade-in. This is the emotional payoff after the detailed feature showcase. The visitor has seen what VIVIM does today and where it's going—now they understand the scale of the ambition.
+
+---
+
+## Revised Documentation Strategy
+
+With the full feature documentation and extensibility specs, the docs portal needs a more structured information architecture.
+
+### Documentation Site Map
+
+```
+docs.vivim.ai/
+├── Getting Started
+│   ├── What is VIVIM?
+│   ├── Quick Start (connect first provider in 2 minutes)
+│   ├── Core Concepts (ACUs, Context, Memories)
+│   └── FAQ
+│
+├── Capture
+│   ├── Supported Providers (overview)
+│   ├── ChatGPT (dedicated page)
+│   ├── Claude (dedicated page)
+│   ├── Gemini (dedicated page)
+│   ├── DeepSeek (dedicated page)
+│   ├── Grok (dedicated page)
+│   ├── Kimi (dedicated page)
+│   ├── Mistral (dedicated page)
+│   ├── Qwen (dedicated page)
+│   ├── Z.AI (dedicated page)
+│   ├── Bulk Import
+│   └── Troubleshooting Capture
+│
+├── Features
+│   ├── Archive & Organization
+│   │   ├── Views (List, Grid, Canvas, Timeline)
+│   │   ├── Collections
+│   │   ├── Tags & Labels
+│   │   └── Favorites
+│   ├── Search & Discovery
+│   │   ├── Lexical Search
+│   │   ├── Semantic Search
+│   │   ├── Temporal Search
+│   │   ├── Cross-Conversation Search
+│   │   ├── Filters
+│   │   └── AI Synthesis
+│   ├── Context Engine
+│   │   ├── 8-Layer Architecture
+│   │   ├── Token Budget
+│   │   ├── Context Cockpit
+│   │   └── Context Recipes
+│   ├── Memory System
+│   │   ├── Memory Types
+│   │   ├── Extraction Pipeline
+│   │   └── Consolidation
+│   └── Social Layer
+│       ├── Sharing (Link, Circle, Direct)
+│       ├── Permissions
+│       ├── Knowledge Pulses
+│       ├── Forking & Derivatives
+│       └── Social Graph
+│
+├── Developer
+│   ├── SDK Overview
+│   ├── Installation
+│   ├── Quick Start
+│   ├── Modules
+│   │   ├── Network (LibP2P)
+│   │   ├── Storage (CRDTs)
+│   │   ├── Identity (DID)
+│   │   ├── Capture
+│   │   ├── Memory
+│   │   ├── Sharing
+│   │   └── Search
+│   ├── API Reference
+│   │   ├── REST Endpoints
+│   │   ├── WebSocket Events
+│   │   └── Authentication
+│   ├── Integrations
+│   │   ├── Webhooks
+│   │   ├── MCP (Model Context Protocol)
+│   │   └── Plugins
+│   ├── Use Cases
+│   │   ├── AI Memory Applications
+│   │   ├── Collaborative Workspaces
+│   │   ├── Autonomous Agents
+│   │   └── Custom UIs
+│   └── Self-Hosting
+│       ├── Docker Compose
+│       ├── Production Deployment
+│       └── Configuration
+│
+├── Security & Privacy
+│   ├── Encryption Architecture
+│   ├── DID Identity
+│   ├── Zero-Trust Verification
+│   ├── Data Isolation
+│   └── Quantum Resistance
+│
+├── Enterprise
+│   ├── SSO Integration
+│   ├── Audit Logging
+│   ├── Data Residency
+│   ├── Compliance
+│   └── Contact Sales
+│
+├── Data Portability
+│   ├── Export Formats
+│   ├── Import from Competitors
+│   └── Migration Guide
+│
+└── Resources
+    ├── Architecture Overview
+    ├── Changelog
+    ├── Roadmap
+    ├── Community (Discord, GitHub)
+    └── Support
+```
+
+### Documentation Content Priorities (Build Order)
+
+**Week 1 (launch-critical):**
+1. What is VIVIM? (overview)
+2. Quick Start (connect first provider)
+3. Provider pages for top 3: ChatGPT, Claude, Gemini
+4. SDK Installation + Quick Start
+5. Security & Privacy overview
+
+**Week 2 (complete core):**
+6. Remaining 6 provider pages
+7. Search & Discovery guide
+8. Context Engine explanation
+9. API Reference (auto-generated from OpenAPI spec)
+10. Self-Hosting guide
+
+**Week 3 (depth):**
+11. ACU deep-dive
+12. Memory System guide
+13. Social Layer documentation
+14. Plugin development guide
+15. Use case tutorials
+
+**Week 4+ (ongoing):**
+16. Enterprise documentation
+17. Data Portability guides
+18. Architecture deep-dive
+19. Community contribution guide
+20. Integration tutorials
+
+---
+
+## Revised Technical Implementation
+
+### Component Architecture
+
+The website should share components with the actual product wherever possible. Specifically:
+
+**Shared components (used in both website demo and product):**
+- `ConversationCard` — the card component showing a conversation with provider badge, title, date, quality score
+- `ACUCard` — an individual knowledge unit with type badge, quality metrics, and content preview
+- `ProviderBadge` — colored dot/icon for each provider
+- `QualityScore` — the quality metric visualization (circular progress or bar)
+- `SearchBar` — the unified search input with mode indicators
+- `KnowledgePulseCard` — the sharable knowledge package preview
+- `ContextLayerDiagram` — the 8-layer visualization
+
+**Website-only components:**
+- `HeroAnimation` — the conversation graveyard effect
+- `DemoContainer` — the tabbed demo wrapper with mock data layer
+- `ArchitectureDiagram` — the interactive system diagram
+- `RoadmapTimeline` — the phase visualization
+- `VisitorSegmentation` — the referrer-based personalization utility
+
+**Design tokens (shared across everything):**
+```typescript
+// design-tokens.ts — shared between website, product, and docs
+export const colors = {
+  base: {
+    900: '#0A0E1A',
+    800: '#12162B',
+    700: '#1A1F3A',
+    // ...
+  },
+  accent: {
+    primary: '#6366F1',    // Electric indigo
+    secondary: '#F59E0B',  // Warm amber
+  },
+  provider: {
+    chatgpt: '#10A37F',
+    claude: '#D97706',
+    gemini: '#4285F4',
+    deepseek: '#1E40AF',
+    grok: '#000000',
+    kimi: '#7C3AED',
+    mistral: '#FF6B35',
+    qwen: '#059669',
+    zai: '#DC2626',
+  },
+  semantic: {
+    success: '#10B981',
+    error: '#F43F5E',
+    warning: '#F59E0B',
+    info: '#6366F1',
+  }
+};
+
+export const typography = {
+  display: { size: '120px', weight: 800, lineHeight: 1.0 },
+  h1: { size: '72px', weight: 700, lineHeight: 1.1 },
+  h2: { size: '48px', weight: 600, lineHeight: 1.2 },
+  h3: { size: '32px', weight: 600, lineHeight: 1.3 },
+  body: { size: '16px', weight: 400, lineHeight: 1.6 },
+  small: { size: '14px', weight: 400, lineHeight: 1.5 },
+  code: { size: '14px', weight: 400, lineHeight: 1.6, family: 'JetBrains Mono' },
+};
+```
+
+### Revised Build Timeline
+
+**Week 1: Foundation + Hero + Demo Tab 1**
+- Project setup (Next.js 15, Tailwind, Framer Motion, GSAP)
+- Design tokens + component primitives
+- Hero section (conversation graveyard animation)
+- Demo Tab 1: Capture simulation + Search interface
+- Visitor segmentation utility
+- Mobile-responsive hero and demo
+- Deployment pipeline (Vercel)
+
+**Week 2: Demo Tabs 2-3 + Feature Sections**
+- Demo Tab 2: Knowledge Graph (React Flow)
+- Demo Tab 3: Share & Fork simulation
+- Context Engine showcase section
+- Social Layer showcase section
+- Provider grid section
+- Post-demo CTA
+
+**Week 3: Developer + Trust + Vision**
+- Developer Platform section (SDK showcase, use cases, integrations)
+- Trust & Evidence section (crypto stack visual, verification, pricing)
+- Vision/Roadmap timeline
+- Architecture diagram (interactive)
+- Sticky navigation with progress indicator
+- Dark/light mode
+
+**Week 4: Docs + Polish**
+- Mintlify docs portal setup with custom theme
+- Launch-critical documentation (10 pages)
+- Performance optimization
+- Accessibility audit
+- Cross-browser testing
+- Analytics setup
+- SEO optimization (meta tags, OpenGraph images, structured data)
+- Provider-specific SEO pages
+
+### Performance Budget (Revised)
+
+With the expanded demo (three tabs, knowledge graph), the performance budget needs adjustment:
+
+| Asset | Size Budget | Load Strategy |
+|-------|-------------|---------------|
+| Initial HTML + CSS | < 50KB | Inline critical CSS |
+| Hero animation JS | < 30KB | Async, after LCP |
+| Demo Tab 1 (search) | < 80KB | Lazy load on scroll proximity |
+| Demo Tab 2 (graph) | < 50KB | Lazy load on tab click |
+| Demo Tab 3 (share) | < 30KB | Lazy load on tab click |
+| Mock data | < 40KB | Lazy load with Demo Tab 1 |
+| GSAP + ScrollTrigger | < 30KB | Async |
+| React Flow | < 45KB | Lazy load with Tab 2 |
+| Fonts (variable, subset) | < 60KB | Preload, `font-display: swap` |
+| **Total initial load** | **< 200KB** | |
+| **Total all assets** | **< 500KB** | |
+
+Target Core Web Vitals:
+- LCP: < 1.5s (hero text + static fallback image)
+- INP: < 80ms (all interactions measured)
+- CLS: < 0.03 (no layout shift from font loading or lazy content)
+
+---
+
+## Revised Metrics
+
+| Metric | What It Tells You | Target | Measurement |
+|--------|-------------------|--------|-------------|
+| Hero scroll-through | Opening resonance | >75% | Scroll depth tracking |
+| Demo Tab 1 interaction | Core value clarity | >45% | Click/search event |
+| Demo Tab 2 view | Knowledge graph interest | >20% | Tab click event |
+| Demo Tab 3 view | Social layer interest | >15% | Tab click event |
+| Custom search query typed | Deep engagement | >12% | Input event on search |
+| Knowledge graph drag/zoom | "Wow" moment | >8% | Interaction event |
+| Post-demo CTA click | Conversion | >8% | Click event |
+| Provider page visits | SEO traction | Growing weekly | Page analytics |
+| Docs click-through | Developer interest | >6% | Click event |
+| GitHub star from site | Developer action | Track weekly | Referrer analytics |
+| Segment-specific conversion | Personalization ROI | Investor > General | Segment comparison |
+| Return visit (7-day) | Sticky interest | >15% | Cookie-based tracking |
+| Time to demo interaction | Narrative pacing | < 30 seconds | Time tracking |
+| Total page load time | Performance | < 2s on 4G | RUM |
+
+### New Metric: Demo-to-Docs Pipeline
+
+Track the funnel: Demo interaction → Docs visit → GitHub visit → Waitlist signup. This four-step pipeline tells you whether your site is successfully converting curiosity into commitment. If demo interaction is high but docs visits are low, the developer section isn't compelling enough. If docs visits are high but GitHub stars are low, the open-source messaging isn't landing.
+
+---
+
+## The Overarching Narrative
+
+With all the context now integrated, the website tells this story in roughly 3 minutes of scrolling:
+
+**Second 0-5:** *"Your AI conversations are trapped and scattered."* (Hero animation)
+
+**Second 5-10:** *"VIVIM captures all of them, from every provider, into one searchable archive."* (Hero resolution + headline)
+
+**Second 10-60:** *"Try it yourself."* (Interactive demo — capture, search, knowledge graph, sharing)
+
+**Second 60-65:** *"Ready to own your AI intelligence?"* (Post-demo CTA — highest-intent moment)
+
+**Second 65-90:** *"Here's how it works under the hood."* (Context engine, social layer, provider grid — the visitor chooses their depth)
+
+**Second 90-120:** *"Developers: build on top of this."* (SDK, API, plugins, self-hosting)
+
+**Second 120-150:** *"Here's why you can trust us."* (Crypto stack, open source, pricing, portability)
+
+**Second 150-180:** *"Here's where we're going."* (Roadmap, vision statement)
+
+**Final frame:** *"Join us."* (Footer CTA with three paths: waitlist, GitHub, Discord)
+
+Every visitor gets the first 65 seconds. What they explore after the CTA depends on who they are and what they care about. The site respects their autonomy while ensuring the core story—your AI conversations deserve a home—reaches everyone.

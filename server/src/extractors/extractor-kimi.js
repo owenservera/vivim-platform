@@ -81,69 +81,137 @@ function extractKimiData($, url, richFormatting = true) {
 
   const messages = [];
 
-  // Method 1: Look for structured chat turns (common in Kimi)
-  // Kimi uses specific containers for each turn
-  $('[class*="chat-item"], [class*="message-item"], .chat-turn').each((i, el) => {
+  // Strategy 1: Look for message containers with multiple selector patterns
+  const messageSelectors = [
+    '[class*="message"]',
+    '[class*="chat-item"]',
+    '[class*="message-item"]',
+    '[class*="chat-turn"]',
+    '[class*="bubble"]',
+    '[class*="dialog"]',
+    'article',
+    'section',
+  ];
+
+  let messageElements = [];
+  for (const selector of messageSelectors) {
+    messageElements = $(selector).toArray();
+    if (messageElements.length >= 2) {
+      logger.info(`Kimi: Found ${messageElements.length} messages with selector: ${selector}`);
+      break;
+    }
+  }
+
+  // Strategy 2: If no messages found, look for content containers
+  if (messageElements.length === 0) {
+    messageElements = $('[class*="content"], [class*="text"], p').toArray();
+    logger.info(`Kimi: Fallback found ${messageElements.length} potential content blocks`);
+  }
+
+  // Process each message element
+  messageElements.forEach((el, index) => {
     const $el = $(el);
+    const className = $el.attr('class') || '';
+    
+    // Skip UI chrome elements
+    if ($el.closest('nav, header, footer, aside, sidebar, button, a').length > 0) {
+      return;
+    }
 
-    // Role detection based on child elements or classes
-    let role = 'assistant'; // Default
+    // Role detection - multiple heuristics
+    let role = null;
 
-    // Heuristic 1: User avatar or specific user classes
-    if (
-      $el.find('[class*="user-avatar"]').length > 0 ||
-      $el.find('[class*="user_"]').length > 0 ||
-      $el.hasClass('user-message') ||
-      $el.find('img[alt="user"]').length > 0
-    ) {
+    // Heuristic 1: Check for user/assistant indicators in class
+    const lowerClass = className.toLowerCase();
+    if (lowerClass.includes('user') || lowerClass.includes('human') || lowerClass.includes('customer')) {
       role = 'user';
     } else if (
-      $el.find('.markdown-content').length > 0 ||
-      $el.find('[class*="assistant_"]').length > 0
+      lowerClass.includes('assistant') ||
+      lowerClass.includes('ai') ||
+      lowerClass.includes('bot') ||
+      lowerClass.includes('model') ||
+      lowerClass.includes('kimi')
     ) {
       role = 'assistant';
     }
 
-    const $content = $el.find('.markdown-content, [class*="content_"]').first();
-    const $target = $content.length > 0 ? $content : $el;
+    // Heuristic 2: Check for avatar indicators
+    if (!role) {
+      if ($el.find('[class*="user-avatar"], [class*="user-icon"], img[alt*="user"]').length > 0) {
+        role = 'user';
+      } else if ($el.find('[class*="ai-avatar"], [class*="bot-icon"], img[alt*="ai"], img[alt*="kimi"]').length > 0) {
+        role = 'assistant';
+      }
+    }
 
+    // Heuristic 3: Position-based (alternating pattern)
+    if (!role) {
+      role = index % 2 === 0 ? 'user' : 'assistant';
+    }
+
+    // Extract content
+    let content = null;
+    
+    // Try to find markdown/content container
+    const $contentContainer = $el.find('[class*="markdown"], [class*="content"], [class*="text-body"]').first();
+    const $target = $contentContainer.length > 0 ? $contentContainer : $el;
+    
     const text = $target.text().trim();
-    if (!text || text.length < 1) {
+    
+    // Skip if too short or looks like UI elements
+    if (!text || text.length < 3 || /^[🔍🤖💬📎]/u.test(text)) {
+      return;
+    }
+    
+    // Skip duplicates
+    if (messages.length > 0 && messages[messages.length - 1].content === text) {
       return;
     }
 
-    const content = richFormatting ? extractKimiRichContent($target, $, richFormatting) : text;
+    if (richFormatting) {
+      content = extractKimiRichContent($target, $, richFormatting);
+    } else {
+      content = text;
+    }
 
-    messages.push({
-      id: uuidv4(),
-      role,
-      content,
-      timestamp: null,
-    });
-  });
-
-  // Method 2: Fallback to broad markdown content search if no turns found
-  if (messages.length === 0) {
-    $('.markdown-content').each((i, el) => {
-      const $el = $(el);
-      const text = $el.text().trim();
-      if (!text) {
-        return;
-      }
-
-      // In this fallback, we assume it's assistant if it's markdown-content
-      const content = richFormatting ? extractKimiRichContent($el, $, richFormatting) : text;
-
+    if (content && content.length > 0) {
       messages.push({
         id: uuidv4(),
-        role: 'assistant',
+        role,
         content,
+        timestamp: null,
+      });
+    }
+  });
+
+  // Strategy 3: Fallback - look for any substantial paragraphs
+  if (messages.length === 0) {
+    logger.warn('Kimi: No messages found with standard selectors, trying aggressive fallback...');
+    
+    $('p, div').each((i, el) => {
+      const $el = $(el);
+      const text = $el.text().trim();
+      
+      // Skip short text or UI chrome
+      if (text.length < 20 || text.length > 10000) {
+        return;
+      }
+      
+      // Skip common UI patterns
+      if (/^(Share|Copy|Export|Send|Like|Dislike|Regenerate)/i.test(text)) {
+        return;
+      }
+      
+      messages.push({
+        id: uuidv4(),
+        role: i % 2 === 0 ? 'user' : 'assistant',
+        content: text,
         timestamp: null,
       });
     });
   }
 
-  // Deduplicate and clean up
+  // Deduplicate messages
   const cleanedMessages = messages.filter(
     (msg, index, self) =>
       index === self.findIndex((m) => m.content === msg.content && m.role === msg.role)

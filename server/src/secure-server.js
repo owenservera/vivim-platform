@@ -1,5 +1,5 @@
 /**
- * OpenScroll Capture API - Secure Server Configuration
+ * VIVIM Server - Secure Server Configuration
  *
  * Enhanced security features:
  * - Restricted CORS policy
@@ -79,8 +79,8 @@ const allowedOrigins = config.isDevelopment
       'http://0.0.0.0:5173',
     ]
   : [
-      'https://openscroll.yourdomain.com',
-      'https://www.openscroll.yourdomain.com',
+      'https://app.vivim.io',
+      'https://www.vivim.io',
       // Add your production domains here
     ];
 
@@ -290,7 +290,7 @@ const server = app.listen(config.port, '0.0.0.0', () => {
   console.log('\n\x1b[1m\x1b[44m SECURE SYSTEM MANIFEST \x1b[0m');
   console.log(`\x1b[34m${'━'.repeat(60)}\x1b[0m`);
 
-  console.log(' \x1b[1mWHAT IS HAPPENING:\x1b[0m    Initializing Secure OpenScroll Capture Engine');
+  console.log(' \x1b[1mWHAT IS HAPPENING:\x1b[0m    Initializing Secure VIVIM Capture Engine');
   console.log(
     ' \x1b[1mWHAT IT CAN DO:\x1b[0m       Cross-origin content extraction & DAG building'
   );

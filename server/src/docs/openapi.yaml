@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: OpenScroll Capture API
+  title: VIVIM Capture API
   description: |
     API for capturing AI conversations from various providers.
 
@@ -18,15 +18,15 @@ info:
 
   version: 2.0.0
   contact:
-    name: OpenScroll API Support
-    url: https://github.com/openscroll/openscroll-server
+    name: VIVIM API Support
+    url: https://github.com/vivim-ai/vivim-server
   license:
     name: ISC
 
 servers:
   - url: http://localhost:3000
     description: Local development server
-  - url: https://api.openscroll.com/v1
+  - url: https://api.vivim.io/v1
     description: Production server
 
 tags:

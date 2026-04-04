@@ -35,7 +35,7 @@ async function captureWithSingleFile(url, provider, options = {}) {
 
   // Create temporary file for capture
   const tempDirectory = path.resolve(tempDir || os.tmpdir());
-  const tempFileName = `openscroll-${provider}-${uuidv4()}.html`;
+  const tempFileName = `vivim-${provider}-${uuidv4()}.html`;
   const tempFilePath = path.join(tempDirectory, tempFileName);
 
   console.warn(`Temporary file: ${tempFilePath}`);

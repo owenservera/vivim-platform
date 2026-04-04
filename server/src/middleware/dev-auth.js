@@ -6,33 +6,50 @@ const log = logger.child({ module: 'dev-auth' });
 
 let devUserCache = null;
 
-async function getOrCreateDevUser() {
+/**
+ * Get the user for dev bypass:
+ * 1. If DEMO_USER_EMAIL is set and that user exists in DB → use that (rich demo data)
+ * 2. Otherwise fall back to dev@localhost
+ */
+async function getDevBypassUser() {
   if (devUserCache) {
     return devUserCache;
   }
 
   const prisma = getPrismaClient();
+  const targetEmail = config.demoUserEmail || 'dev@localhost';
 
   let user = await prisma.user.findUnique({
-    where: { email: 'dev@localhost' },
+    where: { email: targetEmail },
   });
 
   if (!user) {
-    user = await prisma.user.create({
-      data: {
-        did: 'did:dev:local-development-user',
-        email: 'dev@localhost',
-        emailVerified: true,
-        displayName: 'Development User',
-        avatarUrl: null,
-        verificationLevel: 1,
-        publicKey: 'dev:local-key',
-        keyType: 'Development',
-        trustScore: 100,
-        status: 'ACTIVE',
-      },
+    // Fall back to dev@localhost
+    user = await prisma.user.findUnique({
+      where: { email: 'dev@localhost' },
     });
-    log.info({ userId: user.id }, 'Created development user');
+
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          did: 'did:dev:local-development-user',
+          email: 'dev@localhost',
+          emailVerified: true,
+          displayName: 'Development User',
+          avatarUrl: null,
+          verificationLevel: 1,
+          publicKey: 'dev:local-key',
+          keyType: 'Development',
+          trustScore: 100,
+          status: 'ACTIVE',
+        },
+      });
+      log.info({ userId: user.id, email: user.email }, 'Created development user');
+    } else {
+      log.info({ userId: user.id, email: user.email }, 'Using dev@localhost user (demo user not found)');
+    }
+  } else {
+    log.info({ userId: user.id, email: user.email }, 'Using demo user for dev bypass');
   }
 
   user.userId = user.id;
@@ -50,7 +67,7 @@ export async function devAuthBypass(req, res, next) {
   }
 
   try {
-    const user = await getOrCreateDevUser();
+    const user = await getDevBypassUser();
 
     req.user = user;
     req.userId = user.id;
@@ -70,8 +87,9 @@ export async function devAuthBypass(req, res, next) {
 
 export function logDevAuthStatus(req, res, next) {
   if (config.isDevelopment && config.skipAuthForDevelopment) {
+    const email = config.demoUserEmail || 'dev@localhost';
     log.warn('⚠️  DEVELOPMENT MODE: Authentication is bypassed for all requests');
-    log.warn('   All requests will be authenticated as dev@localhost');
+    log.warn(`   All requests will be authenticated as: ${email}`);
   }
   next();
 }

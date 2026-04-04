@@ -8,7 +8,8 @@ import {
   Sparkles, 
   BookOpen, 
   Pin, 
-  Archive 
+  Archive,
+  Globe
 } from 'lucide-react';
 import { ErrorBoundary } from '../../ErrorBoundary';
 import { ContentRenderer } from '../../content/ContentRenderer';
@@ -92,10 +93,10 @@ interface FeedItemCardProps {
   onFork: (id: string, forkId: string) => void;
   onDuplicate: (id: string, newId: string) => void;
   onAIClick: (action: AIAction, id: string) => void;
-  isExpanded?: boolean;
   onExpandToggle?: (id: string) => void;
   overrideMessages?: any[];
   isLoadingAI?: boolean;
+  onVisibilityToggle?: (id: string, visibility: string) => void;
 }
 
 export const FeedItemCard: React.FC<FeedItemCardProps> = ({
@@ -115,6 +116,7 @@ export const FeedItemCard: React.FC<FeedItemCardProps> = ({
   onExpandToggle,
   overrideMessages,
   isLoadingAI,
+  onVisibilityToggle,
 }) => {
   const navigate = useNavigate();
   const prov = convo.provider || 'default';
@@ -271,7 +273,6 @@ export const FeedItemCard: React.FC<FeedItemCardProps> = ({
                 <BookOpen className="w-3 h-3" />
                 Share
               </button>
-              <div className="flex-1" />
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -283,6 +284,19 @@ export const FeedItemCard: React.FC<FeedItemCardProps> = ({
               >
                 <Pin className={`w-3.5 h-3.5 ${isPinned ? 'fill-current' : ''}`} />
               </button>
+              {onVisibilityToggle && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const nextVisibility = convo.visibility === 'public' ? 'private' : 'public';
+                    onVisibilityToggle(convo.id, nextVisibility);
+                  }}
+                  className={`p-1.5 rounded-lg transition-colors ${convo.visibility === 'public' ? 'text-emerald-500 bg-emerald-50 dark:bg-emerald-950/40' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+                  title={convo.visibility === 'public' ? 'Unpublish from Scroll' : 'Publish to Scroll'}
+                >
+                  <Globe className={`w-3.5 h-3.5 ${convo.visibility === 'public' ? 'fill-current' : ''}`} />
+                </button>
+              )}
               <button
                 onClick={(e) => {
                   e.stopPropagation();

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1920" height="1080" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#0a0a0f"/>
+  <text x="960" y="400" font-family="system-ui" font-size="72" font-weight="700" fill="#ffffff" text-anchor="middle">
+    The Vision
+  </text>
+  <text x="960" y="480" font-family="system-ui" font-size="36" fill="#EF9F27" text-anchor="middle">
+    You own your AI brain
+  </text>
+  <text x="960" y="600" font-family="system-ui" font-size="28" fill="#888888" text-anchor="middle" white-space="preserve">
+    Decentralized · Private · Permanent
+  </text>
+  <text x="960" y="980" font-family="system-ui" font-size="18" fill="#888888" text-anchor="middle">
+    vivim.app
+  </text>
+</svg>

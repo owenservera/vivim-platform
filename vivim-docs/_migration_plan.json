@@ -1,0 +1,4221 @@
+{
+  "generated_at": "2026-03-26T13:16:55.236701",
+  "stats": {
+    "total_files": 489,
+    "files_by_destination": {
+      "01-PLATFORM/architecture": 82,
+      "07-BUSINESS/open-source": 9,
+      "03-FRONTEND/components": 17,
+      "07-BUSINESS/website": 2,
+      "01-PLATFORM/database": 20,
+      "02-PRODUCT/roadmap": 7,
+      "08-ARCHIVE/duplicates": 12,
+      "08-ARCHIVE": 180,
+      "_working": 1,
+      "01-PLATFORM/context-engine": 15,
+      "03-FRONTEND/ux-design": 12,
+      "01-PLATFORM/acu-system": 3,
+      "07-BUSINESS/operations": 1,
+      "02-PRODUCT/features": 5,
+      "03-FRONTEND/design-system": 7,
+      "07-BUSINESS/strategy": 1,
+      "04-NETWORK-SDK/blockchain": 1,
+      "07-BUSINESS/pitch-investor": 24,
+      "02-PRODUCT/ux-design": 1,
+      "06-RESEARCH/sovereign-memory": 25,
+      "05-SECURITY/privacy": 2,
+      "04-NETWORK-SDK/p2p-network": 6,
+      "04-NETWORK-SDK/sdk": 38,
+      "03-FRONTEND/pwa": 5,
+      "06-RESEARCH/detection-algorithms": 3,
+      "05-SECURITY/chain-of-trust": 6,
+      "06-RESEARCH/mathematics": 2,
+      "02-PRODUCT/demos": 1,
+      "05-SECURITY/zero-trust": 1
+    },
+    "promote_candidates": [
+      {
+        "source": "VIVIM.docs\\.archive\\.current\\01-system-architecture.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 793,
+        "heading": "DOCUMENT 1: SYSTEM ARCHITECTURE SNAPSHOT"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.current\\02-feature-inventory.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1059,
+        "heading": "DOCUMENT 2: FEATURE INVENTORY"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.current\\04-user-flows-experience-map.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1124,
+        "heading": "DOCUMENT 4: USER FLOWS & EXPERIENCE MAP"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.current\\05-open-questions-unresolved-decisions.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1000,
+        "heading": "DOCUMENT 5: OPEN QUESTIONS & UNRESOLVED DECISIONS"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.current\\06-competitive-differentiation-map.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1133,
+        "heading": "DOCUMENT 6: COMPETITIVE DIFFERENTIATION MAP"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.current\\07-north-star-next-phase-priorities.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 824,
+        "heading": "DOCUMENT 7: NORTH STAR & NEXT PHASE PRIORITIES"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.current\\08A-feature-implementation-audit.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1710,
+        "heading": "DOCUMENT A: Feature Implementation Audit (Ground Truth)"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.current\\08B-api-route-inventory.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 2080,
+        "heading": "DOCUMENT B: API Route Inventory"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.current\\08C-database-schema-gap-analysis.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1084,
+        "heading": "DOCUMENT C: Database Schema vs. Code Usage Gap Analysis"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.current\\08D-frontend-page-component-inventory.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 890,
+        "heading": "DOCUMENT D: Frontend Page & Component Inventory"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.current\\08E-background-jobs-async-pipeline-audit.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 742,
+        "heading": "DOCUMENT E: Background Jobs & Async Pipeline Audit"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.current\\08F-security-auth-audit.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 649,
+        "heading": "DOCUMENT F: Security & Auth Audit"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.current\\08G-dependency-integration-health.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 759,
+        "heading": "DOCUMENT G: Dependency & Integration Health"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.current\\08H-environment-config-devops-state.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 772,
+        "heading": "DOCUMENT H: Environment, Config & DevOps State"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.current\\VIVIM_COMPLETE_BLUEPRINT.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 6751,
+        "heading": "VIVIM Deep Extraction & Modernization Blueprint"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.current\\VIVIM_DEEP_EXTRACTION.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 2779,
+        "heading": "VIVIM Deep Extraction & Modernization Blueprint"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.dev\\CURRENT_ISSUES.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 575,
+        "heading": "Current Issues & Pain Points"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.dev\\DESIGN_TOKENS.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 734,
+        "heading": "Design Tokens Specification"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.dev\\DEV_FRONTEND_DESIGN.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1177,
+        "heading": "VIVIM Frontend Redesign - Design Vision"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.dev\\EXECUTIVE_SUMMARY.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 686,
+        "heading": "Executive Summary"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.dev\\RESPONSIVE_BREAKPOINTS.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 583,
+        "heading": "Responsive Breakpoints & Layout Specification"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.dev\\ROUTING_NAVIGATION.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 630,
+        "heading": "Routing & Navigation Specification"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.dev\\SPEC.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 823,
+        "heading": "VIVIM Frontend Redesign Specification"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.dev\\UI_COMPONENT_SPEC.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 555,
+        "heading": "UI Component Specification"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\00-MASTER-TASK-LIST.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 621,
+        "heading": "VIVIM — Master Task List"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\02-SYSTEM-ARCHITECTURE.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 673,
+        "heading": "VIVIM — System Architecture"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\03-FEATURE-INVENTORY.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 734,
+        "heading": "VIVIM — Feature Inventory"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\04-DATA-MODELS-SCHEMA.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 621,
+        "heading": "VIVIM — Data Models & Schema"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\05-API-ROUTE-INVENTORY.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 794,
+        "heading": "VIVIM — API Route Inventory"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\06-FRONTEND-INVENTORY.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 714,
+        "heading": "VIVIM — Frontend Page & Component Inventory"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\07-IMPLEMENTATION-GAPS.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 845,
+        "heading": "VIVIM — Implementation Gaps & Bug Tracker"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\09-BACKGROUND-JOBS-PIPELINE.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 607,
+        "heading": "VIVIM — Background Jobs & Async Pipeline"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\10-DEPENDENCY-HEALTH.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 640,
+        "heading": "VIVIM — Dependency & Integration Health"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\11-ENVIRONMENT-DEVOPS.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 525,
+        "heading": "VIVIM — Environment, Config & DevOps"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\12-DESIGN-SYSTEM.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 727,
+        "heading": "VIVIM — Design System"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\14-OPEN-QUESTIONS-STRATEGY.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 848,
+        "heading": "VIVIM — Open Questions & Strategic Decisions"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\15-ROADMAP-COMPETITIVE.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 808,
+        "heading": "VIVIM — Enhancement Roadmap & Competitive Analysis"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\ARCHITECTURE_AUDIT.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 517,
+        "heading": "VIVIM — Context Engine · Memory Layer · ACU System"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\ConflictMap_MunitionsCatalogue_Ticker.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 603,
+        "heading": "╔══════════════════════════════════════════════════════════════════════╗"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\HIGH-TIER-FINAL-STATUS.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 739,
+        "heading": "VIVIM — HIGH TIER Implementation — FINAL STATUS"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\HIGH-TIER-IMPLEMENTATION-STATUS.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 732,
+        "heading": "VIVIM — HIGH TIER Tasks Implementation Status"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\PendingUPDATESall-01-critical.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1302,
+        "heading": "VIVIM — Pending Updates: CRITICAL TIER (🔴)"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\PendingUPDATESall-02-high.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1457,
+        "heading": "VIVIM — Pending Updates: HIGH TIER (🟡)"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\PendingUPDATESall-03-medium-low.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1761,
+        "heading": "VIVIM — Pending Updates: MEDIUM & LOW TIER (🟢)"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\PendingUPDATESall-INDEX.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 608,
+        "heading": "VIVIM — Pending Updates Master Index"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\VIVIM-ARCHIVE-DESIGN-FRAMEWORK.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 4491,
+        "heading": "DOCUMENT 13 — THE VIVIM ARCHIVE"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\.old\\VIVIM_COMPLETE_BLUEPRINT_todo.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 6751,
+        "heading": "VIVIM Deep Extraction & Modernization Blueprint"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\ASSESSMENT.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1211,
+        "heading": "Dynamic Context Implementation Assessment"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\CONTEXT_ENGINE_10X_REPORT.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 999,
+        "heading": "🧠 Dynamic Context Engine — 10x Enhancement Report"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\DOCUMENTATION_CROSS_REFERENCE.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 964,
+        "heading": "VIVIM Documentation Cross-Reference & Gap Analysis"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\EXTRACTION_IMPROVEMENT_DESIGN.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 515,
+        "heading": "OpenScroll Link Extraction & Rendering Improvement System"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\FEATURE_BRIDGE_BUILD.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 2990,
+        "heading": "VIVIM Feature Bridge Build Document"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\ICON_LIBRARY_QUICK_REFERENCE.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 675,
+        "heading": "VIVIM Icon Library - Quick Reference Card"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\ICON_LIBRARY_SPECIFICATION.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 4179,
+        "heading": "VIVIM Custom Icon Library Specification"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\IMPLEMENTATION_ROADMAP.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 542,
+        "heading": "VIVIM v1 Prototype Implementation Roadmap"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\OPUS_PRIORITIZATION.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1471,
+        "heading": "🔬 OpenScroll Deep Code Inspection — Opus 4.6 Prioritization Document"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\PHASE4_IMPLEMENTATION_SUMMARY.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 534,
+        "heading": "Phase 4: Discovery & Feed Personalization - Implementation Summary"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\PHASE5_IMPLEMENTATION_SUMMARY.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 650,
+        "heading": "Phase 5: Data Portability & Account Migration - COMPLETE"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\SOCIAL-FEATURES.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 7244,
+        "heading": "Frontend review: features, buttons, and pages analysis"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\USER_JOURNEY.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1022,
+        "heading": "VIVIM: Complete User Journey"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\VIVIM_GAP_ANALYSIS.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 681,
+        "heading": "VIVIM v1 Prototype Gap Analysis"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\VIVIM_NETWORK_ARCHITECTURE.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 564,
+        "heading": "VIVIM Network Architecture Design"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\VIVIM_NETWORK_ARCHITECTURE_DESIGN.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 589,
+        "heading": "VIVIM Network Architecture Design"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\VIVIM_NETWORK_IMPLEMENTATION_SUMMARY.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 736,
+        "heading": "VIVIM Full Network Architecture - Implementation Summary"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\VIVIM_NETWORK_LOCAL_DEV.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 638,
+        "heading": "VIVIM Network - Local Development & Testing Specification"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\VIVIM_USER_MANAGEMENT_DESIGN.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 563,
+        "heading": "State-of-the-Art User Management System"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\VIVIM_V1_FEATURES.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 2663,
+        "heading": "VIVIM v1: Atomic Feature Specification"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\ai-integration-and-context.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 43579,
+        "heading": "Dynamic Context Pipeline design exploration and Prisma schema update"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\context-error.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 5446,
+        "heading": "Greeting and quick check-in"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\context2.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 3694,
+        "heading": "Dynamic Context Pipeline — Token Budget Algorithms"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\exraction-and-rendering-fix.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 5019,
+        "heading": "Improving link extraction and rendering system"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\gemini5.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 11092,
+        "heading": "Prisma upsert error: missing publicKey in create object"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\identity-design1.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 7537,
+        "heading": "Review data system, user interactions, actions, features, server & PWA"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\mini2.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 9220,
+        "heading": "Review data system, user interactions, actions, features, server & PWA"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\openscroll-100features.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 3542,
+        "heading": "OpenScroll: 100+ Atomic Features"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\session-ses_3b3b.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 17187,
+        "heading": "Deep code inspection of server context in VIVIM project"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\user-id-management.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 15459,
+        "heading": "Review data system, user interactions, actions, features, server & PWA"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\v0-secondbrain0100features.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 2919,
+        "heading": "AZR-Net v0: Comprehensive Feature Catalog (100+ Atomic Features)"
+      },
+      {
+        "source": "VIVIM.docs\\.archive\\vivim-100plus-features.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 5755,
+        "heading": "VIVIM Project - Comprehensive Feature Catalogue"
+      },
+      {
+        "source": "VIVIM.docs\\NETWORK\\.current\\01-DESIGN-OVERVIEW.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 583,
+        "heading": "VIVIM Network Sharing System - Design Overview"
+      },
+      {
+        "source": "VIVIM.docs\\NETWORK\\.current\\02-SHARING-INTENT-SYSTEM.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 564,
+        "heading": "Sharing Intent System Design"
+      },
+      {
+        "source": "VIVIM.docs\\NETWORK\\.current\\04-NETWORK-ORCHESTRATION.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 507,
+        "heading": "Network Orchestration Layer Specification"
+      },
+      {
+        "source": "VIVIM.docs\\NETWORK\\.current\\05-SHARING-ANALYTICS.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1196,
+        "heading": "Sharing Analytics and Insights"
+      },
+      {
+        "source": "VIVIM.docs\\NETWORK\\.current\\06-DATABASE-SCHEMA.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1687,
+        "heading": "Database Schema Extensions for Sharing System"
+      },
+      {
+        "source": "VIVIM.docs\\NETWORK\\.current\\07-API-ENDPOINTS.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 665,
+        "heading": "API Endpoint Specifications"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\CONVERSATION_IMPORT_DESIGN.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 2039,
+        "heading": "Conversation History Import System Design"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\DEVELOPMENT_PLAN.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1695,
+        "heading": "VIVIM Development Plan"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\DOCUMENTATION_STRATEGY.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 508,
+        "heading": "VIVIM Documentation Strategy"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\EXTRACTOR_FIX_SUMMARY.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 621,
+        "heading": "Provider Extractor Fixes"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\IMPORT_FIXES_COMPLETE.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1025,
+        "heading": "Import System Fixes - Complete Implementation"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\IMPORT_FIXES_SUMMARY.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 626,
+        "heading": "Import System Fixes Summary"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\SYSTEM_FIXES_SUMMARY.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 625,
+        "heading": "System Fixes Summary - Production Ready"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\TEST_REPORT_EXTRACTORS.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 830,
+        "heading": "Provider Extractor Coverage - Test Report"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\docs\\TIERED_IMPORT_SERVICE_DESIGN.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 995,
+        "heading": "Tiered Import Service Design"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\index-minimal.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 501,
+        "heading": null
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\plans\\VIVIM_10x_improvement_plan.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1765,
+        "heading": "VIVIM 10x Improvement Plan"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\plans\\VIVIM_context_system_10x_improvement_plan.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1872,
+        "heading": "VIVIM Context System 10x Improvement Plan"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\plans\\VIVIM_context_system_gaps_analysis.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1528,
+        "heading": "VIVIM Context System Gaps Analysis"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\plans\\VIVIM_pipeline_gaps_analysis.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1345,
+        "heading": "VIVIM Pipeline Gaps Analysis"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\plans\\pwa-component-specifications.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 579,
+        "heading": "PWA Redesign - Component & Page Specifications"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\plans\\pwa-content-rendering-toolkit.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 668,
+        "heading": "Global Content Rendering Toolkit Specification"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\plans\\pwa-redesign-plan.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1349,
+        "heading": "PWA Visual Redesign Plan - Modern UI/UX Overhaul"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\quick-fix.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 529,
+        "heading": "🔧 VIVIM Development Environment Fix Guide"
+      },
+      {
+        "source": "VIVIM.docs\\vivim-app-legacy\\session-ses_32c0.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 15608,
+        "heading": "Ultra-remembering memory/context system documentation plan"
+      },
+      {
+        "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\ARCHITECTURE\\01-tech-stack.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1160,
+        "heading": "VIVIM Technical Stack Documentation"
+      },
+      {
+        "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\ARCHITECTURE\\03-api-endpoints.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1294,
+        "heading": "VIVIM API Endpoints Documentation"
+      },
+      {
+        "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\ARCHITECTURE\\zcompanies-gap-analysis.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1210,
+        "heading": "VIVIM Architecture Gap Analysis"
+      },
+      {
+        "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\DOCUMENTATION_UPDATE_SUMMARY.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 943,
+        "heading": "VIVIM Documentation Update Summary"
+      },
+      {
+        "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\SDK.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 515,
+        "heading": "<img src=\"https://img.icons8.com/color/48/000000/toolbox.png\" width=\"40\" align=\"left\" /> VIVIM SDK"
+      },
+      {
+        "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\development\\tokens.and.transport 2.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1205,
+        "heading": "Note 27-02-2026 11:26 PM"
+      },
+      {
+        "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\home-panel-enhancements-todo.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 573,
+        "heading": "Home Panel Visual Design Enhancements - TODO List"
+      },
+      {
+        "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\tokens.and.transport.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "word_count": 1205,
+        "heading": "Note 27-02-2026 11:26 PM"
+      }
+    ],
+    "duplicate_decisions": [
+      {
+        "keep": "OpenCore\\VIVIM_OpenCore_Blueprint_v1.1.md",
+        "archive": "OpenCore\\VIVIM_OpenCore_Blueprint.md",
+        "reason": "More recent modification (2026-03-24T03:56:17.173265 vs 2026-03-24T03:55:56.178534)"
+      },
+      {
+        "keep": "OpenCore\\VIVIM_OpenCore_DatabaseSchema v2.md",
+        "archive": "OpenCore\\VIVIM_OpenCore_DatabaseSchema.md",
+        "reason": "More recent modification (2026-03-24T01:01:43.901622 vs 2026-03-24T00:57:53.404221)"
+      },
+      {
+        "keep": "VIVIM.docs\\BIZ\\fractal-ownership-v1-opus46.md",
+        "archive": "VIVIM.docs\\BIZ\\fractal-ownership-v1-opus46think.md",
+        "reason": "More recent modification (2026-02-12T05:58:12 vs 2026-02-12T05:57:22)"
+      },
+      {
+        "keep": "VIVIM.docs\\sovereign-memory\\Opus 4.6\\Opus 4.6 .md",
+        "archive": "VIVIM.docs\\.archive\\OPUS_PRIORITIZATION.md",
+        "reason": "More recent modification (2026-03-09T20:51:18.902254 vs 2026-02-23T01:30:24)"
+      },
+      {
+        "keep": "chain-of-trust\\AI Data Detection Tools Algos -Opus 4.6 T.md",
+        "archive": "chain-of-trust\\AI Data Detection Tools Algos -Opus 4.6 nt.md",
+        "reason": "More recent modification (2026-03-26T00:59:02.497940 vs 2026-03-26T00:54:48.770335)"
+      },
+      {
+        "keep": "chain-of-trust\\AI Data Memory with 3rd Party Access Conrol - minimax 4.7 .md",
+        "archive": "chain-of-trust\\AI Data Memory with 3rd Party Access Conrol - Opus 4.6 .md",
+        "reason": "More recent modification (2026-03-26T01:30:52.583719 vs 2026-03-26T01:30:42.086362)"
+      },
+      {
+        "keep": "chain-of-trust\\AI Privacy Toolkit Opus 4.6 T.md",
+        "archive": "chain-of-trust\\AI Privacy Toolkit Opus 4.6 nonT.md",
+        "reason": "More recent modification (2026-03-26T00:45:35.871701 vs 2026-03-26T00:37:45.551759)"
+      },
+      {
+        "keep": "chain-of-trust\\New Maths - chatgpt5.4 .md",
+        "archive": "chain-of-trust\\New Maths - opus 4.6 .md",
+        "reason": "More recent modification (2026-03-26T02:25:50.839195 vs 2026-03-26T01:33:39.439670)"
+      },
+      {
+        "keep": "chain-of-trust\\Tools and methods required - ChatGPT 5.4.md",
+        "archive": "chain-of-trust\\Tools and methods required - minimax 2.7 .md",
+        "reason": "More recent modification (2026-03-26T02:24:53.293186 vs 2026-03-26T02:21:06.723655)"
+      },
+      {
+        "keep": "chain-of-trust\\Tools and methods required - Opus 4.6 nonT.md",
+        "archive": "chain-of-trust\\Tools and methods required - ChatGPT 5.4.md",
+        "reason": "More recent modification (2026-03-26T02:25:11.058194 vs 2026-03-26T02:24:53.293186)"
+      },
+      {
+        "keep": "chain-of-trust\\VIVIM Vault - Nature - ChatGPT 5.4 .md",
+        "archive": "chain-of-trust\\VIVIM Vault - Nature - Opus 4.6 .md",
+        "reason": "More recent modification (2026-03-26T02:24:04.500340 vs 2026-03-26T02:23:26.032860)"
+      },
+      {
+        "keep": "chain-of-trust\\vivim opus 4.6 nonT.md",
+        "archive": "VIVIM.docs\\PITCH\\vivim.md",
+        "reason": "More recent modification (2026-03-26T02:25:34.212251 vs 2026-02-23T01:30:28)"
+      }
+    ],
+    "files_needing_human_review": [
+      {
+        "source": "VIVIM.docs\\.archive\\OPUS_PRIORITIZATION.md",
+        "suggested_destination": "08-ARCHIVE/duplicates/",
+        "reason": "Appears to be raw AI chat dump",
+        "heading": "🔬 OpenScroll Deep Code Inspection — Opus 4.6 Prioritization Document",
+        "word_count": 1471
+      },
+      {
+        "source": "VIVIM.docs\\OPENsource\\website\\about.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "reason": "Low confidence classification",
+        "heading": "About VIVIM",
+        "word_count": 734
+      },
+      {
+        "source": "VIVIM.docs\\vivim-live\\full-docs\\features\\03-secure-collaboration.md",
+        "suggested_destination": "08-ARCHIVE/",
+        "reason": "Low confidence classification",
+        "heading": "Hyper-Secure Collaboration",
+        "word_count": 495
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "source": "knowledge\\04-acus.md",
+      "destination": "01-PLATFORM/acu-system/04-acus.md",
+      "reason": "Classified based on content matching 01-PLATFORM/acu-system/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\LIBRARIAN_LOOP_SPEC.md",
+      "destination": "01-PLATFORM/acu-system/LIBRARIAN_LOOP_SPEC.md",
+      "reason": "Classified based on content matching 01-PLATFORM/acu-system/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\ACU\\acu-pugrade.md",
+      "destination": "01-PLATFORM/acu-system/acu-pugrade.md",
+      "reason": "Classified based on content matching 01-PLATFORM/acu-system/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "00-DOCUMENTATION-OVERVIEW.md",
+      "destination": "01-PLATFORM/architecture/00-DOCUMENTATION-OVERVIEW.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\01-PLATFORM-INTELLIGENCE.md",
+      "destination": "01-PLATFORM/architecture/01-PLATFORM-INTELLIGENCE.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\USERS\\01-architecture-overview.md",
+      "destination": "01-PLATFORM/architecture/01-architecture-overview.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "knowledge\\01-architecture.md",
+      "destination": "01-PLATFORM/architecture/01-architecture.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\01_SESSION_HANDOVER_COMPLETE.md",
+      "destination": "01-PLATFORM/architecture/01_SESSION_HANDOVER_COMPLETE.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\02-ARCHITECTURE.md",
+      "destination": "01-PLATFORM/architecture/02-ARCHITECTURE.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\USERS\\02-capture-pipeline.md",
+      "destination": "01-PLATFORM/architecture/02-capture-pipeline.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CORTEX\\02-enterprise-roadmap.md",
+      "destination": "01-PLATFORM/architecture/02-enterprise-roadmap.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\02_ACTION_REPORT_NEXT_STEPS.md",
+      "destination": "01-PLATFORM/architecture/02_ACTION_REPORT_NEXT_STEPS.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CORTEX\\03-core-pillars-deepdive.md",
+      "destination": "01-PLATFORM/architecture/03-core-pillars-deepdive.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\USERS\\04-identity-auth.md",
+      "destination": "01-PLATFORM/architecture/04-identity-auth.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CORTEX\\06-critical-gap-analysis.md",
+      "destination": "01-PLATFORM/architecture/06-critical-gap-analysis.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\ACU\\ACU_ACTIONS_REGISTRY.md",
+      "destination": "01-PLATFORM/architecture/ACU_ACTIONS_REGISTRY.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\ACU\\ACU_CONCEPT_DEFINITION.md",
+      "destination": "01-PLATFORM/architecture/ACU_CONCEPT_DEFINITION.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\ACU\\ACU_GAP_ANALYSIS.md",
+      "destination": "01-PLATFORM/architecture/ACU_GAP_ANALYSIS.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\ACU\\ACU_HIERARCHY_STATES.md",
+      "destination": "01-PLATFORM/architecture/ACU_HIERARCHY_STATES.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\ACU\\ACU_IMPLEMENTATION_GUIDE.md",
+      "destination": "01-PLATFORM/architecture/ACU_IMPLEMENTATION_GUIDE.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\ACU\\ACU_MASTER_SPECIFICATION.md",
+      "destination": "01-PLATFORM/architecture/ACU_MASTER_SPECIFICATION.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\AGENTS.md",
+      "destination": "01-PLATFORM/architecture/AGENTS.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\AI_CONTEXT.md",
+      "destination": "01-PLATFORM/architecture/AI_CONTEXT.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\API_ENDPOINTS_AND_ROUTING.md",
+      "destination": "01-PLATFORM/architecture/API_ENDPOINTS_AND_ROUTING.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\ARCHITECTURE_VISUALIZATION.md",
+      "destination": "01-PLATFORM/architecture/ARCHITECTURE_VISUALIZATION.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\AUTONOMOUS_WORKERS.md",
+      "destination": "01-PLATFORM/architecture/AUTONOMOUS_WORKERS.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\CONTEXT_ANALYSIS_V1.md",
+      "destination": "01-PLATFORM/architecture/CONTEXT_ANALYSIS_V1.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\CONTEXT_ENGINE_ALGORITHMS.md",
+      "destination": "01-PLATFORM/architecture/CONTEXT_ENGINE_ALGORITHMS.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\ACU\\CONVERSATION_TO_ACU_MAPPING.md",
+      "destination": "01-PLATFORM/architecture/CONVERSATION_TO_ACU_MAPPING.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\DATA_CONTEXT_FLOW.md",
+      "destination": "01-PLATFORM/architecture/DATA_CONTEXT_FLOW.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\SECURITY\\DEEPCODE_ANALYSIS.md",
+      "destination": "01-PLATFORM/architecture/DEEPCODE_ANALYSIS.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\DYNAMIC_CONTEXT_MASTER_SPEC.md",
+      "destination": "01-PLATFORM/architecture/DYNAMIC_CONTEXT_MASTER_SPEC.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\ERROR_REPORTING.md",
+      "destination": "01-PLATFORM/architecture/ERROR_REPORTING.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\docs\\EXTENSIBILITY.md",
+      "destination": "01-PLATFORM/architecture/EXTENSIBILITY.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\docs\\FEATURES.md",
+      "destination": "01-PLATFORM/architecture/FEATURES.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\FLOW.md",
+      "destination": "01-PLATFORM/architecture/FLOW.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\FRONTEND\\FRONTEND.md",
+      "destination": "01-PLATFORM/architecture/FRONTEND.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\FRONTEND_DEBUGGING_GUIDE.md",
+      "destination": "01-PLATFORM/architecture/FRONTEND_DEBUGGING_GUIDE.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\FRONTEND_REFERENCE.md",
+      "destination": "01-PLATFORM/architecture/FRONTEND_REFERENCE.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\GENERATE_VIVIM_CONTEXT_WORKFLOW.md",
+      "destination": "01-PLATFORM/architecture/GENERATE_VIVIM_CONTEXT_WORKFLOW.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\IMPLEMENTATION_GUIDE_MASTER.md",
+      "destination": "01-PLATFORM/architecture/IMPLEMENTATION_GUIDE_MASTER.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\IMPLEMENTATION_REPORT.md",
+      "destination": "01-PLATFORM/architecture/IMPLEMENTATION_REPORT.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\IMPLEMENTATION_STATUS_COMPREHENSIVE.md",
+      "destination": "01-PLATFORM/architecture/IMPLEMENTATION_STATUS_COMPREHENSIVE.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\DEMO\\Live-Demo-Opus Non.md",
+      "destination": "01-PLATFORM/architecture/Live-Demo-Opus Non.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\MIGRATION_AND_DEPLOYMENT.md",
+      "destination": "01-PLATFORM/architecture/MIGRATION_AND_DEPLOYMENT.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\MONITORING_AND_OPERATIONS.md",
+      "destination": "01-PLATFORM/architecture/MONITORING_AND_OPERATIONS.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\DEMO\\README.md",
+      "destination": "01-PLATFORM/architecture/README.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\RESEARCH_TOKENIZATION_PLATFORM.md",
+      "destination": "01-PLATFORM/architecture/RESEARCH_TOKENIZATION_PLATFORM.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\SCORING\\SEMANTIC_WEIGHTS.md",
+      "destination": "01-PLATFORM/architecture/SEMANTIC_WEIGHTS.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\SERVICE_LAYER_SPECIFICATIONS.md",
+      "destination": "01-PLATFORM/architecture/SERVICE_LAYER_SPECIFICATIONS.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\SOCIAL_TRANSPORT_LAYER.md",
+      "destination": "01-PLATFORM/architecture/SOCIAL_TRANSPORT_LAYER.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\docs\\TECHNICAL_ARCHITECTURE.md",
+      "destination": "01-PLATFORM/architecture/TECHNICAL_ARCHITECTURE.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\ACU\\TEXT_STYLES.md",
+      "destination": "01-PLATFORM/architecture/TEXT_STYLES.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\ACU\\TEXT_TYPES.md",
+      "destination": "01-PLATFORM/architecture/TEXT_TYPES.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\LANGUAGES\\TRANSLATION_FRAMEWORK.md",
+      "destination": "01-PLATFORM/architecture/TRANSLATION_FRAMEWORK.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\UNIFIED_DEBUGGING.md",
+      "destination": "01-PLATFORM/architecture/UNIFIED_DEBUGGING.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\OPENsource\\VIVIM-OpenSource-Strategy-Analysis.md",
+      "destination": "01-PLATFORM/architecture/VIVIM-OpenSource-Strategy-Analysis.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\OPENsource\\VIVIM-OpenSource-Strategy-QuickRef.md",
+      "destination": "01-PLATFORM/architecture/VIVIM-OpenSource-Strategy-QuickRef.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\OPENsource\\VIVIM-OpenSource-Strategy.md",
+      "destination": "01-PLATFORM/architecture/VIVIM-OpenSource-Strategy.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\VIVIM_CONTEXT_SYSTEM_IMPLEMENTATION_REPORT.md",
+      "destination": "01-PLATFORM/architecture/VIVIM_CONTEXT_SYSTEM_IMPLEMENTATION_REPORT.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\VIVIM_IDENTITY_PROMPT.md",
+      "destination": "01-PLATFORM/architecture/VIVIM_IDENTITY_PROMPT.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\VIVIM_MEMORY_SYSTEM.md",
+      "destination": "01-PLATFORM/architecture/VIVIM_MEMORY_SYSTEM.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\VIVIM_SDK_DOCUMENTATION.md",
+      "destination": "01-PLATFORM/architecture/VIVIM_SDK_DOCUMENTATION.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\VIVIM_SYSTEM_CONTEXT.md",
+      "destination": "01-PLATFORM/architecture/VIVIM_SYSTEM_CONTEXT.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\VIVIM_USER_CONTEXT.md",
+      "destination": "01-PLATFORM/architecture/VIVIM_USER_CONTEXT.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\tech-integrations\\ai-native-integrations-strategy.md",
+      "destination": "01-PLATFORM/architecture/ai-native-integrations-strategy.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\full-docs\\developers\\api-reference.md",
+      "destination": "01-PLATFORM/architecture/api-reference.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\current\\architecture-overview.md",
+      "destination": "01-PLATFORM/architecture/architecture-overview.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\architecture\\assembler.md",
+      "destination": "01-PLATFORM/architecture/assembler.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\architecture\\context.md",
+      "destination": "01-PLATFORM/architecture/context.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\current.md",
+      "destination": "01-PLATFORM/architecture/current.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\conductor\\gcp-hosting-plan.md",
+      "destination": "01-PLATFORM/architecture/gcp-hosting-plan.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\implementation.md",
+      "destination": "01-PLATFORM/architecture/implementation.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\full-docs\\partners\\integration-guide.md",
+      "destination": "01-PLATFORM/architecture/integration-guide.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\nemo\\landing-page.md",
+      "destination": "01-PLATFORM/architecture/landing-page.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\architecture\\memory.md",
+      "destination": "01-PLATFORM/architecture/memory.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\architecture\\pipeline.md",
+      "destination": "01-PLATFORM/architecture/pipeline.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\architecture\\server.md",
+      "destination": "01-PLATFORM/architecture/server.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\architecture\\sync.md",
+      "destination": "01-PLATFORM/architecture/sync.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\nemo\\technical-deepdive.md",
+      "destination": "01-PLATFORM/architecture/technical-deepdive.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\architecture\\user-context.md",
+      "destination": "01-PLATFORM/architecture/user-context.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\architecture\\visual-guides.md",
+      "destination": "01-PLATFORM/architecture/visual-guides.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\DEV_SESSIONS\\vivim-platform-deep-dive-inspection.md",
+      "destination": "01-PLATFORM/architecture/vivim-platform-deep-dive-inspection.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\SECURITY\\zero-rtust-chat-thinking.md",
+      "destination": "01-PLATFORM/architecture/zero-rtust-chat-thinking.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\SECURITY\\zero-trust-chat.md",
+      "destination": "01-PLATFORM/architecture/zero-trust-chat.md",
+      "reason": "Classified based on content matching 01-PLATFORM/architecture/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CORTEX\\01-product-definition.md",
+      "destination": "01-PLATFORM/context-engine/01-product-definition.md",
+      "reason": "Classified based on content matching 01-PLATFORM/context-engine/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\02-CONTEXT-ENGINE-SPECIFICATION.md",
+      "destination": "01-PLATFORM/context-engine/02-CONTEXT-ENGINE-SPECIFICATION.md",
+      "reason": "Classified based on content matching 01-PLATFORM/context-engine/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\full-docs\\features\\02-dynamic-intelligence.md",
+      "destination": "01-PLATFORM/context-engine/02-dynamic-intelligence.md",
+      "reason": "Classified based on content matching 01-PLATFORM/context-engine/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\03-IMPLEMENTATION-ROADMAP.md",
+      "destination": "01-PLATFORM/context-engine/03-IMPLEMENTATION-ROADMAP.md",
+      "reason": "Classified based on content matching 01-PLATFORM/context-engine/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "knowledge\\03-context-engine.md",
+      "destination": "01-PLATFORM/context-engine/03-context-engine.md",
+      "reason": "Classified based on content matching 01-PLATFORM/context-engine/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\03_FINAL_IMPLEMENTATION_REPORT.md",
+      "destination": "01-PLATFORM/context-engine/03_FINAL_IMPLEMENTATION_REPORT.md",
+      "reason": "Classified based on content matching 01-PLATFORM/context-engine/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CORTEX\\04-phase1-mvp-algorithms.md",
+      "destination": "01-PLATFORM/context-engine/04-phase1-mvp-algorithms.md",
+      "reason": "Classified based on content matching 01-PLATFORM/context-engine/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\04_IMPLEMENTATION_STATUS_LIVE.md",
+      "destination": "01-PLATFORM/context-engine/04_IMPLEMENTATION_STATUS_LIVE.md",
+      "reason": "Classified based on content matching 01-PLATFORM/context-engine/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\05_IMPLEMENTATION_REPORT_FULL.md",
+      "destination": "01-PLATFORM/context-engine/05_IMPLEMENTATION_REPORT_FULL.md",
+      "reason": "Classified based on content matching 01-PLATFORM/context-engine/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\BRIDGE_SCHEMA_AND_INVALIDATION.md",
+      "destination": "01-PLATFORM/context-engine/BRIDGE_SCHEMA_AND_INVALIDATION.md",
+      "reason": "Classified based on content matching 01-PLATFORM/context-engine/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\docs\\INNOVATION.md",
+      "destination": "01-PLATFORM/context-engine/INNOVATION.md",
+      "reason": "Classified based on content matching 01-PLATFORM/context-engine/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\LIVE landing page V0 Opus.md",
+      "destination": "01-PLATFORM/context-engine/LIVE landing page V0 Opus.md",
+      "reason": "Classified based on content matching 01-PLATFORM/context-engine/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\PRISMA_INVALIDATION_ANALYSIS.md",
+      "destination": "01-PLATFORM/context-engine/PRISMA_INVALIDATION_ANALYSIS.md",
+      "reason": "Classified based on content matching 01-PLATFORM/context-engine/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\VIVIM_STORY.md",
+      "destination": "01-PLATFORM/context-engine/VIVIM_STORY.md",
+      "reason": "Classified based on content matching 01-PLATFORM/context-engine/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\tech-integrations\\quick-reference.md",
+      "destination": "01-PLATFORM/context-engine/quick-reference.md",
+      "reason": "Classified based on content matching 01-PLATFORM/context-engine/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CORTEX\\05-cortexdb-database-architecture.md",
+      "destination": "01-PLATFORM/database/05-cortexdb-database-architecture.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\USERS\\05-model-classification.md",
+      "destination": "01-PLATFORM/database/05-model-classification.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\05c-OPENSCHEMA.md",
+      "destination": "01-PLATFORM/database/05c-OPENSCHEMA.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\USERS\\06-implementation-roadmap.md",
+      "destination": "01-PLATFORM/database/06-implementation-roadmap.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "knowledge\\09-sdk.md",
+      "destination": "01-PLATFORM/database/09-sdk.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "knowledge\\10-data-models.md",
+      "destination": "01-PLATFORM/database/10-data-models.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\DATABASES\\ACU-prisma-v1.md",
+      "destination": "01-PLATFORM/database/ACU-prisma-v1.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\ACU\\schema-research\\ACU_DATABASE_SCHEMA.md",
+      "destination": "01-PLATFORM/database/ACU_DATABASE_SCHEMA.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\DATABASE_SCHEMA_IMPLEMENTATION.md",
+      "destination": "01-PLATFORM/database/DATABASE_SCHEMA_IMPLEMENTATION.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\DATABASES\\GAP_ANALYSIS.md",
+      "destination": "01-PLATFORM/database/GAP_ANALYSIS.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\DATABASES\\OVERVIEW.md",
+      "destination": "01-PLATFORM/database/OVERVIEW.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\DATABASES\\P2P_IDENTITY.md",
+      "destination": "01-PLATFORM/database/P2P_IDENTITY.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\DATABASES\\RELATIONSHIPS.md",
+      "destination": "01-PLATFORM/database/RELATIONSHIPS.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\DATABASES\\SCHEMA_PRISMA.md",
+      "destination": "01-PLATFORM/database/SCHEMA_PRISMA.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\DATABASES\\TABLES_REFERENCE.md",
+      "destination": "01-PLATFORM/database/TABLES_REFERENCE.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\DATABASES\\SCHEMA.prod\\VIVIM_DATABASE_MASTER_SPEC_V1.md",
+      "destination": "01-PLATFORM/database/VIVIM_DATABASE_MASTER_SPEC_V1.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\VIVIM_OpenCore_DatabaseSchema v2.md",
+      "destination": "01-PLATFORM/database/VIVIM_OpenCore_DatabaseSchema v2.md",
+      "reason": "Duplicate pair - keeping newer version",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\DATABASES\\option-b.md",
+      "destination": "01-PLATFORM/database/option-b.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\DATABASES\\option-c.md",
+      "destination": "01-PLATFORM/database/option-c.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\database\\schema.md",
+      "destination": "01-PLATFORM/database/schema.md",
+      "reason": "Classified based on content matching 01-PLATFORM/database/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "knowledge\\05-demos.md",
+      "destination": "02-PRODUCT/demos/05-demos.md",
+      "reason": "Classified based on content matching 02-PRODUCT/demos/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "knowledge\\02-features.md",
+      "destination": "02-PRODUCT/features/02-features.md",
+      "reason": "Classified based on content matching 02-PRODUCT/features/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\06PHASE2_QUICKSTART.md",
+      "destination": "02-PRODUCT/features/06PHASE2_QUICKSTART.md",
+      "reason": "Classified based on content matching 02-PRODUCT/features/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\FEATURE_DECOMPOSITION.md",
+      "destination": "02-PRODUCT/features/FEATURE_DECOMPOSITION.md",
+      "reason": "Classified based on content matching 02-PRODUCT/features/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\OPENsource\\website\\pricing.md",
+      "destination": "02-PRODUCT/features/pricing.md",
+      "reason": "Classified based on content matching 02-PRODUCT/features/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\templates\\research.md",
+      "destination": "02-PRODUCT/features/research.md",
+      "reason": "Classified based on content matching 02-PRODUCT/features/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\06-ROADMAP.md",
+      "destination": "02-PRODUCT/roadmap/06-ROADMAP.md",
+      "reason": "Classified based on content matching 02-PRODUCT/roadmap/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CORTEX\\07-integrations-roadmap.md",
+      "destination": "02-PRODUCT/roadmap/07-integrations-roadmap.md",
+      "reason": "Classified based on content matching 02-PRODUCT/roadmap/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\DEVELOPMENT_ROADMAP.md",
+      "destination": "02-PRODUCT/roadmap/DEVELOPMENT_ROADMAP.md",
+      "reason": "Classified based on content matching 02-PRODUCT/roadmap/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\SCORING\\EXTRACTION_QUALITY.md",
+      "destination": "02-PRODUCT/roadmap/EXTRACTION_QUALITY.md",
+      "reason": "Classified based on content matching 02-PRODUCT/roadmap/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\docs\\FUTURE_ROADMAP.md",
+      "destination": "02-PRODUCT/roadmap/FUTURE_ROADMAP.md",
+      "reason": "Classified based on content matching 02-PRODUCT/roadmap/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\PROGRESSIVE_ASSEMBLY_PATH.md",
+      "destination": "02-PRODUCT/roadmap/PROGRESSIVE_ASSEMBLY_PATH.md",
+      "reason": "Classified based on content matching 02-PRODUCT/roadmap/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\VIVIM_OpenCore_Product_Roadmap.md",
+      "destination": "02-PRODUCT/roadmap/VIVIM_OpenCore_Product_Roadmap.md",
+      "reason": "Classified based on content matching 02-PRODUCT/roadmap/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\VIVIM_DISTRIBUTED_STORAGE_AI_LAYER.md",
+      "destination": "02-PRODUCT/ux-design/VIVIM_DISTRIBUTED_STORAGE_AI_LAYER.md",
+      "reason": "Classified based on content matching 02-PRODUCT/ux-design/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\03-COMPONENTS.md",
+      "destination": "03-FRONTEND/components/03-COMPONENTS.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\05-CRITICAL-BUGS-FIXES.md",
+      "destination": "03-FRONTEND/components/05-CRITICAL-BUGS-FIXES.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "knowledge\\11-components.md",
+      "destination": "03-FRONTEND/components/11-components.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\FRONTEND\\API_REFERENCE.md",
+      "destination": "03-FRONTEND/components/API_REFERENCE.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\FRONTEND\\COMPONENTS.md",
+      "destination": "03-FRONTEND/components/COMPONENTS.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\SCORING\\FEED_RANKING.md",
+      "destination": "03-FRONTEND/components/FEED_RANKING.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\LANDING_PAGE_COPY.md",
+      "destination": "03-FRONTEND/components/LANDING_PAGE_COPY.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\TRANSPORT_LAYER_STATUS.md",
+      "destination": "03-FRONTEND/components/TRANSPORT_LAYER_STATUS.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\docs\\VISION.md",
+      "destination": "03-FRONTEND/components/VISION.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\VIVIM_PROTOCOL_FORMALIZATION_RESEARCH.md",
+      "destination": "03-FRONTEND/components/VIVIM_PROTOCOL_FORMALIZATION_RESEARCH.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\AI_API\\ai-models-integration-2026.md",
+      "destination": "03-FRONTEND/components/ai-models-integration-2026.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\full-docs\\users\\getting-started.md",
+      "destination": "03-FRONTEND/components/getting-started.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\OPENsource\\website\\license.md",
+      "destination": "03-FRONTEND/components/license.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\OPENsource\\website\\open-source.md",
+      "destination": "03-FRONTEND/components/open-source.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\templates\\review.md",
+      "destination": "03-FRONTEND/components/review.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\full-docs\\developers\\sdk-guide.md",
+      "destination": "03-FRONTEND/components/sdk-guide.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\full-docs\\users\\security-privacy.md",
+      "destination": "03-FRONTEND/components/security-privacy.md",
+      "reason": "Classified based on content matching 03-FRONTEND/components/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\DESIGN_COGNITIVE_STREAM.md",
+      "destination": "03-FRONTEND/design-system/DESIGN_COGNITIVE_STREAM.md",
+      "reason": "Classified based on content matching 03-FRONTEND/design-system/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\DATABASES\\Local-and-network-db-design-v1.md",
+      "destination": "03-FRONTEND/design-system/Local-and-network-db-design-v1.md",
+      "reason": "Classified based on content matching 03-FRONTEND/design-system/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\TRIGGERS\\OMNI_COMPOSER_SYSTEM_DESIGN.md",
+      "destination": "03-FRONTEND/design-system/OMNI_COMPOSER_SYSTEM_DESIGN.md",
+      "reason": "Classified based on content matching 03-FRONTEND/design-system/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\OPENsource\\OpenSource Design .md",
+      "destination": "03-FRONTEND/design-system/OpenSource Design .md",
+      "reason": "Classified based on content matching 03-FRONTEND/design-system/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\design\\TOKEN_INFRASTRUCTURE.md",
+      "destination": "03-FRONTEND/design-system/TOKEN_INFRASTRUCTURE.md",
+      "reason": "Classified based on content matching 03-FRONTEND/design-system/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\VIVIM_CHAIN_API_DESIGN.md",
+      "destination": "03-FRONTEND/design-system/VIVIM_CHAIN_API_DESIGN.md",
+      "reason": "Classified based on content matching 03-FRONTEND/design-system/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\dynamic-context-design-algo.md",
+      "destination": "03-FRONTEND/design-system/dynamic-context-design-algo.md",
+      "reason": "Classified based on content matching 03-FRONTEND/design-system/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\pwa\\api.md",
+      "destination": "03-FRONTEND/pwa/api.md",
+      "reason": "Classified based on content matching 03-FRONTEND/pwa/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\pwa\\byok.md",
+      "destination": "03-FRONTEND/pwa/byok.md",
+      "reason": "Classified based on content matching 03-FRONTEND/pwa/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\pwa\\content-renderer.md",
+      "destination": "03-FRONTEND/pwa/content-renderer.md",
+      "reason": "Classified based on content matching 03-FRONTEND/pwa/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\pwa\\state.md",
+      "destination": "03-FRONTEND/pwa/state.md",
+      "reason": "Classified based on content matching 03-FRONTEND/pwa/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\pwa\\storage-v2.md",
+      "destination": "03-FRONTEND/pwa/storage-v2.md",
+      "reason": "Classified based on content matching 03-FRONTEND/pwa/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\04-USER-EXPERIENCE-DESIGN.md",
+      "destination": "03-FRONTEND/ux-design/04-USER-EXPERIENCE-DESIGN.md",
+      "reason": "Classified based on content matching 03-FRONTEND/ux-design/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\DATABASES\\ACU_DESIGN.md",
+      "destination": "03-FRONTEND/ux-design/ACU_DESIGN.md",
+      "reason": "Classified based on content matching 03-FRONTEND/ux-design/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\NETWORK\\.proposal\\BLOCKCHAIN_DESIGN_PROMPT.md",
+      "destination": "03-FRONTEND/ux-design/BLOCKCHAIN_DESIGN_PROMPT.md",
+      "reason": "Classified based on content matching 03-FRONTEND/ux-design/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\CLI_ENHANCEMENT_DESIGN.md",
+      "destination": "03-FRONTEND/ux-design/CLI_ENHANCEMENT_DESIGN.md",
+      "reason": "Classified based on content matching 03-FRONTEND/ux-design/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\CORE_PRIMITIVE_NODE_DESIGN.md",
+      "destination": "03-FRONTEND/ux-design/CORE_PRIMITIVE_NODE_DESIGN.md",
+      "reason": "Classified based on content matching 03-FRONTEND/ux-design/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\VIVIM_BLOCKCHAIN_DESIGN_CONTEXT.md",
+      "destination": "03-FRONTEND/ux-design/VIVIM_BLOCKCHAIN_DESIGN_CONTEXT.md",
+      "reason": "Classified based on content matching 03-FRONTEND/ux-design/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\VIVIM_FRONTEND_DESIGN.md",
+      "destination": "03-FRONTEND/ux-design/VIVIM_FRONTEND_DESIGN.md",
+      "reason": "Classified based on content matching 03-FRONTEND/ux-design/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sdk.docs\\templates\\design.md",
+      "destination": "03-FRONTEND/ux-design/design.md",
+      "reason": "Classified based on content matching 03-FRONTEND/ux-design/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\dynamic-context-design.md",
+      "destination": "03-FRONTEND/ux-design/dynamic-context-design.md",
+      "reason": "Classified based on content matching 03-FRONTEND/ux-design/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\SCRAPPING\\scrapng-cli-design-automation.md",
+      "destination": "03-FRONTEND/ux-design/scrapng-cli-design-automation.md",
+      "reason": "Classified based on content matching 03-FRONTEND/ux-design/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\SCRAPPING\\scrapng-cli-design.md",
+      "destination": "03-FRONTEND/ux-design/scrapng-cli-design.md",
+      "reason": "Classified based on content matching 03-FRONTEND/ux-design/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\sdk\\core\\self-design.md",
+      "destination": "03-FRONTEND/ux-design/self-design.md",
+      "reason": "Classified based on content matching 03-FRONTEND/ux-design/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\NETWORK\\.proposal\\sonet-4.6-thinking.2.26.md",
+      "destination": "04-NETWORK-SDK/blockchain/sonet-4.6-thinking.2.26.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/blockchain/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\full-docs\\features\\05-decentralized-network.md",
+      "destination": "04-NETWORK-SDK/p2p-network/05-decentralized-network.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/p2p-network/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\network\\crdt.md",
+      "destination": "04-NETWORK-SDK/p2p-network/crdt.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/p2p-network/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\network\\federation.md",
+      "destination": "04-NETWORK-SDK/p2p-network/federation.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/p2p-network/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\sdk\\network\\graph-registry.md",
+      "destination": "04-NETWORK-SDK/p2p-network/graph-registry.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/p2p-network/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\network\\protocols.md",
+      "destination": "04-NETWORK-SDK/p2p-network/protocols.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/p2p-network/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\network\\security.md",
+      "destination": "04-NETWORK-SDK/p2p-network/security.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/p2p-network/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "knowledge\\06-integrations.md",
+      "destination": "04-NETWORK-SDK/sdk/06-integrations.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "knowledge\\08-messaging.md",
+      "destination": "04-NETWORK-SDK/sdk/08-messaging.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\ATOMIC_FEATURE_INVENTORY.md",
+      "destination": "04-NETWORK-SDK/sdk/ATOMIC_FEATURE_INVENTORY.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\ROADMAP\\FEATURE_ROADMAP.md",
+      "destination": "04-NETWORK-SDK/sdk/FEATURE_ROADMAP.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\SDK_GAP_ANALYSIS.md",
+      "destination": "04-NETWORK-SDK/sdk/SDK_GAP_ANALYSIS.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\sdk\\apps\\additional-apps.md",
+      "destination": "04-NETWORK-SDK/sdk/additional-apps.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\sdk\\api-nodes\\additional-nodes.md",
+      "destination": "04-NETWORK-SDK/sdk/additional-nodes.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\sdk\\examples\\advanced.md",
+      "destination": "04-NETWORK-SDK/sdk/advanced.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\user\\ai-chat.md",
+      "destination": "04-NETWORK-SDK/sdk/ai-chat.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\user\\analytics.md",
+      "destination": "04-NETWORK-SDK/sdk/analytics.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\current\\api-overview.md",
+      "destination": "04-NETWORK-SDK/sdk/api-overview.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\sdk\\examples\\basic.md",
+      "destination": "04-NETWORK-SDK/sdk/basic.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\user\\bookmarks.md",
+      "destination": "04-NETWORK-SDK/sdk/bookmarks.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\user\\byok-chat.md",
+      "destination": "04-NETWORK-SDK/sdk/byok-chat.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\user\\capturing-conversations.md",
+      "destination": "04-NETWORK-SDK/sdk/capturing-conversations.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\user\\collections.md",
+      "destination": "04-NETWORK-SDK/sdk/collections.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\sdk\\core\\communication.md",
+      "destination": "04-NETWORK-SDK/sdk/communication.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\user\\context-cockpit.md",
+      "destination": "04-NETWORK-SDK/sdk/context-cockpit.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\user\\context-components.md",
+      "destination": "04-NETWORK-SDK/sdk/context-components.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\user\\context-recipes.md",
+      "destination": "04-NETWORK-SDK/sdk/context-recipes.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\sdk\\architecture\\data-flow.md",
+      "destination": "04-NETWORK-SDK/sdk/data-flow.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\current\\deployment-overview.md",
+      "destination": "04-NETWORK-SDK/sdk/deployment-overview.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\current\\documentation-summary.md",
+      "destination": "04-NETWORK-SDK/sdk/documentation-summary.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\user\\error-dashboard.md",
+      "destination": "04-NETWORK-SDK/sdk/error-dashboard.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\user\\for-you.md",
+      "destination": "04-NETWORK-SDK/sdk/for-you.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\deployment\\guide.md",
+      "destination": "04-NETWORK-SDK/sdk/guide.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\sdk\\examples\\intermediate.md",
+      "destination": "04-NETWORK-SDK/sdk/intermediate.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\current\\introduction.md",
+      "destination": "04-NETWORK-SDK/sdk/introduction.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\sdk\\guides\\migration.md",
+      "destination": "04-NETWORK-SDK/sdk/migration.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\sdk\\guides\\performance.md",
+      "destination": "04-NETWORK-SDK/sdk/performance.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\user\\searching-finding.md",
+      "destination": "04-NETWORK-SDK/sdk/searching-finding.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\current\\security-overview.md",
+      "destination": "04-NETWORK-SDK/sdk/security-overview.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\user\\settings-account.md",
+      "destination": "04-NETWORK-SDK/sdk/settings-account.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\user\\sharing.md",
+      "destination": "04-NETWORK-SDK/sdk/sharing.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\sdk\\guides\\testing.md",
+      "destination": "04-NETWORK-SDK/sdk/testing.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\sdk\\guides\\troubleshooting.md",
+      "destination": "04-NETWORK-SDK/sdk/troubleshooting.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\reference\\types.md",
+      "destination": "04-NETWORK-SDK/sdk/types.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\sdk\\core\\utilities.md",
+      "destination": "04-NETWORK-SDK/sdk/utilities.md",
+      "reason": "Classified based on content matching 04-NETWORK-SDK/sdk/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "chain-of-trust\\AI Data Memory with 3rd Party Access Conrol - minimax 4.7 .md",
+      "destination": "05-SECURITY/chain-of-trust/AI Data Memory with 3rd Party Access Conrol - minimax 4.7 .md",
+      "reason": "Duplicate pair - keeping newer version",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "chain-of-trust\\Tools and methods required - ChatGPT 5.4.md",
+      "destination": "05-SECURITY/chain-of-trust/Tools and methods required - ChatGPT 5.4.md",
+      "reason": "Duplicate pair - keeping newer version",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "chain-of-trust\\Tools and methods required - Opus 4.6 nonT.md",
+      "destination": "05-SECURITY/chain-of-trust/Tools and methods required - Opus 4.6 nonT.md",
+      "reason": "Duplicate pair - keeping newer version",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "chain-of-trust\\VIVIM Cell .md",
+      "destination": "05-SECURITY/chain-of-trust/VIVIM Cell .md",
+      "reason": "Classified based on content matching 05-SECURITY/chain-of-trust/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "chain-of-trust\\VIVIM Membrane.md",
+      "destination": "05-SECURITY/chain-of-trust/VIVIM Membrane.md",
+      "reason": "Classified based on content matching 05-SECURITY/chain-of-trust/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "chain-of-trust\\VIVIM Vault - Nature - ChatGPT 5.4 .md",
+      "destination": "05-SECURITY/chain-of-trust/VIVIM Vault - Nature - ChatGPT 5.4 .md",
+      "reason": "Duplicate pair - keeping newer version",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\full-docs\\features\\01-sovereign-history.md",
+      "destination": "05-SECURITY/privacy/01-sovereign-history.md",
+      "reason": "Classified based on content matching 05-SECURITY/privacy/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\full-docs\\features\\04-zero-knowledge-privacy.md",
+      "destination": "05-SECURITY/privacy/04-zero-knowledge-privacy.md",
+      "reason": "Classified based on content matching 05-SECURITY/privacy/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "knowledge\\07-security.md",
+      "destination": "05-SECURITY/zero-trust/07-security.md",
+      "reason": "Classified based on content matching 05-SECURITY/zero-trust/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "chain-of-trust\\AI Data Detection Tools Algos -Opus 4.6 T.md",
+      "destination": "06-RESEARCH/detection-algorithms/AI Data Detection Tools Algos -Opus 4.6 T.md",
+      "reason": "Duplicate pair - keeping newer version",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "chain-of-trust\\AI Privacy Toolkit Opus 4.6 T.md",
+      "destination": "06-RESEARCH/detection-algorithms/AI Privacy Toolkit Opus 4.6 T.md",
+      "reason": "Duplicate pair - keeping newer version",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "chain-of-trust\\VIVIM Vault - Architecture V0 - Opus 4.6 .md",
+      "destination": "06-RESEARCH/detection-algorithms/VIVIM Vault - Architecture V0 - Opus 4.6 .md",
+      "reason": "Classified based on content matching 06-RESEARCH/detection-algorithms/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "chain-of-trust\\New Maths - chatgpt5.4 .md",
+      "destination": "06-RESEARCH/mathematics/New Maths - chatgpt5.4 .md",
+      "reason": "Duplicate pair - keeping newer version",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "chain-of-trust\\vivim opus 4.6 nonT.md",
+      "destination": "06-RESEARCH/mathematics/vivim opus 4.6 nonT.md",
+      "reason": "Duplicate pair - keeping newer version",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\COMPLETE_SUMMARY.md",
+      "destination": "06-RESEARCH/sovereign-memory/COMPLETE_SUMMARY.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\Opus 4.6\\Core Algorythms-THINKING.md",
+      "destination": "06-RESEARCH/sovereign-memory/Core Algorythms-THINKING.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\Opus 4.6\\Core Algorythms.md",
+      "destination": "06-RESEARCH/sovereign-memory/Core Algorythms.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\DOCUMENTATION_SUMMARY.md",
+      "destination": "06-RESEARCH/sovereign-memory/DOCUMENTATION_SUMMARY.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\prompts\\EVOLUTION_PROTOCOL.md",
+      "destination": "06-RESEARCH/sovereign-memory/EVOLUTION_PROTOCOL.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\IMPLEMENTATION_STATUS.md",
+      "destination": "06-RESEARCH/sovereign-memory/IMPLEMENTATION_STATUS.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\Opus 4.6\\Opus 4.6 .md",
+      "destination": "06-RESEARCH/sovereign-memory/Opus 4.6 .md",
+      "reason": "Duplicate pair - keeping newer version",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\ROADMAP.md",
+      "destination": "06-RESEARCH/sovereign-memory/ROADMAP.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\architecture\\blockchain-storage.md",
+      "destination": "06-RESEARCH/sovereign-memory/blockchain-storage.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\features\\consolidation.md",
+      "destination": "06-RESEARCH/sovereign-memory/consolidation.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\architecture\\context-engine.md",
+      "destination": "06-RESEARCH/sovereign-memory/context-engine.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\concepts\\encryption.md",
+      "destination": "06-RESEARCH/sovereign-memory/encryption.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\use-cases\\enterprise.md",
+      "destination": "06-RESEARCH/sovereign-memory/enterprise.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\prompts\\evolution-seed-prompt.md",
+      "destination": "06-RESEARCH/sovereign-memory/evolution-seed-prompt.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\features\\extraction.md",
+      "destination": "06-RESEARCH/sovereign-memory/extraction.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\concepts\\identity.md",
+      "destination": "06-RESEARCH/sovereign-memory/identity.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\use-cases\\integration.md",
+      "destination": "06-RESEARCH/sovereign-memory/integration.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\concepts\\memory-types.md",
+      "destination": "06-RESEARCH/sovereign-memory/memory-types.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\use-cases\\personal.md",
+      "destination": "06-RESEARCH/sovereign-memory/personal.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\features\\prediction.md",
+      "destination": "06-RESEARCH/sovereign-memory/prediction.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\concepts\\privacy-model.md",
+      "destination": "06-RESEARCH/sovereign-memory/privacy-model.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\features\\retrieval.md",
+      "destination": "06-RESEARCH/sovereign-memory/retrieval.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\architecture\\security-model.md",
+      "destination": "06-RESEARCH/sovereign-memory/security-model.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\architecture\\storage-layer.md",
+      "destination": "06-RESEARCH/sovereign-memory/storage-layer.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\sovereign-memory\\architecture\\system-overview.md",
+      "destination": "06-RESEARCH/sovereign-memory/system-overview.md",
+      "reason": "Classified based on content matching 06-RESEARCH/sovereign-memory/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\01-PHILOSOPHY.md",
+      "destination": "07-BUSINESS/open-source/01-PHILOSOPHY.md",
+      "reason": "Classified based on content matching 07-BUSINESS/open-source/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\04-IMPLEMENTATION.md",
+      "destination": "07-BUSINESS/open-source/04-IMPLEMENTATION.md",
+      "reason": "Classified based on content matching 07-BUSINESS/open-source/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\05b-OPENALGORITHMS.md",
+      "destination": "07-BUSINESS/open-source/05b-OPENALGORITHMS.md",
+      "reason": "Classified based on content matching 07-BUSINESS/open-source/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\07-STRATEGY.md",
+      "destination": "07-BUSINESS/open-source/07-STRATEGY.md",
+      "reason": "Classified based on content matching 07-BUSINESS/open-source/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\GLOSSARY.md",
+      "destination": "07-BUSINESS/open-source/GLOSSARY.md",
+      "reason": "Classified based on content matching 07-BUSINESS/open-source/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\INDEX.md",
+      "destination": "07-BUSINESS/open-source/INDEX.md",
+      "reason": "Classified based on content matching 07-BUSINESS/open-source/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\VIVIM_OpenCore_Algorythms_v0.md",
+      "destination": "07-BUSINESS/open-source/VIVIM_OpenCore_Algorythms_v0.md",
+      "reason": "Classified based on content matching 07-BUSINESS/open-source/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\VIVIM_OpenCore_Blueprint_v1.1.md",
+      "destination": "07-BUSINESS/open-source/VIVIM_OpenCore_Blueprint_v1.1.md",
+      "reason": "Duplicate pair - keeping newer version",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\vivim_opencore_strategy_DRAFT_v0.md",
+      "destination": "07-BUSINESS/open-source/vivim_opencore_strategy_DRAFT_v0.md",
+      "reason": "Classified based on content matching 07-BUSINESS/open-source/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\BIZ\\fractal-ownership-v1-opus46.md",
+      "destination": "07-BUSINESS/operations/fractal-ownership-v1-opus46.md",
+      "reason": "Duplicate pair - keeping newer version",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\FOUNDING\\00_founding_index.md",
+      "destination": "07-BUSINESS/pitch-investor/00_founding_index.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\01-EXECUTIVE_SUMMARY.md",
+      "destination": "07-BUSINESS/pitch-investor/01-EXECUTIVE_SUMMARY.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\FOUNDING\\01_dao_charter.md",
+      "destination": "07-BUSINESS/pitch-investor/01_dao_charter.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\FOUNDING\\02_articles_of_digital_association.md",
+      "destination": "07-BUSINESS/pitch-investor/02_articles_of_digital_association.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\FOUNDING\\03_tokenomics_founding_document.md",
+      "destination": "07-BUSINESS/pitch-investor/03_tokenomics_founding_document.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\FOUNDING\\04_community_operating_agreement.md",
+      "destination": "07-BUSINESS/pitch-investor/04_community_operating_agreement.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\10 Milestones To Dividend distribution.md",
+      "destination": "07-BUSINESS/pitch-investor/10 Milestones To Dividend distribution.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\01_PROBLEM\\Combined-AI-user-pain-points.md",
+      "destination": "07-BUSINESS/pitch-investor/Combined-AI-user-pain-points.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\01_PROBLEM\\Gemini3.1-Value of the data.md",
+      "destination": "07-BUSINESS/pitch-investor/Gemini3.1-Value of the data.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\VIVIM-10-Phase-Milestones-Combined.md",
+      "destination": "07-BUSINESS/pitch-investor/VIVIM-10-Phase-Milestones-Combined.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\VIVIM-Cost-Structure-Low-Med-High.md",
+      "destination": "07-BUSINESS/pitch-investor/VIVIM-Cost-Structure-Low-Med-High.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\VIVIM-Detailed-Cost-Breakdown-By-Milestone.md",
+      "destination": "07-BUSINESS/pitch-investor/VIVIM-Detailed-Cost-Breakdown-By-Milestone.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\VIVIM-Hiring-Ramp-Plan.md",
+      "destination": "07-BUSINESS/pitch-investor/VIVIM-Hiring-Ramp-Plan.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\VIVIM-Infrastructure-Costs-EU-User-Scale.md",
+      "destination": "07-BUSINESS/pitch-investor/VIVIM-Infrastructure-Costs-EU-User-Scale.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\VIVIM-Labor-Costs-Mediterranean.md",
+      "destination": "07-BUSINESS/pitch-investor/VIVIM-Labor-Costs-Mediterranean.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\VIVIM_Brand_Palette_Schema.md",
+      "destination": "07-BUSINESS/pitch-investor/VIVIM_Brand_Palette_Schema.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\VIVIM_Pitch_Slides_1-5.md",
+      "destination": "07-BUSINESS/pitch-investor/VIVIM_Pitch_Slides_1-5.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\OPERATIONS\\diagrams\\entity_relationship_diagram.md",
+      "destination": "07-BUSINESS/pitch-investor/entity_relationship_diagram.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\milestones do dvi.md",
+      "destination": "07-BUSINESS/pitch-investor/milestones do dvi.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\milestones to dividend users.md",
+      "destination": "07-BUSINESS/pitch-investor/milestones to dividend users.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\pitch decks.md",
+      "destination": "07-BUSINESS/pitch-investor/pitch decks.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\nemo\\pitch-deck.md",
+      "destination": "07-BUSINESS/pitch-investor/pitch-deck.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\full-docs\\investors\\technology.md",
+      "destination": "07-BUSINESS/pitch-investor/technology.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\OPERATIONS\\diagrams\\unified_knowledge_graph.md",
+      "destination": "07-BUSINESS/pitch-investor/unified_knowledge_graph.md",
+      "reason": "Classified based on content matching 07-BUSINESS/pitch-investor/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\CONTEXT\\.original\\TESTING_AND_VALIDATION.md",
+      "destination": "07-BUSINESS/strategy/TESTING_AND_VALIDATION.md",
+      "reason": "Classified based on content matching 07-BUSINESS/strategy/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\05-WEBSITE.md",
+      "destination": "07-BUSINESS/website/05-WEBSITE.md",
+      "reason": "Classified based on content matching 07-BUSINESS/website/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "OpenCore\\VIVIM_OpenCore_WebSection.md",
+      "destination": "07-BUSINESS/website/VIVIM_OpenCore_WebSection.md",
+      "reason": "Classified based on content matching 07-BUSINESS/website/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\00-MASTER-TASK-LIST.md",
+      "destination": "08-ARCHIVE/00-MASTER-TASK-LIST.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\NETWORK\\.current\\01-DESIGN-OVERVIEW.md",
+      "destination": "08-ARCHIVE/01-DESIGN-OVERVIEW.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\01-PROJECT-OVERVIEW.md",
+      "destination": "08-ARCHIVE/01-PROJECT-OVERVIEW.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\01-system-architecture.md",
+      "destination": "08-ARCHIVE/01-system-architecture.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\ARCHITECTURE\\01-tech-stack.md",
+      "destination": "08-ARCHIVE/01-tech-stack.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\02-FRONTEND-AUDIT.md",
+      "destination": "08-ARCHIVE/02-FRONTEND-AUDIT.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\NETWORK\\.current\\02-SHARING-INTENT-SYSTEM.md",
+      "destination": "08-ARCHIVE/02-SHARING-INTENT-SYSTEM.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\02-SYSTEM-ARCHITECTURE.md",
+      "destination": "08-ARCHIVE/02-SYSTEM-ARCHITECTURE.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\ARCHITECTURE\\02-architecture-overview.md",
+      "destination": "08-ARCHIVE/02-architecture-overview.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\02-feature-inventory.md",
+      "destination": "08-ARCHIVE/02-feature-inventory.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\03-BACKEND-SDK-AUDIT.md",
+      "destination": "08-ARCHIVE/03-BACKEND-SDK-AUDIT.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\NETWORK\\.current\\03-CONTENT-PUBLISHING-PIPELINE.md",
+      "destination": "08-ARCHIVE/03-CONTENT-PUBLISHING-PIPELINE.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\03-FEATURE-INVENTORY.md",
+      "destination": "08-ARCHIVE/03-FEATURE-INVENTORY.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\ARCHITECTURE\\03-api-endpoints.md",
+      "destination": "08-ARCHIVE/03-api-endpoints.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\03-data-models-schema.md",
+      "destination": "08-ARCHIVE/03-data-models-schema.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-live\\full-docs\\features\\03-secure-collaboration.md",
+      "destination": "08-ARCHIVE/03-secure-collaboration.md",
+      "reason": "Classified based on content matching 08-ARCHIVE/",
+      "confidence": "low",
+      "action": "review"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\04-DATA-MODELS-SCHEMA.md",
+      "destination": "08-ARCHIVE/04-DATA-MODELS-SCHEMA.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\04-IMPLEMENTATION-GAPS.md",
+      "destination": "08-ARCHIVE/04-IMPLEMENTATION-GAPS.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\NETWORK\\.current\\04-NETWORK-ORCHESTRATION.md",
+      "destination": "08-ARCHIVE/04-NETWORK-ORCHESTRATION.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\ARCHITECTURE\\04-data-flows.md",
+      "destination": "08-ARCHIVE/04-data-flows.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\04-user-flows-experience-map.md",
+      "destination": "08-ARCHIVE/04-user-flows-experience-map.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\05-API-ROUTE-INVENTORY.md",
+      "destination": "08-ARCHIVE/05-API-ROUTE-INVENTORY.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\05-DESIGN-SYSTEM.md",
+      "destination": "08-ARCHIVE/05-DESIGN-SYSTEM.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\NETWORK\\.current\\05-SHARING-ANALYTICS.md",
+      "destination": "08-ARCHIVE/05-SHARING-ANALYTICS.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\05-open-questions-unresolved-decisions.md",
+      "destination": "08-ARCHIVE/05-open-questions-unresolved-decisions.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\NETWORK\\.current\\06-DATABASE-SCHEMA.md",
+      "destination": "08-ARCHIVE/06-DATABASE-SCHEMA.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\06-ENHANCEMENT-ROADMAP.md",
+      "destination": "08-ARCHIVE/06-ENHANCEMENT-ROADMAP.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\06-FRONTEND-INVENTORY.md",
+      "destination": "08-ARCHIVE/06-FRONTEND-INVENTORY.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\06-competitive-differentiation-map.md",
+      "destination": "08-ARCHIVE/06-competitive-differentiation-map.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\NETWORK\\.current\\07-API-ENDPOINTS.md",
+      "destination": "08-ARCHIVE/07-API-ENDPOINTS.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\07-ASSISTANT-UI-GUIDELINES.md",
+      "destination": "08-ARCHIVE/07-ASSISTANT-UI-GUIDELINES.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\07-IMPLEMENTATION-GAPS.md",
+      "destination": "08-ARCHIVE/07-IMPLEMENTATION-GAPS.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\07-north-star-next-phase-priorities.md",
+      "destination": "08-ARCHIVE/07-north-star-next-phase-priorities.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\08-SECURITY-AUTH-AUDIT.md",
+      "destination": "08-ARCHIVE/08-SECURITY-AUTH-AUDIT.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\NETWORK\\.current\\08-SECURITY-PRIVACY.md",
+      "destination": "08-ARCHIVE/08-SECURITY-PRIVACY.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\08A-feature-implementation-audit.md",
+      "destination": "08-ARCHIVE/08A-feature-implementation-audit.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\08B-api-route-inventory.md",
+      "destination": "08-ARCHIVE/08B-api-route-inventory.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\08C-database-schema-gap-analysis.md",
+      "destination": "08-ARCHIVE/08C-database-schema-gap-analysis.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\08D-frontend-page-component-inventory.md",
+      "destination": "08-ARCHIVE/08D-frontend-page-component-inventory.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\08E-background-jobs-async-pipeline-audit.md",
+      "destination": "08-ARCHIVE/08E-background-jobs-async-pipeline-audit.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\08F-security-auth-audit.md",
+      "destination": "08-ARCHIVE/08F-security-auth-audit.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\08G-dependency-integration-health.md",
+      "destination": "08-ARCHIVE/08G-dependency-integration-health.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\08H-environment-config-devops-state.md",
+      "destination": "08-ARCHIVE/08H-environment-config-devops-state.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\09-BACKGROUND-JOBS-PIPELINE.md",
+      "destination": "08-ARCHIVE/09-BACKGROUND-JOBS-PIPELINE.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\NETWORK\\.current\\09-IMPLEMENTATION.md",
+      "destination": "08-ARCHIVE/09-IMPLEMENTATION.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\NETWORK\\.current\\10-DATABASE-REFERENCE.md",
+      "destination": "08-ARCHIVE/10-DATABASE-REFERENCE.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\10-DEPENDENCY-HEALTH.md",
+      "destination": "08-ARCHIVE/10-DEPENDENCY-HEALTH.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\NETWORK\\.current\\11-API-REFERENCE.md",
+      "destination": "08-ARCHIVE/11-API-REFERENCE.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\11-ENVIRONMENT-DEVOPS.md",
+      "destination": "08-ARCHIVE/11-ENVIRONMENT-DEVOPS.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\12-DESIGN-SYSTEM.md",
+      "destination": "08-ARCHIVE/12-DESIGN-SYSTEM.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "knowledge\\12-unreleased.md",
+      "destination": "08-ARCHIVE/12-unreleased.md",
+      "reason": "Classified based on content matching 08-ARCHIVE/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\13-USER-FLOWS.md",
+      "destination": "08-ARCHIVE/13-USER-FLOWS.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "knowledge\\13-cinematic-platform-insights.md",
+      "destination": "08-ARCHIVE/13-cinematic-platform-insights.md",
+      "reason": "Classified based on content matching 08-ARCHIVE/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\14-OPEN-QUESTIONS-STRATEGY.md",
+      "destination": "08-ARCHIVE/14-OPEN-QUESTIONS-STRATEGY.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "knowledge\\14-consolidated-summary.md",
+      "destination": "08-ARCHIVE/14-consolidated-summary.md",
+      "reason": "Classified based on content matching 08-ARCHIVE/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\15-ROADMAP-COMPETITIVE.md",
+      "destination": "08-ARCHIVE/15-ROADMAP-COMPETITIVE.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\16-ASSISTANT-UI-GUIDELINES.md",
+      "destination": "08-ARCHIVE/16-ASSISTANT-UI-GUIDELINES.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\ADMIN.md",
+      "destination": "08-ARCHIVE/ADMIN.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\AI-CHATS\\AI-CHAT-FEATURE.md",
+      "destination": "08-ARCHIVE/AI-CHAT-FEATURE.md",
+      "reason": "Classified based on content matching 08-ARCHIVE/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\ARCHITECTURE_AUDIT.md",
+      "destination": "08-ARCHIVE/ARCHITECTURE_AUDIT.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\ARCHIVED_NOTICE.md",
+      "destination": "08-ARCHIVE/ARCHIVED_NOTICE.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\ASSESSMENT.md",
+      "destination": "08-ARCHIVE/ASSESSMENT.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\CLEANUP_GUIDE.md",
+      "destination": "08-ARCHIVE/CLEANUP_GUIDE.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\CONTEXT_ENGINE_10X_REPORT.md",
+      "destination": "08-ARCHIVE/CONTEXT_ENGINE_10X_REPORT.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\CONVERSATION_IMPORT_DESIGN.md",
+      "destination": "08-ARCHIVE/CONVERSATION_IMPORT_DESIGN.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.dev\\CURRENT_ISSUES.md",
+      "destination": "08-ARCHIVE/CURRENT_ISSUES.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\ConflictMap_MunitionsCatalogue_Ticker.md",
+      "destination": "08-ARCHIVE/ConflictMap_MunitionsCatalogue_Ticker.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.dev\\DESIGN_TOKENS.md",
+      "destination": "08-ARCHIVE/DESIGN_TOKENS.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\DEVELOPMENT_PLAN.md",
+      "destination": "08-ARCHIVE/DEVELOPMENT_PLAN.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.dev\\DEV_FRONTEND_COMPONENTS.md",
+      "destination": "08-ARCHIVE/DEV_FRONTEND_COMPONENTS.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.dev\\DEV_FRONTEND_DESIGN.md",
+      "destination": "08-ARCHIVE/DEV_FRONTEND_DESIGN.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.dev\\DEV_FRONTEND_DESKTOP.md",
+      "destination": "08-ARCHIVE/DEV_FRONTEND_DESKTOP.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.dev\\DEV_FRONTEND_PWA_SPEC.md",
+      "destination": "08-ARCHIVE/DEV_FRONTEND_PWA_SPEC.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.dev\\DEV_FRONTEND_UX_PATTERNS.md",
+      "destination": "08-ARCHIVE/DEV_FRONTEND_UX_PATTERNS.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\DOCUMENTATION_CROSS_REFERENCE.md",
+      "destination": "08-ARCHIVE/DOCUMENTATION_CROSS_REFERENCE.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\DOCUMENTATION_STRATEGY.md",
+      "destination": "08-ARCHIVE/DOCUMENTATION_STRATEGY.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\DOCUMENTATION_UPDATE_SUMMARY.md",
+      "destination": "08-ARCHIVE/DOCUMENTATION_UPDATE_SUMMARY.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\AI-CHATS\\ENHANCEMENTS.md",
+      "destination": "08-ARCHIVE/ENHANCEMENTS.md",
+      "reason": "Classified based on content matching 08-ARCHIVE/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.dev\\EXECUTIVE_SUMMARY.md",
+      "destination": "08-ARCHIVE/EXECUTIVE_SUMMARY.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\EXTRACTION_IMPROVEMENT_DESIGN.md",
+      "destination": "08-ARCHIVE/EXTRACTION_IMPROVEMENT_DESIGN.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\EXTRACTOR_FIX_SUMMARY.md",
+      "destination": "08-ARCHIVE/EXTRACTOR_FIX_SUMMARY.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\FEATURE_BRIDGE_BUILD.md",
+      "destination": "08-ARCHIVE/FEATURE_BRIDGE_BUILD.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\GENESIS_DESIGN.md",
+      "destination": "08-ARCHIVE/GENESIS_DESIGN.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\HIGH-TIER-FINAL-STATUS.md",
+      "destination": "08-ARCHIVE/HIGH-TIER-FINAL-STATUS.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\HIGH-TIER-IMPLEMENTATION-STATUS.md",
+      "destination": "08-ARCHIVE/HIGH-TIER-IMPLEMENTATION-STATUS.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\ICON_LIBRARY_QUICK_REFERENCE.md",
+      "destination": "08-ARCHIVE/ICON_LIBRARY_QUICK_REFERENCE.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\ICON_LIBRARY_SPECIFICATION.md",
+      "destination": "08-ARCHIVE/ICON_LIBRARY_SPECIFICATION.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\IMPLEMENTATION_ROADMAP.md",
+      "destination": "08-ARCHIVE/IMPLEMENTATION_ROADMAP.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\IMPORT_FIXES_COMPLETE.md",
+      "destination": "08-ARCHIVE/IMPORT_FIXES_COMPLETE.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\IMPORT_FIXES_SUMMARY.md",
+      "destination": "08-ARCHIVE/IMPORT_FIXES_SUMMARY.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\IMPORT_IMPLEMENTATION_SUMMARY.md",
+      "destination": "08-ARCHIVE/IMPORT_IMPLEMENTATION_SUMMARY.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.dev\\INTEGRATION_GUIDE.md",
+      "destination": "08-ARCHIVE/INTEGRATION_GUIDE.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\LINK_CAPTURE_ANALYSIS.md",
+      "destination": "08-ARCHIVE/LINK_CAPTURE_ANALYSIS.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\LINK_EXTRACTION_IMPROVEMENTS.md",
+      "destination": "08-ARCHIVE/LINK_EXTRACTION_IMPROVEMENTS.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\MOCKUP_PROMPTS-2.md",
+      "destination": "08-ARCHIVE/MOCKUP_PROMPTS-2.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\NETWORK.md",
+      "destination": "08-ARCHIVE/NETWORK.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\PAGEINDEX_INTEGRATION.md",
+      "destination": "08-ARCHIVE/PAGEINDEX_INTEGRATION.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\PHASE1_IMPLEMENTATION_SUMMARY.md",
+      "destination": "08-ARCHIVE/PHASE1_IMPLEMENTATION_SUMMARY.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\PHASE1_INTEGRATION_COMPLETE.md",
+      "destination": "08-ARCHIVE/PHASE1_INTEGRATION_COMPLETE.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\PHASE2_IMPLEMENTATION_SUMMARY.md",
+      "destination": "08-ARCHIVE/PHASE2_IMPLEMENTATION_SUMMARY.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\PHASE3_IMPLEMENTATION_SUMMARY.md",
+      "destination": "08-ARCHIVE/PHASE3_IMPLEMENTATION_SUMMARY.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\PHASE4_IMPLEMENTATION_SUMMARY.md",
+      "destination": "08-ARCHIVE/PHASE4_IMPLEMENTATION_SUMMARY.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\PHASE5_IMPLEMENTATION_SUMMARY.md",
+      "destination": "08-ARCHIVE/PHASE5_IMPLEMENTATION_SUMMARY.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\AI-CHATS\\PRIORITY-ENHANCEMENTS.md",
+      "destination": "08-ARCHIVE/PRIORITY-ENHANCEMENTS.md",
+      "reason": "Classified based on content matching 08-ARCHIVE/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\PRIORITY_WORKLIST.md",
+      "destination": "08-ARCHIVE/PRIORITY_WORKLIST.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\PROVIDER_COVERAGE_REPORT.md",
+      "destination": "08-ARCHIVE/PROVIDER_COVERAGE_REPORT.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\PWA.md",
+      "destination": "08-ARCHIVE/PWA.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\PendingUPDATESall-01-critical.md",
+      "destination": "08-ARCHIVE/PendingUPDATESall-01-critical.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\PendingUPDATESall-02-high.md",
+      "destination": "08-ARCHIVE/PendingUPDATESall-02-high.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\PendingUPDATESall-03-medium-low.md",
+      "destination": "08-ARCHIVE/PendingUPDATESall-03-medium-low.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\PendingUPDATESall-INDEX.md",
+      "destination": "08-ARCHIVE/PendingUPDATESall-INDEX.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\PendingUPDATESall-POSTPONED.md",
+      "destination": "08-ARCHIVE/PendingUPDATESall-POSTPONED.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\QUICK_FIX_NO_REBUILD.md",
+      "destination": "08-ARCHIVE/QUICK_FIX_NO_REBUILD.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.dev\\QUICK_REFERENCE.md",
+      "destination": "08-ARCHIVE/QUICK_REFERENCE.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.dev\\REDESIGN_INVESTIGATION_LIST.md",
+      "destination": "08-ARCHIVE/REDESIGN_INVESTIGATION_LIST.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\REDIS_SETUP.md",
+      "destination": "08-ARCHIVE/REDIS_SETUP.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.dev\\RESPONSIVE_BREAKPOINTS.md",
+      "destination": "08-ARCHIVE/RESPONSIVE_BREAKPOINTS.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.dev\\ROUTING_NAVIGATION.md",
+      "destination": "08-ARCHIVE/ROUTING_NAVIGATION.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\SDK.md",
+      "destination": "08-ARCHIVE/SDK.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\SEQUA.md",
+      "destination": "08-ARCHIVE/SEQUA.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\SETTINGS_SYSTEM.md",
+      "destination": "08-ARCHIVE/SETTINGS_SYSTEM.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\SOCIAL-FEATURES.md",
+      "destination": "08-ARCHIVE/SOCIAL-FEATURES.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\SOTA_IMPLEMENTATION_PLAN.md",
+      "destination": "08-ARCHIVE/SOTA_IMPLEMENTATION_PLAN.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.dev\\SPEC.md",
+      "destination": "08-ARCHIVE/SPEC.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\SYSTEM_FIXES_SUMMARY.md",
+      "destination": "08-ARCHIVE/SYSTEM_FIXES_SUMMARY.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\TEST_REPORT_EXTRACTORS.md",
+      "destination": "08-ARCHIVE/TEST_REPORT_EXTRACTORS.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\docs\\TIERED_IMPORT_IMPLEMENTATION_ROADMAP.md",
+      "destination": "08-ARCHIVE/TIERED_IMPORT_IMPLEMENTATION_ROADMAP.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\docs\\TIERED_IMPORT_SERVICE_DESIGN.md",
+      "destination": "08-ARCHIVE/TIERED_IMPORT_SERVICE_DESIGN.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\TRY_THIS_FIRST.md",
+      "destination": "08-ARCHIVE/TRY_THIS_FIRST.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.dev\\UI_COMPONENT_SPEC.md",
+      "destination": "08-ARCHIVE/UI_COMPONENT_SPEC.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\USER_JOURNEY.md",
+      "destination": "08-ARCHIVE/USER_JOURNEY.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\VIVIM-ARCHIVE-DESIGN-FRAMEWORK.md",
+      "destination": "08-ARCHIVE/VIVIM-ARCHIVE-DESIGN-FRAMEWORK.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\plans\\VIVIM_10x_improvement_plan.md",
+      "destination": "08-ARCHIVE/VIVIM_10x_improvement_plan.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\VIVIM_COMPLETE_BLUEPRINT.md",
+      "destination": "08-ARCHIVE/VIVIM_COMPLETE_BLUEPRINT.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\VIVIM_COMPLETE_BLUEPRINT_todo.md",
+      "destination": "08-ARCHIVE/VIVIM_COMPLETE_BLUEPRINT_todo.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.current\\VIVIM_DEEP_EXTRACTION.md",
+      "destination": "08-ARCHIVE/VIVIM_DEEP_EXTRACTION.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\VIVIM_GAP_ANALYSIS.md",
+      "destination": "08-ARCHIVE/VIVIM_GAP_ANALYSIS.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\VIVIM_NETWORK_ARCHITECTURE.md",
+      "destination": "08-ARCHIVE/VIVIM_NETWORK_ARCHITECTURE.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\VIVIM_NETWORK_ARCHITECTURE_DESIGN.md",
+      "destination": "08-ARCHIVE/VIVIM_NETWORK_ARCHITECTURE_DESIGN.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\VIVIM_NETWORK_IMPLEMENTATION_SUMMARY.md",
+      "destination": "08-ARCHIVE/VIVIM_NETWORK_IMPLEMENTATION_SUMMARY.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\VIVIM_NETWORK_LOCAL_DEV.md",
+      "destination": "08-ARCHIVE/VIVIM_NETWORK_LOCAL_DEV.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "OpenCore\\VIVIM_OpenCore_Gap_List.md",
+      "destination": "08-ARCHIVE/VIVIM_OpenCore_Gap_List.md",
+      "reason": "Classified based on content matching 08-ARCHIVE/",
+      "confidence": "medium",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\VIVIM_REBRANDING_PLAN.md",
+      "destination": "08-ARCHIVE/VIVIM_REBRANDING_PLAN.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\VIVIM_USER_MANAGEMENT_DESIGN.md",
+      "destination": "08-ARCHIVE/VIVIM_USER_MANAGEMENT_DESIGN.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\VIVIM_V1_FEATURES.md",
+      "destination": "08-ARCHIVE/VIVIM_V1_FEATURES.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\plans\\VIVIM_context_system_10x_improvement_plan.md",
+      "destination": "08-ARCHIVE/VIVIM_context_system_10x_improvement_plan.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\plans\\VIVIM_context_system_gaps_analysis.md",
+      "destination": "08-ARCHIVE/VIVIM_context_system_gaps_analysis.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\plans\\VIVIM_pipeline_gaps_analysis.md",
+      "destination": "08-ARCHIVE/VIVIM_pipeline_gaps_analysis.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\OPENsource\\website\\about.md",
+      "destination": "08-ARCHIVE/about.md",
+      "reason": "Classified based on content matching 08-ARCHIVE/",
+      "confidence": "low",
+      "action": "review"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\ai-integration-and-context.md",
+      "destination": "08-ARCHIVE/ai-integration-and-context.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\AI-CHATS\\chat-links.md",
+      "destination": "08-ARCHIVE/chat-links.md",
+      "reason": "Classified based on content matching 08-ARCHIVE/",
+      "confidence": "high",
+      "action": "move"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\.old\\compare-to-gap-VIVIM_UPGRADE_PLAN.md",
+      "destination": "08-ARCHIVE/compare-to-gap-VIVIM_UPGRADE_PLAN.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\context-error.md",
+      "destination": "08-ARCHIVE/context-error.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\context2.md",
+      "destination": "08-ARCHIVE/context2.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "chain-of-trust\\AI Data Detection Tools Algos -Opus 4.6 nt.md",
+      "destination": "08-ARCHIVE/duplicates/AI Data Detection Tools Algos -Opus 4.6 nt.md",
+      "reason": "Duplicate pair - older version (newer: chain-of-trust\\AI Data Detection Tools Algos -Opus 4.6 T.md)",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "chain-of-trust\\AI Data Memory with 3rd Party Access Conrol - Opus 4.6 .md",
+      "destination": "08-ARCHIVE/duplicates/AI Data Memory with 3rd Party Access Conrol - Opus 4.6 .md",
+      "reason": "Duplicate pair - older version (newer: chain-of-trust\\AI Data Memory with 3rd Party Access Conrol - minimax 4.7 .md)",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "chain-of-trust\\AI Privacy Toolkit Opus 4.6 nonT.md",
+      "destination": "08-ARCHIVE/duplicates/AI Privacy Toolkit Opus 4.6 nonT.md",
+      "reason": "Duplicate pair - older version (newer: chain-of-trust\\AI Privacy Toolkit Opus 4.6 T.md)",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "chain-of-trust\\New Maths - opus 4.6 .md",
+      "destination": "08-ARCHIVE/duplicates/New Maths - opus 4.6 .md",
+      "reason": "Duplicate pair - older version (newer: chain-of-trust\\New Maths - chatgpt5.4 .md)",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\OPUS_PRIORITIZATION.md",
+      "destination": "08-ARCHIVE/duplicates/OPUS_PRIORITIZATION.md",
+      "reason": "Duplicate pair - older version (newer: VIVIM.docs\\sovereign-memory\\Opus 4.6\\Opus 4.6 .md)",
+      "confidence": "high",
+      "action": "review"
+    },
+    {
+      "source": "chain-of-trust\\Tools and methods required - Opus 4.6 thinkin.md",
+      "destination": "08-ARCHIVE/duplicates/Tools and methods required - Opus 4.6 thinkin.md",
+      "reason": "Duplicate pair - older version (newer: chain-of-trust\\Tools and methods required - ChatGPT 5.4.md)",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "chain-of-trust\\Tools and methods required - minimax 2.7 .md",
+      "destination": "08-ARCHIVE/duplicates/Tools and methods required - minimax 2.7 .md",
+      "reason": "Duplicate pair - older version (newer: chain-of-trust\\Tools and methods required - ChatGPT 5.4.md)",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "chain-of-trust\\VIVIM Vault - Nature - Opus 4.6 .md",
+      "destination": "08-ARCHIVE/duplicates/VIVIM Vault - Nature - Opus 4.6 .md",
+      "reason": "Duplicate pair - older version (newer: chain-of-trust\\VIVIM Vault - Nature - ChatGPT 5.4 .md)",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "OpenCore\\VIVIM_OpenCore_Blueprint.md",
+      "destination": "08-ARCHIVE/duplicates/VIVIM_OpenCore_Blueprint.md",
+      "reason": "Duplicate pair - older version (newer: OpenCore\\VIVIM_OpenCore_Blueprint_v1.1.md)",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "OpenCore\\VIVIM_OpenCore_DatabaseSchema.md",
+      "destination": "08-ARCHIVE/duplicates/VIVIM_OpenCore_DatabaseSchema.md",
+      "reason": "Duplicate pair - older version (newer: OpenCore\\VIVIM_OpenCore_DatabaseSchema v2.md)",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\BIZ\\fractal-ownership-v1-opus46think.md",
+      "destination": "08-ARCHIVE/duplicates/fractal-ownership-v1-opus46think.md",
+      "reason": "Duplicate pair - older version (newer: VIVIM.docs\\BIZ\\fractal-ownership-v1-opus46.md)",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\PITCH\\vivim.md",
+      "destination": "08-ARCHIVE/duplicates/vivim.md",
+      "reason": "Duplicate pair - older version (newer: chain-of-trust\\vivim opus 4.6 nonT.md)",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\plans\\enhance-error-debugging-service.md",
+      "destination": "08-ARCHIVE/enhance-error-debugging-service.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\exraction-and-rendering-fix.md",
+      "destination": "08-ARCHIVE/exraction-and-rendering-fix.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\gemini5.md",
+      "destination": "08-ARCHIVE/gemini5.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\home-panel-enhancements-todo.md",
+      "destination": "08-ARCHIVE/home-panel-enhancements-todo.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\identity-design1.md",
+      "destination": "08-ARCHIVE/identity-design1.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\index-minimal.md",
+      "destination": "08-ARCHIVE/index-minimal.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\mini2.md",
+      "destination": "08-ARCHIVE/mini2.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\openscroll-100features.md",
+      "destination": "08-ARCHIVE/openscroll-100features.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\plans\\pwa-component-specifications.md",
+      "destination": "08-ARCHIVE/pwa-component-specifications.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\plans\\pwa-content-rendering-toolkit.md",
+      "destination": "08-ARCHIVE/pwa-content-rendering-toolkit.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\plans\\pwa-redesign-architecture.md",
+      "destination": "08-ARCHIVE/pwa-redesign-architecture.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\plans\\pwa-redesign-plan.md",
+      "destination": "08-ARCHIVE/pwa-redesign-plan.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\quick-fix.md",
+      "destination": "08-ARCHIVE/quick-fix.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\ARCHITECTURE\\runbooks.md",
+      "destination": "08-ARCHIVE/runbooks.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\vivim-app-legacy\\session-ses_32c0.md",
+      "destination": "08-ARCHIVE/session-ses_32c0.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\session-ses_3b3b.md",
+      "destination": "08-ARCHIVE/session-ses_3b3b.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\development\\tokens.and.transport 2.md",
+      "destination": "08-ARCHIVE/tokens.and.transport 2.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\tokens.and.transport.md",
+      "destination": "08-ARCHIVE/tokens.and.transport.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\user-id-management.md",
+      "destination": "08-ARCHIVE/user-id-management.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\v0-secondbrain0100features.md",
+      "destination": "08-ARCHIVE/v0-secondbrain0100features.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\.archive\\vivim-100plus-features.md",
+      "destination": "08-ARCHIVE/vivim-100plus-features.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\ARCHITECTURE\\zcompanies-api-endpoints.md",
+      "destination": "08-ARCHIVE/zcompanies-api-endpoints.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\ARCHITECTURE\\zcompanies-architecture.md",
+      "destination": "08-ARCHIVE/zcompanies-architecture.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\ARCHITECTURE\\zcompanies-data-flows.md",
+      "destination": "08-ARCHIVE/zcompanies-data-flows.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\ARCHITECTURE\\zcompanies-gap-analysis.md",
+      "destination": "08-ARCHIVE/zcompanies-gap-analysis.md",
+      "reason": "Archive file with high-value content worth promoting",
+      "confidence": "high",
+      "action": "promote"
+    },
+    {
+      "source": "VIVIM.docs\\vivim.docs.context\\docs\\_legacy\\ARCHITECTURE\\zcompanies-tech-stack.md",
+      "destination": "08-ARCHIVE/zcompanies-tech-stack.md",
+      "reason": "File in archive folder",
+      "confidence": "high",
+      "action": "archive"
+    },
+    {
+      "source": "VIVIM.docs\\000---IDEAS--000\\MOBILE.md",
+      "destination": "_working/MOBILE.md",
+      "reason": "Stub file under 100 words without headings",
+      "confidence": "high",
+      "action": "move"
+    }
+  ]
+}

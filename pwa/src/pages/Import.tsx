@@ -4,7 +4,7 @@
  * One-click import page for ChatGPT and other AI platform exports
  */
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -19,34 +19,46 @@ import {
   Info,
   ArrowLeft,
   RefreshCw,
+  Settings,
+  Play,
+  Pause,
+  ChevronRight,
+  Cpu,
+  Brain,
+  Network,
+  Database,
 } from 'lucide-react';
 import { useIOSToast, toast } from '../components/ios';
-import { apiClient } from '../lib/api';
-
-type ImportStatus = 'idle' | 'uploading' | 'processing' | 'completed' | 'error';
-
-interface ImportJob {
-  id: string;
-  status: string;
-  fileName: string;
-  totalConversations: number;
-  processedConversations: number;
-  failedConversations: number;
-  progress: number;
-  errors?: any[];
-}
+import { apiClient, csrfAwareFetch } from '../lib/api';
+import type {
+  ImportPhase,
+  ImportJob,
+  ImportScanResult,
+  ImportTierConfig,
+  TierProgress,
+  ImportTier,
+} from '../types/import';
+import {
+  DEFAULT_TIER_CONFIG,
+  TIER_LABELS,
+  TIER_DESCRIPTIONS,
+} from '../types/import';
 
 export const ImportPage: React.FC = () => {
   const navigate = useNavigate();
   const { toast: showToast } = useIOSToast();
-  const [status, setStatus] = useState<ImportStatus>('idle');
+  const [phase, setPhase] = useState<ImportPhase>('idle');
   const [file, setFile] = useState<File | null>(null);
+  const [fileToken, setFileToken] = useState<string | null>(null);
+  const [scanResult, setScanResult] = useState<ImportScanResult | null>(null);
+  const [tierConfig, setTierConfig] = useState<ImportTierConfig>(DEFAULT_TIER_CONFIG);
   const [importJob, setImportJob] = useState<ImportJob | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const pollingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const pollingErrorCountRef = useRef<number>(0);
 
-  // Poll for job status
   const pollJobStatus = useCallback(async (jobId: string) => {
     try {
       const response = await apiClient.get(`/import/jobs/${jobId}`);
@@ -55,32 +67,45 @@ export const ImportPage: React.FC = () => {
       setImportJob(job);
 
       if (job.status === 'COMPLETED') {
-        setStatus('completed');
+        setPhase('completed');
         showToast({
           title: 'Import Complete',
           message: `${job.processedConversations} conversations imported successfully`,
           variant: 'success',
         });
       } else if (job.status === 'FAILED') {
-        setStatus('error');
+        setPhase('error');
         setError(job.errors?.[0]?.message || 'Import failed');
         showToast({
           title: 'Import Failed',
           message: job.errors?.[0]?.message || 'Something went wrong',
           variant: 'error',
         });
-      } else if (job.status === 'CANCELLED') {
-        setStatus('idle');
+      } else if (job.status === 'CANCELLED' || job.status === 'PAUSED') {
+        setPhase('idle');
         showToast({
-          title: 'Import Cancelled',
+          title: job.status === 'PAUSED' ? 'Import Paused' : 'Import Cancelled',
           variant: 'info',
         });
       } else {
-        // Continue polling
-        setTimeout(() => pollJobStatus(jobId), 2000);
+        pollingTimeoutRef.current = setTimeout(() => pollJobStatus(jobId), 2000);
       }
     } catch (err) {
       console.error('Failed to poll job status:', err);
+      // Stop polling on repeated errors after 3 attempts
+      pollingErrorCountRef.current = (pollingErrorCountRef.current || 0) + 1;
+      if (pollingErrorCountRef.current >= 3) {
+        setPhase('error');
+        setError('Failed to check import status. Please try again.');
+        showToast({
+          title: 'Connection Error',
+          message: 'Could not reach the server. Please check your connection and try again.',
+          variant: 'error',
+        });
+      } else {
+        // Retry after a longer delay on error
+        pollingTimeoutRef.current = setTimeout(() => pollJobStatus(jobId), 5000);
+      }
     }
   }, [showToast]);
 
@@ -130,45 +155,132 @@ export const ImportPage: React.FC = () => {
   const handleUpload = async () => {
     if (!file) return;
 
-    setStatus('uploading');
+    setPhase('scanning');
     setError(null);
 
     try {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await apiClient.post('/import/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const localStorageOverride = typeof localStorage !== 'undefined' ? localStorage.getItem('VIVIM_API_OVERRIDE') : null;
+      const apiBaseUrl = (localStorageOverride || import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1')
+        .replace(/\/api\/v1\/?$/, '')
+        .replace(/\/api\/?$/, '')
+        .replace(/\/$/, '');
+      const scanUrl = `${apiBaseUrl}/api/v1/import/scan`;
+
+      console.log('[Import] Starting scan:', scanUrl);
+      console.log('[Import] File:', file.name, file.size, 'bytes');
+      
+      const response = await csrfAwareFetch(scanUrl, {
+        method: 'POST',
+        body: formData,
       });
 
-      const { importJobId, totalConversations } = response.data;
+      console.log('[Import] Scan response:', response.status, response.statusText);
+      
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => ({}));
+        throw new Error(errorBody.message || `Scan failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      setScanResult(data.scan);
+      setFileToken(data.fileToken);
+      
+      if (data.recommendedConfig) {
+        setTierConfig(prev => ({
+          ...prev,
+          ...data.recommendedConfig,
+        }));
+      }
+
+      setPhase('configure');
+      
+      showToast({
+        title: 'Scan Complete',
+        message: `Found ${data.scan.totalConversations} conversations`,
+        variant: 'success',
+      });
+    } catch (err: any) {
+      console.error('Scan failed:', err);
+      setPhase('error');
+      setError(err.message || 'Scan failed');
+      showToast({
+        title: 'Scan Failed',
+        message: err.message || 'Something went wrong',
+        variant: 'error',
+      });
+    }
+  };
+
+  const handleStartImport = async () => {
+    if (!fileToken) {
+      showToast({
+        title: 'Error',
+        message: 'File token not found. Please scan the file again.',
+        variant: 'error',
+      });
+      return;
+    }
+
+    setPhase('processing');
+    setError(null);
+
+    try {
+      const localStorageOverride = typeof localStorage !== 'undefined' ? localStorage.getItem('VIVIM_API_OVERRIDE') : null;
+      const apiBaseUrl = (localStorageOverride || import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1')
+        .replace(/\/api\/v1\/?$/, '')
+        .replace(/\/api\/?$/, '')
+        .replace(/\/$/, '');
+      const startUrl = `${apiBaseUrl}/api/v1/import/start`;
+
+      const response = await csrfAwareFetch(startUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fileToken,
+          tierConfig,
+          intelligentOptions: { prioritizeRecent: false },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.json().catch(() => ({}));
+        throw new Error(errorBody.message || `Start failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
 
       showToast({
-        title: 'Upload Successful',
-        message: `Starting import of ${totalConversations} conversations...`,
+        title: 'Import Started',
+        message: 'Processing your conversations...',
         variant: 'success',
       });
 
       setImportJob({
-        id: importJobId,
-        status: 'PROCESSING',
-        fileName: file.name,
-        totalConversations,
+        id: data.jobId,
+        status: data.status,
+        currentTier: data.currentTier,
+        fileName: file?.name || 'import.zip',
+        totalConversations: scanResult?.totalConversations || 0,
         processedConversations: 0,
         failedConversations: 0,
         progress: 0,
+        tierProgress: {},
+        createdAt: new Date().toISOString(),
+        errors: [],
       });
 
-      setStatus('processing');
-      pollJobStatus(importJobId);
+      setPhase('processing');
+      pollJobStatus(data.jobId);
     } catch (err: any) {
-      console.error('Upload failed:', err);
-      setStatus('error');
-      setError(err.message || 'Upload failed');
+      console.error('Start failed:', err);
+      setPhase('error');
+      setError(err.message || 'Import failed');
       showToast({
-        title: 'Upload Failed',
+        title: 'Import Failed',
         message: err.message || 'Something went wrong',
         variant: 'error',
       });
@@ -180,8 +292,10 @@ export const ImportPage: React.FC = () => {
 
     try {
       await apiClient.post(`/import/jobs/${importJob.id}/cancel`);
-      setStatus('idle');
+      setPhase('idle');
       setFile(null);
+      setFileToken(null);
+      setScanResult(null);
       setImportJob(null);
       showToast({
         title: 'Import Cancelled',
@@ -194,10 +308,23 @@ export const ImportPage: React.FC = () => {
 
   const handleRetry = () => {
     setFile(null);
+    setFileToken(null);
+    setScanResult(null);
     setImportJob(null);
     setError(null);
-    setStatus('idle');
+    setPhase('idle');
+    // Reset polling state
+    pollingErrorCountRef.current = 0;
   };
+
+  // Cleanup polling on unmount
+  useEffect(() => {
+    return () => {
+      if (pollingTimeoutRef.current) {
+        clearTimeout(pollingTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#09090b]">
@@ -220,7 +347,7 @@ export const ImportPage: React.FC = () => {
       <div className="max-w-3xl mx-auto px-4 py-8">
         <AnimatePresence mode="wait">
           {/* IDLE STATE - Upload Zone */}
-          {status === 'idle' && (
+          {phase === 'idle' && (
             <motion.div
               key="idle"
               initial={{ opacity: 0, y: 20 }}
@@ -359,10 +486,10 @@ export const ImportPage: React.FC = () => {
             </motion.div>
           )}
 
-          {/* UPLOADING STATE */}
-          {status === 'uploading' && (
+          {/* SCANNING STATE */}
+          {phase === 'scanning' && (
             <motion.div
-              key="uploading"
+              key="scanning"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
@@ -370,7 +497,7 @@ export const ImportPage: React.FC = () => {
             >
               <Loader2 className="w-16 h-16 text-indigo-600 dark:text-indigo-400 animate-spin mb-6" />
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                Uploading...
+                Scanning file...
               </h2>
               <p className="text-gray-500 dark:text-gray-400 text-center">
                 {file?.name}
@@ -378,8 +505,135 @@ export const ImportPage: React.FC = () => {
             </motion.div>
           )}
 
+          {/* CONFIGURE STATE */}
+          {phase === 'configure' && scanResult && (
+            <motion.div
+              key="configure"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-6"
+            >
+              {/* Scan Summary */}
+              <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                  Import Summary
+                </h2>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-xl">
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {scanResult.totalConversations}
+                    </p>
+                    <p className="text-sm text-gray-500">Conversations</p>
+                  </div>
+                  <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-xl">
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {scanResult.totalMessages.toLocaleString()}
+                    </p>
+                    <p className="text-sm text-gray-500">Messages</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tier Selection */}
+              <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+                <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                  <Settings className="w-4 h-4" />
+                  Import Options
+                </h3>
+                
+                <div className="space-y-3">
+                  <label className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={tierConfig.tier1?.enabled ?? false}
+                      onChange={(e) => setTierConfig(prev => ({
+                        ...prev,
+                        tier1: { ...prev.tier1, enabled: e.target.checked }
+                      }))}
+                      className="w-5 h-5 rounded text-indigo-600"
+                    />
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900 dark:text-white">ACU Generation</p>
+                      <p className="text-sm text-gray-500">Extract knowledge units from messages</p>
+                    </div>
+                    <Cpu className="w-5 h-5 text-gray-400" />
+                  </label>
+
+                  <label className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={tierConfig.tier2?.enabled ?? false}
+                      onChange={(e) => setTierConfig(prev => ({
+                        ...prev,
+                        tier2: { ...prev.tier2, enabled: e.target.checked }
+                      }))}
+                      className="w-5 h-5 rounded text-indigo-600"
+                    />
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900 dark:text-white">Memory Extraction</p>
+                      <p className="text-sm text-gray-500">Extract facts and preferences</p>
+                    </div>
+                    <Brain className="w-5 h-5 text-gray-400" />
+                  </label>
+
+                  <label className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={tierConfig.tier3?.enabled ?? false}
+                      onChange={(e) => setTierConfig(prev => ({
+                        ...prev,
+                        tier3: { ...prev.tier3, enabled: e.target.checked }
+                      }))}
+                      className="w-5 h-5 rounded text-indigo-600"
+                    />
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900 dark:text-white">Context Enrichment</p>
+                      <p className="text-sm text-gray-500">Build knowledge graph</p>
+                    </div>
+                    <Network className="w-5 h-5 text-gray-400" />
+                  </label>
+
+                  <label className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-xl cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={tierConfig.tier4?.enabled ?? false}
+                      onChange={(e) => setTierConfig(prev => ({
+                        ...prev,
+                        tier4: { ...prev.tier4, enabled: e.target.checked }
+                      }))}
+                      className="w-5 h-5 rounded text-indigo-600"
+                    />
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900 dark:text-white">Index Building</p>
+                      <p className="text-sm text-gray-500">Build search indexes</p>
+                    </div>
+                    <Database className="w-5 h-5 text-gray-400" />
+                  </label>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3">
+                <button
+                  onClick={handleRetry}
+                  className="px-6 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleStartImport}
+                  className="flex-1 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
+                >
+                  <Play className="w-5 h-5" />
+                  Start Import
+                </button>
+              </div>
+            </motion.div>
+          )}
+
           {/* PROCESSING STATE */}
-          {status === 'processing' && importJob && (
+          {phase === 'processing' && importJob && (
             <motion.div
               key="processing"
               initial={{ opacity: 0, y: 20 }}
@@ -466,7 +720,7 @@ export const ImportPage: React.FC = () => {
           )}
 
           {/* COMPLETED STATE */}
-          {status === 'completed' && (
+          {phase === 'completed' && (
             <motion.div
               key="completed"
               initial={{ opacity: 0, y: 20 }}
@@ -503,7 +757,7 @@ export const ImportPage: React.FC = () => {
           )}
 
           {/* ERROR STATE */}
-          {status === 'error' && (
+          {phase === 'error' && (
             <motion.div
               key="error"
               initial={{ opacity: 0, y: 20 }}

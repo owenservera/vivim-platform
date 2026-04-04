@@ -1,0 +1,54 @@
+================================================================
+VIVIM DEMO SCRIPT: CORE CAPTURE
+================================================================
+
+Tagline: One tap. Nine providers. Your entire AI history, archived.
+Investor Type: all
+Target Time: 20-25s
+
+----------------------------------------------------------------
+NARRATIVE
+----------------------------------------------------------------
+
+[HOOK] You use four AI assistants at work. None of them talk to each other. Your best thinking is scattered across browser tabs.
+
+[1] VIVIM captures from ChatGPT, Claude, Gemini, DeepSeek, Grok, Mistral, and more — with one browser extension click.
+
+[2] It auto-extracts the actual knowledge from every conversation — not just the text, but the meaning.
+
+[3] In two weeks of use, this user has 320 conversations archived. That's years of work you'd otherwise never see again.
+
+[CLOSE] One tap. Nine providers. Your AI history, owned forever.
+
+----------------------------------------------------------------
+CLICK SCRIPT
+----------------------------------------------------------------
+
+[1] Archive Overview
+  Archive timeline               /archive
+  Grid by provider               /archive?view=grid
+  Imported sources               /archive/imported
+
+[2] Capture Flow
+  Capture page                   /capture
+  Import options                 /import
+
+----------------------------------------------------------------
+SEARCH QUERIES TO VERIFY
+----------------------------------------------------------------
+
+  "react best practices"
+  "startup advice"
+  "career growth"
+
+----------------------------------------------------------------
+PRE-DEMO CHECKLIST
+----------------------------------------------------------------
+
+[ ] Seed reset complete
+[ ] Embeddings pre-computed
+[ ] All pages load without errors
+[ ] Search queries verified
+[ ] Loom backup recorded
+[ ] Practiced 3+ times
+

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIVIM Investor Pitch Deck</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0a0a0f; color: #fff; min-height: 100vh; }
+    .slide { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 60px; text-align: center; }
+    .slide.split { flex-direction: row; gap: 60px; text-align: left; }
+    .slide.split img { max-width: 50%; }
+    h2 { font-size: 3em; margin-bottom: 20px; font-weight: 700; }
+    .subtitle { font-size: 1.5em; color: #EF9F27; margin-bottom: 30px; }
+    p { font-size: 1.3em; line-height: 1.8; color: #B4B2A9; max-width: 600px; }
+    pre { background: #1a1a2e; padding: 24px; border-radius: 12px; max-width: 600px; overflow: auto; }
+    code { font-family: "SF Mono", Consolas, monospace; font-size: 14px; color: #E24B4A; }
+    img { border-radius: 12px; }
+  </style>
+</head>
+<body>
+  <div class="slide center" id="slide-1"><h2>The Problem</h2><p class="subtitle">Every AI power user lives here</p><p>Browser tabs filled with ChatGPT, Claude, Gemini...<br/><br/>This is where your most valuable thinking goes to die.</p></div>
+    <div class="slide center" id="slide-2"><h2>VIVIM</h2><p class="subtitle">Own Your AI Brain</p><p>Capture. Organize. Surface.<br/>Your AI conversations, unified.</p></div>
+    <div class="slide split" id="slide-3"><h2>The Archive</h2><img src="screenshots/investor/desktop-investor-home.png" alt="The Archive" style="max-width: 100%; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);" /><p>9 AI providers. Weeks of conversations. Fully organized.</p></div>
+    <div class="slide split" id="slide-4"><h2>Knowledge Graph</h2><img src="screenshots/investor/desktop-investor-graph.png" alt="Knowledge Graph" style="max-width: 100%; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);" /><p>What if your AI conversations could remember each other?</p></div>
+    <div class="slide split" id="slide-5"><h2>Context Cockpit</h2><img src="screenshots/investor/desktop-investor-conversation.png" alt="Context Cockpit" style="max-width: 100%; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);" /><p>It knows you.<br/>Not because you told it.<br/>Because it's been watching you think.</p></div>
+    <div class="slide center" id="slide-6"><h2>The Vision</h2><p class="subtitle">You own your AI brain.</p><p>Decentralized. Private. Permanent.<br/><br/>VIVIM.</p></div>
+  <script>
+    let current = 0;
+    var allSlides = document.querySelectorAll(".slide");
+    function showSlide(n) { allSlides.forEach(function(s, i) { s.style.display = i === n ? "flex" : "none"; }); }
+    document.addEventListener("keydown", function(e) {
+      if (e.key === "ArrowRight" || e.key === " ") showSlide(++current % allSlides.length);
+      if (e.key === "ArrowLeft") showSlide(--current < 0 ? allSlides.length - 1 : current);
+    });
+    showSlide(0);
+  </script>
+</body>
+</html>

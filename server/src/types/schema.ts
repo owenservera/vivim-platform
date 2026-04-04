@@ -1,5 +1,5 @@
 /**
- * TypeScript types for OpenScroll database schema
+ * TypeScript types for VIVIM database schema
  * Auto-generated from Prisma schema
  *
  * These types represent the structure of conversations and messages
@@ -160,7 +160,18 @@ export interface MessageCreateInput {
 // CONVERSATION TYPES
 // ============================================================================
 
-export type Provider = 'gemini' | 'chatgpt' | 'claude' | 'other';
+export type Provider =
+  | 'chatgpt'
+  | 'claude'
+  | 'gemini'
+  | 'grok'
+  | 'qwen'
+  | 'kimi'
+  | 'deepseek'
+  | 'zai'
+  | 'perplexity'
+  | 'mistral'
+  | 'other';
 
 export interface Conversation {
   id: string;

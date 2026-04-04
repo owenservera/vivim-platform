@@ -1,0 +1,50 @@
+================================================================
+VIVIM DEMO SCRIPT: FOR YOU FEED
+================================================================
+
+Tagline: Your AI thinking, curated for what matters today
+Investor Type: product
+Target Time: 20-25s
+
+----------------------------------------------------------------
+NARRATIVE
+----------------------------------------------------------------
+
+[HOOK] Your AI conversations from six months ago probably have answers to problems you're solving right now. You just can't find them.
+
+[1] The For You feed uses everything VIVIM knows about you — topics, entities, conversation patterns — to surface the most relevant past thinking.
+
+[2] Topic filters let you zoom in on specific areas: React patterns, startup strategy, Postgres optimization.
+
+[3] It's like having a research assistant who read everything you ever wrote and knows exactly what you need.
+
+[CLOSE] Stop asking the same questions. Start finding the answers you already have.
+
+----------------------------------------------------------------
+CLICK SCRIPT
+----------------------------------------------------------------
+
+[1] For You Feed
+  For You feed                   /for-you
+  Filtered by topic              /for-you?topic=react
+  Usage analytics                /analytics
+
+----------------------------------------------------------------
+SEARCH QUERIES TO VERIFY
+----------------------------------------------------------------
+
+  "react patterns"
+  "startup validation"
+  "career transition"
+
+----------------------------------------------------------------
+PRE-DEMO CHECKLIST
+----------------------------------------------------------------
+
+[ ] Seed reset complete
+[ ] Embeddings pre-computed
+[ ] All pages load without errors
+[ ] Search queries verified
+[ ] Loom backup recorded
+[ ] Practiced 3+ times
+

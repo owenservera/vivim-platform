@@ -9,7 +9,7 @@ import { feedAPI } from '../lib/feed-api';
 import type { FeedResponse, FeedItem } from '../types/acu';
 
 interface UseFeedOptions {
-  tab?: 'for-you' | 'following' | 'topics' | 'bookmarks';
+  tab?: 'for-you' | 'following' | 'topics' | 'bookmarks' | 'scroll';
   limit?: number;
   topic?: string;
   minQuality?: number;

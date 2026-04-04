@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1920" height="1080" 
+     xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#0a0a0f"/>
+  
+  <!-- Header -->
+  <rect width="100%" height="64" fill="#1a1a2e" opacity="0.9"/>
+  <text x="32" y="42" font-family="system-ui" font-size="24" font-weight="600" fill="#ffffff">
+    Context Cockpit
+  </text>
+  
+  <!-- Token Budget -->
+  <rect x="1600" y="16" width="280" height="36" rx="8" fill="#0a0a0f"/>
+  <text x="1620" y="40" font-family="system-ui" font-size="13" fill="#ffffff">
+    ⚡ 2,847 / 8,192 tokens
+  </text>
+  
+  <!-- Context Layers Grid -->
+  <rect x="32" y="96" width="600" height="400" rx="12" fill="#1a1a2e"/>
+  <text x="48" y="128" font-family="system-ui" font-size="16" font-weight="600" fill="#ffffff">
+    🧠 Active Memories (8)
+  </text>
+  
+    <rect x="48" y="148" width="568" height="32" rx="6" fill="#0a0a0f"/>
+    <text x="64" y="170" font-family="system-ui" font-size="12" fill="#888888">
+      Alex prefers TypeScript over JavaScript
+    </text>
+  
+    <rect x="48" y="188" width="568" height="32" rx="6" fill="#0a0a0f"/>
+    <text x="64" y="210" font-family="system-ui" font-size="12" fill="#888888">
+      Building B2B SaaS startup (stealth)
+    </text>
+  
+    <rect x="48" y="228" width="568" height="32" rx="6" fill="#0a0a0f"/>
+    <text x="64" y="250" font-family="system-ui" font-size="12" fill="#888888">
+      Interviewed at Google and Stripe
+    </text>
+  
+    <rect x="48" y="268" width="568" height="32" rx="6" fill="#0a0a0f"/>
+    <text x="64" y="290" font-family="system-ui" font-size="12" fill="#888888">
+      Skeptical of microservices early-stage
+    </text>
+  
+    <rect x="48" y="308" width="568" height="32" rx="6" fill="#0a0a0f"/>
+    <text x="64" y="330" font-family="system-ui" font-size="12" fill="#888888">
+      Uses Postgres + pgvector production
+    </text>
+  
+    <rect x="48" y="348" width="568" height="32" rx="6" fill="#0a0a0f"/>
+    <text x="64" y="370" font-family="system-ui" font-size="12" fill="#888888">
+      Lives in San Francisco
+    </text>
+  
+    <rect x="48" y="388" width="568" height="32" rx="6" fill="#0a0a0f"/>
+    <text x="64" y="410" font-family="system-ui" font-size="12" fill="#888888">
+      AI infrastructure space
+    </text>
+  
+    <rect x="48" y="428" width="568" height="32" rx="6" fill="#0a0a0f"/>
+    <text x="64" y="450" font-family="system-ui" font-size="12" fill="#888888">
+      Background in distributed systems
+    </text>
+  
+  
+  <!-- Topic Profiles -->
+  <rect x="664" y="96" width="600" height="400" rx="12" fill="#1a1a2e"/>
+  <text x="680" y="128" font-family="system-ui" font-size="16" font-weight="600" fill="#ffffff">
+    📊 Topic Profiles
+  </text>
+  
+    <rect x="680" y="148" width="568" height="52" rx="6" fill="#0a0a0f"/>
+    <text x="696" y="170" font-family="system-ui" font-size="13" font-weight="500" fill="#ffffff">
+      React
+    </text>
+    <text x="1100" y="170" font-family="system-ui" font-size="12" fill="#EF9F27">
+      Expert
+    </text>
+    <text x="1200" y="170" font-family="system-ui" font-size="12" fill="#888888">
+      30 conversations
+    </text>
+  
+    <rect x="680" y="208" width="568" height="52" rx="6" fill="#0a0a0f"/>
+    <text x="696" y="230" font-family="system-ui" font-size="13" font-weight="500" fill="#ffffff">
+      TypeScript
+    </text>
+    <text x="1100" y="230" font-family="system-ui" font-size="12" fill="#EF9F27">
+      Expert
+    </text>
+    <text x="1200" y="230" font-family="system-ui" font-size="12" fill="#888888">
+      25 conversations
+    </text>
+  
+    <rect x="680" y="268" width="568" height="52" rx="6" fill="#0a0a0f"/>
+    <text x="696" y="290" font-family="system-ui" font-size="13" font-weight="500" fill="#ffffff">
+      System Design
+    </text>
+    <text x="1100" y="290" font-family="system-ui" font-size="12" fill="#EF9F27">
+      Advanced
+    </text>
+    <text x="1200" y="290" font-family="system-ui" font-size="12" fill="#888888">
+      20 conversations
+    </text>
+  
+    <rect x="680" y="328" width="568" height="52" rx="6" fill="#0a0a0f"/>
+    <text x="696" y="350" font-family="system-ui" font-size="13" font-weight="500" fill="#ffffff">
+      Postgres
+    </text>
+    <text x="1100" y="350" font-family="system-ui" font-size="12" fill="#EF9F27">
+      Advanced
+    </text>
+    <text x="1200" y="350" font-family="system-ui" font-size="12" fill="#888888">
+      20 conversations
+    </text>
+  
+    <rect x="680" y="388" width="568" height="52" rx="6" fill="#0a0a0f"/>
+    <text x="696" y="410" font-family="system-ui" font-size="13" font-weight="500" fill="#ffffff">
+      AI/ML
+    </text>
+    <text x="1100" y="410" font-family="system-ui" font-size="12" fill="#EF9F27">
+      Intermediate
+    </text>
+    <text x="1200" y="410" font-family="system-ui" font-size="12" fill="#888888">
+      15 conversations
+    </text>
+  
+  
+  <!-- Entity Profiles -->
+  <rect x="1296" y="96" width="592" height="400" rx="12" fill="#1a1a2e"/>
+  <text x="1312" y="128" font-family="system-ui" font-size="16" font-weight="600" fill="#ffffff">
+    🏢 Entity Profiles
+  </text>
+  
+    <rect x="1312" y="148" width="560" height="60" rx="6" fill="#0a0a0f"/>
+    <text x="1328" y="175" font-family="system-ui" font-size="13" font-weight="500" fill="#ffffff">
+      Stripe
+    </text>
+    <text x="1328" y="195" font-family="system-ui" font-size="11" fill="#888888">
+      Company · Sentiment: 80%
+    </text>
+  
+    <rect x="1312" y="216" width="560" height="60" rx="6" fill="#0a0a0f"/>
+    <text x="1328" y="243" font-family="system-ui" font-size="13" font-weight="500" fill="#ffffff">
+      Jordan Lee
+    </text>
+    <text x="1328" y="263" font-family="system-ui" font-size="11" fill="#888888">
+      Person · Sentiment: 90%
+    </text>
+  
+    <rect x="1312" y="284" width="560" height="60" rx="6" fill="#0a0a0f"/>
+    <text x="1328" y="311" font-family="system-ui" font-size="13" font-weight="500" fill="#ffffff">
+      First Close Ventures
+    </text>
+    <text x="1328" y="331" font-family="system-ui" font-size="11" fill="#888888">
+      Investor · Sentiment: 70%
+    </text>
+  
+    <rect x="1312" y="352" width="560" height="60" rx="6" fill="#0a0a0f"/>
+    <text x="1328" y="379" font-family="system-ui" font-size="13" font-weight="500" fill="#ffffff">
+      San Francisco
+    </text>
+    <text x="1328" y="399" font-family="system-ui" font-size="11" fill="#888888">
+      Location · Sentiment: 50%
+    </text>
+  
+    <rect x="1312" y="420" width="560" height="60" rx="6" fill="#0a0a0f"/>
+    <text x="1328" y="447" font-family="system-ui" font-size="13" font-weight="500" fill="#ffffff">
+      B2B SaaS
+    </text>
+    <text x="1328" y="467" font-family="system-ui" font-size="11" fill="#888888">
+      Product · Sentiment: 80%
+    </text>
+  
+  
+  <!-- Chat Input -->
+  <rect x="32" y="520" width="1856" height="80" rx="12" fill="#1a1a2e"/>
+  <text x="48" y="565" font-family="system-ui" font-size="14" fill="#888888">
+    Ask VIVIM AI... (context assembled from 8 memories, 5 topics, 5 entities)
+  </text>
+  <rect x="1760" y="536" width="112" height="48" rx="8" fill="#EF9F27"/>
+  <text x="1816" y="565" font-family="system-ui" font-size="13" font-weight="600" fill="#000" text-anchor="middle">
+    Send
+  </text>
+  
+  <!-- Context Stats -->
+  <rect x="32" y="620" width="1856" height="80" rx="12" fill="#1a1a2e" opacity="0.5"/>
+  <text x="48" y="650" font-family="system-ui" font-size="12" font-weight="600" fill="#ffffff">
+    Context Assembly
+  </text>
+  <text x="48" y="675" font-family="system-ui" font-size="11" fill="#888888">
+    8 memories loaded · 5 topic profiles active · 5 entities referenced · 3 past conversations cited · Token budget: 35% used
+  </text>
+</svg>

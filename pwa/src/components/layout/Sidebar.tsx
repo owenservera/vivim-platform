@@ -13,7 +13,8 @@ import {
   User,
   ChevronLeft,
   ChevronRight,
-  Plus
+  Plus,
+  Globe
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
@@ -24,6 +25,7 @@ interface SidebarProps {
 
 const NAV_ITEMS = [
   { icon: Home, label: 'Home', to: '/' },
+  { icon: Globe, label: 'Scroll', to: '/scroll' },
   { icon: Search, label: 'Search', to: '/search' },
   { icon: Archive, label: 'Archive', to: '/archive' },
   { icon: Library, label: 'Collections', to: '/collections' },

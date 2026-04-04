@@ -1,4 +1,13 @@
-import type { NetworkNode, NodeConnection, NetworkMetric, DatabaseTable, DataFlow, CRDTDocument, LogEntry, PubSubTopic } from '../types'
+import type { NetworkNode, NodeConnection, NetworkMetric, DatabaseTable, DataFlow, CRDTDocument, LogEntry, PubSubTopic, SystemStats, UserStats, ConversationStats, StorageStats, ContentRecord } from '../types'
+
+const rand = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+const randFloat = (min: number, max: number) => Math.random() * (max - min) + min;
+const randBool = (prob = 0.5) => Math.random() < prob;
+
+function generateNodeId(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  return 'Qm' + Array.from({ length: 40 }, () => chars[rand(0, chars.length - 1)]).join('');
+}
 
 export const mockNetworkNodes: NetworkNode[] = [
   {
@@ -223,3 +232,74 @@ export const mockLogs: LogEntry[] = [
   { id: '7', timestamp: new Date(Date.now() - 90000).toISOString(), level: 'debug', source: 'Storage', message: 'Content pinned: content:abc123' },
   { id: '8', timestamp: new Date(Date.now() - 120000).toISOString(), level: 'info', source: 'Network', message: 'Peer disconnected: QmClient1...' },
 ]
+
+export const mockSystemStats: SystemStats = {
+  cpu: {
+    usage: randFloat(15, 85),
+    cores: rand(4, 32),
+  },
+  memory: {
+    total: rand(8, 128) * 1024 * 1024 * 1024,
+    used: rand(2, 64) * 1024 * 1024 * 1024,
+    free: 0,
+    usage: randFloat(20, 80),
+  },
+  disk: {
+    total: rand(256, 2048) * 1024 * 1024 * 1024,
+    used: rand(50, 500) * 1024 * 1024 * 1024,
+    free: 0,
+    usage: randFloat(20, 60),
+  },
+  uptime: rand(86400, 2592000),
+  loadAverage: [randFloat(0.5, 4), randFloat(0.3, 3), randFloat(0.2, 2)],
+  timestamp: new Date().toISOString(),
+}
+
+export const mockUserStats: UserStats = {
+  totalUsers: rand(1000, 50000),
+  activeUsers: rand(200, 5000),
+  newUsersToday: rand(5, 100),
+  newUsersThisWeek: rand(50, 500),
+  newUsersThisMonth: rand(200, 2000),
+  topUsersByActivity: Array.from({ length: 10 }, (_, i) => ({
+    id: `user-${i + 1}`,
+    name: ['Alex Chen', 'Jordan Lee', 'Sarah Kim', 'Marcus Johnson', 'Priya Sharma', 'David Chen', 'Emma Wilson', 'Liam O\'Brien', 'Sofia Martinez', 'Noah Park'][i],
+    activityScore: rand(80, 100),
+    lastActive: new Date(Date.now() - rand(60000, 86400000)).toISOString(),
+  })),
+}
+
+export const mockConversationStats: ConversationStats = {
+  totalConversations: rand(5000, 100000),
+  activeConversations: rand(100, 1000),
+  conversationsToday: rand(50, 500),
+  conversationsThisWeek: rand(500, 5000),
+  conversationsThisMonth: rand(2000, 20000),
+  averageMessagesPerConversation: randFloat(5, 20),
+  topConversationsByActivity: Array.from({ length: 5 }, (_, i) => ({
+    id: `conv-${i + 1}`,
+    title: ['React Hooks Deep Dive', 'TypeScript Generics', 'System Design Patterns', 'PostgreSQL Optimization', 'AI Agent Architecture'][i],
+    messageCount: rand(50, 500),
+    lastActivity: new Date(Date.now() - rand(60000, 3600000)).toISOString(),
+  })),
+}
+
+export const mockStorageStats: StorageStats = {
+  totalSize: rand(100, 1000) * 1024 * 1024 * 1024,
+  usedSize: rand(20, 400) * 1024 * 1024 * 1024,
+  freeSize: 0,
+  usage: randFloat(20, 60),
+  conversations: rand(5000, 50000),
+  messages: rand(50000, 500000),
+  attachments: rand(1000, 10000),
+  indexes: rand(100, 1000),
+}
+
+export const mockContentRecords: ContentRecord[] = Array.from({ length: 20 }, (_, i) => ({
+  id: `content-${i + 1}`,
+  contentId: generateNodeId(),
+  contentType: ['conversation', 'acu', 'memory', 'notebook'][i % 4],
+  size: rand(1024, 1024 * 1024 * 10),
+  providers: rand(1, 10),
+  createdAt: new Date(Date.now() - rand(86400000, 2592000000)).toISOString(),
+}))

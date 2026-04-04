@@ -1,10 +1,9 @@
 /**
- * OpenScroll Conversation Types
+ * VIVIM Conversation Types
  * Aligned with Prisma schema and storage-v2 types
  */
 
-// Re-export ContentBlock types from storage-v2 for consistency
-export type {
+import type {
   ContentBlock,
   TextBlock,
   CodeBlock,
@@ -15,6 +14,18 @@ export type {
   ToolCallBlock,
   ToolResultBlock,
 } from '../lib/storage-v2/types';
+
+export type {
+  ContentBlock,
+  TextBlock,
+  CodeBlock,
+  ImageBlock,
+  MermaidBlock,
+  TableBlock,
+  MathBlock,
+  ToolCallBlock,
+  ToolResultBlock,
+};
 
 /**
  * Union type of all content part types matching Prisma schema
@@ -194,6 +205,7 @@ export interface Conversation {
   exportedAt?: string; // Deprecated, use capturedAt
   metadata?: ConversationMetadata;
   tags?: string[];
+  visibility?: 'public' | 'private' | string;
   messages: Message[];
   stats: ConversationStats;
 }

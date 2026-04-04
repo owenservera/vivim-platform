@@ -144,7 +144,7 @@ const performIntelligentCapture = async (config) => {
 
     // 1. Setup Files
     const tempDirectory = path.resolve(tempDir || require('os').tmpdir());
-    const tempFileName = `openscroll-pw-${provider}-${require('uuid').v4()}.html`;
+    const tempFileName = `vivim-pw-${provider}-${require('uuid').v4()}.html`;
     tempFilePath = path.join(tempDirectory, tempFileName);
     console.log(`📁 [INTELLIGENT CAPTURE] Temporary file: ${tempFilePath}`);
 

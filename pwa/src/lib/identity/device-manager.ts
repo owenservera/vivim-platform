@@ -1,5 +1,5 @@
 /**
- * OpenScroll Device Manager
+ * VIVIM Device Manager
  * 
  * Multi-Device Synchronization and Key Derivation
  * 

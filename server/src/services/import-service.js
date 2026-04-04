@@ -10,6 +10,7 @@ import { logger } from '../lib/logger.js';
 import { saveConversationUnified } from './storage-adapter.js';
 import { v4 as uuidv4 } from 'uuid';
 import { createHash } from 'crypto';
+// import { MemoryService, createEmbeddingService } from '../context/memory/index.js';
 
 const log = logger.child({ service: 'import' });
 
@@ -57,9 +58,29 @@ function parseChatGPTConversation(raw) {
     createdAt: raw.create_time ? new Date(raw.create_time * 1000) : new Date(),
     capturedAt: new Date(),
     metadata: {
+      // Core identity
       originalId: raw.conversation_id,
+      id: raw.id,
+      // Status flags
       isArchived: raw.is_archived || false,
       isStarred: raw.is_starred || false,
+      isReadOnly: raw.is_read_only || false,
+      isDoNotRemember: raw.is_do_not_remember || false,
+      isStudyMode: raw.is_study_mode || false,
+      // Timing
+      createTime: raw.create_time,
+      updateTime: raw.update_time,
+      // Model & features
+      defaultModelSlug: raw.default_model_slug,
+      currentNode: raw.current_node,
+      // Advanced features
+      gizmoId: raw.gizmo_id,
+      gizmoType: raw.gizmo_type,
+      voice: raw.voice,
+      pluginIds: raw.plugin_ids,
+      // Safety
+      blockedUrls: raw.blocked_urls || [],
+      safeUrls: raw.safe_urls || [],
     },
   };
 
@@ -213,24 +234,51 @@ export async function createImportJob(userId, fileBuffer, fileName) {
   const prisma = getPrismaClient();
   const jobId = uuidv4();
 
-  log.info({ jobId, fileName, userId }, 'Creating import job - START');
+  log.info({ jobId, fileName, userId, bufferLength: fileBuffer?.length }, '=== IMPORT JOB START ===');
 
   try {
-    // Parse ZIP file
-    log.info({ jobId }, 'Parsing ZIP file...');
-    const zip = new AdmZip(fileBuffer);
-    const conversations = parseChatGPTConversations(zip);
-    log.info({ jobId, count: conversations.length }, 'Parsed conversations from ZIP');
+    // Step 1: Validate input
+    log.info({ jobId, step: 1 }, 'Validating input...');
+    if (!userId) {
+      throw new Error('userId is required');
+    }
+    if (!fileBuffer || fileBuffer.length === 0) {
+      throw new Error('fileBuffer is empty or invalid');
+    }
+    log.info({ jobId, step: 1, success: true }, 'Input validation passed');
+
+    // Step 2: Parse ZIP file
+    log.info({ jobId, step: 2 }, 'Parsing ZIP file...');
+    let zip;
+    try {
+      zip = new AdmZip(fileBuffer);
+      log.info({ jobId, zipEntries: zip.getEntries().length }, 'ZIP file opened');
+    } catch (zipError) {
+      log.error({ jobId, error: zipError.message }, 'Failed to parse ZIP file');
+      throw new Error(`Invalid ZIP file: ${zipError.message}`);
+    }
+
+    let conversations;
+    try {
+      conversations = parseChatGPTConversations(zip);
+      log.info({ jobId, conversationCount: conversations.length }, 'Parsed conversations from ZIP');
+    } catch (parseError) {
+      log.error({ jobId, error: parseError.message }, 'Failed to parse conversations');
+      throw new Error(`Failed to parse conversations: ${parseError.message}`);
+    }
 
     if (conversations.length === 0) {
       log.error({ jobId }, 'No valid conversations found');
       throw new Error('No valid conversations found in export file');
     }
 
-    // Generate file hash for deduplication
+    // Step 3: Generate file hash
+    log.info({ jobId, step: 3 }, 'Generating file hash...');
     const fileHash = createHash('sha256').update(fileBuffer).digest('hex');
+    log.info({ jobId, fileHash: fileHash.substring(0, 16) + '...' }, 'File hash generated');
 
-    // Check for duplicate import
+    // Step 4: Check for duplicate import
+    log.info({ jobId, step: 4 }, 'Checking for duplicate imports...');
     const existingImport = await prisma.importJob.findFirst({
       where: {
         userId,
@@ -242,34 +290,42 @@ export async function createImportJob(userId, fileBuffer, fileName) {
     });
 
     if (existingImport) {
-      log.warn({ existingJobId: existingImport.id }, 'Duplicate import detected');
+      log.warn({ existingJobId: existingImport.id }, 'Duplicate import detected, returning existing');
       return existingImport;
     }
+    log.info({ jobId, step: 4, success: true }, 'No duplicate found');
 
-    // Create import job
-    log.info({ jobId, userId, fileName, totalConversations: conversations.length }, 'Creating ImportJob record...');
-    const importJob = await prisma.importJob.create({
-      data: {
-        id: jobId,
-        userId,
-        status: 'QUEUED',
-        sourceProvider: 'chatgpt',
-        format: 'chatgpt-export',
-        fileHash,
-        fileName,
-        fileSize: fileBuffer.length,
-        totalConversations: conversations.length,
-        processedConversations: 0,
-        failedConversations: 0,
-        metadata: {
-          parsedAt: new Date().toISOString(),
-          conversationCount: conversations.length,
+    // Step 5: Create import job record
+    log.info({ jobId, step: 5, userId, fileName, totalConversations: conversations.length }, 'Creating ImportJob record...');
+    let importJob;
+    try {
+      importJob = await prisma.importJob.create({
+        data: {
+          id: jobId,
+          userId,
+          status: 'QUEUED',
+          sourceProvider: 'chatgpt',
+          format: 'chatgpt-export',
+          fileHash,
+          fileName,
+          fileSize: fileBuffer.length,
+          totalConversations: conversations.length,
+          processedConversations: 0,
+          failedConversations: 0,
+          metadata: {
+            parsedAt: new Date().toISOString(),
+            conversationCount: conversations.length,
+          },
         },
-      },
-    });
-    log.info({ jobId, importJobId: importJob.id }, 'ImportJob created successfully');
+      });
+      log.info({ jobId, importJobId: importJob.id }, 'ImportJob created successfully');
+    } catch (dbError) {
+      log.error({ jobId, error: dbError.message, code: dbError.code }, 'Failed to create ImportJob record');
+      throw new Error(`Database error creating job: ${dbError.message}`);
+    }
 
-    // Create imported conversation records
+    // Step 6: Create imported conversation records
+    log.info({ jobId, step: 6 }, 'Creating imported conversation records...');
     const importedConversations = conversations.map(conv => ({
       importJobId: jobId,
       sourceId: conv.metadata.originalId,
@@ -279,37 +335,47 @@ export async function createImportJob(userId, fileBuffer, fileName) {
       metadata: conv,
     }));
 
-    await prisma.importedConversation.createMany({
-      data: importedConversations,
-    });
+    try {
+      await prisma.importedConversation.createMany({
+        data: importedConversations,
+      });
+      log.info({ jobId, count: importedConversations.length }, 'ImportedConversation records created');
+    } catch (dbError) {
+      log.error({ jobId, error: dbError.message, code: dbError.code }, 'Failed to create imported conversation records');
+      throw new Error(`Database error creating conversation records: ${dbError.message}`);
+    }
 
-    // Queue jobs for processing (process immediately for now)
-    // In Phase 2, this would use BullMQ
-    // Delay slightly to ensure transaction completes
+    // Step 7: Queue processing
+    log.info({ jobId, step: 7 }, 'Queuing background processing...');
     setTimeout(() => {
       processImportQueue(jobId, userId).catch(err => {
         log.error({ jobId, error: err.message }, 'Background processing failed');
       });
     }, 100);
 
+    log.info({ jobId, importJobId: importJob.id }, '=== IMPORT JOB COMPLETED SUCCESSFULLY ===');
     return importJob;
   } catch (error) {
-    log.error({ jobId, error: error.message }, 'Failed to create import job');
+    log.error({ jobId, error: error.message, stack: error.stack }, '=== IMPORT JOB FAILED ===');
     
-    await prisma.importJob.update({
-      where: { id: jobId },
-      data: {
-        status: 'FAILED',
-        errors: {
-          push: {
-            stage: 'upload',
-            message: error.message,
-            timestamp: new Date().toISOString(),
+    try {
+      await prisma.importJob.update({
+        where: { id: jobId },
+        data: {
+          status: 'FAILED',
+          errors: {
+            push: {
+              stage: 'upload',
+              message: error.message,
+              timestamp: new Date().toISOString(),
+            },
           },
         },
-      },
-    });
-
+      });
+    } catch (updateError) {
+      log.error({ jobId, error: updateError.message }, 'Failed to update job status to FAILED');
+    }
+    
     throw error;
   }
 }
@@ -499,6 +565,19 @@ async function processImportedConversation(imported, userId) {
 
     // Save conversation using unified storage
     await saveConversationUnified(conversationData);
+    
+    // Create sovereign memory for the imported conversation (disabled temporarily)
+    // try {
+    //   await createMemoryFromConversation(userId, conversationData);
+    //   log.info({ 
+    //     conversationId: conversationData.id 
+    //   }, 'Created sovereign memory for imported conversation');
+    // } catch (memError) {
+    //   log.warn({ 
+    //     conversationId: conversationData.id,
+    //     error: memError.message 
+    //   }, 'Failed to create memory for conversation, continuing anyway');
+    // }
 
     // Update imported conversation record
     await prisma.importedConversation.update({
@@ -523,6 +602,96 @@ async function processImportedConversation(imported, userId) {
     }, 'Failed to process imported conversation');
     throw error;
   }
+}
+
+/**
+ * Create sovereign memory entries from imported conversation
+ * This enables the conversation to be used in the context engine
+ */
+async function createMemoryFromConversation(userId, conversation) {
+  const prisma = getPrismaClient();
+  const embeddingService = createEmbeddingService();
+  
+  const memoryService = new MemoryService({
+    prisma,
+    embeddingService,
+  });
+
+  // Generate conversation summary from messages
+  const conversationText = conversation.messages
+    .slice(0, 10) // First 10 messages for summary
+    .map(msg => {
+      const text = msg.parts
+        ?.filter(p => p.type === 'text')
+        .map(p => p.content)
+        .join(' ') || '';
+      return `[${msg.role}]: ${text.slice(0, 500)}`; // Limit each message
+    })
+    .join('\n\n');
+
+  // Create a memory for this conversation
+  const memoryInput = {
+    content: conversationText,
+    summary: `ChatGPT conversation: ${conversation.title}`,
+    memoryType: 'EPISODIC',
+    category: 'conversation_import',
+    tags: ['chatgpt-import', 'imported-conversation', conversation.model || 'unknown'],
+    importance: 0.6,
+    sourceConversationIds: [conversation.id],
+    metadata: {
+      provider: conversation.provider,
+      model: conversation.model,
+      sourceUrl: conversation.sourceUrl,
+      messageCount: conversation.messageCount,
+      importedAt: new Date().toISOString(),
+    },
+  };
+
+  const memory = await memoryService.createMemory(userId, memoryInput);
+  
+  log.info({ 
+    memoryId: memory.id, 
+    conversationId: conversation.id 
+  }, 'Created episodic memory from imported conversation');
+
+  // Also create additional memories for key information
+  // Extract and store AI-generated content as semantic memories
+  const aiMessages = conversation.messages
+    .filter(msg => msg.role === 'assistant' && msg.parts)
+    .flatMap(msg => msg.parts.filter(p => p.type === 'text').map(p => p.content))
+    .slice(0, 5); // Take first 5 AI responses
+
+  for (let i = 0; i < aiMessages.length; i++) {
+    try {
+      const content = aiMessages[i].slice(0, 2000); // Limit content size
+      
+      const semanticMemoryInput = {
+        content: content,
+        summary: `AI response from: ${conversation.title}`,
+        memoryType: 'SEMANTIC',
+        category: 'knowledge',
+        tags: ['chatgpt-import', 'ai-knowledge'],
+        importance: 0.4,
+        sourceConversationIds: [conversation.id],
+        metadata: {
+          provider: conversation.provider,
+          messageIndex: i,
+          importedAt: new Date().toISOString(),
+        },
+      };
+
+      await memoryService.createMemory(userId, semanticMemoryInput);
+    } catch (err) {
+      log.warn({ error: err.message, messageIndex: i }, 'Failed to create semantic memory');
+    }
+  }
+
+  log.info({ 
+    conversationId: conversation.id,
+    memoriesCreated: aiMessages.length + 1 
+  }, 'Created memories for imported conversation');
+
+  return memory;
 }
 
 // Helper functions for stats calculation

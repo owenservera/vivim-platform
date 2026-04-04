@@ -4,14 +4,17 @@ import { useBackgroundSync } from './hooks/useBackgroundSync';
 import { p2pService } from './lib/p2p-service';
 
 import { VivimProvider } from './contexts/VivimContext';
+import { SupabaseAuthProvider } from './components/auth/SupabaseAuthProvider';
 
 function App() {
   useBackgroundSync();
 
   return (
-    <VivimProvider>
-      <AppRouter />
-    </VivimProvider>
+    <SupabaseAuthProvider>
+      <VivimProvider>
+        <AppRouter />
+      </VivimProvider>
+    </SupabaseAuthProvider>
   );
 }
 

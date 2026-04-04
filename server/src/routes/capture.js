@@ -136,7 +136,7 @@ router.post('/handshake', (req, res) => {
  * Simple reachability check for versioned API
  */
 router.get('/', (req, res) => {
-  res.json({ status: 'ok', service: 'OpenScroll Capture API (v1)' });
+  res.json({ status: 'ok', service: 'VIVIM Capture API (v1)' });
 });
 
 // ============================================================================

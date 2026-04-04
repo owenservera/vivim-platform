@@ -1,11 +1,34 @@
 import type { Conversation } from '../types/conversation';
 import { log } from './logger';
 import { kyberEncapsulate, symmetricEncrypt, symmetricDecrypt, sha256 } from './storage-v2/crypto';
+import { csrfHeaders } from './csrf';
+
+const CSRF_SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS'];
+
+export async function csrfAwareFetch(url: string, options: RequestInit = {}): Promise<Response> {
+  const method = (options.method || 'GET').toUpperCase();
+  const isCsrfSafe = CSRF_SAFE_METHODS.includes(method);
+  
+  const headers = new Headers(options.headers);
+  
+  if (!isCsrfSafe) {
+    const csrf = csrfHeaders();
+    for (const [key, value] of Object.entries(csrf)) {
+      headers.set(key, value);
+    }
+  }
+  
+  return fetch(url, {
+    ...options,
+    headers,
+    credentials: 'include',
+  });
+}
 
 // Basic configuration from Meta environment variables
 // Supports dynamic override via localStorage to avoid "stone age" rebuild cycles
 const getApiBaseUrl = () => {
-  const override = typeof localStorage !== 'undefined' ? localStorage.getItem('OPENSCROLL_API_OVERRIDE') : null;
+  const override = typeof localStorage !== 'undefined' ? localStorage.getItem('VIVIM_API_OVERRIDE') : null;
   const baseUrl = override || import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1';
   // Standardize: strip any trailing slashes and version prefixes, then re-add /api/v1
   const root = baseUrl.replace(/\/api\/v1\/?$/, '').replace(/\/api\/?$/, '').replace(/\/$/, '');
@@ -15,7 +38,7 @@ const getApiBaseUrl = () => {
 // Get API key from environment or localStorage
 const getApiKey = () => {
   // Check localStorage first for user-defined API key
-  const storedApiKey = typeof localStorage !== 'undefined' ? localStorage.getItem('OPENSCROLL_API_KEY') : null;
+  const storedApiKey = typeof localStorage !== 'undefined' ? localStorage.getItem('VIVIM_API_KEY') : null;
   if (storedApiKey) {
     return storedApiKey;
   }
@@ -40,7 +63,7 @@ async function performHandshake() {
     const apiKey = getApiKey();
     if (!apiKey) throw new Error('API Key required for handshake');
 
-    const response = await fetch(`${API_BASE_URL}/handshake`, {
+    const response = await csrfAwareFetch(`${API_BASE_URL}/handshake`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${apiKey}`,
@@ -95,7 +118,7 @@ export async function captureUrl(url: string): Promise<Conversation> {
       const encrypted = symmetricEncrypt(payload, sharedSecret);
 
       // 3. Send Encrypted Request with API key
-      const response = await fetch(`${baseUrl}/capture`, {
+      const response = await csrfAwareFetch(`${baseUrl}/capture`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -245,7 +268,7 @@ export async function captureUrl(url: string): Promise<Conversation> {
  */
 export async function healthCheck(): Promise<{ status: string; service: string }> {
   try {
-    const response = await fetch(`${API_BASE_URL}/`, {
+    const response = await csrfAwareFetch(`${API_BASE_URL}/`, {
       headers: {
         'Authorization': `Bearer ${getApiKey()}`,
         'X-API-Key': getApiKey()
@@ -307,7 +330,7 @@ export async function captureUrlStream(
         // Step 3a: Get ticket from init endpoint
         log.api.info(`Getting ticket from ${baseUrl}/capture-sync/init`);
         
-        const initResponse = await fetch(`${baseUrl}/capture-sync/init`, {
+        const initResponse = await csrfAwareFetch(`${baseUrl}/capture-sync/init`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -441,7 +464,7 @@ export async function bulkCaptureUrl(urls: string[]): Promise<any> {
 
     try {
       // Send plain payload - no quantum tunnel needed for bulk operations
-      const response = await fetch(endpoint, {
+      const response = await csrfAwareFetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -497,7 +520,7 @@ export const apiClient = {
 
     url.searchParams.append('_t', String(Date.now()));
 
-    const response = await fetch(url.toString(), {
+    const response = await csrfAwareFetch(url.toString(), {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -528,7 +551,7 @@ export const apiClient = {
     const slash = endpoint.startsWith('/') ? '' : '/';
     const url = `${apiBaseUrl}${slash}${endpoint}`;
 
-    const response = await fetch(url, {
+    const response = await csrfAwareFetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

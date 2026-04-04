@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Search, Plus, Archive, User } from 'lucide-react';
+import { Home, Search, Plus, Archive, User, Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface BottomNavProps {
@@ -9,6 +9,7 @@ interface BottomNavProps {
 
 const ITEMS = [
   { icon: Home, label: 'Home', to: '/' },
+  { icon: Globe, label: 'Scroll', to: '/scroll' },
   { icon: Search, label: 'Search', to: '/search' },
   { icon: Plus, label: 'Capture', to: '/capture', isAction: true },
   { icon: Archive, label: 'Archive', to: '/archive' },

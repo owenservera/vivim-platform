@@ -76,52 +76,94 @@ function extractGrokData($, url, richFormatting = true) {
 
   const messages = [];
 
-  // Try multiple selectors for Grok message containers
+  // Strategy 1: Try multiple selectors for Grok message containers
   const selectors = [
-    '.message-bubble',
-    '[data-testid="message"]',
-    '.message',
     '[class*="message"]',
-    '.prose',
+    '[class*="bubble"]',
+    '[class*="chat-item"]',
+    '[class*="conversation-item"]',
+    '[class*="prose"]',
+    '[class*="content"]',
+    '[data-testid*="message"]',
+    'article',
+    'section',
   ];
 
   let messageElements = [];
   for (const selector of selectors) {
     messageElements = $(selector).toArray();
-    if (messageElements.length > 0) {
+    if (messageElements.length >= 2) {
       logger.info(`Grok: Found ${messageElements.length} messages with selector: ${selector}`);
       break;
     }
   }
 
-  // If still no messages, try looking for prose sections
+  // Strategy 2: Fallback to looking for text content containers
   if (messageElements.length === 0) {
-    messageElements = $('.prose, article, [class*="prose"]').toArray();
-    logger.info(`Grok: Fallback found ${messageElements.length} potential messages`);
+    messageElements = $('[class*="text"], p, div[class*="content"]').toArray();
+    logger.info(`Grok: Fallback found ${messageElements.length} potential content blocks`);
   }
 
+  // Process each message element
   messageElements.forEach((el, index) => {
     const $el = $(el);
     const className = $el.attr('class') || '';
+    
+    // Skip UI chrome elements
+    if ($el.closest('nav, header, footer, aside, sidebar, button, a').length > 0) {
+      return;
+    }
+
     const text = $el.text().trim();
 
-    // Multiple heuristics for role detection
-    let role = 'assistant';
+    // Skip if too short or too long
+    if (text.length < 5 || text.length > 50000) {
+      return;
+    }
 
-    // Check for user indicators
-    const isUser =
-      className.includes('bg-surface-l1') ||
-      className.includes('border-border-l1') ||
-      $el.find('img[src*="user"], .user-avatar, [data-testid="user"]').length > 0 ||
-      text.startsWith('You:') ||
-      (index % 2 === 0 && messageElements.length > 1); // Alternating pattern
+    // Role detection - multiple heuristics
+    let role = 'assistant'; // Default
 
-    if (isUser) {
+    // Heuristic 1: Class name patterns
+    const lowerClass = className.toLowerCase();
+    if (
+      lowerClass.includes('user') ||
+      lowerClass.includes('human') ||
+      lowerClass.includes('customer') ||
+      lowerClass.includes('bg-surface-l1') ||
+      lowerClass.includes('border-border-l1')
+    ) {
+      role = 'user';
+    } else if (
+      lowerClass.includes('assistant') ||
+      lowerClass.includes('ai') ||
+      lowerClass.includes('bot') ||
+      lowerClass.includes('grok') ||
+      lowerClass.includes('model')
+    ) {
+      role = 'assistant';
+    }
+
+    // Heuristic 2: Check for user avatar indicators
+    if ($el.find('img[src*="user"], .user-avatar, [data-testid="user"]').length > 0) {
       role = 'user';
     }
 
-    // Skip if too short or too long
-    if (text.length < 3 || text.length > 50000) {
+    // Heuristic 3: Position-based (alternating pattern, first is usually user)
+    if (messages.length === 0 && role === 'assistant') {
+      // First message is often user
+      role = 'user';
+    } else if (messages.length > 0 && messages[messages.length - 1].role === role) {
+      // If same role as previous, might be wrong - but keep it for now
+    }
+
+    // Skip UI text patterns
+    if (/^(Share|Copy|Export|Send|Like|Dislike|Regenerate|Continue)/i.test(text)) {
+      return;
+    }
+
+    // Skip duplicates
+    if (messages.length > 0 && messages[messages.length - 1].content === text) {
       return;
     }
 
@@ -137,7 +179,34 @@ function extractGrokData($, url, richFormatting = true) {
     }
   });
 
-  // Remove duplicates
+  // Strategy 3: Aggressive fallback - look for any substantial text
+  if (messages.length === 0) {
+    logger.warn('Grok: No messages found with standard selectors, trying aggressive fallback...');
+    
+    $('p, div, span').each((i, el) => {
+      const $el = $(el);
+      const text = $el.text().trim();
+      
+      // Skip short or very long text
+      if (text.length < 30 || text.length > 10000) {
+        return;
+      }
+      
+      // Skip UI patterns
+      if (/^(Share|Copy|Export|Send|Like|Dislike|Regenerate|Continue|Grok)/i.test(text)) {
+        return;
+      }
+      
+      messages.push({
+        id: uuidv4(),
+        role: i % 2 === 0 ? 'user' : 'assistant',
+        content: text,
+        timestamp: null,
+      });
+    });
+  }
+
+  // Remove exact duplicates
   const uniqueMessages = messages.filter(
     (msg, index, self) => index === self.findIndex((m) => m.content === msg.content)
   );

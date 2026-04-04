@@ -1,0 +1,758 @@
+================================================================================
+SKIPPED FILES REPORT
+================================================================================
+Generated: 2026-03-26 13:46:50
+Total skipped files: 184
+
+Breakdown by action:
+  - promote: 111 files
+  - archive: 70 files
+  - review: 3 files
+
+================================================================================
+FILES BY ACTION
+================================================================================
+
+--- ARCHIVE (70 files) ---
+
+[  1] ✗ VIVIM.docs\.archive\.current\01-PROJECT-OVERVIEW.md
+       → 08-ARCHIVE/01-PROJECT-OVERVIEW.md
+       Reason: File in archive folder
+
+[  2] ✗ VIVIM.docs\.archive\.current\02-FRONTEND-AUDIT.md
+       → 08-ARCHIVE/02-FRONTEND-AUDIT.md
+       Reason: File in archive folder
+
+[  3] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\ARCHITECTURE\02-architecture-overview.md
+       → 08-ARCHIVE/02-architecture-overview.md
+       Reason: File in archive folder
+
+[  4] ✗ VIVIM.docs\.archive\.current\03-BACKEND-SDK-AUDIT.md
+       → 08-ARCHIVE/03-BACKEND-SDK-AUDIT.md
+       Reason: File in archive folder
+
+[  5] ✗ VIVIM.docs\NETWORK\.current\03-CONTENT-PUBLISHING-PIPELINE.md
+       → 08-ARCHIVE/03-CONTENT-PUBLISHING-PIPELINE.md
+       Reason: File in archive folder
+
+[  6] ✗ VIVIM.docs\.archive\.current\03-data-models-schema.md
+       → 08-ARCHIVE/03-data-models-schema.md
+       Reason: File in archive folder
+
+[  7] ✗ VIVIM.docs\.archive\.current\04-IMPLEMENTATION-GAPS.md
+       → 08-ARCHIVE/04-IMPLEMENTATION-GAPS.md
+       Reason: File in archive folder
+
+[  8] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\ARCHITECTURE\04-data-flows.md
+       → 08-ARCHIVE/04-data-flows.md
+       Reason: File in archive folder
+
+[  9] ✗ VIVIM.docs\.archive\.current\05-DESIGN-SYSTEM.md
+       → 08-ARCHIVE/05-DESIGN-SYSTEM.md
+       Reason: File in archive folder
+
+[ 10] ✗ VIVIM.docs\.archive\.current\06-ENHANCEMENT-ROADMAP.md
+       → 08-ARCHIVE/06-ENHANCEMENT-ROADMAP.md
+       Reason: File in archive folder
+
+[ 11] ✗ VIVIM.docs\.archive\.current\07-ASSISTANT-UI-GUIDELINES.md
+       → 08-ARCHIVE/07-ASSISTANT-UI-GUIDELINES.md
+       Reason: File in archive folder
+
+[ 12] ✗ VIVIM.docs\.archive\.old\08-SECURITY-AUTH-AUDIT.md
+       → 08-ARCHIVE/08-SECURITY-AUTH-AUDIT.md
+       Reason: File in archive folder
+
+[ 13] ✗ VIVIM.docs\NETWORK\.current\08-SECURITY-PRIVACY.md
+       → 08-ARCHIVE/08-SECURITY-PRIVACY.md
+       Reason: File in archive folder
+
+[ 14] ✗ VIVIM.docs\NETWORK\.current\09-IMPLEMENTATION.md
+       → 08-ARCHIVE/09-IMPLEMENTATION.md
+       Reason: File in archive folder
+
+[ 15] ✗ VIVIM.docs\NETWORK\.current\10-DATABASE-REFERENCE.md
+       → 08-ARCHIVE/10-DATABASE-REFERENCE.md
+       Reason: File in archive folder
+
+[ 16] ✗ VIVIM.docs\NETWORK\.current\11-API-REFERENCE.md
+       → 08-ARCHIVE/11-API-REFERENCE.md
+       Reason: File in archive folder
+
+[ 17] ✗ VIVIM.docs\.archive\.old\13-USER-FLOWS.md
+       → 08-ARCHIVE/13-USER-FLOWS.md
+       Reason: File in archive folder
+
+[ 18] ✗ VIVIM.docs\.archive\.old\16-ASSISTANT-UI-GUIDELINES.md
+       → 08-ARCHIVE/16-ASSISTANT-UI-GUIDELINES.md
+       Reason: File in archive folder
+
+[ 19] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\ADMIN.md
+       → 08-ARCHIVE/ADMIN.md
+       Reason: File in archive folder
+
+[ 20] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\ARCHIVED_NOTICE.md
+       → 08-ARCHIVE/ARCHIVED_NOTICE.md
+       Reason: File in archive folder
+
+[ 21] ✗ VIVIM.docs\vivim-app-legacy\CLEANUP_GUIDE.md
+       → 08-ARCHIVE/CLEANUP_GUIDE.md
+       Reason: File in archive folder
+
+[ 22] ✗ VIVIM.docs\.archive\.dev\DEV_FRONTEND_COMPONENTS.md
+       → 08-ARCHIVE/DEV_FRONTEND_COMPONENTS.md
+       Reason: File in archive folder
+
+[ 23] ✗ VIVIM.docs\.archive\.dev\DEV_FRONTEND_DESKTOP.md
+       → 08-ARCHIVE/DEV_FRONTEND_DESKTOP.md
+       Reason: File in archive folder
+
+[ 24] ✗ VIVIM.docs\.archive\.dev\DEV_FRONTEND_PWA_SPEC.md
+       → 08-ARCHIVE/DEV_FRONTEND_PWA_SPEC.md
+       Reason: File in archive folder
+
+[ 25] ✗ VIVIM.docs\.archive\.dev\DEV_FRONTEND_UX_PATTERNS.md
+       → 08-ARCHIVE/DEV_FRONTEND_UX_PATTERNS.md
+       Reason: File in archive folder
+
+[ 26] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\GENESIS_DESIGN.md
+       → 08-ARCHIVE/GENESIS_DESIGN.md
+       Reason: File in archive folder
+
+[ 27] ✗ VIVIM.docs\vivim-app-legacy\IMPORT_IMPLEMENTATION_SUMMARY.md
+       → 08-ARCHIVE/IMPORT_IMPLEMENTATION_SUMMARY.md
+       Reason: File in archive folder
+
+[ 28] ✗ VIVIM.docs\.archive\.dev\INTEGRATION_GUIDE.md
+       → 08-ARCHIVE/INTEGRATION_GUIDE.md
+       Reason: File in archive folder
+
+[ 29] ✗ VIVIM.docs\vivim-app-legacy\LINK_CAPTURE_ANALYSIS.md
+       → 08-ARCHIVE/LINK_CAPTURE_ANALYSIS.md
+       Reason: File in archive folder
+
+[ 30] ✗ VIVIM.docs\.archive\LINK_EXTRACTION_IMPROVEMENTS.md
+       → 08-ARCHIVE/LINK_EXTRACTION_IMPROVEMENTS.md
+       Reason: File in archive folder
+
+[ 31] ✗ VIVIM.docs\.archive\MOCKUP_PROMPTS-2.md
+       → 08-ARCHIVE/MOCKUP_PROMPTS-2.md
+       Reason: File in archive folder
+
+[ 32] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\NETWORK.md
+       → 08-ARCHIVE/NETWORK.md
+       Reason: File in archive folder
+
+[ 33] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\PAGEINDEX_INTEGRATION.md
+       → 08-ARCHIVE/PAGEINDEX_INTEGRATION.md
+       Reason: File in archive folder
+
+[ 34] ✗ VIVIM.docs\.archive\PHASE1_IMPLEMENTATION_SUMMARY.md
+       → 08-ARCHIVE/PHASE1_IMPLEMENTATION_SUMMARY.md
+       Reason: File in archive folder
+
+[ 35] ✗ VIVIM.docs\.archive\PHASE1_INTEGRATION_COMPLETE.md
+       → 08-ARCHIVE/PHASE1_INTEGRATION_COMPLETE.md
+       Reason: File in archive folder
+
+[ 36] ✗ VIVIM.docs\.archive\PHASE2_IMPLEMENTATION_SUMMARY.md
+       → 08-ARCHIVE/PHASE2_IMPLEMENTATION_SUMMARY.md
+       Reason: File in archive folder
+
+[ 37] ✗ VIVIM.docs\.archive\PHASE3_IMPLEMENTATION_SUMMARY.md
+       → 08-ARCHIVE/PHASE3_IMPLEMENTATION_SUMMARY.md
+       Reason: File in archive folder
+
+[ 38] ✗ VIVIM.docs\.archive\PRIORITY_WORKLIST.md
+       → 08-ARCHIVE/PRIORITY_WORKLIST.md
+       Reason: File in archive folder
+
+[ 39] ✗ VIVIM.docs\vivim-app-legacy\PROVIDER_COVERAGE_REPORT.md
+       → 08-ARCHIVE/PROVIDER_COVERAGE_REPORT.md
+       Reason: File in archive folder
+
+[ 40] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\PWA.md
+       → 08-ARCHIVE/PWA.md
+       Reason: File in archive folder
+
+[ 41] ✗ VIVIM.docs\.archive\.old\PendingUPDATESall-POSTPONED.md
+       → 08-ARCHIVE/PendingUPDATESall-POSTPONED.md
+       Reason: File in archive folder
+
+[ 42] ✗ VIVIM.docs\vivim-app-legacy\QUICK_FIX_NO_REBUILD.md
+       → 08-ARCHIVE/QUICK_FIX_NO_REBUILD.md
+       Reason: File in archive folder
+
+[ 43] ✗ VIVIM.docs\.archive\.dev\QUICK_REFERENCE.md
+       → 08-ARCHIVE/QUICK_REFERENCE.md
+       Reason: File in archive folder
+
+[ 44] ✗ VIVIM.docs\.archive\.dev\REDESIGN_INVESTIGATION_LIST.md
+       → 08-ARCHIVE/REDESIGN_INVESTIGATION_LIST.md
+       Reason: File in archive folder
+
+[ 45] ✗ VIVIM.docs\vivim-app-legacy\REDIS_SETUP.md
+       → 08-ARCHIVE/REDIS_SETUP.md
+       Reason: File in archive folder
+
+[ 46] ✗ VIVIM.docs\.archive\SEQUA.md
+       → 08-ARCHIVE/SEQUA.md
+       Reason: File in archive folder
+
+[ 47] ✗ VIVIM.docs\.archive\SETTINGS_SYSTEM.md
+       → 08-ARCHIVE/SETTINGS_SYSTEM.md
+       Reason: File in archive folder
+
+[ 48] ✗ VIVIM.docs\vivim-app-legacy\SOTA_IMPLEMENTATION_PLAN.md
+       → 08-ARCHIVE/SOTA_IMPLEMENTATION_PLAN.md
+       Reason: File in archive folder
+
+[ 49] ✗ VIVIM.docs\vivim-app-legacy\docs\TIERED_IMPORT_IMPLEMENTATION_ROADMAP.md
+       → 08-ARCHIVE/TIERED_IMPORT_IMPLEMENTATION_ROADMAP.md
+       Reason: File in archive folder
+
+[ 50] ✗ VIVIM.docs\vivim-app-legacy\TRY_THIS_FIRST.md
+       → 08-ARCHIVE/TRY_THIS_FIRST.md
+       Reason: File in archive folder
+
+[ 51] ✗ VIVIM.docs\.archive\VIVIM_REBRANDING_PLAN.md
+       → 08-ARCHIVE/VIVIM_REBRANDING_PLAN.md
+       Reason: File in archive folder
+
+[ 52] ✗ VIVIM.docs\.archive\.old\compare-to-gap-VIVIM_UPGRADE_PLAN.md
+       → 08-ARCHIVE/compare-to-gap-VIVIM_UPGRADE_PLAN.md
+       Reason: File in archive folder
+
+[ 53] ✗ chain-of-trust\AI Data Detection Tools Algos -Opus 4.6 nt.md
+       → 08-ARCHIVE/duplicates/AI Data Detection Tools Algos -Opus 4.6 nt.md
+       Reason: Duplicate pair - older version (newer: chain-of-trust\AI Data Detection Tools Algos -Opus 4.6 T.md)
+
+[ 54] ✗ chain-of-trust\AI Data Memory with 3rd Party Access Conrol - Opus 4.6 .md
+       → 08-ARCHIVE/duplicates/AI Data Memory with 3rd Party Access Conrol - Opus 4.6 .md
+       Reason: Duplicate pair - older version (newer: chain-of-trust\AI Data Memory with 3rd Party Access Conrol - minimax 4.7 .md)
+
+[ 55] ✗ chain-of-trust\AI Privacy Toolkit Opus 4.6 nonT.md
+       → 08-ARCHIVE/duplicates/AI Privacy Toolkit Opus 4.6 nonT.md
+       Reason: Duplicate pair - older version (newer: chain-of-trust\AI Privacy Toolkit Opus 4.6 T.md)
+
+[ 56] ✗ chain-of-trust\New Maths - opus 4.6 .md
+       → 08-ARCHIVE/duplicates/New Maths - opus 4.6 .md
+       Reason: Duplicate pair - older version (newer: chain-of-trust\New Maths - chatgpt5.4 .md)
+
+[ 57] ✗ chain-of-trust\Tools and methods required - Opus 4.6 thinkin.md
+       → 08-ARCHIVE/duplicates/Tools and methods required - Opus 4.6 thinkin.md
+       Reason: Duplicate pair - older version (newer: chain-of-trust\Tools and methods required - ChatGPT 5.4.md)
+
+[ 58] ✗ chain-of-trust\Tools and methods required - minimax 2.7 .md
+       → 08-ARCHIVE/duplicates/Tools and methods required - minimax 2.7 .md
+       Reason: Duplicate pair - older version (newer: chain-of-trust\Tools and methods required - ChatGPT 5.4.md)
+
+[ 59] ✗ chain-of-trust\VIVIM Vault - Nature - Opus 4.6 .md
+       → 08-ARCHIVE/duplicates/VIVIM Vault - Nature - Opus 4.6 .md
+       Reason: Duplicate pair - older version (newer: chain-of-trust\VIVIM Vault - Nature - ChatGPT 5.4 .md)
+
+[ 60] ✗ OpenCore\VIVIM_OpenCore_Blueprint.md
+       → 08-ARCHIVE/duplicates/VIVIM_OpenCore_Blueprint.md
+       Reason: Duplicate pair - older version (newer: OpenCore\VIVIM_OpenCore_Blueprint_v1.1.md)
+
+[ 61] ✗ OpenCore\VIVIM_OpenCore_DatabaseSchema.md
+       → 08-ARCHIVE/duplicates/VIVIM_OpenCore_DatabaseSchema.md
+       Reason: Duplicate pair - older version (newer: OpenCore\VIVIM_OpenCore_DatabaseSchema v2.md)
+
+[ 62] ✗ VIVIM.docs\BIZ\fractal-ownership-v1-opus46think.md
+       → 08-ARCHIVE/duplicates/fractal-ownership-v1-opus46think.md
+       Reason: Duplicate pair - older version (newer: VIVIM.docs\BIZ\fractal-ownership-v1-opus46.md)
+
+[ 63] ✗ VIVIM.docs\PITCH\vivim.md
+       → 08-ARCHIVE/duplicates/vivim.md
+       Reason: Duplicate pair - older version (newer: chain-of-trust\vivim opus 4.6 nonT.md)
+
+[ 64] ✗ VIVIM.docs\vivim-app-legacy\plans\enhance-error-debugging-service.md
+       → 08-ARCHIVE/enhance-error-debugging-service.md
+       Reason: File in archive folder
+
+[ 65] ✗ VIVIM.docs\vivim-app-legacy\plans\pwa-redesign-architecture.md
+       → 08-ARCHIVE/pwa-redesign-architecture.md
+       Reason: File in archive folder
+
+[ 66] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\ARCHITECTURE\runbooks.md
+       → 08-ARCHIVE/runbooks.md
+       Reason: File in archive folder
+
+[ 67] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\ARCHITECTURE\zcompanies-api-endpoints.md
+       → 08-ARCHIVE/zcompanies-api-endpoints.md
+       Reason: File in archive folder
+
+[ 68] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\ARCHITECTURE\zcompanies-architecture.md
+       → 08-ARCHIVE/zcompanies-architecture.md
+       Reason: File in archive folder
+
+[ 69] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\ARCHITECTURE\zcompanies-data-flows.md
+       → 08-ARCHIVE/zcompanies-data-flows.md
+       Reason: File in archive folder
+
+[ 70] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\ARCHITECTURE\zcompanies-tech-stack.md
+       → 08-ARCHIVE/zcompanies-tech-stack.md
+       Reason: File in archive folder
+
+
+--- PROMOTE (111 files) ---
+
+[  1] ✗ VIVIM.docs\.archive\.old\00-MASTER-TASK-LIST.md
+       → 08-ARCHIVE/00-MASTER-TASK-LIST.md
+       Reason: Archive file with high-value content worth promoting
+
+[  2] ✗ VIVIM.docs\NETWORK\.current\01-DESIGN-OVERVIEW.md
+       → 08-ARCHIVE/01-DESIGN-OVERVIEW.md
+       Reason: Archive file with high-value content worth promoting
+
+[  3] ✗ VIVIM.docs\.archive\.current\01-system-architecture.md
+       → 08-ARCHIVE/01-system-architecture.md
+       Reason: Archive file with high-value content worth promoting
+
+[  4] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\ARCHITECTURE\01-tech-stack.md
+       → 08-ARCHIVE/01-tech-stack.md
+       Reason: Archive file with high-value content worth promoting
+
+[  5] ✗ VIVIM.docs\NETWORK\.current\02-SHARING-INTENT-SYSTEM.md
+       → 08-ARCHIVE/02-SHARING-INTENT-SYSTEM.md
+       Reason: Archive file with high-value content worth promoting
+
+[  6] ✗ VIVIM.docs\.archive\.old\02-SYSTEM-ARCHITECTURE.md
+       → 08-ARCHIVE/02-SYSTEM-ARCHITECTURE.md
+       Reason: Archive file with high-value content worth promoting
+
+[  7] ✗ VIVIM.docs\.archive\.current\02-feature-inventory.md
+       → 08-ARCHIVE/02-feature-inventory.md
+       Reason: Archive file with high-value content worth promoting
+
+[  8] ✗ VIVIM.docs\.archive\.old\03-FEATURE-INVENTORY.md
+       → 08-ARCHIVE/03-FEATURE-INVENTORY.md
+       Reason: Archive file with high-value content worth promoting
+
+[  9] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\ARCHITECTURE\03-api-endpoints.md
+       → 08-ARCHIVE/03-api-endpoints.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 10] ✗ VIVIM.docs\.archive\.old\04-DATA-MODELS-SCHEMA.md
+       → 08-ARCHIVE/04-DATA-MODELS-SCHEMA.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 11] ✗ VIVIM.docs\NETWORK\.current\04-NETWORK-ORCHESTRATION.md
+       → 08-ARCHIVE/04-NETWORK-ORCHESTRATION.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 12] ✗ VIVIM.docs\.archive\.current\04-user-flows-experience-map.md
+       → 08-ARCHIVE/04-user-flows-experience-map.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 13] ✗ VIVIM.docs\.archive\.old\05-API-ROUTE-INVENTORY.md
+       → 08-ARCHIVE/05-API-ROUTE-INVENTORY.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 14] ✗ VIVIM.docs\NETWORK\.current\05-SHARING-ANALYTICS.md
+       → 08-ARCHIVE/05-SHARING-ANALYTICS.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 15] ✗ VIVIM.docs\.archive\.current\05-open-questions-unresolved-decisions.md
+       → 08-ARCHIVE/05-open-questions-unresolved-decisions.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 16] ✗ VIVIM.docs\NETWORK\.current\06-DATABASE-SCHEMA.md
+       → 08-ARCHIVE/06-DATABASE-SCHEMA.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 17] ✗ VIVIM.docs\.archive\.old\06-FRONTEND-INVENTORY.md
+       → 08-ARCHIVE/06-FRONTEND-INVENTORY.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 18] ✗ VIVIM.docs\.archive\.current\06-competitive-differentiation-map.md
+       → 08-ARCHIVE/06-competitive-differentiation-map.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 19] ✗ VIVIM.docs\NETWORK\.current\07-API-ENDPOINTS.md
+       → 08-ARCHIVE/07-API-ENDPOINTS.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 20] ✗ VIVIM.docs\.archive\.old\07-IMPLEMENTATION-GAPS.md
+       → 08-ARCHIVE/07-IMPLEMENTATION-GAPS.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 21] ✗ VIVIM.docs\.archive\.current\07-north-star-next-phase-priorities.md
+       → 08-ARCHIVE/07-north-star-next-phase-priorities.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 22] ✗ VIVIM.docs\.archive\.current\08A-feature-implementation-audit.md
+       → 08-ARCHIVE/08A-feature-implementation-audit.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 23] ✗ VIVIM.docs\.archive\.current\08B-api-route-inventory.md
+       → 08-ARCHIVE/08B-api-route-inventory.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 24] ✗ VIVIM.docs\.archive\.current\08C-database-schema-gap-analysis.md
+       → 08-ARCHIVE/08C-database-schema-gap-analysis.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 25] ✗ VIVIM.docs\.archive\.current\08D-frontend-page-component-inventory.md
+       → 08-ARCHIVE/08D-frontend-page-component-inventory.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 26] ✗ VIVIM.docs\.archive\.current\08E-background-jobs-async-pipeline-audit.md
+       → 08-ARCHIVE/08E-background-jobs-async-pipeline-audit.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 27] ✗ VIVIM.docs\.archive\.current\08F-security-auth-audit.md
+       → 08-ARCHIVE/08F-security-auth-audit.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 28] ✗ VIVIM.docs\.archive\.current\08G-dependency-integration-health.md
+       → 08-ARCHIVE/08G-dependency-integration-health.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 29] ✗ VIVIM.docs\.archive\.current\08H-environment-config-devops-state.md
+       → 08-ARCHIVE/08H-environment-config-devops-state.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 30] ✗ VIVIM.docs\.archive\.old\09-BACKGROUND-JOBS-PIPELINE.md
+       → 08-ARCHIVE/09-BACKGROUND-JOBS-PIPELINE.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 31] ✗ VIVIM.docs\.archive\.old\10-DEPENDENCY-HEALTH.md
+       → 08-ARCHIVE/10-DEPENDENCY-HEALTH.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 32] ✗ VIVIM.docs\.archive\.old\11-ENVIRONMENT-DEVOPS.md
+       → 08-ARCHIVE/11-ENVIRONMENT-DEVOPS.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 33] ✗ VIVIM.docs\.archive\.old\12-DESIGN-SYSTEM.md
+       → 08-ARCHIVE/12-DESIGN-SYSTEM.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 34] ✗ VIVIM.docs\.archive\.old\14-OPEN-QUESTIONS-STRATEGY.md
+       → 08-ARCHIVE/14-OPEN-QUESTIONS-STRATEGY.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 35] ✗ VIVIM.docs\.archive\.old\15-ROADMAP-COMPETITIVE.md
+       → 08-ARCHIVE/15-ROADMAP-COMPETITIVE.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 36] ✗ VIVIM.docs\.archive\.old\ARCHITECTURE_AUDIT.md
+       → 08-ARCHIVE/ARCHITECTURE_AUDIT.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 37] ✗ VIVIM.docs\.archive\ASSESSMENT.md
+       → 08-ARCHIVE/ASSESSMENT.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 38] ✗ VIVIM.docs\.archive\CONTEXT_ENGINE_10X_REPORT.md
+       → 08-ARCHIVE/CONTEXT_ENGINE_10X_REPORT.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 39] ✗ VIVIM.docs\vivim-app-legacy\CONVERSATION_IMPORT_DESIGN.md
+       → 08-ARCHIVE/CONVERSATION_IMPORT_DESIGN.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 40] ✗ VIVIM.docs\.archive\.dev\CURRENT_ISSUES.md
+       → 08-ARCHIVE/CURRENT_ISSUES.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 41] ✗ VIVIM.docs\.archive\.old\ConflictMap_MunitionsCatalogue_Ticker.md
+       → 08-ARCHIVE/ConflictMap_MunitionsCatalogue_Ticker.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 42] ✗ VIVIM.docs\.archive\.dev\DESIGN_TOKENS.md
+       → 08-ARCHIVE/DESIGN_TOKENS.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 43] ✗ VIVIM.docs\vivim-app-legacy\DEVELOPMENT_PLAN.md
+       → 08-ARCHIVE/DEVELOPMENT_PLAN.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 44] ✗ VIVIM.docs\.archive\.dev\DEV_FRONTEND_DESIGN.md
+       → 08-ARCHIVE/DEV_FRONTEND_DESIGN.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 45] ✗ VIVIM.docs\.archive\DOCUMENTATION_CROSS_REFERENCE.md
+       → 08-ARCHIVE/DOCUMENTATION_CROSS_REFERENCE.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 46] ✗ VIVIM.docs\vivim-app-legacy\DOCUMENTATION_STRATEGY.md
+       → 08-ARCHIVE/DOCUMENTATION_STRATEGY.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 47] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\DOCUMENTATION_UPDATE_SUMMARY.md
+       → 08-ARCHIVE/DOCUMENTATION_UPDATE_SUMMARY.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 48] ✗ VIVIM.docs\.archive\.dev\EXECUTIVE_SUMMARY.md
+       → 08-ARCHIVE/EXECUTIVE_SUMMARY.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 49] ✗ VIVIM.docs\.archive\EXTRACTION_IMPROVEMENT_DESIGN.md
+       → 08-ARCHIVE/EXTRACTION_IMPROVEMENT_DESIGN.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 50] ✗ VIVIM.docs\vivim-app-legacy\EXTRACTOR_FIX_SUMMARY.md
+       → 08-ARCHIVE/EXTRACTOR_FIX_SUMMARY.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 51] ✗ VIVIM.docs\.archive\FEATURE_BRIDGE_BUILD.md
+       → 08-ARCHIVE/FEATURE_BRIDGE_BUILD.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 52] ✗ VIVIM.docs\.archive\.old\HIGH-TIER-FINAL-STATUS.md
+       → 08-ARCHIVE/HIGH-TIER-FINAL-STATUS.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 53] ✗ VIVIM.docs\.archive\.old\HIGH-TIER-IMPLEMENTATION-STATUS.md
+       → 08-ARCHIVE/HIGH-TIER-IMPLEMENTATION-STATUS.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 54] ✗ VIVIM.docs\.archive\ICON_LIBRARY_QUICK_REFERENCE.md
+       → 08-ARCHIVE/ICON_LIBRARY_QUICK_REFERENCE.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 55] ✗ VIVIM.docs\.archive\ICON_LIBRARY_SPECIFICATION.md
+       → 08-ARCHIVE/ICON_LIBRARY_SPECIFICATION.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 56] ✗ VIVIM.docs\.archive\IMPLEMENTATION_ROADMAP.md
+       → 08-ARCHIVE/IMPLEMENTATION_ROADMAP.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 57] ✗ VIVIM.docs\vivim-app-legacy\IMPORT_FIXES_COMPLETE.md
+       → 08-ARCHIVE/IMPORT_FIXES_COMPLETE.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 58] ✗ VIVIM.docs\vivim-app-legacy\IMPORT_FIXES_SUMMARY.md
+       → 08-ARCHIVE/IMPORT_FIXES_SUMMARY.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 59] ✗ VIVIM.docs\.archive\PHASE4_IMPLEMENTATION_SUMMARY.md
+       → 08-ARCHIVE/PHASE4_IMPLEMENTATION_SUMMARY.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 60] ✗ VIVIM.docs\.archive\PHASE5_IMPLEMENTATION_SUMMARY.md
+       → 08-ARCHIVE/PHASE5_IMPLEMENTATION_SUMMARY.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 61] ✗ VIVIM.docs\.archive\.old\PendingUPDATESall-01-critical.md
+       → 08-ARCHIVE/PendingUPDATESall-01-critical.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 62] ✗ VIVIM.docs\.archive\.old\PendingUPDATESall-02-high.md
+       → 08-ARCHIVE/PendingUPDATESall-02-high.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 63] ✗ VIVIM.docs\.archive\.old\PendingUPDATESall-03-medium-low.md
+       → 08-ARCHIVE/PendingUPDATESall-03-medium-low.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 64] ✗ VIVIM.docs\.archive\.old\PendingUPDATESall-INDEX.md
+       → 08-ARCHIVE/PendingUPDATESall-INDEX.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 65] ✗ VIVIM.docs\.archive\.dev\RESPONSIVE_BREAKPOINTS.md
+       → 08-ARCHIVE/RESPONSIVE_BREAKPOINTS.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 66] ✗ VIVIM.docs\.archive\.dev\ROUTING_NAVIGATION.md
+       → 08-ARCHIVE/ROUTING_NAVIGATION.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 67] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\SDK.md
+       → 08-ARCHIVE/SDK.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 68] ✗ VIVIM.docs\.archive\SOCIAL-FEATURES.md
+       → 08-ARCHIVE/SOCIAL-FEATURES.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 69] ✗ VIVIM.docs\.archive\.dev\SPEC.md
+       → 08-ARCHIVE/SPEC.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 70] ✗ VIVIM.docs\vivim-app-legacy\SYSTEM_FIXES_SUMMARY.md
+       → 08-ARCHIVE/SYSTEM_FIXES_SUMMARY.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 71] ✗ VIVIM.docs\vivim-app-legacy\TEST_REPORT_EXTRACTORS.md
+       → 08-ARCHIVE/TEST_REPORT_EXTRACTORS.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 72] ✗ VIVIM.docs\vivim-app-legacy\docs\TIERED_IMPORT_SERVICE_DESIGN.md
+       → 08-ARCHIVE/TIERED_IMPORT_SERVICE_DESIGN.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 73] ✗ VIVIM.docs\.archive\.dev\UI_COMPONENT_SPEC.md
+       → 08-ARCHIVE/UI_COMPONENT_SPEC.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 74] ✗ VIVIM.docs\.archive\USER_JOURNEY.md
+       → 08-ARCHIVE/USER_JOURNEY.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 75] ✗ VIVIM.docs\.archive\.old\VIVIM-ARCHIVE-DESIGN-FRAMEWORK.md
+       → 08-ARCHIVE/VIVIM-ARCHIVE-DESIGN-FRAMEWORK.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 76] ✗ VIVIM.docs\vivim-app-legacy\plans\VIVIM_10x_improvement_plan.md
+       → 08-ARCHIVE/VIVIM_10x_improvement_plan.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 77] ✗ VIVIM.docs\.archive\.current\VIVIM_COMPLETE_BLUEPRINT.md
+       → 08-ARCHIVE/VIVIM_COMPLETE_BLUEPRINT.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 78] ✗ VIVIM.docs\.archive\.old\VIVIM_COMPLETE_BLUEPRINT_todo.md
+       → 08-ARCHIVE/VIVIM_COMPLETE_BLUEPRINT_todo.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 79] ✗ VIVIM.docs\.archive\.current\VIVIM_DEEP_EXTRACTION.md
+       → 08-ARCHIVE/VIVIM_DEEP_EXTRACTION.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 80] ✗ VIVIM.docs\.archive\VIVIM_GAP_ANALYSIS.md
+       → 08-ARCHIVE/VIVIM_GAP_ANALYSIS.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 81] ✗ VIVIM.docs\.archive\VIVIM_NETWORK_ARCHITECTURE.md
+       → 08-ARCHIVE/VIVIM_NETWORK_ARCHITECTURE.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 82] ✗ VIVIM.docs\.archive\VIVIM_NETWORK_ARCHITECTURE_DESIGN.md
+       → 08-ARCHIVE/VIVIM_NETWORK_ARCHITECTURE_DESIGN.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 83] ✗ VIVIM.docs\.archive\VIVIM_NETWORK_IMPLEMENTATION_SUMMARY.md
+       → 08-ARCHIVE/VIVIM_NETWORK_IMPLEMENTATION_SUMMARY.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 84] ✗ VIVIM.docs\.archive\VIVIM_NETWORK_LOCAL_DEV.md
+       → 08-ARCHIVE/VIVIM_NETWORK_LOCAL_DEV.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 85] ✗ VIVIM.docs\.archive\VIVIM_USER_MANAGEMENT_DESIGN.md
+       → 08-ARCHIVE/VIVIM_USER_MANAGEMENT_DESIGN.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 86] ✗ VIVIM.docs\.archive\VIVIM_V1_FEATURES.md
+       → 08-ARCHIVE/VIVIM_V1_FEATURES.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 87] ✗ VIVIM.docs\vivim-app-legacy\plans\VIVIM_context_system_10x_improvement_plan.md
+       → 08-ARCHIVE/VIVIM_context_system_10x_improvement_plan.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 88] ✗ VIVIM.docs\vivim-app-legacy\plans\VIVIM_context_system_gaps_analysis.md
+       → 08-ARCHIVE/VIVIM_context_system_gaps_analysis.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 89] ✗ VIVIM.docs\vivim-app-legacy\plans\VIVIM_pipeline_gaps_analysis.md
+       → 08-ARCHIVE/VIVIM_pipeline_gaps_analysis.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 90] ✗ VIVIM.docs\.archive\ai-integration-and-context.md
+       → 08-ARCHIVE/ai-integration-and-context.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 91] ✗ VIVIM.docs\.archive\context-error.md
+       → 08-ARCHIVE/context-error.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 92] ✗ VIVIM.docs\.archive\context2.md
+       → 08-ARCHIVE/context2.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 93] ✗ VIVIM.docs\.archive\exraction-and-rendering-fix.md
+       → 08-ARCHIVE/exraction-and-rendering-fix.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 94] ✗ VIVIM.docs\.archive\gemini5.md
+       → 08-ARCHIVE/gemini5.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 95] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\home-panel-enhancements-todo.md
+       → 08-ARCHIVE/home-panel-enhancements-todo.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 96] ✗ VIVIM.docs\.archive\identity-design1.md
+       → 08-ARCHIVE/identity-design1.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 97] ✗ VIVIM.docs\vivim-app-legacy\index-minimal.md
+       → 08-ARCHIVE/index-minimal.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 98] ✗ VIVIM.docs\.archive\mini2.md
+       → 08-ARCHIVE/mini2.md
+       Reason: Archive file with high-value content worth promoting
+
+[ 99] ✗ VIVIM.docs\.archive\openscroll-100features.md
+       → 08-ARCHIVE/openscroll-100features.md
+       Reason: Archive file with high-value content worth promoting
+
+[100] ✗ VIVIM.docs\vivim-app-legacy\plans\pwa-component-specifications.md
+       → 08-ARCHIVE/pwa-component-specifications.md
+       Reason: Archive file with high-value content worth promoting
+
+[101] ✗ VIVIM.docs\vivim-app-legacy\plans\pwa-content-rendering-toolkit.md
+       → 08-ARCHIVE/pwa-content-rendering-toolkit.md
+       Reason: Archive file with high-value content worth promoting
+
+[102] ✗ VIVIM.docs\vivim-app-legacy\plans\pwa-redesign-plan.md
+       → 08-ARCHIVE/pwa-redesign-plan.md
+       Reason: Archive file with high-value content worth promoting
+
+[103] ✗ VIVIM.docs\vivim-app-legacy\quick-fix.md
+       → 08-ARCHIVE/quick-fix.md
+       Reason: Archive file with high-value content worth promoting
+
+[104] ✗ VIVIM.docs\vivim-app-legacy\session-ses_32c0.md
+       → 08-ARCHIVE/session-ses_32c0.md
+       Reason: Archive file with high-value content worth promoting
+
+[105] ✗ VIVIM.docs\.archive\session-ses_3b3b.md
+       → 08-ARCHIVE/session-ses_3b3b.md
+       Reason: Archive file with high-value content worth promoting
+
+[106] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\development\tokens.and.transport 2.md
+       → 08-ARCHIVE/tokens.and.transport 2.md
+       Reason: Archive file with high-value content worth promoting
+
+[107] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\tokens.and.transport.md
+       → 08-ARCHIVE/tokens.and.transport.md
+       Reason: Archive file with high-value content worth promoting
+
+[108] ✗ VIVIM.docs\.archive\user-id-management.md
+       → 08-ARCHIVE/user-id-management.md
+       Reason: Archive file with high-value content worth promoting
+
+[109] ✗ VIVIM.docs\.archive\v0-secondbrain0100features.md
+       → 08-ARCHIVE/v0-secondbrain0100features.md
+       Reason: Archive file with high-value content worth promoting
+
+[110] ✗ VIVIM.docs\.archive\vivim-100plus-features.md
+       → 08-ARCHIVE/vivim-100plus-features.md
+       Reason: Archive file with high-value content worth promoting
+
+[111] ✗ VIVIM.docs\vivim.docs.context\docs\_legacy\ARCHITECTURE\zcompanies-gap-analysis.md
+       → 08-ARCHIVE/zcompanies-gap-analysis.md
+       Reason: Archive file with high-value content worth promoting
+
+
+--- REVIEW (3 files) ---
+
+[  1] ✓ VIVIM.docs\vivim-live\full-docs\features\03-secure-collaboration.md
+       → 08-ARCHIVE/03-secure-collaboration.md
+       Reason: Classified based on content matching 08-ARCHIVE/
+
+[  2] ✓ VIVIM.docs\OPENsource\website\about.md
+       → 08-ARCHIVE/about.md
+       Reason: Classified based on content matching 08-ARCHIVE/
+
+[  3] ✓ VIVIM.docs\.archive\OPUS_PRIORITIZATION.md
+       → 08-ARCHIVE/duplicates/OPUS_PRIORITIZATION.md
+       Reason: Duplicate pair - older version (newer: VIVIM.docs\sovereign-memory\Opus 4.6\Opus 4.6 .md)

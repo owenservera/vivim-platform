@@ -23,7 +23,7 @@ import crypto from 'crypto';
 const rustCore = null;
 try {
   // This will work once Rust core is compiled with UniFFI
-  // rustCore = await import('../../openscroll-core/index.js');
+  // rustCore = await import('../../vivim-core/index.js');
 } catch (error) {
   logger.warn('Rust core not available, using mock implementation');
 }

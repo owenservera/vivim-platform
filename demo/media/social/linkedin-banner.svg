@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1584" height="396" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#0a0a0f"/>
+  <text x="80" y="200" font-family="system-ui" font-size="64" font-weight="700" fill="#EF9F27">
+    VIVIM
+  </text>
+  <text x="80" y="260" font-family="system-ui" font-size="28" fill="#ffffff">
+    Own Your AI Brain
+  </text>
+  <text x="80" y="310" font-family="system-ui" font-size="18" fill="#888888">
+    Capture · Organize · Surface · Remember
+  </text>
+</svg>

@@ -163,7 +163,7 @@ export const captureResponseSchema = z.object({
 
 export const healthResponseSchema = z.object({
   status: z.literal('ok'),
-  service: z.literal('OpenScroll Capture API'),
+  service: z.literal('VIVIM Capture API'),
   version: z.string(),
   timestamp: z.string().datetime(),
   uptime: z.number(),

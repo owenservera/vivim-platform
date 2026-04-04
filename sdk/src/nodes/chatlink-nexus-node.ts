@@ -8,11 +8,12 @@
  * - ChatGPT (chatgpt.com)
  * - Claude (claude.ai)
  * - Gemini (gemini.google.com)
- * - Grok (x.ai/grok)
- * - Qwen (qwenlm.com)
- * - Kimi (kimi.moonshot.cn)
- * - DeepSeek (deepseek.com)
- * - Perplexity (perplexity.ai)
+ * - Grok (grok.com)
+ * - Qwen (chat.qwen.ai)
+ * - Kimi (www.kimi.com)
+ * - DeepSeek (chat.deepseek.com)
+ * - Z-AI (chat.z.ai)
+ * - Perplexity (www.perplexity.ai)
  */
 
 import type { VivimSDK } from '../core/sdk.js';
@@ -40,6 +41,7 @@ export type SupportedProvider =
   | 'qwen'
   | 'kimi'
   | 'deepseek'
+  | 'zai'
   | 'perplexity'
   | 'auto'; // Auto-detect from URL
 
@@ -186,32 +188,37 @@ export class ChatLinkNexus implements ChatLinkNexusAPI {
     },
     gemini: {
       provider: 'gemini',
-      urlPattern: /gemini\.google\.com\/share\/[a-z0-9-]+/i,
+      urlPattern: /gemini\.google\.com\/share\/[a-z0-9]+/i,
       settingsFile: 'gemini-settings.txt',
     },
     grok: {
       provider: 'grok',
-      urlPattern: /x\.ai\/grok\/share\/[a-z0-9-]+/i,
+      urlPattern: /grok\.com\/share\/[a-z0-9_-]+/i,
       settingsFile: 'grok-settings.txt',
     },
     qwen: {
       provider: 'qwen',
-      urlPattern: /qwenlm\.com\/share\/[a-z0-9-]+/i,
+      urlPattern: /chat\.qwen\.ai\/s\/[a-z0-9-]+/i,
       settingsFile: 'qwen-settings.txt',
     },
     kimi: {
       provider: 'kimi',
-      urlPattern: /kimi\.moonshot\.cn\/share\/[a-z0-9-]+/i,
+      urlPattern: /www\.kimi\.com\/share\/[a-z0-9-]+/i,
       settingsFile: 'kimi-settings.txt',
     },
     deepseek: {
       provider: 'deepseek',
-      urlPattern: /deepseek\.com\/share\/[a-z0-9-]+/i,
+      urlPattern: /chat\.deepseek\.com\/share\/[a-z0-9]+/i,
       settingsFile: 'deepseek-settings.txt',
+    },
+    zai: {
+      provider: 'zai',
+      urlPattern: /chat\.z\.ai\/s\/[a-z0-9-]+/i,
+      settingsFile: 'zai-settings.txt',
     },
     perplexity: {
       provider: 'perplexity',
-      urlPattern: /perplexity\.ai\/share\/[a-z0-9-]+/i,
+      urlPattern: /www\.perplexity\.ai\/search\/[a-z0-9-]+/i,
       settingsFile: null, // Not yet implemented
     },
     auto: {

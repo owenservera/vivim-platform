@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1920" height="1080" 
+     xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#0a0a0f"/>
+  
+  <!-- Grid Pattern -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1a1a2e" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#grid)"/>
+  
+  <!-- Header -->
+  <rect width="100%" height="64" fill="#1a1a2e" opacity="0.9"/>
+  <text x="32" y="42" font-family="system-ui" font-size="24" font-weight="600" fill="#ffffff">
+    VIVIM — Knowledge Graph
+  </text>
+  <text x="1700" y="42" font-family="system-ui" font-size="14" fill="#888888">
+    2,161 nodes · 734 connections
+  </text>
+  
+  <!-- Edges (connections) -->
+  
+    <line x1="375.9714519826035" y1="165.84570466712375" x2="1530.0575669288505" y2="570.6700048001834" 
+          stroke="#3B82F6" stroke-width="2.3315814329814724" 
+          opacity="0.43747658816153334"/>
+  
+    <line x1="501.5887251594304" y1="598.1543718717435" x2="1372.5099307424448" y2="256.9565147666653" 
+          stroke="#3B82F6" stroke-width="1.9296634444160454" 
+          opacity="0.29224823898783936"/>
+  
+    <line x1="974.7283887066209" y1="346.9655281402631" x2="1114.326150493469" y2="483.00335557956464" 
+          stroke="#3B82F6" stroke-width="2.129076979428035" 
+          opacity="0.4472504413758278"/>
+  
+    <line x1="1537.0187946537824" y1="348.168860448027" x2="956.8401061226916" y2="593.2452008023871" 
+          stroke="#3B82F6" stroke-width="0.8322983269422259" 
+          opacity="0.48903629801124543"/>
+  
+    <line x1="974.7283887066209" y1="346.9655281402631" x2="618.9639166595398" y2="466.64509109396147" 
+          stroke="#3B82F6" stroke-width="0.7984872186090108" 
+          opacity="0.29808537159135695"/>
+  
+    <line x1="1414.7310895802943" y1="674.2255905401876" x2="1271.0953604047813" y2="557.2751387921808" 
+          stroke="#3B82F6" stroke-width="1.8948247353620982" 
+          opacity="0.27237998471668085"/>
+  
+    <line x1="1670.6294155685916" y1="748.4750081211766" x2="1618.338099500109" y2="843.8718201149575" 
+          stroke="#3B82F6" stroke-width="1.650929252226576" 
+          opacity="0.41380201662963784"/>
+  
+    <line x1="306.5015787450525" y1="355.70436008011524" x2="901.1136356782749" y2="355.96170252509023" 
+          stroke="#3B82F6" stroke-width="1.0835893284312852" 
+          opacity="0.2745529366867068"/>
+  
+    <line x1="1114.326150493469" y1="483.00335557956464" x2="493.9439827887375" y2="359.5927566004128" 
+          stroke="#3B82F6" stroke-width="1.7862293620083851" 
+          opacity="0.3719771235556597"/>
+  
+    <line x1="681.1933826375973" y1="383.54270456364907" x2="671.9200577281683" y2="656.2965987456435" 
+          stroke="#3B82F6" stroke-width="1.5542512096215522" 
+          opacity="0.5247676828639423"/>
+  
+    <line x1="991.6067321435963" y1="602.2884806524141" x2="1530.0575669288505" y2="570.6700048001834" 
+          stroke="#3B82F6" stroke-width="2.204091405890462" 
+          opacity="0.3770041983243647"/>
+  
+    <line x1="711.7752879399907" y1="320.12492431578596" x2="1245.204011410046" y2="232.16689588577088" 
+          stroke="#3B82F6" stroke-width="1.9346039251434843" 
+          opacity="0.47079528314325686"/>
+  
+    <line x1="1646.1794463784952" y1="732.0851883006052" x2="629.3738436749353" y2="816.7213212290999" 
+          stroke="#3B82F6" stroke-width="1.787775582991842" 
+          opacity="0.4620638167212488"/>
+  
+    <line x1="1063.993498803165" y1="708.048360719755" x2="582.2983331943249" y2="719.3091217817023" 
+          stroke="#3B82F6" stroke-width="2.2815253077087183" 
+          opacity="0.3668488841854945"/>
+  
+    <line x1="1585.5873169514743" y1="773.822326822541" x2="670.3080539734062" y2="734.545935589873" 
+          stroke="#3B82F6" stroke-width="1.6175778639746619" 
+          opacity="0.4284685803866807"/>
+  
+    <line x1="1271.0953604047813" y1="557.2751387921808" x2="1585.5873169514743" y2="773.822326822541" 
+          stroke="#3B82F6" stroke-width="1.1543105326033753" 
+          opacity="0.5172749755532264"/>
+  
+    <line x1="306.5015787450525" y1="355.70436008011524" x2="375.9714519826035" y2="165.84570466712375" 
+          stroke="#3B82F6" stroke-width="1.7606111935996083" 
+          opacity="0.6879998212216777"/>
+  
+    <line x1="493.9439827887375" y1="359.5927566004128" x2="278.57580364155547" y2="251.59588960135184" 
+          stroke="#3B82F6" stroke-width="2.306093890164065" 
+          opacity="0.542602478040427"/>
+  
+    <line x1="681.7770903046771" y1="485.5517933197432" x2="1314.5384639031752" y2="159.0170315808644" 
+          stroke="#3B82F6" stroke-width="2.1009973417945718" 
+          opacity="0.3059508269970182"/>
+  
+    <line x1="1314.5384639031752" y1="159.0170315808644" x2="1627.3040858399677" y2="237.12867179725203" 
+          stroke="#3B82F6" stroke-width="1.8201667660666816" 
+          opacity="0.5506848661462624"/>
+  
+    <line x1="1372.5099307424448" y1="256.9565147666653" x2="1314.5384639031752" y2="159.0170315808644" 
+          stroke="#3B82F6" stroke-width="0.7369620803751962" 
+          opacity="0.4714377050627035"/>
+  
+    <line x1="375.9714519826035" y1="165.84570466712375" x2="1530.0575669288505" y2="570.6700048001834" 
+          stroke="#3B82F6" stroke-width="2.243785773793495" 
+          opacity="0.48804952972461196"/>
+  
+    <line x1="278.57580364155547" y1="251.59588960135184" x2="671.9200577281683" y2="656.2965987456435" 
+          stroke="#3B82F6" stroke-width="1.1499613209023216" 
+          opacity="0.3310865816380497"/>
+  
+    <line x1="476.7274365575352" y1="528.6276892931608" x2="1530.0575669288505" y2="570.6700048001834" 
+          stroke="#3B82F6" stroke-width="2.2719859714201553" 
+          opacity="0.228716228673284"/>
+  
+    <line x1="1552.8714406957636" y1="331.9886292343626" x2="662.4952648766943" y2="767.8561691318934" 
+          stroke="#3B82F6" stroke-width="0.960875825272973" 
+          opacity="0.21765102608649262"/>
+  
+    <line x1="305.60933703508914" y1="298.73583486611494" x2="1627.3040858399677" y2="237.12867179725203" 
+          stroke="#3B82F6" stroke-width="1.3523258673028171" 
+          opacity="0.6738987066248807"/>
+  
+    <line x1="671.9200577281683" y1="656.2965987456435" x2="1537.0187946537824" y2="348.168860448027" 
+          stroke="#3B82F6" stroke-width="1.1042498040325777" 
+          opacity="0.5992413540255348"/>
+  
+    <line x1="964.981672855993" y1="672.3533675677523" x2="1314.5384639031752" y2="159.0170315808644" 
+          stroke="#3B82F6" stroke-width="1.6012768624178049" 
+          opacity="0.3742642199592878"/>
+  
+    <line x1="956.8401061226916" y1="593.2452008023871" x2="306.5015787450525" y2="355.70436008011524" 
+          stroke="#3B82F6" stroke-width="2.2317313285676486" 
+          opacity="0.5186440598016122"/>
+  
+    <line x1="1618.338099500109" y1="843.8718201149575" x2="1530.0575669288505" y2="570.6700048001834" 
+          stroke="#3B82F6" stroke-width="1.7656631409108052" 
+          opacity="0.35689580603801846"/>
+  
+    <line x1="1537.0187946537824" y1="348.168860448027" x2="221.027017532603" y2="604.3844289400836" 
+          stroke="#3B82F6" stroke-width="2.3374419891257765" 
+          opacity="0.34188264929324697"/>
+  
+    <line x1="1627.3040858399677" y1="237.12867179725203" x2="501.5887251594304" y2="598.1543718717435" 
+          stroke="#3B82F6" stroke-width="1.238375340354372" 
+          opacity="0.37567071727563167"/>
+  
+    <line x1="278.57580364155547" y1="251.59588960135184" x2="670.3080539734062" y2="734.545935589873" 
+          stroke="#3B82F6" stroke-width="1.452502249917714" 
+          opacity="0.2954060027853307"/>
+  
+    <line x1="578.4453565365923" y1="286.2797169944594" x2="1618.338099500109" y2="843.8718201149575" 
+          stroke="#3B82F6" stroke-width="0.6038602363357479" 
+          opacity="0.46818142661287265"/>
+  
+    <line x1="1130.4320172428183" y1="646.6771025882811" x2="221.027017532603" y2="604.3844289400836" 
+          stroke="#3B82F6" stroke-width="2.2191053510400494" 
+          opacity="0.3600917679878351"/>
+  
+    <line x1="1372.5099307424448" y1="256.9565147666653" x2="446.881232497596" y2="168.45331422492535" 
+          stroke="#3B82F6" stroke-width="1.6407872103673713" 
+          opacity="0.33664266603302023"/>
+  
+    <line x1="662.4952648766943" y1="767.8561691318934" x2="1063.993498803165" y2="708.048360719755" 
+          stroke="#3B82F6" stroke-width="2.3716551788930795" 
+          opacity="0.5922931846108889"/>
+  
+    <line x1="1585.5873169514743" y1="773.822326822541" x2="582.2983331943249" y2="719.3091217817023" 
+          stroke="#3B82F6" stroke-width="0.6923068064566109" 
+          opacity="0.2117186880381764"/>
+  
+    <line x1="1481.9383377608065" y1="256.66154875758383" x2="1372.5099307424448" y2="256.9565147666653" 
+          stroke="#3B82F6" stroke-width="1.563540199238802" 
+          opacity="0.37253237016445767"/>
+  
+    <line x1="1314.5384639031752" y1="159.0170315808644" x2="278.57580364155547" y2="251.59588960135184" 
+          stroke="#3B82F6" stroke-width="1.6316434834082723" 
+          opacity="0.3725100017476165"/>
+  
+    <line x1="305.60933703508914" y1="298.73583486611494" x2="1114.326150493469" y2="483.00335557956464" 
+          stroke="#3B82F6" stroke-width="0.8579874328572299" 
+          opacity="0.21862610718354036"/>
+  
+    <line x1="375.9714519826035" y1="165.84570466712375" x2="1585.5873169514743" y2="773.822326822541" 
+          stroke="#3B82F6" stroke-width="1.7884177226765516" 
+          opacity="0.5052387386341013"/>
+  
+    <line x1="670.3080539734062" y1="734.545935589873" x2="221.027017532603" y2="604.3844289400836" 
+          stroke="#3B82F6" stroke-width="2.2908733840281084" 
+          opacity="0.2370803418206579"/>
+  
+    <line x1="1063.993498803165" y1="708.048360719755" x2="305.60933703508914" y2="298.73583486611494" 
+          stroke="#3B82F6" stroke-width="1.8758632959789536" 
+          opacity="0.2933087377529508"/>
+  
+    <line x1="1670.6294155685916" y1="748.4750081211766" x2="1414.7310895802943" y2="674.2255905401876" 
+          stroke="#3B82F6" stroke-width="0.7736571661719307" 
+          opacity="0.6812834509725672"/>
+  
+    <line x1="1585.5873169514743" y1="773.822326822541" x2="1627.3040858399677" y2="237.12867179725203" 
+          stroke="#3B82F6" stroke-width="1.9192921625158874" 
+          opacity="0.461319770113953"/>
+  
+    <line x1="991.6067321435963" y1="602.2884806524141" x2="319.86010647796365" y2="543.4776601317972" 
+          stroke="#3B82F6" stroke-width="1.843143254208635" 
+          opacity="0.2358274022027692"/>
+  
+    <line x1="670.3080539734062" y1="734.545935589873" x2="1473.7698630099032" y2="287.57092173215835" 
+          stroke="#3B82F6" stroke-width="2.4977053234357136" 
+          opacity="0.5462886040123228"/>
+  
+    <line x1="1414.7310895802943" y1="674.2255905401876" x2="1481.9383377608065" y2="256.66154875758383" 
+          stroke="#3B82F6" stroke-width="0.5926798000092011" 
+          opacity="0.6104712141813045"/>
+  
+    <line x1="878.2093407028171" y1="324.85892435886757" x2="1670.6294155685916" y2="748.4750081211766" 
+          stroke="#3B82F6" stroke-width="2.4611986394703953" 
+          opacity="0.643537669453718"/>
+  
+    <line x1="582.2983331943249" y1="719.3091217817023" x2="681.1933826375973" y2="383.54270456364907" 
+          stroke="#3B82F6" stroke-width="2.482693422580704" 
+          opacity="0.2695709785810832"/>
+  
+    <line x1="901.1136356782749" y1="355.96170252509023" x2="1665.3533724624037" y2="542.71315582794" 
+          stroke="#3B82F6" stroke-width="1.2574613716412386" 
+          opacity="0.4048216575666289"/>
+  
+    <line x1="1646.1794463784952" y1="732.0851883006052" x2="670.3080539734062" y2="734.545935589873" 
+          stroke="#3B82F6" stroke-width="1.9704866563758752" 
+          opacity="0.2902178411194849"/>
+  
+    <line x1="375.9714519826035" y1="165.84570466712375" x2="1414.7310895802943" y2="674.2255905401876" 
+          stroke="#3B82F6" stroke-width="2.2309794164784287" 
+          opacity="0.5195856013471297"/>
+  
+    <line x1="493.9439827887375" y1="359.5927566004128" x2="1618.338099500109" y2="843.8718201149575" 
+          stroke="#3B82F6" stroke-width="1.7350300552367752" 
+          opacity="0.4291349095299864"/>
+  
+    <line x1="671.9200577281683" y1="656.2965987456435" x2="375.9714519826035" y2="165.84570466712375" 
+          stroke="#3B82F6" stroke-width="2.3293862581699876" 
+          opacity="0.41616487321661144"/>
+  
+    <line x1="319.86010647796365" y1="543.4776601317972" x2="991.6067321435963" y2="602.2884806524141" 
+          stroke="#3B82F6" stroke-width="2.3857830309659898" 
+          opacity="0.35426068030395663"/>
+  
+    <line x1="670.3080539734062" y1="734.545935589873" x2="1315.3841156992498" y2="368.8880500120066" 
+          stroke="#3B82F6" stroke-width="1.4312822318332363" 
+          opacity="0.41460272193094944"/>
+  
+    <line x1="1240.1252597389448" y1="668.3477418477172" x2="1552.8714406957636" y2="331.9886292343626" 
+          stroke="#3B82F6" stroke-width="1.7246824811927546" 
+          opacity="0.340591531809132"/>
+  
+    <line x1="1473.7698630099032" y1="287.57092173215835" x2="956.8401061226916" y2="593.2452008023871" 
+          stroke="#3B82F6" stroke-width="0.7651702588117646" 
+          opacity="0.2162011195056367"/>
+  
+    <line x1="221.027017532603" y1="604.3844289400836" x2="446.881232497596" y2="168.45331422492535" 
+          stroke="#3B82F6" stroke-width="1.2319827089115885" 
+          opacity="0.6854273085807328"/>
+  
+    <line x1="305.60933703508914" y1="298.73583486611494" x2="582.2983331943249" y2="719.3091217817023" 
+          stroke="#3B82F6" stroke-width="0.7527123408108924" 
+          opacity="0.4709603772585119"/>
+  
+    <line x1="618.9639166595398" y1="466.64509109396147" x2="956.8401061226916" y2="593.2452008023871" 
+          stroke="#3B82F6" stroke-width="1.2537807566079282" 
+          opacity="0.5449011491264872"/>
+  
+    <line x1="1473.7698630099032" y1="287.57092173215835" x2="956.8401061226916" y2="593.2452008023871" 
+          stroke="#3B82F6" stroke-width="0.6568143389765957" 
+          opacity="0.23530830922275653"/>
+  
+    <line x1="681.1933826375973" y1="383.54270456364907" x2="1646.1794463784952" y2="732.0851883006052" 
+          stroke="#3B82F6" stroke-width="0.8013824441992523" 
+          opacity="0.484416294224969"/>
+  
+    <line x1="1114.326150493469" y1="483.00335557956464" x2="1063.993498803165" y2="708.048360719755" 
+          stroke="#3B82F6" stroke-width="1.861916825466099" 
+          opacity="0.21413778398501776"/>
+  
+    <line x1="306.5015787450525" y1="355.70436008011524" x2="1585.5873169514743" y2="773.822326822541" 
+          stroke="#3B82F6" stroke-width="2.292648033073424" 
+          opacity="0.24336674058963204"/>
+  
+    <line x1="974.7283887066209" y1="346.9655281402631" x2="278.57580364155547" y2="251.59588960135184" 
+          stroke="#3B82F6" stroke-width="1.768106189354773" 
+          opacity="0.31076057359196313"/>
+  
+    <line x1="1063.993498803165" y1="708.048360719755" x2="1344.1275716140037" y2="419.6683024584427" 
+          stroke="#3B82F6" stroke-width="1.9205613253150207" 
+          opacity="0.28655359124723007"/>
+  
+    <line x1="1315.3841156992498" y1="368.8880500120066" x2="1552.8714406957636" y2="331.9886292343626" 
+          stroke="#3B82F6" stroke-width="1.7823491181321436" 
+          opacity="0.5365275907942941"/>
+  
+    <line x1="618.9639166595398" y1="466.64509109396147" x2="681.7770903046771" y2="485.5517933197432" 
+          stroke="#3B82F6" stroke-width="1.0035757933933704" 
+          opacity="0.5983017319730088"/>
+  
+    <line x1="1344.1275716140037" y1="419.6683024584427" x2="1315.3841156992498" y2="368.8880500120066" 
+          stroke="#3B82F6" stroke-width="2.112635405281254" 
+          opacity="0.6047534691981387"/>
+  
+    <line x1="1414.7310895802943" y1="674.2255905401876" x2="1271.0953604047813" y2="557.2751387921808" 
+          stroke="#3B82F6" stroke-width="1.1135192129729878" 
+          opacity="0.39484728681127285"/>
+  
+    <line x1="964.981672855993" y1="672.3533675677523" x2="1314.5384639031752" y2="159.0170315808644" 
+          stroke="#3B82F6" stroke-width="2.4957363604597673" 
+          opacity="0.6396889108143431"/>
+  
+    <line x1="1245.204011410046" y1="232.16689588577088" x2="582.2983331943249" y2="719.3091217817023" 
+          stroke="#3B82F6" stroke-width="2.2335293698061687" 
+          opacity="0.6447867248928945"/>
+  
+    <line x1="991.6067321435963" y1="602.2884806524141" x2="1063.993498803165" y2="708.048360719755" 
+          stroke="#3B82F6" stroke-width="1.6734296298576818" 
+          opacity="0.3993686578781407"/>
+  
+    <line x1="1473.7698630099032" y1="287.57092173215835" x2="1585.5873169514743" y2="773.822326822541" 
+          stroke="#3B82F6" stroke-width="1.4136248575409467" 
+          opacity="0.5090710018587573"/>
+  
+    <line x1="1315.3841156992498" y1="368.8880500120066" x2="493.9439827887375" y2="359.5927566004128" 
+          stroke="#3B82F6" stroke-width="1.0316587188851287" 
+          opacity="0.667118402492485"/>
+  
+    <line x1="1315.3841156992498" y1="368.8880500120066" x2="221.027017532603" y2="604.3844289400836" 
+          stroke="#3B82F6" stroke-width="1.4535330071897232" 
+          opacity="0.41061627364022607"/>
+  
+    <line x1="662.4952648766943" y1="767.8561691318934" x2="501.5887251594304" y2="598.1543718717435" 
+          stroke="#3B82F6" stroke-width="0.6230153369349489" 
+          opacity="0.36325145081449167"/>
+  
+  
+  <!-- Nodes (ACUs) -->
+  
+    <circle cx="681.1933826375973" cy="383.54270456364907" r="7.7460498249001954" fill="#3B82F6" opacity="0.9">
+      <title>Postgres Index</title>
+    </circle>
+    
+  
+    <circle cx="306.5015787450525" cy="355.70436008011524" r="6.635220039712179" fill="#3B82F6" opacity="0.9">
+      <title>Debug Session</title>
+    </circle>
+    
+  
+    <circle cx="711.7752879399907" cy="320.12492431578596" r="4.887963425612018" fill="#888888" opacity="0.9">
+      <title>Postgres Index</title>
+    </circle>
+    
+  
+    <circle cx="991.6067321435963" cy="602.2884806524141" r="12.00050511059887" fill="#10b981" opacity="0.9">
+      <title>Code Review</title>
+    </circle>
+    <text x="991.6067321435963" y="586.2879755418153" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">Code Review</text>
+  
+    <circle cx="1552.8714406957636" cy="331.9886292343626" r="14.663573831243543" fill="#10b981" opacity="0.9">
+      <title>Code Review</title>
+    </circle>
+    <text x="1552.8714406957636" y="313.32505540311905" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">Code Review</text>
+  
+    <circle cx="476.7274365575352" cy="528.6276892931608" r="8.215845516321295" fill="#10b981" opacity="0.9">
+      <title>API Design</title>
+    </circle>
+    <text x="476.7274365575352" y="516.4118437768394" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">API Design</text>
+  
+    <circle cx="1414.7310895802943" cy="674.2255905401876" r="7.678557354287458" fill="#10b981" opacity="0.9">
+      <title>Postgres Index</title>
+    </circle>
+    
+  
+    <circle cx="1130.4320172428183" cy="646.6771025882811" r="5.303002775116147" fill="#888888" opacity="0.9">
+      <title>React Hooks</title>
+    </circle>
+    
+  
+    <circle cx="1585.5873169514743" cy="773.822326822541" r="14.459705336938509" fill="#888888" opacity="0.9">
+      <title>React Hooks</title>
+    </circle>
+    <text x="1585.5873169514743" y="755.3626214856024" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">React Hooks</text>
+  
+    <circle cx="681.7770903046771" cy="485.5517933197432" r="8.310784665330562" fill="#EF9F27" opacity="0.9">
+      <title>API Design</title>
+    </circle>
+    <text x="681.7770903046771" y="473.2410086544126" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">API Design</text>
+  
+    <circle cx="221.027017532603" cy="604.3844289400836" r="5.1464728612019695" fill="#EF9F27" opacity="0.9">
+      <title>Postgres Index</title>
+    </circle>
+    
+  
+    <circle cx="964.981672855993" cy="672.3533675677523" r="11.749855600586184" fill="#10b981" opacity="0.9">
+      <title>TS Generics</title>
+    </circle>
+    <text x="964.981672855993" y="656.6035119671661" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">TS Generics</text>
+  
+    <circle cx="501.5887251594304" cy="598.1543718717435" r="7.9515482669188575" fill="#EF9F27" opacity="0.9">
+      <title>Debug Session</title>
+    </circle>
+    
+  
+    <circle cx="319.86010647796365" cy="543.4776601317972" r="7.812440713747425" fill="#888888" opacity="0.9">
+      <title>TS Generics</title>
+    </circle>
+    
+  
+    <circle cx="1240.1252597389448" cy="668.3477418477172" r="15.967318398492015" fill="#3B82F6" opacity="0.9">
+      <title>React Hooks</title>
+    </circle>
+    <text x="1240.1252597389448" y="648.3804234492252" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">React Hooks</text>
+  
+    <circle cx="629.3738436749353" cy="816.7213212290999" r="4.689423145087851" fill="#888888" opacity="0.9">
+      <title>API Design</title>
+    </circle>
+    
+  
+    <circle cx="671.9200577281683" cy="656.2965987456435" r="11.900989054041325" fill="#10b981" opacity="0.9">
+      <title>React Hooks</title>
+    </circle>
+    <text x="671.9200577281683" y="640.3956096916021" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">React Hooks</text>
+  
+    <circle cx="278.57580364155547" cy="251.59588960135184" r="7.753163004821131" fill="#10b981" opacity="0.9">
+      <title>Debug Session</title>
+    </circle>
+    
+  
+    <circle cx="974.7283887066209" cy="346.9655281402631" r="14.844885449610354" fill="#888888" opacity="0.9">
+      <title>System Architecture</title>
+    </circle>
+    <text x="974.7283887066209" y="328.12064269065274" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">System Architecture</text>
+  
+    <circle cx="662.4952648766943" cy="767.8561691318934" r="4.7622284955663545" fill="#3B82F6" opacity="0.9">
+      <title>API Design</title>
+    </circle>
+    
+  
+    <circle cx="1618.338099500109" cy="843.8718201149575" r="10.329762247826464" fill="#10b981" opacity="0.9">
+      <title>React Hooks</title>
+    </circle>
+    <text x="1618.338099500109" y="829.542057867131" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">React Hooks</text>
+  
+    <circle cx="1670.6294155685916" cy="748.4750081211766" r="5.11881637892403" fill="#888888" opacity="0.9">
+      <title>System Architecture</title>
+    </circle>
+    
+  
+    <circle cx="1271.0953604047813" cy="557.2751387921808" r="5.755410938622885" fill="#888888" opacity="0.9">
+      <title>React Hooks</title>
+    </circle>
+    
+  
+    <circle cx="375.9714519826035" cy="165.84570466712375" r="7.228548717532776" fill="#EF9F27" opacity="0.9">
+      <title>System Architecture</title>
+    </circle>
+    
+  
+    <circle cx="1344.1275716140037" cy="419.6683024584427" r="13.056593600194098" fill="#3B82F6" opacity="0.9">
+      <title>TS Generics</title>
+    </circle>
+    <text x="1344.1275716140037" y="402.6117088582486" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">TS Generics</text>
+  
+    <circle cx="1315.3841156992498" cy="368.8880500120066" r="12.785141539251628" fill="#888888" opacity="0.9">
+      <title>React Hooks</title>
+    </circle>
+    <text x="1315.3841156992498" y="352.10290847275496" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">React Hooks</text>
+  
+    <circle cx="878.2093407028171" cy="324.85892435886757" r="7.095699388418863" fill="#3B82F6" opacity="0.9">
+      <title>System Architecture</title>
+    </circle>
+    
+  
+    <circle cx="1473.7698630099032" cy="287.57092173215835" r="12.822149543414309" fill="#10b981" opacity="0.9">
+      <title>Debug Session</title>
+    </circle>
+    <text x="1473.7698630099032" y="270.74877218874406" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">Debug Session</text>
+  
+    <circle cx="670.3080539734062" cy="734.545935589873" r="12.622499508082571" fill="#10b981" opacity="0.9">
+      <title>TS Generics</title>
+    </circle>
+    <text x="670.3080539734062" y="717.9234360817904" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">TS Generics</text>
+  
+    <circle cx="1537.0187946537824" cy="348.168860448027" r="9.011359227517033" fill="#10b981" opacity="0.9">
+      <title>TS Generics</title>
+    </circle>
+    <text x="1537.0187946537824" y="335.15750122050997" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">TS Generics</text>
+  
+    <circle cx="305.60933703508914" cy="298.73583486611494" r="8.20877014161265" fill="#888888" opacity="0.9">
+      <title>System Architecture</title>
+    </circle>
+    <text x="305.60933703508914" y="286.5270647245023" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">System Architecture</text>
+  
+    <circle cx="446.881232497596" cy="168.45331422492535" r="4.4651223425459285" fill="#888888" opacity="0.9">
+      <title>API Design</title>
+    </circle>
+    
+  
+    <circle cx="1063.993498803165" cy="708.048360719755" r="13.966580206711257" fill="#3B82F6" opacity="0.9">
+      <title>API Design</title>
+    </circle>
+    <text x="1063.993498803165" y="690.0817805130438" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">API Design</text>
+  
+    <circle cx="1627.3040858399677" cy="237.12867179725203" r="6.24035656995733" fill="#EF9F27" opacity="0.9">
+      <title>Postgres Index</title>
+    </circle>
+    
+  
+    <circle cx="1665.3533724624037" cy="542.71315582794" r="10.799978689235003" fill="#3B82F6" opacity="0.9">
+      <title>Postgres Index</title>
+    </circle>
+    <text x="1665.3533724624037" y="527.913177138705" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">Postgres Index</text>
+  
+    <circle cx="578.4453565365923" cy="286.2797169944594" r="12.83862656087357" fill="#3B82F6" opacity="0.9">
+      <title>TS Generics</title>
+    </circle>
+    <text x="578.4453565365923" y="269.4410904335858" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">TS Generics</text>
+  
+    <circle cx="1481.9383377608065" cy="256.66154875758383" r="6.645576097183558" fill="#888888" opacity="0.9">
+      <title>Debug Session</title>
+    </circle>
+    
+  
+    <circle cx="422.24591094762314" cy="446.1012027705022" r="15.872011023173927" fill="#888888" opacity="0.9">
+      <title>Code Review</title>
+    </circle>
+    <text x="422.24591094762314" y="426.2291917473283" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">Code Review</text>
+  
+    <circle cx="956.8401061226916" cy="593.2452008023871" r="15.77193029673613" fill="#888888" opacity="0.9">
+      <title>TS Generics</title>
+    </circle>
+    <text x="956.8401061226916" y="573.4732705056509" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">TS Generics</text>
+  
+    <circle cx="1372.5099307424448" cy="256.9565147666653" r="8.690015449131852" fill="#EF9F27" opacity="0.9">
+      <title>API Design</title>
+    </circle>
+    <text x="1372.5099307424448" y="244.26649931753343" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">API Design</text>
+  
+    <circle cx="1114.326150493469" cy="483.00335557956464" r="9.234557884875963" fill="#10b981" opacity="0.9">
+      <title>React Hooks</title>
+    </circle>
+    <text x="1114.326150493469" y="469.76879769468866" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">React Hooks</text>
+  
+    <circle cx="1646.1794463784952" cy="732.0851883006052" r="10.21442820780393" fill="#3B82F6" opacity="0.9">
+      <title>API Design</title>
+    </circle>
+    <text x="1646.1794463784952" y="717.8707600928012" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">API Design</text>
+  
+    <circle cx="1314.5384639031752" cy="159.0170315808644" r="9.37572936947327" fill="#EF9F27" opacity="0.9">
+      <title>Debug Session</title>
+    </circle>
+    <text x="1314.5384639031752" y="145.64130221139112" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">Debug Session</text>
+  
+    <circle cx="582.2983331943249" cy="719.3091217817023" r="13.82042086169143" fill="#EF9F27" opacity="0.9">
+      <title>System Architecture</title>
+    </circle>
+    <text x="582.2983331943249" y="701.4887009200108" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">System Architecture</text>
+  
+    <circle cx="1245.204011410046" cy="232.16689588577088" r="15.719254671536916" fill="#EF9F27" opacity="0.9">
+      <title>Code Review</title>
+    </circle>
+    <text x="1245.204011410046" y="212.44764121423395" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">Code Review</text>
+  
+    <circle cx="493.9439827887375" cy="359.5927566004128" r="12.941478503232354" fill="#888888" opacity="0.9">
+      <title>TS Generics</title>
+    </circle>
+    <text x="493.9439827887375" y="342.65127809718047" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">TS Generics</text>
+  
+    <circle cx="1093.1275710345385" cy="489.8150448529498" r="10.30054736573348" fill="#EF9F27" opacity="0.9">
+      <title>Debug Session</title>
+    </circle>
+    <text x="1093.1275710345385" y="475.5144974872163" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">Debug Session</text>
+  
+    <circle cx="618.9639166595398" cy="466.64509109396147" r="5.065370709174653" fill="#3B82F6" opacity="0.9">
+      <title>API Design</title>
+    </circle>
+    
+  
+    <circle cx="901.1136356782749" cy="355.96170252509023" r="6.623580015709351" fill="#EF9F27" opacity="0.9">
+      <title>API Design</title>
+    </circle>
+    
+  
+    <circle cx="1530.0575669288505" cy="570.6700048001834" r="10.10489799759321" fill="#888888" opacity="0.9">
+      <title>Code Review</title>
+    </circle>
+    <text x="1530.0575669288505" y="556.5651068025902" 
+                        font-family="system-ui" font-size="10" fill="#888888" 
+                        text-anchor="middle">Code Review</text>
+  
+  
+  <!-- Legend -->
+  <rect x="32" y="950" width="280" height="100" fill="#1a1a2e" rx="8" opacity="0.95"/>
+  <text x="48" y="975" font-family="system-ui" font-size="14" font-weight="600" fill="#ffffff">
+    Node Types
+  </text>
+  <circle cx="60" cy="1000" r="6" fill="#EF9F27"/>
+  <text x="80" y="1005" font-family="system-ui" font-size="12" fill="#888888">Code</text>
+  <circle cx="140" cy="1000" r="6" fill="#3B82F6"/>
+  <text x="160" y="1005" font-family="system-ui" font-size="12" fill="#888888">Question</text>
+  <circle cx="220" cy="1000" r="6" fill="#10b981"/>
+  <text x="240" y="1005" font-family="system-ui" font-size="12" fill="#888888">Answer</text>
+  
+  <!-- Stats Panel -->
+  <rect x="1600" y="950" width="288" height="100" fill="#1a1a2e" rx="8" opacity="0.95"/>
+  <text x="1616" y="975" font-family="system-ui" font-size="14" font-weight="600" fill="#ffffff">
+    Active Cluster
+  </text>
+  <text x="1616" y="1000" font-family="system-ui" font-size="12" fill="#888888">
+    47 conversations · 312 insights
+  </text>
+  <text x="1616" y="1020" font-family="system-ui" font-size="12" fill="#888888">
+    Database Optimization
+  </text>
+  
+  <!-- Search Bar -->
+  <rect x="600" y="16" width="400" height="36" rx="8" fill="#0a0a0f"/>
+  <text x="620" y="40" font-family="system-ui" font-size="14" fill="#888888">
+    Search knowledge graph...
+  </text>
+</svg>

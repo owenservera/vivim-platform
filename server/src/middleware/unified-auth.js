@@ -86,8 +86,15 @@ export async function requireAuth(req, res, next) {
 export async function optionalAuth(req, res, next) {
   let userId = null;
 
+  // Check Google OAuth session first (passport)
   if (req.isAuthenticated() && req.user?.userId) {
     userId = req.user.userId;
+  } else if (req.isAuthenticated() && req.user?.id) {
+    // Alternative user ID field from passport
+    userId = req.user.id;
+  } else if (req.session?.userId) {
+    // Check session directly
+    userId = req.session.userId;
   } else {
     const apiKeyHeader = req.headers['x-api-key'];
     const authHeader = req.headers['authorization'] || '';
@@ -116,7 +123,7 @@ export async function optionalAuth(req, res, next) {
         // ignore
       }
     }
-    
+
     if (!userId) {
       const did = req.headers['x-did'];
       if (did && identityService.validateDID(did)) {

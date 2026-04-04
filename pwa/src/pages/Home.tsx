@@ -371,6 +371,14 @@ export const Home: React.FC = () => {
     loadConversations(1);
   }, [loadConversations]);
 
+  const handleShare = useCallback((id: string) => {
+    const convo = conversations.find((c) => c.id === id);
+    if (convo) {
+      setSelectedConversation(convo);
+      setShareDialogOpen(true);
+    }
+  }, [conversations]);
+
   const handleAIClick = useCallback((action: AIAction, id: string) => {
     const convo = conversations.find((c) => c.id === id);
     if (convo) {
@@ -381,12 +389,27 @@ export const Home: React.FC = () => {
 
   const handleAIResult = useCallback((_result: AIResult) => {}, []);
 
-  const handleShare = useCallback((id: string) => {
-    const convo = conversations.find((c) => c.id === id);
-    if (convo) { setSelectedConversation(convo); setShareDialogOpen(true); }
-  }, [conversations]);
-
   /* ── Derived lists ── */
+  const handleVisibilityToggle = useCallback(async (id: string, visibility: string) => {
+    try {
+      if (visibility === 'public') {
+        const response = await apiClient.put(`/conversations/${id}/visibility`, { visibility: 'public' });
+        if (response.status !== 200) throw new Error('Failed to set public visibility');
+        showToast(toast.success('Conversation published to Scroll'));
+      } else {
+        const response = await apiClient.put(`/conversations/${id}/visibility`, { visibility: 'private' });
+        if (response.status !== 200) throw new Error('Failed to set private visibility');
+        showToast(toast.success('Conversation removed from Scroll'));
+      }
+      
+      // Update local state to reflect change instantly for UI reactivity
+      setConversations(prev => prev.map(c => c.id === id ? { ...c, visibility: visibility } : c));
+    } catch (err) {
+      logger.error('HOME', 'Failed to toggle visibility', { error: err });
+      showToast(toast.error('Failed to change visibility'));
+    }
+  }, [showToast]);
+
   const allSorted = useMemo(() => {
     const list = [...conversations];
 
@@ -735,6 +758,7 @@ export const Home: React.FC = () => {
                       onDuplicate={handleDuplicate}
                       onAIClick={handleAIClick}
                       isExpanded={expandedId === convo.id}
+                      onVisibilityToggle={handleVisibilityToggle}
                       overrideMessages={activeChatId === convo.id ? aiMessages : undefined}
                       isLoadingAI={activeChatId === convo.id ? aiLoading : false}
                       onExpandToggle={async (id) => {

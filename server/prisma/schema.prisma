@@ -27,6 +27,7 @@ model Conversation {
   title                   String
   model                   String?
   state                   String                   @default("ACTIVE")
+  visibility              String                   @default("private")
   createdAt               DateTime                 @db.Timestamptz(6)
   updatedAt               DateTime                 @db.Timestamptz(6)
   capturedAt              DateTime                 @default(now()) @db.Timestamptz(6)
@@ -45,11 +46,17 @@ model Conversation {
   metadata                Json                     @default("{}")
   tags                    String[]
   ownerId                 String?
+  
+  // Rendering support
+  renderedPreview         Json?                    @db.JsonB  // Pre-rendered preview for feeds
+  renderingOptions        Json?                    @db.JsonB  // Custom rendering options
+  
   acus                    AtomicChatUnit[]
   contextBundles          ContextBundle[]
   conversationCompactions ConversationCompaction[]
   owner                   User?                    @relation(fields: [ownerId], references: [id])
   messages                Message[]
+  renderingCache          RenderingCache?
   captureAttempts        CaptureAttempt[]
   topicConversations      TopicConversation[]
   importedConversations   ImportedConversation[]   @relation("ImportedConversations")
@@ -70,7 +77,7 @@ model Message {
   conversationId String
   role           String
   author         String?
-  parts          Json
+  parts          Json             @db.JsonB
   contentHash    String?
   version        Int              @default(1)
   createdAt      DateTime         @db.Timestamptz(6)
@@ -79,6 +86,13 @@ model Message {
   finishReason   String?
   tokenCount     Int?
   metadata       Json             @default("{}")
+  
+  // Rich rendering support
+  renderedContent Json?           @db.JsonB  // Pre-rendered content with full styling
+  textStyles     Json?            @db.JsonB  // Inline text formatting (bold, italic, links, etc.)
+  customClasses  String[]         // Custom CSS classes for this message
+  displayOrder   Int              @default(0)  // For custom ordering in feeds
+  
   acus           AtomicChatUnit[]
   conversation   Conversation     @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
@@ -86,6 +100,7 @@ model Message {
   @@index([conversationId, createdAt])
   @@index([role])
   @@index([contentHash])
+  @@index([displayOrder])
   @@map("messages")
 }
 
@@ -133,6 +148,120 @@ model ProviderStats {
   updatedAt          DateTime  @updatedAt @db.Timestamptz(6)
 
   @@map("provider_stats")
+}
+
+// ============================================================================
+// CONVERSATION RENDERING SUPPORT
+// ============================================================================
+
+/**
+ * Rendering Template - Reusable styling templates for message display
+ */
+model RenderingTemplate {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  
+  // Template configuration
+  templateType String  // 'feed_card', 'scroll_item', 'conversation_view', 'preview'
+  provider     String? // Specific provider or null for all
+  role         String? // 'user', 'assistant', 'system', or null for all
+  
+  // Styling configuration
+  styles       Json    @default("{}") @db.JsonB  // CSS-in-JS styles
+  classes      String[]  // Tailwind/custom CSS classes
+  layout       String  @default("default")  // 'default', 'compact', 'expanded', 'grid'
+  
+  // Content rendering options
+  showMetadata Boolean  @default(true)
+  showTimestamp Boolean @default(true)
+  showProvider Boolean @default(true)
+  maxPreviewLength Int?  // Max characters for preview mode
+  enableSyntaxHighlighting Boolean @default(true)
+  enableLazyLoading Boolean @default(true)
+  
+  // Conditional rendering rules
+  conditions   Json?   @db.JsonB  // Rules for when to apply this template
+  
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(6)
+  
+  @@index([templateType])
+  @@index([provider])
+  @@index([name])
+  @@map("rendering_templates")
+}
+
+/**
+ * Rendering Cache - Cached rendered conversation data for performance
+ */
+model RenderingCache {
+  id              String   @id @default(uuid())
+  conversationId  String   @unique
+  contentHash     String   // Hash of content for cache invalidation
+  renderedVersion String   // Version of rendering engine used
+  
+  // Cached rendered data
+  renderedData    Json     @db.JsonB  // Fully rendered conversation data
+  
+  // Cache metadata
+  viewMode        String   @default("list")  // 'list', 'grid', 'graph'
+  includeMessages Boolean  @default(true)
+  messageLimit    Int?     // Max messages to include
+  
+  // Performance metrics
+  renderTimeMs    Int?     // Time taken to render
+  messageCount    Int?     // Number of messages rendered
+  contentSize     Int?     // Size of rendered content in bytes
+  
+  // Cache lifecycle
+  hits            Int      @default(0)  // Cache hit counter
+  lastAccessedAt  DateTime @default(now()) @db.Timestamptz(6)
+  expiresAt       DateTime? @db.Timestamptz(6)
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+  @@index([contentHash])
+  @@index([lastAccessedAt])
+  @@index([expiresAt])
+  @@map("rendering_cache")
+}
+
+/**
+ * Message Style Preset - Predefined style configurations for messages
+ */
+model MessageStylePreset {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  
+  // Style configuration
+  backgroundColor String?
+  borderColor     String?
+  textColor       String?
+  fontFamily      String?
+  fontSize        String?
+  lineHeight      String?
+  padding         String?
+  margin          String?
+  borderRadius    String?
+  boxShadow       String?
+  
+  // Tailwind class presets
+  twClasses       String[]
+  
+  // Conditional application
+  applyToRole     String?  // 'user', 'assistant', 'system'
+  applyToProvider String?  // Specific provider
+  applyToContentTypes String[] // ['code', 'image', 'table', etc.]
+  
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(6)
+  
+  @@index([applyToRole])
+  @@index([applyToProvider])
+  @@map("message_style_presets")
 }
 
 model User {
@@ -2095,39 +2224,63 @@ model FeedImpression {
 // ============================================================================
 
 enum ImportJobStatus {
-  PENDING
-  UPLOADING
-  VALIDATING
-  QUEUED
-  PROCESSING
-  COMPLETED
+  PENDING           // Initial state
+  SCANNING          // Analyzing file
+  WAITING_FOR_USER  // Awaiting tier selection
+  PROCESSING        // Currently running a tier
+  TIER_COMPLETE     // One tier done, paused for next
+  COMPLETED         // All selected tiers done
   FAILED
   CANCELLED
+  PAUSED            // User paused
+}
+
+enum ImportTier {
+  TIER_0_CORE
+  TIER_1_ACU
+  TIER_2_MEMORY
+  TIER_3_CONTEXT
+  TIER_4_INDEX
 }
 
 enum ImportConversationState {
-  PENDING
-  VALIDATING
-  STORED
-  ACU_GENERATED
-  MEMORY_EXTRACTED
-  CONTEXT_ENRICHED
-  COMPLETED
-  FAILED
+  PENDING              // Waiting to be processed
+  VALIDATING           // Being validated
+  STORED               // Tier 0 complete - stored in database
+  ACU_GENERATED        // Tier 1 complete - ACUs extracted
+  MEMORY_EXTRACTED     // Tier 2 complete - memories extracted
+  CONTEXT_ENRICHED     // Tier 3 complete - context enriched
+  INDEXED              // Tier 4 complete - indexed
+  COMPLETED             // All selected tiers done
+  FAILED               // Processing failed
 }
 
 model ImportJob {
   id                   String            @id @default(uuid())
-  userId               String
+  userId               String?
   status               ImportJobStatus   @default(PENDING)
+  
+  // Tier configuration
+  tierConfig           Json              @default("{}")  // User's tier selections
+  currentTier          ImportTier?       
+  tierProgress         Json              @default("{}")  // Progress per tier
+  
   sourceProvider       String
   format               String
-  fileHash             String            @unique  // SHA-256 of uploaded file
+  fileHash             String  // SHA-256 of uploaded file
   fileName             String
+  filePath             String?           // Disk storage path for large files
   fileSize             Int
+  
   totalConversations   Int
   processedConversations Int             @default(0)
   failedConversations  Int               @default(0)
+  
+  // Tier-specific stats
+  acuGenerated         Int               @default(0)
+  memoriesExtracted    Int               @default(0)
+  contextEnriched      Int               @default(0)
+  
   startedAt            DateTime?
   completedAt          DateTime?
   createdAt            DateTime          @default(now())
@@ -2135,10 +2288,11 @@ model ImportJob {
   metadata             Json              @default("{}")
   errors               Json              @default("[]")
 
-  user                 User              @relation(fields: [userId], references: [id], name: "UserImportJobs")
+  user                 User?             @relation(fields: [userId], references: [id], name: "UserImportJobs")
   conversations        ImportedConversation[]
 
   @@index([userId, status])
+  @@index([userId, currentTier])
   @@index([createdAt])
   @@map("import_jobs")
 }
@@ -2163,4 +2317,888 @@ model ImportedConversation {
   @@unique([importJobId, sourceId])
   @@index([importJobId, state])
   @@map("imported_conversations")
+}
+
+// ============================================================================
+// VIRTUAL USER IDENTIFICATION SYSTEM - No-Login Chatbot
+// ============================================================================
+
+// Virtual user - anonymous user identity built over time through interactions
+model VirtualUser {
+  id                    String    @id @default(uuid())
+  fingerprint           String    @unique  // Composite fingerprint hash
+  confidenceScore       Float     @default(50)
+  
+  // Identification signals (encrypted)
+  fingerprintSignals    Json      @default("{}")  // Raw fingerprint components
+  ipHistory             Json      @default("[]")  // Historical IP addresses
+  userAgentHistory      Json      @default("[]")  // Historical user agents
+  deviceCharacteristics Json      @default("{}")  // Screen, battery, touch, etc.
+  
+  // Profile (built over time)
+  displayName           String?   // Auto-generated or user-provided
+  topicInterests        Json      @default("[]")
+  entityProfiles        Json      @default("[]")
+  conversationCount     Int       @default(0)
+  memoryCount           Int       @default(0)
+  firstSeenAt           DateTime  @default(now()) @db.Timestamptz(6)
+  lastSeenAt            DateTime  @updatedAt @db.Timestamptz(6)
+  lastIpAddress         String?
+  
+  // Privacy & compliance
+  consentGiven          Boolean   @default(false)
+  consentTimestamp      DateTime? @db.Timestamptz(6)
+  dataRetentionPolicy   String    @default("90_days")  // 7_days, 30_days, 90_days, 1_year, indefinite
+  anonymizedAt          DateTime? @db.Timestamptz(6)
+  deletedAt             DateTime? @db.Timestamptz(6)
+  
+  // Metadata
+  metadata              Json      @default("{}")
+
+  // Corpus-Chatbot Extensions (nullable for backward compatibility)
+  tenantId              String?   // Multi-tenant association
+  tenant                Tenant?   @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  currentAvatar         String    @default("STRANGER")  // UserAvatar: STRANGER, ACQUAINTANCE, FAMILIAR, KNOWN
+  profileVersion        Int       @default(0)
+
+  // Relations
+  sessions              VirtualSession[]
+  memories              VirtualMemory[]
+  conversations         VirtualConversation[]
+  acus                  VirtualACU[]
+  notebooks             VirtualNotebook[]
+  conversationIndices   ConversationIndex[]
+  profileSnapshots      UserProfileSnapshot[]
+
+  @@index([fingerprint])
+  @@index([lastSeenAt])
+  @@index([confidenceScore])
+  @@index([consentGiven])
+  @@index([tenantId])
+  @@index([currentAvatar])
+  @@map("virtual_users")
+}
+
+// Virtual session - active session for a virtual user
+model VirtualSession {
+  id              String    @id @default(uuid())
+  virtualUserId   String
+  virtualUser     VirtualUser @relation(fields: [virtualUserId], references: [id], onDelete: Cascade)
+  
+  sessionToken    String    @unique
+  fingerprint     String    // Session-specific fingerprint
+  
+  // Session signals
+  ipAddress       String?
+  userAgent       String?
+  timezone        String?
+  language        String?
+  screenResolution String?
+  
+  // Session state
+  isActive        Boolean   @default(true)
+  expiresAt       DateTime  @db.Timestamptz(6)
+  createdAt       DateTime  @default(now()) @db.Timestamptz(6)
+  lastActivityAt  DateTime  @updatedAt @db.Timestamptz(6)
+  
+  // Context state
+  activeConversationId String?
+  contextBundleVersion String?
+  
+  // Metadata
+  metadata        Json      @default("{}")
+  
+  @@index([virtualUserId])
+  @@index([sessionToken])
+  @@index([expiresAt])
+  @@index([isActive])
+  @@map("virtual_sessions")
+}
+
+// Virtual memory - memories for virtual users (mirrors Memory schema)
+model VirtualMemory {
+  id                    String    @id @default(uuid())
+  virtualUserId         String
+  virtualUser           VirtualUser @relation(fields: [virtualUserId], references: [id], onDelete: Cascade)
+  
+  // Content
+  content               String    // ENCRYPTED
+  summary               String?   // ENCRYPTED
+  
+  // Provenance
+  provenanceId          String?
+  provider              String?
+  sourceUrl             String?
+  sourceType            String    @default("conversation")
+  sourcePlatform        String?
+  
+  // Extraction metadata
+  extractionMethod      String?
+  extractionModel       String?
+  extractionConfidence  Float?
+  extractionPromptVersion String?
+  
+  // Capture session tracking
+  captureSessionId      String?
+  captureMethod         String?
+  capturedAt            DateTime? @db.Timestamptz(6)
+  
+  // Lineage
+  lineageDepth          Int       @default(0)
+  lineageParentId       String?
+  derivedFromIds        String[]  @default([])
+  version               Int       @default(1)
+  
+  // Content fingerprinting
+  contentHash           String?
+  contentVersion        Int       @default(1)
+  
+  // Verification
+  isVerified            Boolean   @default(false)
+  verifiedAt            DateTime?
+  verificationSource    String?
+  
+  // Categorization
+  memoryType            MemoryType @default(EPISODIC)
+  category              String
+  subcategory           String?
+  tags                  String[]  @default([])
+  
+  // Importance and relevance
+  importance            Float     @default(0.5)
+  relevance             Float     @default(0.5)
+  accessCount           Int       @default(0)
+  lastAccessedAt        DateTime?
+  
+  // Memory relationships
+  parentMemoryId        String?
+  childMemoryIds        String[]  @default([])
+  relatedMemoryIds      String[]  @default([])
+  mergedFromIds         String[]  @default([])
+  
+  // Source tracking
+  sourceConversationIds String[]  @default([])
+  sourceAcuIds          String[]  @default([])
+  sourceMessageIds      String[]  @default([])
+  
+  // Embeddings for semantic search
+  embedding             Unsupported("vector(1536)")?
+  embeddingModel        String?
+  embeddingDimension    Int?
+  
+  // Consolidation tracking
+  consolidationStatus   MemoryConsolidationStatus @default(RAW)
+  consolidationScore    Float?
+  lastConsolidatedAt    DateTime?
+  
+  // Temporal information
+  occurredAt            DateTime?
+  validFrom             DateTime?
+  validUntil            DateTime?
+  expiresAt             DateTime?
+  
+  // Status
+  isActive              Boolean   @default(true)
+  isPinned              Boolean   @default(false)
+  isArchived            Boolean   @default(false)
+  
+  // Metadata
+  metadata              Json      @default("{}")
+  
+  // Timestamps
+  createdAt             DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt             DateTime  @updatedAt @db.Timestamptz(6)
+  
+  // Relations
+  parent                VirtualMemory? @relation("VirtualMemoryHierarchy", fields: [parentMemoryId], references: [id])
+  children              VirtualMemory[] @relation("VirtualMemoryHierarchy")
+  
+  // Indexes
+  @@index([virtualUserId, memoryType])
+  @@index([virtualUserId, category])
+  @@index([virtualUserId, importance(sort: Desc)])
+  @@index([virtualUserId, relevance(sort: Desc)])
+  @@index([virtualUserId, isPinned])
+  @@index([virtualUserId, consolidationStatus])
+  @@index([virtualUserId, createdAt(sort: Desc)])
+  @@index([virtualUserId, lastAccessedAt])
+  @@index([virtualUserId, tags])
+  @@index([virtualUserId, memoryType, importance(sort: Desc)])
+  @@index([virtualUserId, consolidationStatus, createdAt(sort: Desc)])
+  @@index([virtualUserId, expiresAt])
+  @@index([virtualUserId, provider])
+  @@index([virtualUserId, sourceType])
+  @@index([captureSessionId])
+  @@index([contentHash])
+  @@index([embedding])
+  @@map("virtual_memories")
+}
+
+// Virtual conversation - conversations for virtual users
+model VirtualConversation {
+  id              String    @id @default(uuid())
+  virtualUserId   String
+  virtualUser     VirtualUser @relation(fields: [virtualUserId], references: [id], onDelete: Cascade)
+  
+  // Core fields (mirrors Conversation)
+  title           String?
+  provider        String?
+  sourceUrl       String?
+  model           String?
+  state           String    @default("ACTIVE")
+  visibility      String    @default("private")
+  metadata        Json      @default("{}")
+  tags            String[]  @default([])
+  
+  // Stats
+  messageCount    Int       @default(0)
+  userMessageCount Int      @default(0)
+  aiMessageCount  Int       @default(0)
+  totalWords      Int       @default(0)
+  totalCharacters Int       @default(0)
+  totalTokens     Int?
+  
+  // Rendering support
+  renderedPreview Json?     @db.JsonB
+  renderingOptions Json?    @db.JsonB
+  
+  // Timestamps
+  createdAt       DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime  @updatedAt @db.Timestamptz(6)
+  capturedAt      DateTime  @default(now()) @db.Timestamptz(6)
+  
+  // Relations
+  messages        VirtualMessage[]
+  acus            VirtualACU[]
+  
+  @@index([virtualUserId])
+  @@index([createdAt(sort: Desc)])
+  @@index([virtualUserId, createdAt(sort: Desc)])
+  @@index([tags])
+  @@map("virtual_conversations")
+}
+
+// Virtual message - messages within virtual conversations
+model VirtualMessage {
+  id              String    @id @default(uuid())
+  conversationId  String
+  conversation    VirtualConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+  role            String
+  author          String?
+  parts           Json      @db.JsonB
+  contentHash     String?
+  version         Int       @default(1)
+  createdAt       DateTime  @default(now()) @db.Timestamptz(6)
+  messageIndex    Int
+  status          String    @default("completed")
+  finishReason    String?
+  tokenCount      Int?
+  metadata        Json      @default("{}")
+  
+  // Rich rendering support
+  renderedContent Json?     @db.JsonB
+  textStyles      Json?     @db.JsonB
+  customClasses   String[]
+  displayOrder    Int       @default(0)
+  
+  // Relations
+  acus            VirtualACU[]
+  
+  @@index([conversationId, messageIndex])
+  @@index([conversationId, createdAt])
+  @@index([role])
+  @@map("virtual_messages")
+}
+
+// Virtual ACU - Atomic Chat Units for virtual users
+model VirtualACU {
+  id                  String    @id
+  virtualUserId       String
+  virtualUser         VirtualUser @relation(fields: [virtualUserId], references: [id], onDelete: Cascade)
+  
+  authorDid           String?   // Virtual user identifier
+  signature           Bytes?
+  content             String
+  contentHash         String?
+  version             Int       @default(1)
+  language            String?
+  type                String
+  category            String
+  origin              String    @default("extraction")
+  embedding           Unsupported("vector(1536)")?
+  embeddingModel      String?
+  conversationId      String?
+  messageId           String?
+  messageIndex        Int?
+  provider            String?
+  model               String?
+  sourceTimestamp     DateTime? @db.Timestamptz(6)
+  parentId            String?
+  extractorVersion    String?
+  parserVersion       String?
+  state               String    @default("ACTIVE")
+  securityLevel       Int       @default(0)
+  isPersonal          Boolean   @default(false)
+  level               Int       @default(4)
+  contentType         String    @default("text")
+  qualityOverall      Float?
+  contentRichness     Float?
+  structuralIntegrity Float?
+  uniqueness          Float?
+  viewCount           Int       @default(0)
+  shareCount          Int       @default(0)
+  quoteCount          Int       @default(0)
+  rediscoveryScore    Float?
+  sharingPolicy       String    @default("self")
+  sharingCircles      String[]
+  canView             Boolean   @default(true)
+  canAnnotate         Boolean   @default(false)
+  canRemix            Boolean   @default(false)
+  canReshare          Boolean   @default(false)
+  expiresAt           DateTime? @db.Timestamptz(6)
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6)
+  indexedAt           DateTime  @default(now()) @db.Timestamptz(6)
+  metadata            Json      @default("{}")
+  tags                String[]
+  
+  // Relations
+  linksFrom           VirtualAcuLink[] @relation("VirtualSourceAcu")
+  linksTo             VirtualAcuLink[] @relation("VirtualTargetAcu")
+  conversation        VirtualConversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  message             VirtualMessage?  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  parent              VirtualACU?      @relation("VirtualAcuDerivations", fields: [parentId], references: [id])
+  derivations         VirtualACU[]     @relation("VirtualAcuDerivations")
+  notebooks           VirtualNotebookEntry[]
+  
+  @@index([origin])
+  @@index([parentId])
+  @@index([conversationId])
+  @@index([messageId])
+  @@index([virtualUserId])
+  @@index([virtualUserId, createdAt(sort: Desc)])
+  @@index([type])
+  @@index([category])
+  @@index([qualityOverall(sort: Desc)])
+  @@index([rediscoveryScore(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@index([sharingPolicy])
+  @@index([tags])
+  @@index([contentHash])
+  @@index([embedding])
+  @@map("virtual_acus")
+}
+
+// Virtual ACU Link
+model VirtualAcuLink {
+  id           String         @id @default(uuid())
+  sourceId     String
+  targetId     String
+  relation     String
+  weight       Float          @default(1.0)
+  createdByDid String?
+  createdAt    DateTime       @default(now()) @db.Timestamptz(6)
+  metadata     Json           @default("{}")
+  source       VirtualACU     @relation("VirtualSourceAcu", fields: [sourceId], references: [id], onDelete: Cascade)
+  target       VirtualACU     @relation("VirtualTargetAcu", fields: [targetId], references: [id], onDelete: Cascade)
+  
+  @@unique([sourceId, targetId, relation])
+  @@index([sourceId])
+  @@index([targetId])
+  @@index([relation])
+  @@map("virtual_acu_links")
+}
+
+// Virtual Notebook
+model VirtualNotebook {
+  id          String              @id @default(uuid())
+  virtualUserId String
+  virtualUser VirtualUser         @relation(fields: [virtualUserId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  icon        String?
+  color       String?
+  isDefault   Boolean             @default(false)
+  createdAt   DateTime            @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime            @updatedAt @db.Timestamptz(6)
+  entries     VirtualNotebookEntry[]
+  
+  @@index([virtualUserId])
+  @@map("virtual_notebooks")
+}
+
+// Virtual Notebook Entry
+model VirtualNotebookEntry {
+  id         String         @id @default(uuid())
+  notebookId String
+  notebook   VirtualNotebook @relation(fields: [notebookId], references: [id], onDelete: Cascade)
+  acuId      String
+  acu        VirtualACU     @relation(fields: [acuId], references: [id], onDelete: Cascade)
+  sortOrder  Int            @default(0)
+  addedAt    DateTime       @default(now()) @db.Timestamptz(6)
+  
+  @@unique([notebookId, acuId])
+  @@index([notebookId, sortOrder])
+  @@map("virtual_notebook_entries")
+}
+
+// Virtual User Analytics
+model VirtualUserAnalytics {
+  id              String   @id @default(uuid())
+  date            DateTime @default(now()) @db.Date
+  
+  // Daily stats
+  newVirtualUsers Int      @default(0)
+  activeVirtualUsers Int   @default(0)
+  totalSessions   Int      @default(0)
+  totalConversations Int   @default(0)
+  totalMessages   Int      @default(0)
+  memoriesCreated Int      @default(0)
+  
+  // Identification stats
+  highConfidenceIdentifications Int @default(0)
+  mediumConfidenceIdentifications Int @default(0)
+  lowConfidenceIdentifications Int @default(0)
+  falsePositives Int         @default(0)
+  
+  // Consent stats
+  consentsGiven Int          @default(0)
+  consentsDenied Int         @default(0)
+  deletionsRequested Int     @default(0)
+  
+  // Aggregations
+  avgSessionDuration Int     @default(0)  // seconds
+  avgConversationsPerUser Float @default(0)
+  avgMemoriesPerUser Float   @default(0)
+  
+  createdAt       DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime  @updatedAt @db.Timestamptz(6)
+  
+  @@unique([date])
+  @@index([date])
+  @@map("virtual_user_analytics")
+}
+
+// Virtual User Audit Log for GDPR compliance
+model VirtualUserAuditLog {
+  id              String   @id @default(uuid())
+  virtualUserId   String
+  action          String   // CREATE, DELETE, ANONYMIZE, CONSENT_GIVEN, CONSENT_WITHDRAWN, EXPORT, MERGE
+  reason          String?  // user_request, retention_policy, admin_request
+  ipAddress       String?
+  userAgent       String?
+  details         Json     @default("{}")
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  
+  @@index([virtualUserId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("virtual_user_audit_logs")
+}
+
+// ============================================================================
+// VIVIM Corpus-Chatbot Schema Extensions
+// ============================================================================
+// Purpose: Multi-tenant company chatbot with dual-engine orchestration
+// Created: March 27, 2026
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum UserAvatar {
+  STRANGER
+  ACQUAINTANCE
+  FAMILIAR
+  KNOWN
+}
+
+enum TopicScope {
+  USER
+  CORPUS
+}
+
+enum ChunkContentType {
+  prose
+  code
+  table
+  list
+  mixed
+}
+
+enum DocumentChangeType {
+  major
+  minor
+  patch
+}
+
+enum OrchestrationIntent {
+  CORPUS_QUERY
+  CORPUS_DEEP_DIVE
+  SUPPORT_QUERY
+  USER_RECALL
+  COMPARISON
+  HOW_TO
+  STATUS_CHECK
+  GENERAL_CHAT
+  FEEDBACK
+  ACCOUNT_SPECIFIC
+  CLARIFICATION
+  NAVIGATION
+  ESCALATION
+}
+
+enum ConversationSentiment {
+  positive
+  neutral
+  negative
+  mixed
+}
+
+enum ResolutionStatus {
+  resolved
+  pending
+  escalated
+  unknown
+}
+
+// ============================================================================
+// TENANT MANAGEMENT
+// ============================================================================
+
+model Tenant {
+  id                  String    @id @default(uuid())
+  name                String
+  slug                String    @unique
+
+  chatbotConfig       Json      @db.JsonB
+  brandVoice          Json      @db.JsonB
+  guardrails          String[]
+
+  defaultModel        String    @default("gpt-4o")
+  embeddingModel      String    @default("text-embedding-3-small")
+  maxContextTokens    Int       @default(12000)
+
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime  @updatedAt @db.Timestamptz(6)
+
+  documents           CorpusDocument[]
+  topics              CorpusTopic[]
+  chunks              CorpusChunk[]
+  faqPairs            CorpusFAQ[]
+  virtualUsers        VirtualUser[]
+  orchestrationLogs   OrchestrationLog[]
+
+  @@index([slug])
+  @@map("tenants")
+}
+
+// ============================================================================
+// CORPUS DOCUMENTS
+// ============================================================================
+
+model CorpusDocument {
+  id                  String    @id @default(uuid())
+  tenantId            String
+  tenant              Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  title               String
+  description         String?
+  sourceUrl           String?
+  rawContent          String    @db.Text
+  contentHash         String
+  format              String
+
+  category            String
+  topicId             String?
+  topic               CorpusTopic? @relation(fields: [topicId], references: [id])
+
+  version             String
+  isActive            Boolean     @default(true)
+  previousVersionId   String?
+
+  authors             String[]
+  lastPublishedAt     DateTime
+  wordCount           Int
+
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime  @updatedAt @db.Timestamptz(6)
+  ingestedAt          DateTime  @default(now()) @db.Timestamptz(6)
+
+  chunks              CorpusChunk[]
+  versions            CorpusDocumentVersion[]
+
+  @@index([tenantId, category])
+  @@index([tenantId, topicId])
+  @@index([contentHash])
+  @@map("corpus_documents")
+}
+
+model CorpusDocumentVersion {
+  id                  String    @id @default(uuid())
+  documentId          String
+  document            CorpusDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  version             String
+  contentHash         String
+  changeType          String    @default("patch")
+  changelog           String?   @db.Text
+  changedSections     String[]
+
+  addedChunkIds       String[]
+  modifiedChunkIds    String[]
+  removedChunkIds     String[]
+
+  isActive            Boolean   @default(false)
+  publishedAt         DateTime
+  ingestedAt          DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([documentId, version])
+  @@map("corpus_document_versions")
+}
+
+// ============================================================================
+// CORPUS CHUNKS
+// ============================================================================
+
+model CorpusChunk {
+  id                  String    @id @default(uuid())
+  tenantId            String
+  tenant              Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  documentId          String
+  document            CorpusDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  content             String    @db.Text
+  summary             String?
+
+  parentChunkId       String?
+  parentChunk         CorpusChunk? @relation("ChunkHierarchy", fields: [parentChunkId], references: [id])
+  childChunks         CorpusChunk[] @relation("ChunkHierarchy")
+  chunkIndex          Int
+  totalChunks         Int
+
+  sectionPath         String[]
+  headingLevel        Int
+  contentType         String    @default("prose")
+
+  embedding           Unsupported("vector(1536)")?
+  embeddingModel      String?
+
+  keywords            String[]
+  topicSlug           String
+  difficulty          String    @default("intermediate")
+
+  generatedQuestions  String[]
+  generatedAnswer     String?   @db.Text
+  questionEmbeddings  Json?     @db.JsonB
+
+  sourceUpdatedAt     DateTime
+  freshnessScore      Float     @default(1.0)
+
+  qualityScore        Float     @default(0.5)
+
+  retrievalCount      Int       @default(0)
+  avgRelevanceScore   Float     @default(0.0)
+  lastRetrievedAt     DateTime?
+
+  isActive            Boolean   @default(true)
+
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime  @updatedAt @db.Timestamptz(6)
+
+  faqPairs            CorpusFAQ[]
+
+  @@index([tenantId, topicSlug])
+  @@index([tenantId, contentType])
+  @@index([documentId, chunkIndex])
+  @@index([tenantId, embedding])
+  @@index([isActive])
+  @@map("corpus_chunks")
+}
+
+// ============================================================================
+// CORPUS TOPICS
+// ============================================================================
+
+model CorpusTopic {
+  id                  String    @id @default(uuid())
+  tenantId            String
+  tenant              Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  slug                String
+  name                String
+  description         String?   @db.Text
+
+  parentTopicId       String?
+  parentTopic         CorpusTopic? @relation("TopicHierarchy", fields: [parentTopicId], references: [id])
+  childTopics         CorpusTopic[] @relation("TopicHierarchy")
+  path                String[]
+  depth               Int       @default(0)
+
+  documentCount       Int       @default(0)
+  chunkCount          Int       @default(0)
+  totalTokens         Int       @default(0)
+
+  embedding           Unsupported("vector(1536)")?
+  representativeQuestions String[]
+
+  queryCount          Int       @default(0)
+  avgConfidence       Float     @default(0.0)
+  popularity          Float     @default(0.0)
+
+  lastUpdatedAt       DateTime  @default(now())
+
+  isActive            Boolean   @default(true)
+
+  documents           CorpusDocument[]
+
+  @@unique([tenantId, slug])
+  @@index([tenantId, parentTopicId])
+  @@index([tenantId, embedding])
+  @@map("corpus_topics")
+}
+
+// ============================================================================
+// CORPUS FAQ
+// ============================================================================
+
+model CorpusFAQ {
+  id                  String    @id @default(uuid())
+  tenantId            String
+  tenant              Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  question            String    @db.Text
+  answer              String    @db.Text
+
+  sourceChunkId       String?
+  sourceChunk         CorpusChunk? @relation(fields: [sourceChunkId], references: [id])
+  isManual            Boolean   @default(false)
+
+  questionEmbedding   Unsupported("vector(1536)")?
+
+  topicSlug           String
+  category            String
+  confidence          Float     @default(0.8)
+
+  matchCount          Int       @default(0)
+  helpfulCount        Int       @default(0)
+  unhelpfulCount      Int       @default(0)
+
+  isActive            Boolean   @default(true)
+
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime  @updatedAt @db.Timestamptz(6)
+
+  @@index([tenantId, topicSlug])
+  @@index([tenantId, questionEmbedding])
+  @@map("corpus_faqs")
+}
+
+// ============================================================================
+// CONVERSATION AWARENESS
+// ============================================================================
+
+model ConversationIndex {
+  id                  String    @id @default(uuid())
+  virtualUserId       String
+  virtualUser         VirtualUser @relation(fields: [virtualUserId], references: [id], onDelete: Cascade)
+  conversationId      String    @unique
+
+  summary             String    @db.Text
+  embedding           Unsupported("vector(1536)")?
+
+  topics              String[]
+  keyFacts            Json      @db.JsonB
+  questionsAsked      String[]
+  issuesDiscussed     String[]
+  decisionsReached    String[]
+  actionItems         String[]
+
+  messageCount        Int
+  duration            Int
+  sentiment           String    @default("neutral")
+  resolutionStatus    String    @default("unknown")
+
+  startedAt           DateTime
+  endedAt             DateTime?
+  lastReferencedAt    DateTime?
+  referenceCount      Int       @default(0)
+
+  relatedConversationIds String[]
+  memoryIds           String[]
+
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([virtualUserId, startedAt])
+  @@index([virtualUserId, embedding])
+  @@index([virtualUserId, topics])
+  @@map("conversation_indices")
+}
+
+// ============================================================================
+// USER PROFILE EVOLUTION
+// ============================================================================
+
+model UserProfileSnapshot {
+  id                  String    @id @default(uuid())
+  virtualUserId       String
+  virtualUser         VirtualUser @relation(fields: [virtualUserId], references: [id], onDelete: Cascade)
+
+  avatar              String    @default("STRANGER")
+  version             Int       @default(1)
+
+  identity            Json      @db.JsonB
+  preferences         Json      @db.JsonB
+  topicExpertise      Json      @db.JsonB
+  behavior            Json      @db.JsonB
+  activeConcerns      Json      @db.JsonB
+  evolutionLog        Json      @db.JsonB
+
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6)
+  lastEvolvedAt       DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([virtualUserId])
+  @@unique([virtualUserId, version])
+  @@map("user_profile_snapshots")
+}
+
+// ============================================================================
+// ORCHESTRATION TELEMETRY
+// ============================================================================
+
+model OrchestrationLog {
+  id                  String    @id @default(uuid())
+  tenantId            String
+  tenant              Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  virtualUserId       String
+  conversationId      String
+
+  intent              String
+  intentConfidence    Float
+  avatar              String
+
+  corpusWeight        Float
+  userWeight          Float
+
+  assemblyTimeMs      Int
+  totalTokens         Int
+  corpusTokens        Int
+  userTokens          Int
+  historyTokens       Int
+
+  corpusConfidence    Float
+  chunksRetrieved     Int
+  memoriesUsed        Int
+  proactiveInsights   Int
+
+  userSatisfaction    String?
+  followUpRequired    Boolean @default(false)
+  escalated           Boolean @default(false)
+
+  createdAt           DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([tenantId, createdAt])
+  @@index([virtualUserId])
+  @@index([intent])
+  @@map("orchestration_logs")
 }

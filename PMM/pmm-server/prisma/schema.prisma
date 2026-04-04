@@ -1,0 +1,633 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// Core Entities
+// ============================================
+
+model Roadmap {
+  id          String     @id @default(cuid())
+  name        String
+  description String?    @db.Text
+  colorScheme String?    @default("blue")
+  isArchived  Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  deletedAt   DateTime?
+
+  // Relations
+  workstreams Workstream[]
+  views       View[]
+  ownerId     String
+  owner       User       @relation(fields: [ownerId], references: [id])
+
+  // Indexes
+  @@index([ownerId])
+  @@index([isArchived])
+  @@map("roadmaps")
+}
+
+model Workstream {
+  id          String   @id @default(cuid())
+  name        String
+  description String?  @db.Text
+  color       String   @default("#3B82F6")
+  icon        String?
+  order       Int      @default(0)
+  startDate   DateTime?
+  endDate     DateTime?
+  progress    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  roadmapId   String
+  roadmap     Roadmap  @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+
+  parentId    String?
+  parent      Workstream? @relation("WorkstreamHierarchy", fields: [parentId], references: [id])
+  children    Workstream[] @relation("WorkstreamHierarchy")
+
+  features    Feature[]
+
+  // Indexes
+  @@index([roadmapId])
+  @@index([parentId])
+  @@index([order])
+  @@map("workstreams")
+}
+
+model Feature {
+  id          String      @id @default(cuid())
+  title       String
+  description String?     @db.Text
+  status      FeatureStatus @default(BACKLOG)
+  priority    Priority    @default(MEDIUM)
+  startDate   DateTime?
+  endDate     DateTime?
+  progress    Int         @default(0)
+  effort      EffortSize  @default(MEDIUM)
+
+  // Visual positioning on canvas
+  positionX   Float       @default(0)
+  positionY   Float       @default(0)
+  width       Float       @default(280)
+  height      Float       @default(160)
+
+  // Metadata
+  tags        String[]
+  metadata    Json?
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  completedAt DateTime?
+
+  // Relations
+  workstreamId String
+  workstream   Workstream @relation(fields: [workstreamId], references: [id], onDelete: Cascade)
+
+  tasks        Task[]
+
+  // Dependencies (many-to-many self-relation)
+  dependencies Dependency[] @relation("FeatureDependencies")
+  dependents   Dependency[] @relation("DependentFeatures")
+
+  // Comments
+  comments     Comment[]
+
+  // Attachments
+  attachments  Attachment[]
+
+  // Indexes
+  @@index([workstreamId])
+  @@index([status])
+  @@index([priority])
+  @@index([startDate, endDate])
+  @@map("features")
+}
+
+model Task {
+  id          String      @id @default(cuid())
+  title       String
+  description String?     @db.Text
+  status      TaskStatus  @default(TODO)
+  priority    Priority    @default(MEDIUM)
+  startDate   DateTime?
+  endDate     DateTime?
+  dueDate     DateTime?
+  progress    Int         @default(0)
+
+  // Time tracking
+  estimateHours Float?
+  actualHours   Float?
+
+  // Order in feature
+  order         Int       @default(0)
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  completedAt   DateTime?
+
+  // Relations
+  featureId   String
+  feature     Feature     @relation(fields: [featureId], references: [id], onDelete: Cascade)
+
+  assigneeId  String?
+  assignee    User?       @relation(fields: [assigneeId], references: [id])
+
+  reporterId  String?
+  reporter    User?       @relation(fields: [reporterId], references: [id])
+
+  // Dependencies
+  dependencies TaskDependency[] @relation("TaskDependencies")
+  dependents   TaskDependency[] @relation("DependentTasks")
+
+  // AI insights
+  codeInsights CodeInsight[]
+
+  // Comments
+  comments     Comment[]
+
+  // Attachments
+  attachments  Attachment[]
+
+  // Time entries
+  timeEntries  TimeEntry[]
+
+  // Indexes
+  @@index([featureId])
+  @@index([status])
+  @@index([assigneeId])
+  @@index([dueDate])
+  @@map("tasks")
+}
+
+// ============================================
+// Dependencies
+// ============================================
+
+model Dependency {
+  id           String         @id @default(cuid())
+  fromFeatureId String
+  toFeatureId  String
+  type         DependencyType @default(FS)
+  lag          Int            @default(0) // in days
+  createdAt    DateTime       @default(now())
+
+  // Relations
+  fromFeature  Feature        @relation("FeatureDependencies", fields: [fromFeatureId], references: [id], onDelete: Cascade)
+  toFeature    Feature        @relation("DependentFeatures", fields: [toFeatureId], references: [id], onDelete: Cascade)
+
+  // Indexes
+  @@unique([fromFeatureId, toFeatureId])
+  @@index([fromFeatureId])
+  @@index([toFeatureId])
+  @@map("dependencies")
+}
+
+model TaskDependency {
+  id          String         @id @default(cuid())
+  taskId      String
+  dependsOnId String
+  type        DependencyType @default(FS)
+  lag         Int            @default(0)
+  createdAt   DateTime       @default(now())
+
+  // Relations
+  task      Task             @relation("TaskDependencies", fields: [taskId], references: [id], onDelete: Cascade)
+  dependsOn Task             @relation("DependentTasks", fields: [dependsOnId], references: [id], onDelete: Cascade)
+
+  // Indexes
+  @@unique([taskId, dependsOnId])
+  @@index([taskId])
+  @@index([dependsOnId])
+  @@map("task_dependencies")
+}
+
+// ============================================
+// AI & Code Inspection
+// ============================================
+
+model CodeInsight {
+  id          String        @id @default(cuid())
+  taskId      String
+  task        Task          @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  // Git information
+  commitHash  String?
+  branchName  String?
+  author      String?
+
+  // Code changes
+  filePaths   String[]
+  additions   Int           @default(0)
+  deletions   Int           @default(0)
+
+  // AI analysis
+  confidence  Float         @default(0.0)
+  summary     String?       @db.Text
+  detectedChanges String[]
+
+  // Status
+  status      InsightStatus @default(PENDING)
+  reviewedBy  String?
+  reviewedAt  DateTime?
+
+  detectedAt  DateTime      @default(now())
+  metadata    Json?
+
+  // Indexes
+  @@index([taskId])
+  @@index([status])
+  @@index([commitHash])
+  @@index([detectedAt])
+  @@map("code_insights")
+}
+
+model AIAnalysis {
+  id          String   @id @default(cuid())
+  roadmapId   String
+  roadmap     Roadmap  @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+
+  // Analysis results
+  riskScore   Float    @default(0.0)
+  healthScore Float    @default(0.0)
+  velocity    Float    @default(0.0)
+
+  // Predictions
+  predictedCompletion DateTime?
+  confidenceLevel     Float?
+
+  // Insights
+  risks       Json?    // Risk[]
+  suggestions Json?    // Suggestion[]
+  metrics     Json?    // Metrics[]
+
+  analyzedAt  DateTime @default(now())
+  metadata    Json?
+
+  // Indexes
+  @@index([roadmapId])
+  @@index([analyzedAt])
+  @@map("ai_analyses")
+}
+
+// ============================================
+// Views & Configurations
+// ============================================
+
+model View {
+  id        String   @id @default(cuid())
+  name      String
+  type      ViewType
+  isDefault Boolean  @default(false)
+  config    Json
+  filters   Json?
+  sortBy    String?
+  sortOrder SortOrder? @default(ASC)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  roadmapId String
+  roadmap   Roadmap  @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+
+  // Indexes
+  @@index([roadmapId])
+  @@index([type])
+  @@map("views")
+}
+
+model SavedFilter {
+  id        String   @id @default(cuid())
+  name      String
+  filters   Json
+  isGlobal  Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  roadmapId String?
+  roadmap   Roadmap? @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Indexes
+  @@index([roadmapId])
+  @@index([userId])
+  @@map("saved_filters")
+}
+
+// ============================================
+// Collaboration
+// ============================================
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  isEdited  Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  // Relations
+  featureId String?
+  feature   Feature? @relation(fields: [featureId], references: [id], onDelete: Cascade)
+
+  taskId    String?
+  task      Task?    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+
+  parentId  String?
+  parent    Comment? @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   Comment[] @relation("CommentReplies")
+
+  // Indexes
+  @@index([featureId])
+  @@index([taskId])
+  @@index([authorId])
+  @@index([parentId])
+  @@map("comments")
+}
+
+model Attachment {
+  id        String   @id @default(cuid())
+  name      String
+  url       String
+  mimeType  String
+  size      Int      // in bytes
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  featureId String?
+  feature   Feature? @relation(fields: [featureId], references: [id], onDelete: Cascade)
+
+  taskId    String?
+  task      Task?    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  uploaderId String
+  uploader   User     @relation(fields: [uploaderId], references: [id])
+
+  // Indexes
+  @@index([featureId])
+  @@index([taskId])
+  @@map("attachments")
+}
+
+model TimeEntry {
+  id          String   @id @default(cuid())
+  taskId      String
+  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  startTime   DateTime
+  endTime     DateTime?
+  duration    Int      // in minutes
+
+  description String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Indexes
+  @@index([taskId])
+  @@index([userId])
+  @@index([startTime])
+  @@map("time_entries")
+}
+
+// ============================================
+// Audit & Activity
+// ============================================
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+
+  action     AuditAction
+  entityType String
+  entityId   String
+
+  before     Json?
+  after      Json?
+
+  ipAddress  String?
+  userAgent  String?
+
+  createdAt  DateTime @default(now())
+
+  // Indexes
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model Activity {
+  id        String   @id @default(cuid())
+  type      ActivityType
+
+  // Polymorphic relation
+  entityType String
+  entityId   String
+
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+
+  metadata  Json?
+
+  createdAt DateTime @default(now())
+
+  // Indexes
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+  @@map("activities")
+}
+
+// ============================================
+// User & Permissions
+// ============================================
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  avatar    String?
+  role      Role     @default(VIEWER)
+
+  // Preferences
+  preferences Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  roadmaps     Roadmap[]
+  workstreams  Workstream[]
+  tasks        Task[]
+  comments     Comment[]
+  attachments  Attachment[]
+  timeEntries  TimeEntry[]
+  auditLogs    AuditLog[]
+  activities   Activity[]
+
+  // Indexes
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model RoadmapMember {
+  id        String   @id @default(cuid())
+  roadmapId String
+  roadmap   Roadmap  @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  role      MemberRole @default(EDITOR)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Indexes
+  @@unique([roadmapId, userId])
+  @@index([roadmapId])
+  @@index([userId])
+  @@map("roadmap_members")
+}
+
+// ============================================
+// Enums
+// ============================================
+
+enum FeatureStatus {
+  BACKLOG
+  DISCOVERED
+  PLANNED
+  IN_PROGRESS
+  IN_REVIEW
+  BLOCKED
+  COMPLETED
+  CANCELLED
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  IN_REVIEW
+  BLOCKED
+  DONE
+  CANCELLED
+}
+
+enum Priority {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum EffortSize {
+  XSMALL
+  SMALL
+  MEDIUM
+  LARGE
+  XLARGE
+  MEGALARGE
+}
+
+enum DependencyType {
+  FS // Finish-to-Start
+  SS // Start-to-Start
+  FF // Finish-to-Finish
+  SF // Start-to-Finish
+}
+
+enum ViewType {
+  CANVAS
+  GANTT
+  KANBAN
+  TIMELINE
+  LIST
+  CALENDAR
+}
+
+enum SortOrder {
+  ASC
+  DESC
+}
+
+enum InsightStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REVIEWED
+  ACCEPTED
+  REJECTED
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum MemberRole {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  ARCHIVE
+  RESTORE
+  MOVE
+  ASSIGN
+  UNASSIGN
+  COMPLETE
+  REOPEN
+}
+
+enum ActivityType {
+  FEATURE_CREATED
+  FEATURE_UPDATED
+  FEATURE_COMPLETED
+  TASK_CREATED
+  TASK_UPDATED
+  TASK_COMPLETED
+  COMMENT_ADDED
+  DEPENDENCY_ADDED
+  DEPENDENCY_REMOVED
+  MEMBER_ADDED
+  MEMBER_REMOVED
+  AI_ANALYSIS_COMPLETED
+  CODE_CHANGE_DETECTED
+  MILESTONE_REACHED
+  DEADLINE_APPROACHING
+  RISK_IDENTIFIED
+}

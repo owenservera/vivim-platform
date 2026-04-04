@@ -287,8 +287,8 @@ router.post('/verify/email/complete', async (req, res) => {
       expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year
       proof: emailHash,
       nullifier: crypto.createHash('sha256').update(`email:${emailHash}:verified`).digest('hex'),
-      issuerDID: 'did:key:openscroll-server',
-      issuerName: 'OpenScroll Verification Service',
+      issuerDID: 'did:key:vivim-server',
+      issuerName: 'VIVIM Verification Service',
       status: 'valid',
     };
 

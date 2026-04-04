@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://openscroll.org/schemas/conversation-v3.json",
-  "title": "OpenScroll Conversation Data Schema v3",
-  "description": "Unified schema for AI chat conversation data - reflects prisma/schema.prisma and openscroll-core",
+  "$id": "https://vivim.io/schemas/conversation-v3.json",
+  "title": "VIVIM Conversation Data Schema v3",
+  "description": "Unified schema for AI chat conversation data - reflects prisma/schema.prisma and vivim-core",
   "type": "object",
   "required": ["id", "provider", "sourceUrl", "title", "capturedAt", "messageCount", "messages"],
   "properties": {

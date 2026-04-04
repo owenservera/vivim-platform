@@ -1,5 +1,5 @@
 /**
- * OpenScroll Capture API - Modernized Server (2025+)
+ * VIVIM Server - Modernized Server (2025+)
  *
  * Features:
  * - ES Modules
@@ -19,14 +19,18 @@ import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import cookieParser from 'cookie-parser';
 
+// Initialize Sentry first to catch all startup errors
+import './lib/sentry.js';
+
 import { logger } from './lib/logger.js';
 import { config, validateConfig } from './config/index.js';
 import terminalIntelligence from './lib/terminal-intelligence.js';
 import { errorHandler } from './middleware/errorHandler.js';
-import { csrfProtection, setCsrfCookie } from './middleware/csrf.js';
+import { csrfProtection, setCsrfCookie, isStatelessPath } from './middleware/csrf.js';
 import { serverErrorReporter, errorReportingMiddleware } from './utils/server-error-reporting.js';
 import { requestLogger } from './middleware/requestLogger.js';
 import { requestId } from './middleware/requestId.js';
+import { sentryRequestContext } from './middleware/sentry.js';
 import { captureRouter } from './routes/capture.js';
 import { healthRouter } from './routes/health.js';
 import { conversationsRouter } from './routes/conversations.js';
@@ -72,6 +76,7 @@ import adminDataflowRouter from './routes/admin/dataflow.js';
 import contextEngineRouter from './routes/context-engine.ts';
 import docSearchRouter from './routes/doc-search.ts';
 import { importRouter } from './routes/import.js';
+import demoRouter from './routes/demo.js';
 import { bootContextSystem } from './services/context-startup.ts';
 
 // Validate configuration on startup
@@ -92,19 +97,21 @@ terminalIntelligence.printStartupBanner('VIVIM Server', {
   logLevel: config.logLevel,
 });
 
-console.log(terminalIntelligence.createBox(
-  '📋 CONFIGURATION STATUS',
-  [
-    '',
-    `${terminalIntelligence.colors.green}✓${terminalIntelligence.colors.reset} Database:        ${config.databaseUrl ? 'Connected' : 'Not configured'}`,
-    `${terminalIntelligence.colors.green}✓${terminalIntelligence.colors.reset} CORS:            ${config.corsOrigins.join(', ')}`,
-    `${terminalIntelligence.colors.green}✓${terminalIntelligence.colors.reset} Rate Limit:      ${config.rateLimitMax} req/15min`,
-    `${terminalIntelligence.colors.blue}ℹ${terminalIntelligence.colors.reset} Swagger:         ${config.enableSwagger ? 'Enabled' : 'Disabled'}`,
-    `${terminalIntelligence.colors.blue}ℹ${terminalIntelligence.colors.reset} P2P Network:     ${config.p2pBootstrapPeers?.length > 0 ? 'Configured' : 'Local only'}`,
-    '',
-  ],
-  { color: terminalIntelligence.colors.green }
-));
+console.log(
+  terminalIntelligence.createBox(
+    '📋 CONFIGURATION STATUS',
+    [
+      '',
+      `${terminalIntelligence.colors.green}✓${terminalIntelligence.colors.reset} Database:        ${config.databaseUrl ? 'Connected' : 'Not configured'}`,
+      `${terminalIntelligence.colors.green}✓${terminalIntelligence.colors.reset} CORS:            ${config.corsOrigins.join(', ')}`,
+      `${terminalIntelligence.colors.green}✓${terminalIntelligence.colors.reset} Rate Limit:      ${config.rateLimitMax} req/15min`,
+      `${terminalIntelligence.colors.blue}ℹ${terminalIntelligence.colors.reset} Swagger:         ${config.enableSwagger ? 'Enabled' : 'Disabled'}`,
+      `${terminalIntelligence.colors.blue}ℹ${terminalIntelligence.colors.reset} P2P Network:     ${config.p2pBootstrapPeers?.length > 0 ? 'Configured' : 'Local only'}`,
+      '',
+    ],
+    { color: terminalIntelligence.colors.green }
+  )
+);
 
 // Initialize Express app
 const app = express();
@@ -216,11 +223,11 @@ app.use(cors(corsOptions));
 
 app.use(cookieParser());
 
-const csrfExcludedPaths = ['/api/v1/auth/google/callback', '/stripe/webhook', '/api/v1/errors', '/api/v1/debug', '/api/v1/feed-analytics', '/api/v2/feed', '/api/v2/context', '/api/v2/memories', '/api/v1/collections', '/api/v3/social', '/api/v1/integrations', '/api/v1/handshake', '/api/v1/capture', '/api/v1/capture-sync/init', '/api/v1/import'];
-
 // Apply CSRF protection
 app.use((req, res, next) => {
-  if (csrfExcludedPaths.some(p => req.path.startsWith(p))) {
+  const path = req.path;
+  const isExcluded = isStatelessPath(path);
+  if (isExcluded) {
     return next();
   }
   return csrfProtection(req, res, next);
@@ -228,7 +235,8 @@ app.use((req, res, next) => {
 
 // Set CSRF Cookie for frontend
 app.use((req, res, next) => {
-  if (csrfExcludedPaths.some(p => req.path.startsWith(p))) {
+  const isExcluded = isStatelessPath(req.path);
+  if (isExcluded) {
     return next();
   }
   return setCsrfCookie(req, res, next);
@@ -404,6 +412,9 @@ app.use(logDevAuthStatus);
 // Request ID - Add unique identifier to each request
 app.use(requestId);
 
+// Sentry request context - Must be after requestId
+app.use(sentryRequestContext);
+
 // Enhanced Request Logger - Terminal Intelligence Visualization
 app.use((req, res, next) => {
   const startTime = Date.now();
@@ -507,8 +518,11 @@ app.use('/api/v1/import', importRouter);
 app.use('/api/v2/context-engine', contextEngineRouter);
 app.use('/api/v2/context-recipes', contextRecipesRouter);
 
-// Documentation Search (PageIndex-style)
+// // Documentation Search (PageIndex-style)
 app.use('/api/docs', docSearchRouter);
+
+// Demo API
+app.use('/api/demo', demoRouter);
 
 // API Documentation (Swagger)
 if (config.enableSwagger) {
@@ -556,29 +570,31 @@ const server = app.listen(config.port, '0.0.0.0', () => {
   const localIp = getLocalIp();
   const startTime = new Date().toISOString();
 
-  console.log(terminalIntelligence.createBox(
-    '🚀 VIVIM SERVER STARTED',
-    [
-      '',
-      `${terminalIntelligence.colors.green}🚀${terminalIntelligence.colors.reset} ENGINE STATUS:     OPERATIONAL`,
-      `${terminalIntelligence.colors.green}🎯${terminalIntelligence.colors.reset} CAPABILITIES:      AI Content Capture & Knowledge Vault`,
-      `${terminalIntelligence.colors.green}🔐${terminalIntelligence.colors.reset} SECURITY LEVEL:    ENHANCED (CORS, Rate Limiting)`,
-      '',
-      `${terminalIntelligence.colors.blue}🌐${terminalIntelligence.colors.reset} NETWORK ACCESS:    http://${localIp}:${config.port}/api/v1`,
-      `${terminalIntelligence.colors.blue}🏠${terminalIntelligence.colors.reset} LOCAL ACCESS:      http://localhost:${config.port}`,
-      `${terminalIntelligence.colors.blue}📚${terminalIntelligence.colors.reset} API DOCS:          http://localhost:${config.port}/api-docs`,
-      '',
-      `${terminalIntelligence.colors.yellow}⏱️${terminalIntelligence.colors.reset} START TIME:        ${startTime}`,
-      `${terminalIntelligence.colors.yellow}💻${terminalIntelligence.colors.reset} PLATFORM:          Node ${process.version} (${process.platform})`,
-      `${terminalIntelligence.colors.yellow}🆔${terminalIntelligence.colors.reset} PROCESS ID:        PID: ${process.pid}`,
-      `${terminalIntelligence.colors.yellow}🏷️${terminalIntelligence.colors.reset} MODE:              ${config.isDevelopment ? '🧪 DEVELOPMENT' : '🔒 PRODUCTION'}`,
-      '',
-      `${terminalIntelligence.colors.magenta}💡${terminalIntelligence.colors.reset} PWA Connection:    http://${localIp}:${config.port}/api/v1`,
-      `${terminalIntelligence.colors.magenta}💡${terminalIntelligence.colors.reset} Endpoints:         /api/v1/capture, /api/v1/providers`,
-      '',
-    ],
-    { color: terminalIntelligence.colors.cyan, width: 72 }
-  ));
+  console.log(
+    terminalIntelligence.createBox(
+      '🚀 VIVIM SERVER STARTED',
+      [
+        '',
+        `${terminalIntelligence.colors.green}🚀${terminalIntelligence.colors.reset} ENGINE STATUS:     OPERATIONAL`,
+        `${terminalIntelligence.colors.green}🎯${terminalIntelligence.colors.reset} CAPABILITIES:      AI Content Capture & Knowledge Vault`,
+        `${terminalIntelligence.colors.green}🔐${terminalIntelligence.colors.reset} SECURITY LEVEL:    ENHANCED (CORS, Rate Limiting)`,
+        '',
+        `${terminalIntelligence.colors.blue}🌐${terminalIntelligence.colors.reset} NETWORK ACCESS:    http://${localIp}:${config.port}/api/v1`,
+        `${terminalIntelligence.colors.blue}🏠${terminalIntelligence.colors.reset} LOCAL ACCESS:      http://localhost:${config.port}`,
+        `${terminalIntelligence.colors.blue}📚${terminalIntelligence.colors.reset} API DOCS:          http://localhost:${config.port}/api-docs`,
+        '',
+        `${terminalIntelligence.colors.yellow}⏱️${terminalIntelligence.colors.reset} START TIME:        ${startTime}`,
+        `${terminalIntelligence.colors.yellow}💻${terminalIntelligence.colors.reset} PLATFORM:          Node ${process.version} (${process.platform})`,
+        `${terminalIntelligence.colors.yellow}🆔${terminalIntelligence.colors.reset} PROCESS ID:        PID: ${process.pid}`,
+        `${terminalIntelligence.colors.yellow}🏷️${terminalIntelligence.colors.reset} MODE:              ${config.isDevelopment ? '🧪 DEVELOPMENT' : '🔒 PRODUCTION'}`,
+        '',
+        `${terminalIntelligence.colors.magenta}💡${terminalIntelligence.colors.reset} PWA Connection:    http://${localIp}:${config.port}/api/v1`,
+        `${terminalIntelligence.colors.magenta}💡${terminalIntelligence.colors.reset} Endpoints:         /api/v1/capture, /api/v1/providers`,
+        '',
+      ],
+      { color: terminalIntelligence.colors.cyan, width: 72 }
+    )
+  );
   console.log('\n');
 
   logger.info(
@@ -590,32 +606,32 @@ const server = app.listen(config.port, '0.0.0.0', () => {
 // ============================================================================
 // SOCKET SERVICE (Data Sync + Signaling)
 // ============================================================================
-import { socketService } from './services/socket.ts';
-socketService.initialize(server);
-logger.info('🔌 Socket service ready for Data Sync & P2P');
+// import { socketService } from './services/socket.ts';
+// socketService.initialize(server);
+// logger.info('🔌 Socket service ready for Data Sync & P2P');
 
 // ============================================================================
 // ENHANCED CONTEXT SYSTEM BOOT
 // ============================================================================
 // Boot the enhanced dynamic context engine after HTTP + Socket are ready
-bootContextSystem().then(() => {
-  logger.info('🧠 Context system boot complete');
-}).catch((err) => {
-  logger.error({ error: err.message }, 'Context system boot error');
-});
+// bootContextSystem().then(() => {
+//   logger.info('🧠 Context system boot complete');
+// }).catch((err) => {
+//   logger.error({ error: err.message }, 'Context system boot error');
+// });
 
 // ============================================================================
 // ADMIN WEBSOCKET SERVICE
 // ============================================================================
-import { adminWsService } from './services/admin-ws-service.js';
-adminWsService.initialize(server);
+// import { adminWsService } from './services/admin-ws-service.js';
+// adminWsService.initialize(server);
 logger.info('🔌 Admin WebSocket service ready for real-time updates');
 
 // ============================================================================
 // P2P NETWORK INDEXER NODE
 // ============================================================================
-import { networkService } from './services/network.js';
-networkService.initialize();
+// import { networkService } from './services/network.js';
+// networkService.initialize();
 
 // ============================================================================
 // GRACEFUL SHUTDOWN

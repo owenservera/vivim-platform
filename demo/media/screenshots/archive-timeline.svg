@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1920" height="1080" 
+     xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#0a0a0f"/>
+  
+  <!-- Header -->
+  <rect width="100%" height="64" fill="#1a1a2e" opacity="0.9"/>
+  <text x="32" y="42" font-family="system-ui" font-size="24" font-weight="600" fill="#ffffff">
+    Archive
+  </text>
+  <text x="1700" y="42" font-family="system-ui" font-size="14" fill="#888888">
+    320 conversations · 2,161 ACUs
+  </text>
+  
+  <!-- View Toggle -->
+  <rect x="1500" y="16" width="180" height="36" rx="8" fill="#0a0a0f"/>
+  <text x="1520" y="40" font-family="system-ui" font-size="13" fill="#EF9F27">Timeline</text>
+  <text x="1600" y="40" font-family="system-ui" font-size="13" fill="#888888">Grid</text>
+  <text x="1650" y="40" font-family="system-ui" font-size="13" fill="#888888">Canvas</text>
+  
+  <!-- Search Bar -->
+  <rect x="600" y="16" width="400" height="36" rx="8" fill="#0a0a0f"/>
+  <text x="620" y="40" font-family="system-ui" font-size="14" fill="#888888">
+    Search conversations...
+  </text>
+  
+  <!-- Timeline -->
+  
+    <rect x="32" y="96" width="1856" height="64" rx="8" fill="#1a1a2e"/>
+    
+    <!-- Provider Icon -->
+    <circle cx="64" cy="128" r="16" fill="#10a37f"/>
+    
+    <!-- Content -->
+    <text x="96" y="118" font-family="system-ui" font-size="14" font-weight="600" fill="#ffffff">
+      React Performance Optimization Discussion
+    </text>
+    <text x="96" y="140" font-family="system-ui" font-size="12" fill="#888888">
+      Deep dive into technical concepts and implementation strategies...
+    </text>
+    
+    <!-- Meta -->
+    <text x="1700" y="125" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      5 msgs · 4 ACUs
+    </text>
+    <text x="1700" y="142" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      1 days ago
+    </text>
+  
+    <rect x="32" y="176" width="1856" height="64" rx="8" fill="#1a1a2e"/>
+    
+    <!-- Provider Icon -->
+    <circle cx="64" cy="208" r="16" fill="#d97757"/>
+    
+    <!-- Content -->
+    <text x="96" y="198" font-family="system-ui" font-size="14" font-weight="600" fill="#ffffff">
+      Postgres Indexing Best Practices
+    </text>
+    <text x="96" y="220" font-family="system-ui" font-size="12" fill="#888888">
+      Deep dive into technical concepts and implementation strategies...
+    </text>
+    
+    <!-- Meta -->
+    <text x="1700" y="205" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      8 msgs · 7 ACUs
+    </text>
+    <text x="1700" y="222" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      2 days ago
+    </text>
+  
+    <rect x="32" y="256" width="1856" height="64" rx="8" fill="#1a1a2e"/>
+    
+    <!-- Provider Icon -->
+    <circle cx="64" cy="288" r="16" fill="#4285f4"/>
+    
+    <!-- Content -->
+    <text x="96" y="278" font-family="system-ui" font-size="14" font-weight="600" fill="#ffffff">
+      TypeScript Advanced Types
+    </text>
+    <text x="96" y="300" font-family="system-ui" font-size="12" fill="#888888">
+      Deep dive into technical concepts and implementation strategies...
+    </text>
+    
+    <!-- Meta -->
+    <text x="1700" y="285" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      19 msgs · 12 ACUs
+    </text>
+    <text x="1700" y="302" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      3 days ago
+    </text>
+  
+    <rect x="32" y="336" width="1856" height="64" rx="8" fill="#1a1a2e"/>
+    
+    <!-- Provider Icon -->
+    <circle cx="64" cy="368" r="16" fill="#1da1f2"/>
+    
+    <!-- Content -->
+    <text x="96" y="358" font-family="system-ui" font-size="14" font-weight="600" fill="#ffffff">
+      System Architecture Review
+    </text>
+    <text x="96" y="380" font-family="system-ui" font-size="12" fill="#888888">
+      Deep dive into technical concepts and implementation strategies...
+    </text>
+    
+    <!-- Meta -->
+    <text x="1700" y="365" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      17 msgs · 12 ACUs
+    </text>
+    <text x="1700" y="382" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      4 days ago
+    </text>
+  
+    <rect x="32" y="416" width="1856" height="64" rx="8" fill="#1a1a2e"/>
+    
+    <!-- Provider Icon -->
+    <circle cx="64" cy="448" r="16" fill="#000000"/>
+    
+    <!-- Content -->
+    <text x="96" y="438" font-family="system-ui" font-size="14" font-weight="600" fill="#ffffff">
+      Debugging Memory Leaks
+    </text>
+    <text x="96" y="460" font-family="system-ui" font-size="12" fill="#888888">
+      Deep dive into technical concepts and implementation strategies...
+    </text>
+    
+    <!-- Meta -->
+    <text x="1700" y="445" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      19 msgs · 3 ACUs
+    </text>
+    <text x="1700" y="462" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      5 days ago
+    </text>
+  
+    <rect x="32" y="496" width="1856" height="64" rx="8" fill="#1a1a2e"/>
+    
+    <!-- Provider Icon -->
+    <circle cx="64" cy="528" r="16" fill="#10a37f"/>
+    
+    <!-- Content -->
+    <text x="96" y="518" font-family="system-ui" font-size="14" font-weight="600" fill="#ffffff">
+      API Design Patterns
+    </text>
+    <text x="96" y="540" font-family="system-ui" font-size="12" fill="#888888">
+      Deep dive into technical concepts and implementation strategies...
+    </text>
+    
+    <!-- Meta -->
+    <text x="1700" y="525" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      13 msgs · 13 ACUs
+    </text>
+    <text x="1700" y="542" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      6 days ago
+    </text>
+  
+    <rect x="32" y="576" width="1856" height="64" rx="8" fill="#1a1a2e"/>
+    
+    <!-- Provider Icon -->
+    <circle cx="64" cy="608" r="16" fill="#d97757"/>
+    
+    <!-- Content -->
+    <text x="96" y="598" font-family="system-ui" font-size="14" font-weight="600" fill="#ffffff">
+      Code Review: Authentication Flow
+    </text>
+    <text x="96" y="620" font-family="system-ui" font-size="12" fill="#888888">
+      Deep dive into technical concepts and implementation strategies...
+    </text>
+    
+    <!-- Meta -->
+    <text x="1700" y="605" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      16 msgs · 6 ACUs
+    </text>
+    <text x="1700" y="622" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      7 days ago
+    </text>
+  
+    <rect x="32" y="656" width="1856" height="64" rx="8" fill="#1a1a2e"/>
+    
+    <!-- Provider Icon -->
+    <circle cx="64" cy="688" r="16" fill="#4285f4"/>
+    
+    <!-- Content -->
+    <text x="96" y="678" font-family="system-ui" font-size="14" font-weight="600" fill="#ffffff">
+      Startup Technical Strategy
+    </text>
+    <text x="96" y="700" font-family="system-ui" font-size="12" fill="#888888">
+      Deep dive into technical concepts and implementation strategies...
+    </text>
+    
+    <!-- Meta -->
+    <text x="1700" y="685" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      13 msgs · 4 ACUs
+    </text>
+    <text x="1700" y="702" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      8 days ago
+    </text>
+  
+    <rect x="32" y="736" width="1856" height="64" rx="8" fill="#1a1a2e"/>
+    
+    <!-- Provider Icon -->
+    <circle cx="64" cy="768" r="16" fill="#1da1f2"/>
+    
+    <!-- Content -->
+    <text x="96" y="758" font-family="system-ui" font-size="14" font-weight="600" fill="#ffffff">
+      AI Integration Planning
+    </text>
+    <text x="96" y="780" font-family="system-ui" font-size="12" fill="#888888">
+      Deep dive into technical concepts and implementation strategies...
+    </text>
+    
+    <!-- Meta -->
+    <text x="1700" y="765" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      16 msgs · 11 ACUs
+    </text>
+    <text x="1700" y="782" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      9 days ago
+    </text>
+  
+    <rect x="32" y="816" width="1856" height="64" rx="8" fill="#1a1a2e"/>
+    
+    <!-- Provider Icon -->
+    <circle cx="64" cy="848" r="16" fill="#000000"/>
+    
+    <!-- Content -->
+    <text x="96" y="838" font-family="system-ui" font-size="14" font-weight="600" fill="#ffffff">
+      Database Schema Design
+    </text>
+    <text x="96" y="860" font-family="system-ui" font-size="12" fill="#888888">
+      Deep dive into technical concepts and implementation strategies...
+    </text>
+    
+    <!-- Meta -->
+    <text x="1700" y="845" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      9 msgs · 3 ACUs
+    </text>
+    <text x="1700" y="862" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      10 days ago
+    </text>
+  
+    <rect x="32" y="896" width="1856" height="64" rx="8" fill="#1a1a2e"/>
+    
+    <!-- Provider Icon -->
+    <circle cx="64" cy="928" r="16" fill="#10a37f"/>
+    
+    <!-- Content -->
+    <text x="96" y="918" font-family="system-ui" font-size="14" font-weight="600" fill="#ffffff">
+      Testing Strategy Discussion
+    </text>
+    <text x="96" y="940" font-family="system-ui" font-size="12" fill="#888888">
+      Deep dive into technical concepts and implementation strategies...
+    </text>
+    
+    <!-- Meta -->
+    <text x="1700" y="925" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      24 msgs · 12 ACUs
+    </text>
+    <text x="1700" y="942" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      11 days ago
+    </text>
+  
+    <rect x="32" y="976" width="1856" height="64" rx="8" fill="#1a1a2e"/>
+    
+    <!-- Provider Icon -->
+    <circle cx="64" cy="1008" r="16" fill="#d97757"/>
+    
+    <!-- Content -->
+    <text x="96" y="998" font-family="system-ui" font-size="14" font-weight="600" fill="#ffffff">
+      DevOps Pipeline Setup
+    </text>
+    <text x="96" y="1020" font-family="system-ui" font-size="12" fill="#888888">
+      Deep dive into technical concepts and implementation strategies...
+    </text>
+    
+    <!-- Meta -->
+    <text x="1700" y="1005" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      8 msgs · 11 ACUs
+    </text>
+    <text x="1700" y="1022" font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      12 days ago
+    </text>
+  
+  
+  <!-- Pagination -->
+  <rect x="32" y="1020" width="1856" height="40" fill="none"/>
+  <text x="928" y="1045" font-family="system-ui" font-size="13" fill="#888888" text-anchor="middle">
+    Showing 1-12 of 320 conversations
+  </text>
+</svg>

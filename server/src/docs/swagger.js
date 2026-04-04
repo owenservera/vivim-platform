@@ -16,7 +16,7 @@ const openApiSpec = YAML.load(path.join(__dirname, 'openapi.yaml'));
 // Swagger UI options
 const swaggerOptions = {
   customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: 'OpenScroll API Documentation',
+  customSiteTitle: 'VIVIM API Documentation',
   swaggerOptions: {
     persistAuthorization: true,
     displayRequestDuration: true,

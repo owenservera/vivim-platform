@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  User, 
-  Bell, 
-  Shield, 
-  Database, 
-  Palette, 
-  Info, 
-  LogOut, 
-  Trash2, 
-  ChevronRight, 
-  Terminal, 
+import {
+  User,
+  Bell,
+  Shield,
+  Database,
+  Palette,
+  Info,
+  LogOut,
+  Trash2,
+  ChevronRight,
+  Terminal,
   Brain,
   Smartphone,
   Monitor,
@@ -25,7 +25,8 @@ import {
   AlertTriangle,
   XCircle,
   Calendar,
-  Fingerprint
+  Fingerprint,
+  Upload
 } from 'lucide-react';
 
 /* Services & Utils */
@@ -196,6 +197,17 @@ export const Settings: React.FC = () => {
           value: 'DID, Keys & Proofs',
           icon: <Lock className="w-5 h-5 text-indigo-500" />,
           onClick: () => navigate('/identity'),
+        }
+      ]
+    },
+    {
+      title: 'Import & Export',
+      items: [
+        {
+          label: 'Import Conversations',
+          value: 'ChatGPT, Claude exports',
+          icon: <Upload className="w-5 h-5 text-emerald-500" />,
+          onClick: () => navigate('/import'),
         }
       ]
     },

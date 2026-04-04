@@ -1,0 +1,123 @@
+
+Status   Name               DisplayName
+------   ----               -----------
+Running  AMD External Even… AMD External Events Utility
+Running  Appinfo            Application Information
+Running  AppXSvc            AppX Deployment Service (AppXSVC)
+Running  AudioEndpointBuil… Windows Audio Endpoint Builder
+Running  Audiosrv           Windows Audio
+Running  BDESVC             BitLocker Drive Encryption Service
+Running  BFE                Base Filtering Engine
+Running  BrokerInfrastruct… Background Tasks Infrastructure Servi…
+Running  camsvc             Capability Access Manager Service
+Running  cbdhsvc_e49f6      Clipboard User Service_e49f6
+Running  CDPSvc             Connected Devices Platform Service
+Running  CDPUserSvc_e49f6   Connected Devices Platform User Servi…
+Running  CertPropSvc        Certificate Propagation
+Running  CoreMessagingRegi… CoreMessaging
+Running  CryptSvc           Cryptographic Services
+Running  DcomLaunch         DCOM Server Process Launcher
+Running  DeviceAssociation… Device Association Service
+Running  Dhcp               DHCP Client
+Running  DiagTrack          Connected User Experiences and Teleme…
+Running  DispBrokerDesktop… Display Policy Service
+Running  Dnscache           DNS Client
+Running  DPS                Diagnostic Policy Service
+Running  DusmSvc            Data Usage
+Running  ElanTouchXiSvc     ELAN WoT Capable Service
+Running  EventLog           Windows Event Log
+Running  EventSystem        COM+ Event System
+Running  fdPHost            Function Discovery Provider Host
+Running  FDResPub           Function Discovery Resource Publicati…
+Running  FMAPOService       Fortemedia APO Control Service
+Running  FontCache          Windows Font Cache Service
+Running  gpsvc              Group Policy Client
+Running  HNS                Host Network Service
+Running  HotKeyServiceUWP   HP Hotkey UWP Service
+Running  HPAppHelperCap     HP App Helper HSA Service
+Running  HPAudioAnalytics   HP Audio Analytics Service
+Running  HPDiagsCap         HP Diagnostics HSA Service
+Running  HPNetworkCap       HP Network HSA Service
+Running  hpqcaslwmiex       HP CASL Framework Service
+Running  HPSysInfoCap       HP System Info HSA Service
+Running  HpTouchpointAnaly… HP Insights Analytics
+Running  HvHost             HV Host Service
+Running  ibtsiva            Intel Bluetooth Service
+Running  InstallService     Microsoft Store Install Service
+Running  InventorySvc       Inventory and Compatibility Appraisal…
+Running  IpHlpSvc           IP Helper
+Running  KeyIso             CNG Key Isolation
+Running  LanmanServer       Server
+Running  LanmanWorkstation  Workstation
+Running  LanWlanWwanSwitch… HP LAN/WLAN/WWAN Switching UWP Service
+Running  lfsvc              Geolocation Service
+Running  lmhosts            TCP/IP NetBIOS Helper
+Running  LSM                Local Session Manager
+Running  MDCoreSvc          Microsoft Defender Core Service
+Running  mpssvc             Windows Defender Firewall
+Running  NcbService         Network Connection Broker
+Running  netprofm           Network List Service
+Running  NgcCtnrSvc         Microsoft Passport Container
+Running  NgcSvc             Microsoft Passport
+Running  NPSMSvc_e49f6      Now Playing Session Manager Service_e…
+Running  nsi                Network Store Interface Service
+Running  nvagent            Network Virtualization Service
+Running  OneSyncSvc_e49f6   Sync Host_e49f6
+Running  PcaSvc             Program Compatibility Assistant Servi…
+Running  PEMHTTPD-x64       PEMHTTPD-x64
+Running  pgagent-pg18       PostgreSQL Scheduling Agent - pgagent…
+Running  PlugPlay           Plug and Play
+Running  PolicyAgent        IPsec Policy Agent
+Running  postgresql-x64-18  postgresql-x64-18 - PostgreSQL Server…
+Running  Power              Power
+Running  ProfSvc            User Profile Service
+Running  RmSvc              Radio Management Service
+Running  RpcEptMapper       RPC Endpoint Mapper
+Running  RpcSs              Remote Procedure Call (RPC)
+Running  RtkAudioUniversal… Realtek Audio Universal Service
+Running  SamSs              Security Accounts Manager
+Running  SCardSvr           Smart Card
+Running  Schedule           Task Scheduler
+Running  SECOMNService      Sound Research SECOMN Service
+Running  SENS               System Event Notification Service
+Running  SharedAccess       Internet Connection Sharing (ICS)
+Running  ShellHWDetection   Shell Hardware Detection
+Running  Spooler            Print Spooler
+Running  StateRepository    State Repository Service
+Running  StiSvc             Windows Image Acquisition (WIA)
+Running  StorSvc            Storage Service
+Running  SynTPEnhService    SynTPEnhService
+Running  SysMain            SysMain
+Running  SystemEventsBroker System Events Broker
+Running  Tailscale          Tailscale
+Running  TextInputManageme… Text Input Management Service
+Running  Themes             Themes
+Running  TimeBrokerSvc      Time Broker
+Running  TokenBroker        Web Account Manager
+Running  TrkWks             Distributed Link Tracking Client
+Running  UdkUserSvc_e49f6   Udk User Service_e49f6
+Running  UserManager        User Manager
+Running  UsoSvc             Update Orchestrator Service
+Running  VaultSvc           Credential Manager
+Running  vmcompute          Hyper-V Host Compute Service
+Running  vmms               Hyper-V Virtual Machine Management
+Running  Wcmsvc             Windows Connection Manager
+Running  WdiSystemHost      Diagnostic System Host
+Running  WdNisSvc           Microsoft Defender Antivirus Network …
+Running  webthreatdefsvc    Web Threat Defense Service
+Running  webthreatdefusers… Web Threat Defense User Service_e49f6
+Running  whesvc             Windows Health and Optimized Experien…
+Running  WinDefend          Microsoft Defender Antivirus Service
+Running  WinHttpAutoProxyS… WinHTTP Web Proxy Auto-Discovery Serv…
+Running  Winmgmt            Windows Management Instrumentation
+Running  WinRM              Windows Remote Management (WS-Managem…
+Running  WlanSvc            WLAN AutoConfig
+Running  wlidsvc            Microsoft Account Sign-in Assistant
+Running  WpnService         Windows Push Notifications System Ser…
+Running  WpnUserService_e4… Windows Push Notifications User Servi…
+Running  WSAIFabricSvc      WSAIFabricSvc
+Running  wscsvc             Security Center
+Running  WSLService         WSL Service
+Running  wuauserv           Windows Update
+Running  WwanSvc            WWAN AutoConfig
+

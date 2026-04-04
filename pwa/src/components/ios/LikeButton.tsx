@@ -65,6 +65,7 @@ export const IOSLikeButton: React.FC<IOSLikeButtonProps> = ({
 
   return (
     <button
+      type="button"
       onClick={handleLike}
       onDoubleClick={handleDoubleClick}
       className={cn(

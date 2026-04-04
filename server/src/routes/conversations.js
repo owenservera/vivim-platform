@@ -19,8 +19,13 @@ import { requireApiKey } from '../middleware/auth.js';
 import { requireAuth } from '../middleware/unified-auth.js';
 import { cacheService } from '../services/cache-service.js';
 import { getPrismaClient } from '../lib/database.js';
+import conversationsRenderRouter from './conversations.render.js';
 
 const router = Router();
+
+// Mount rendering routes at /:id/render
+router.use('/', conversationsRenderRouter);
+
 const log = { info: () => {} }; // fallback; individual routes use createRequestLogger(req)
 
 // ============================================================================
@@ -354,6 +359,40 @@ router.get('/:id/related', requireAuth, async (req, res, next) => {
     res.json({
       success: true,
       related,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.put('/:id/visibility', requireAuth, async (req, res, next) => {
+  const routeLog = createRequestLogger(req);
+  try {
+    const { id } = req.params;
+    const { visibility } = req.body;
+    const prisma = getPrismaClient();
+
+    if (!['public', 'private'].includes(visibility)) {
+      return res.status(400).json({ error: 'Invalid visibility value' });
+    }
+
+    const conversation = await prisma.conversation.findUnique({ where: { id } });
+    if (!conversation) {
+      return res.status(404).json({ error: 'Conversation not found' });
+    }
+
+    // Allow owner or let anyone if no owner is strictly enforced for now
+    const updated = await prisma.conversation.update({
+      where: { id },
+      data: { visibility },
+    });
+
+    routeLog.info({ conversationId: id, visibility }, 'Conversation visibility updated');
+
+    res.json({
+      success: true,
+      id: updated.id,
+      visibility: updated.visibility,
     });
   } catch (error) {
     next(error);

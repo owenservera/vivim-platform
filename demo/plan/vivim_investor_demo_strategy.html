@@ -1,0 +1,393 @@
+
+<style>
+  .tab-bar { display:flex; gap:4px; margin-bottom:20px; flex-wrap:wrap; }
+  .tab { padding:6px 14px; border:0.5px solid var(--color-border-secondary); border-radius:var(--border-radius-md); font-size:13px; cursor:pointer; background:transparent; color:var(--color-text-secondary); transition:all .15s; }
+  .tab.active { background:var(--color-background-secondary); color:var(--color-text-primary); border-color:var(--color-border-primary); font-weight:500; }
+  .section { display:none; }
+  .section.active { display:block; }
+  .card { background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:14px 16px; margin-bottom:10px; }
+  .pill { display:inline-block; font-size:11px; padding:2px 8px; border-radius:20px; font-weight:500; }
+  .pill-purple { background:var(--color-background-info); color:var(--color-text-info); }
+  .pill-green { background:#eaf3de; color:#3b6d11; }
+  .pill-amber { background:#faeeda; color:#854f0b; }
+  .pill-red { background:#fcebeb; color:#a32d2d; }
+  .pill-gray { background:var(--color-background-secondary); color:var(--color-text-secondary); }
+  .timeline { position:relative; padding-left:24px; }
+  .timeline::before { content:''; position:absolute; left:7px; top:8px; bottom:8px; width:0.5px; background:var(--color-border-secondary); }
+  .tl-item { position:relative; margin-bottom:16px; }
+  .tl-dot { position:absolute; left:-24px; top:6px; width:10px; height:10px; border-radius:50%; background:var(--color-background-primary); border:1.5px solid var(--color-border-primary); }
+  .tl-dot.wow { background:#EF9F27; border-color:#BA7517; }
+  .tl-dot.stop { background:#E24B4A; border-color:#A32D2D; }
+  .tl-time { font-size:11px; color:var(--color-text-secondary); margin-bottom:2px; }
+  .tl-title { font-size:14px; font-weight:500; margin-bottom:3px; }
+  .tl-desc { font-size:13px; color:var(--color-text-secondary); }
+  .stack-row { display:grid; grid-template-columns:120px 1fr; gap:10px; align-items:start; margin-bottom:12px; }
+  .stack-label { font-size:12px; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:.04em; padding-top:2px; }
+  .stack-items { display:flex; flex-wrap:wrap; gap:5px; }
+  .seed-block { border-left:2px solid var(--color-border-secondary); padding-left:12px; margin-bottom:14px; }
+  .seed-block.hot { border-color:#EF9F27; }
+  .seed-title { font-size:13px; font-weight:500; margin-bottom:4px; }
+  .seed-detail { font-size:12px; color:var(--color-text-secondary); }
+  .checklist { list-style:none; padding:0; margin:0; }
+  .checklist li { display:flex; gap:8px; align-items:flex-start; font-size:13px; padding:5px 0; border-bottom:0.5px solid var(--color-border-tertiary); color:var(--color-text-secondary); }
+  .checklist li:last-child { border-bottom:none; }
+  .check { color:#3b6d11; font-weight:500; flex-shrink:0; }
+  .warn { color:#854f0b; font-weight:500; flex-shrink:0; }
+  .danger { color:#a32d2d; font-weight:500; flex-shrink:0; }
+  .moment-bar { display:flex; height:8px; border-radius:4px; overflow:hidden; margin-bottom:6px; gap:1px; }
+  .bar-seg { height:100%; flex:1; }
+  .bar-setup { background:#B4B2A9; }
+  .bar-demo { background:#EF9F27; }
+  .bar-wow { background:#E24B4A; }
+  .bar-close { background:#1D9E75; }
+  h3 { font-size:15px; font-weight:500; margin:0 0 12px; }
+  p { font-size:13px; color:var(--color-text-secondary); margin:0 0 14px; line-height:1.6; }
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media(max-width:560px) { .two-col { grid-template-columns:1fr; } .stack-row { grid-template-columns:1fr; } }
+</style>
+
+<div style="padding:4px 0 20px">
+  <div class="tab-bar">
+    <button class="tab active" onclick="show('story')">Story arc</button>
+    <button class="tab" onclick="show('stack')">Tech stack</button>
+    <button class="tab" onclick="show('seed')">Seed data</button>
+    <button class="tab" onclick="show('checklist')">Pre-demo checklist</button>
+    <button class="tab" onclick="show('avoid')">What to avoid</button>
+    <button class="tab" onclick="show('focus')">Focus areas</button>
+  </div>
+
+  <!-- STORY ARC -->
+  <div id="s-story" class="section active">
+    <h3>The 90-second narrative</h3>
+
+    <div style="margin-bottom:16px;">
+      <div class="moment-bar">
+        <div class="bar-seg bar-setup" style="flex:1"></div>
+        <div class="bar-seg bar-demo" style="flex:2"></div>
+        <div class="bar-seg bar-wow" style="flex:1.5"></div>
+        <div class="bar-seg bar-close" style="flex:1"></div>
+      </div>
+      <div style="display:flex;gap:0;font-size:11px;color:var(--color-text-secondary)">
+        <span style="flex:1">Hook</span>
+        <span style="flex:2">Flow</span>
+        <span style="flex:1.5">Wow</span>
+        <span style="flex:1">Land</span>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-time">0–15s</div>
+        <div class="tl-title">The pain <span class="pill pill-gray">hook</span></div>
+        <div class="tl-desc">Open with 3 browser tabs — ChatGPT, Claude, Gemini — all showing different conversations. Say: "Every AI power user lives here. This is where their most valuable thinking goes to die." Close all three tabs.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot wow"></div>
+        <div class="tl-time">15–35s</div>
+        <div class="tl-title">The capture <span class="pill pill-amber">magic #1</span></div>
+        <div class="tl-desc">Open VIVIM. Show the archive pre-loaded with 9 providers' conversations. Click into the timeline view. Let them absorb the scale — weeks of AI work, organized. No narration needed here.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot wow"></div>
+        <div class="tl-time">35–60s</div>
+        <div class="tl-title">The knowledge graph <span class="pill pill-amber">magic #2 — the wow</span></div>
+        <div class="tl-desc">Switch to Canvas view. The graph animates into place — nodes by provider, edges showing semantic connections. Ask: "What if your AI conversations could remember each other?" Then type one search query — something specific and technical — and watch the graph highlight relevant nodes across providers. This is the money shot.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot wow"></div>
+        <div class="tl-time">60–80s</div>
+        <div class="tl-title">Context in action <span class="pill pill-amber">magic #3</span></div>
+        <div class="tl-desc">Open a new chat. Ask a question. Show the context cockpit — 8 layers loading, memories surfacing, ACUs being retrieved. The response is hyper-personalized. Say: "It knows you. Not because you told it — because it's been watching you think."</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot stop"></div>
+        <div class="tl-time">80–90s</div>
+        <div class="tl-title">Stop. Land it. <span class="pill pill-green">close</span></div>
+        <div class="tl-desc">"That's VIVIM. You own your AI brain. Fully." Then stop talking. The silence is intentional. Let them ask the first question.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TECH STACK -->
+  <div id="s-stack" class="section">
+    <h3>Demo environment setup</h3>
+    <p>Run a dedicated <strong>demo instance</strong> — never show your dev or prod environment. Isolate it completely.</p>
+
+    <div class="card">
+      <div style="font-size:13px;font-weight:500;margin-bottom:12px">Infrastructure</div>
+      <div class="stack-row">
+        <span class="stack-label">Hosting</span>
+        <div class="stack-items">
+          <span class="pill pill-purple">Railway or Fly.io</span>
+          <span class="pill pill-gray">Always-on, not cold starts</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <span class="stack-label">Domain</span>
+        <div class="stack-items">
+          <span class="pill pill-amber">vivim.app</span>
+          <span class="pill pill-gray">No .vercel.app — looks unserious</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <span class="stack-label">Database</span>
+        <div class="stack-items">
+          <span class="pill pill-purple">Separate demo DB</span>
+          <span class="pill pill-gray">Never share with prod</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <span class="stack-label">Backup</span>
+        <div class="stack-items">
+          <span class="pill pill-red">Screen recording</span>
+          <span class="pill pill-gray">Loom, always ready</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:13px;font-weight:500;margin-bottom:12px">Demo account setup</div>
+      <div class="stack-row">
+        <span class="stack-label">Auth</span>
+        <div class="stack-items"><span class="pill pill-green">Pre-logged in, never type a password</span></div>
+      </div>
+      <div class="stack-row">
+        <span class="stack-label">Browser</span>
+        <div class="stack-items">
+          <span class="pill pill-purple">Dedicated Chrome profile</span>
+          <span class="pill pill-gray">No bookmarks, no notifications, no other tabs</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <span class="stack-label">Zoom</span>
+        <div class="stack-items">
+          <span class="pill pill-amber">Browser zoom at 110%</span>
+          <span class="pill pill-gray">Readable on projected screens</span>
+        </div>
+      </div>
+      <div class="stack-row">
+        <span class="stack-label">Seed script</span>
+        <div class="stack-items">
+          <span class="pill pill-purple">Reset script</span>
+          <span class="pill pill-gray">Wipe + re-seed in under 30s</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:13px;font-weight:500;margin-bottom:12px">Performance targets for demo</div>
+      <div class="stack-row">
+        <span class="stack-label">Search</span>
+        <div class="stack-items"><span class="pill pill-green">Under 300ms — investors notice lag</span></div>
+      </div>
+      <div class="stack-row">
+        <span class="stack-label">Graph load</span>
+        <div class="stack-items"><span class="pill pill-amber">Pre-compute embeddings for all seed data</span></div>
+      </div>
+      <div class="stack-row">
+        <span class="stack-label">Context</span>
+        <div class="stack-items"><span class="pill pill-green">Cache the demo account's context bundle</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEED DATA -->
+  <div id="s-seed" class="section">
+    <h3>Seed data strategy</h3>
+    <p>The demo account should feel like a <em>real power user's brain</em> — 6+ months of serious AI work across multiple providers. Don't use Lorem Ipsum. Use real domain knowledge.</p>
+
+    <div class="seed-block hot">
+      <div class="seed-title">Persona: "Alex Chen, senior software engineer + entrepreneur"</div>
+      <div class="seed-detail">Technical enough to impress technical investors. Relatable enough for everyone else. Topics: building a startup, system design, AI/ML, writing, hiring.</div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Volume</div>
+        <div class="seed-block">
+          <div class="seed-title">250–400 conversations</div>
+          <div class="seed-detail">Enough to make the graph feel alive. Split across 5+ providers.</div>
+        </div>
+        <div class="seed-block">
+          <div class="seed-title">ChatGPT — 90 convos</div>
+          <div class="seed-detail">Code reviews, architecture, debugging</div>
+        </div>
+        <div class="seed-block">
+          <div class="seed-title">Claude — 80 convos</div>
+          <div class="seed-detail">Writing, strategy, long-form thinking</div>
+        </div>
+        <div class="seed-block">
+          <div class="seed-title">Gemini — 50 convos</div>
+          <div class="seed-detail">Research, data analysis</div>
+        </div>
+        <div class="seed-block">
+          <div class="seed-title">Others — 80 convos</div>
+          <div class="seed-detail">DeepSeek, Grok, Mistral — shows breadth</div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Scripted searches</div>
+        <div class="seed-block hot">
+          <div class="seed-title">"vector database performance"</div>
+          <div class="seed-detail">Should hit 8+ conversations across ChatGPT + Claude + Gemini — shows cross-provider search</div>
+        </div>
+        <div class="seed-block hot">
+          <div class="seed-title">"hiring senior engineers"</div>
+          <div class="seed-detail">Mixes strategy (Claude) + drafting (ChatGPT) — shows semantic variety</div>
+        </div>
+        <div class="seed-block hot">
+          <div class="seed-title">"last month" (temporal)</div>
+          <div class="seed-detail">Should show a recognizable project arc in timeline view</div>
+        </div>
+        <div class="seed-block">
+          <div class="seed-title">Generate with GPT-4o</div>
+          <div class="seed-detail">Use AI to write realistic fake conversations. Prompt: "Write a realistic ChatGPT conversation where a senior engineer debugs a Postgres query planner issue." 300 like this.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:4px">
+      <div style="font-size:13px;font-weight:500;margin-bottom:8px">Memories to pre-load</div>
+      <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.7">
+        "Alex prefers TypeScript over JavaScript" · "Alex is building a B2B SaaS startup" · "Alex has interviewed at Google and Stripe" · "Alex is skeptical of microservices for early-stage products" · "Alex uses Postgres + pgvector for production workloads" — these should surface visibly in the context cockpit during the demo.
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div id="s-checklist" class="section">
+    <h3>Pre-demo checklist</h3>
+    <p>Run this the night before, and again 30 minutes before the meeting.</p>
+
+    <div class="card">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em">Night before</div>
+      <ul class="checklist">
+        <li><span class="check">✓</span> Run seed reset script, verify all 250+ conversations show up</li>
+        <li><span class="check">✓</span> Verify all embeddings are pre-computed (no lag on graph load)</li>
+        <li><span class="check">✓</span> Record a full screen-capture backup at 1080p (Loom or QuickTime)</li>
+        <li><span class="check">✓</span> Test all 3 demo search queries — confirm result counts are right</li>
+        <li><span class="check">✓</span> Test canvas view — graph should render in under 3 seconds</li>
+        <li><span class="check">✓</span> Confirm demo account is logged in on the demo Chrome profile</li>
+        <li><span class="check">✓</span> Practice the script 5+ times. Time it. Should be 85–95 seconds.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em">Day of</div>
+      <ul class="checklist">
+        <li><span class="check">✓</span> Open only the demo Chrome profile, nothing else</li>
+        <li><span class="check">✓</span> Pre-navigate to the archive view (not homepage)</li>
+        <li><span class="check">✓</span> Disable all notifications (Slack, email, phone)</li>
+        <li><span class="warn">!</span> Have the Loom backup URL copied to clipboard</li>
+        <li><span class="warn">!</span> Have a mobile hotspot ready in case wifi fails</li>
+        <li><span class="warn">!</span> Run the seed reset one more time, 30 min before</li>
+        <li><span class="danger">✗</span> Do NOT do a "quick live capture" during the demo — too risky</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- AVOID -->
+  <div id="s-avoid" class="section">
+    <h3>Demo killers to avoid</h3>
+
+    <div class="two-col">
+      <div class="card">
+        <div style="font-size:13px;font-weight:500;margin-bottom:10px;color:#a32d2d">❌ Technical</div>
+        <ul class="checklist">
+          <li><span class="danger">✗</span> Live capture during the demo — providers change, it will fail</li>
+          <li><span class="danger">✗</span> Empty states anywhere — pre-seed everything</li>
+          <li><span class="danger">✗</span> Cold-start latency — keep the demo instance warm</li>
+          <li><span class="danger">✗</span> Typing passwords — pre-auth, always</li>
+          <li><span class="danger">✗</span> Sharing your prod DB — separate demo instance</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div style="font-size:13px;font-weight:500;margin-bottom:10px;color:#a32d2d">❌ Narrative</div>
+        <ul class="checklist">
+          <li><span class="danger">✗</span> Feature touring — tell a story, not a spec sheet</li>
+          <li><span class="danger">✗</span> Explaining the UI — if you need to, it's a UX problem</li>
+          <li><span class="danger">✗</span> Going past 90 seconds before questions</li>
+          <li><span class="danger">✗</span> Showing settings or admin panels — save for follow-up</li>
+          <li><span class="danger">✗</span> Winging any click — every click should be practiced</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="border-color:var(--color-border-info)">
+      <div style="font-size:13px;font-weight:500;margin-bottom:6px">The one thing that will make or break it</div>
+      <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.7">
+        The knowledge graph canvas view is your weapon. Investors fund things they can <em>feel</em>. A zoomable, living map of someone's AI brain — with nodes glowing as search results highlight — is viscerally understandable. Make it look incredible. Pre-position the camera, pre-run the search, pre-animate the graph. That 15-second moment is worth more than everything else combined.
+      </div>
+    </div>
+  </div>
+
+  <!-- FOCUS AREAS -->
+  <div id="s-focus" class="section">
+    <h3>Customizable demo flows by investor type</h3>
+    <p>Run <code style="background:#f3f2f1;padding:2px 6px;border-radius:4px;font-size:12px">bun run demo:highlight --focus=&lt;id&gt;</code> to generate a complete demo package for each focus.</p>
+
+    <div class="two-col">
+      <div>
+        <div class="card">
+          <div class="pill pill-purple" style="margin-bottom:8px">Recommended: CTO / Technical</div>
+          <div style="font-weight:500;margin-bottom:4px">🧠 Knowledge Graph</div>
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">Canvas, ACU relationships, force-directed graph · <code>--focus=knowledgeGraph</code></div>
+          <div style="font-weight:500;margin-bottom:4px">⚙️ Context Engine</div>
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">Cockpit, token budgets, context assembly · <code>--focus=contextEngine</code></div>
+          <div style="font-weight:500;margin-bottom:4px">🔐 Identity & Storage</div>
+          <div style="font-size:12px;color:var(--color-text-secondary)">DID identity, storage dashboard · <code>--focus=identityStorage</code></div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="pill pill-green" style="margin-bottom:8px">Recommended: Product / PM</div>
+          <div style="font-weight:500;margin-bottom:4px">📰 For You Feed</div>
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">Topic filtering, personalization, surfacing past thinking · <code>--focus=forYouFeed</code></div>
+          <div style="font-weight:500;margin-bottom:4px">🤖 AI Native</div>
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">VIVIM AI, BYOK, memory-grounded answers · <code>--focus=aiNative</code></div>
+          <div style="font-weight:500;margin-bottom:4px">🧠 Knowledge Graph</div>
+          <div style="font-size:12px;color:var(--color-text-secondary)">Canvas, relationships · <code>--focus=knowledgeGraph</code></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top:10px">
+      <div>
+        <div class="card">
+          <div class="pill pill-amber" style="margin-bottom:8px">Recommended: Business / Growth</div>
+          <div style="font-weight:500;margin-bottom:4px">🌐 Social & Sharing</div>
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">Circles, groups, attributed sharing · <code>--focus=socialSharing</code></div>
+          <div style="font-weight:500;margin-bottom:4px">📥 Core Capture</div>
+          <div style="font-size:12px;color:var(--color-text-secondary)">9 providers, one tap, archive overview · <code>--focus=coreCapture</code></div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="pill pill-gray" style="margin-bottom:8px">All Features</div>
+          <div style="font-weight:500;margin-bottom:4px">🚀 Full Journey</div>
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:8px">End-to-end 90-120s demo, all features · <code>--focus=fullJourney</code></div>
+          <div style="font-size:12px;color:var(--color-text-secondary);margin-top:6px;padding:8px;background:#f3f2f1;border-radius:6px">
+            Quick reference: <code>--skip-seed</code> <code>--skip-screenshots</code> <code>--skip-slides</code> <code>--seed-only</code>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="border-color:var(--color-border-info);margin-top:10px">
+      <div style="font-size:13px;font-weight:500;margin-bottom:6px">How the highlights system works</div>
+      <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.7">
+        Each focus area is defined in <code>demo/highlights/FOCUS_AREAS.ts</code> and includes: narrative script (hook + body + close), demo flow (pages + wait times + notes), seed data weights, search queries to verify, and slide slugs. Running <code>demo:highlight</code> generates a complete package — narrative printout, click script, screenshots, MDX slides, and a printable script file.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>

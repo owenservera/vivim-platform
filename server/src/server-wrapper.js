@@ -10,11 +10,11 @@ const BUN_WATCH_WARNINGS = [
   /warn: File .* is not in the project directory and will not be watched/i,
 ];
 
-const server = spawn('bun', ['--watch', 'src/server.js'], {
+const server = spawn(process.execPath, ['--watch', 'src/server.js'], {
   cwd: process.cwd(),
   env: { ...process.env, FORCE_COLOR: '1' },
   stdio: ['inherit', 'pipe', 'pipe'],
-  shell: true,
+  shell: process.platform === 'win32',
 });
 
 let stdoutBuffer = '';

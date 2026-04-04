@@ -15,13 +15,12 @@ const router = Router();
 // PACKAGE INFO
 // ============================================================================
 
-// Read package.json for version info
-let packageInfo;
-try {
-  packageInfo = await import('../../package.json', { with: { type: 'json' } });
-} catch (e) {
-  packageInfo = { default: { version: '2.0.0' } };
-}
+// Read package.json for version info (lazy load to avoid blocking startup)
+let packageInfo = { default: { version: '2.0.0' } };
+
+import('../../package.json', { with: { type: 'json' } })
+  .then(info => { packageInfo = info; })
+  .catch(() => { });
 
 // ============================================================================
 // HEALTH CHECK
@@ -32,7 +31,7 @@ router.get('/', (req, res) => {
 
   const healthData = {
     status: 'ok',
-    service: 'OpenScroll Capture API',
+    service: 'VIVIM Capture API',
     version: packageInfo.default.version,
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
@@ -67,7 +66,7 @@ router.get('/health/detailed', async (req, res) => {
 
   const healthData = {
     status: dbHealthy ? 'ok' : 'degraded',
-    service: 'OpenScroll Capture API',
+    service: 'VIVIM Capture API',
     version: packageInfo.default.version,
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
@@ -125,7 +124,7 @@ router.get('/health/admin', requireApiKey(), async (req, res) => {
   // Get additional admin-level metrics
   const adminHealthData = {
     status: dbHealthy ? 'operational' : 'degraded',
-    service: 'OpenScroll Capture API',
+    service: 'VIVIM Capture API',
     version: packageInfo.default.version,
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),

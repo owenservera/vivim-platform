@@ -2,7 +2,7 @@ import { createHash, randomBytes } from 'node:crypto';
 import nacl from 'tweetnacl';
 
 /**
- * OpenScroll Server - Quantum-Resistant Cryptography
+ * VIVIM Server - Quantum-Resistant Cryptography
  * Matches PWA implementation for Zero-Trust verification and Secure Tunneling.
  */
 

@@ -12,6 +12,7 @@ import { GlobalSocketListener } from '../components/GlobalSocketListener';
 
 // Lazy load pages for better performance
 const Home = lazy(() => import('../pages/Home'));
+const Scroll = lazy(() => import('../pages/Scroll'));
 const HomeAssistant = lazy(() => import('../pages/HomeAssistant'));
 const Login = lazy(() => import('../pages/Login'));
 const Search = lazy(() => import('../pages/Search'));
@@ -39,6 +40,7 @@ const ContextCockpitPage = lazy(() => import('../pages/ContextCockpitPage'));
 const BlockchainAIChat = lazy(() => import('../components/BlockchainAIChat').then(m => ({ default: m.BlockchainAIChat })));
 const IdentitySetup = lazy(() => import('../features/identity/components/IdentitySetup').then(m => ({ default: m.IdentitySetup })));
 const StorageDashboard = lazy(() => import('../features/storage/components/StorageDashboard').then(m => ({ default: m.StorageDashboard })));
+const Import = lazy(() => import('../pages/Import').then(m => ({ default: m.ImportPage })));
 
 // Archive components
 const Archive = lazy(() => import('../pages/Archive/Archive'));
@@ -146,6 +148,17 @@ const router = createBrowserRouter([
     errorElement: <ErrorBoundary />
   },
   {
+    path: "/scroll",
+    element: (
+      <AuthGuard>
+        <LayoutWrapper>
+          <Scroll />
+        </LayoutWrapper>
+      </AuthGuard>
+    ),
+    errorElement: <ErrorBoundary />
+  },
+  {
     path: "/bookmarks",
     element: (
       <AuthGuard>
@@ -219,6 +232,15 @@ const router = createBrowserRouter([
     errorElement: <ErrorBoundary />
   },
   {
+    path: "/settings/context",
+    element: (
+      <LayoutWrapper>
+        <ContextRecipes />
+      </LayoutWrapper>
+    ),
+    errorElement: <ErrorBoundary />
+  },
+  {
     path: "/settings/providers",
     element: (
       <LayoutWrapper>
@@ -251,6 +273,17 @@ const router = createBrowserRouter([
       <AuthGuard>
         <LayoutWrapper>
           <Settings />
+        </LayoutWrapper>
+      </AuthGuard>
+    ),
+    errorElement: <ErrorBoundary />
+  },
+  {
+    path: "/import",
+    element: (
+      <AuthGuard>
+        <LayoutWrapper>
+          <Import />
         </LayoutWrapper>
       </AuthGuard>
     ),

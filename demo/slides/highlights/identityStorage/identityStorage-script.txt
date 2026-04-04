@@ -1,0 +1,49 @@
+================================================================
+VIVIM DEMO SCRIPT: IDENTITY & STORAGE
+================================================================
+
+Tagline: Your data. Your keys. Decentralized by design.
+Investor Type: technical
+Target Time: 20-25s
+
+----------------------------------------------------------------
+NARRATIVE
+----------------------------------------------------------------
+
+[HOOK] Every AI platform you use today owns your data. Your prompts. Your thinking. VIVIM inverts that.
+
+[1] Built on DID (Decentralized Identity) — your identity is cryptographically yours.
+
+[2] Storage dashboard shows exactly what's stored where, with full transparency.
+
+[3] No vendor lock-in. Export everything. Migrate anytime. Your AI brain, portable.
+
+[CLOSE] Own your AI. Own your data. Own your identity.
+
+----------------------------------------------------------------
+CLICK SCRIPT
+----------------------------------------------------------------
+
+[1] Identity & Storage
+  DID Identity setup             /identity
+  Storage dashboard              /storage
+  Account & settings             /account
+
+----------------------------------------------------------------
+SEARCH QUERIES TO VERIFY
+----------------------------------------------------------------
+
+  "did identity"
+  "data portability"
+
+----------------------------------------------------------------
+PRE-DEMO CHECKLIST
+----------------------------------------------------------------
+
+[ ] Seed reset complete
+[ ] Embeddings pre-computed
+[ ] All pages load without errors
+[ ] Search queries verified
+[ ] Loom backup recorded
+[ ] Practiced 3+ times
+

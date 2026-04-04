@@ -5,6 +5,9 @@ import './index.css'
 import App from './App.tsx'
 import { unifiedDebugService } from './lib/unified-debug-service'
 import { errorReporter } from '../../common/error-reporting'
+// Initialize Sentry first to catch all frontend errors
+// TODO: Fix Sentry v8 compatibility - BrowserTracing removed
+// import './lib/sentry'
 
 // Polyfills for libp2p and crypto
 declare global {

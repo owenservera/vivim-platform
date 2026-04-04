@@ -117,7 +117,7 @@ export const CaptureSimple: React.FC = () => {
 
       // Step 3: Materialize
       addLog('Materializing knowledge graph...');
-      const apiKey = import.meta.env.VITE_API_KEY || 'sk-openscroll-dev-key-123456789';
+      const apiKey = import.meta.env.VITE_API_KEY || 'sk-vivim-dev-key-123456789';
       
       const captureRes = await fetch(`${apiBaseUrl}/capture`, {
         method: 'POST',

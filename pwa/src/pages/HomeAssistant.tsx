@@ -132,14 +132,14 @@ const providerEmoji: Record<string, string> = {
 };
 
 const getApiBaseUrl = () => {
-  const override = typeof localStorage !== 'undefined' ? localStorage.getItem('OPENSCROLL_API_OVERRIDE') : null;
+  const override = typeof localStorage !== 'undefined' ? localStorage.getItem('VIVIM_API_OVERRIDE') : null;
   const baseUrl = override || import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1';
   const root = baseUrl.replace(/\/api\/v1\/?$/, '').replace(/\/api\/?$/, '').replace(/\/$/, '');
   return `${root}/api/v1`;
 };
 
 const getHeaders = () => {
-  const storedApiKey = typeof localStorage !== 'undefined' ? localStorage.getItem('OPENSCROLL_API_KEY') : null;
+  const storedApiKey = typeof localStorage !== 'undefined' ? localStorage.getItem('VIVIM_API_KEY') : null;
   const apiKey = storedApiKey || import.meta.env.VITE_API_KEY || import.meta.env.REACT_APP_API_KEY;
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -311,9 +311,10 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
         </div>
       }
     >
-      <div
+      <button
+        type="button"
         ref={cardRef}
-        className={`conv-card-enhanced ${isPinned ? 'is-pinned' : ''} ${isArchived ? 'is-archived' : ''}`}
+        className={`conv-card-enhanced w-full text-left ${isPinned ? 'is-pinned' : ''} ${isArchived ? 'is-archived' : ''}`}
         onClick={() => {
           if (gridMode || !onExpandToggle) {
             navigate(`/ai/conversation/${convo.id}`);
@@ -321,17 +322,7 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
             onExpandToggle(convo.id);
           }
         }}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => { 
-          if (e.key === 'Enter') {
-            if (gridMode || !onExpandToggle) {
-              navigate(`/ai/conversation/${convo.id}`);
-            } else {
-              onExpandToggle(convo.id);
-            }
-          }
-        }}
+        aria-label={`View conversation: ${convo.title || 'Untitled Conversation'}`}
         id={`conv-card-${convo.id}`}
       >
         {/* Provider accent strip */}
@@ -399,8 +390,12 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
             <div
               className="flex items-center gap-1.5 mt-3 pt-3 border-t border-gray-100 dark:border-gray-800"
               onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') e.stopPropagation(); }}
+              role="group"
+              aria-label="Conversation actions"
             >
               <button
+                type="button"
                 onClick={(e) => { e.stopPropagation(); onContinue(convo.id); }}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 active:scale-95 transition-all shadow-sm"
               >
@@ -408,6 +403,7 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
                 {isExpanded ? 'Collapse' : 'Continue with AI'}
               </button>
               <button
+                type="button"
                 onClick={(e) => { e.stopPropagation(); onShare(convo.id); }}
                 className="flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
               >
@@ -416,6 +412,7 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
               </button>
               <div className="flex-1" />
               <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onPinToggle(convo.id, !isPinned);
@@ -426,12 +423,14 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
                 <Pin className={`w-3.5 h-3.5 ${isPinned ? 'fill-current' : ''}`} />
               </button>
               <button
+                type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onArchiveToggle(convo.id, !isArchived);
                 }}
                 className={`p-1.5 rounded-lg transition-colors ${isArchived ? 'text-amber-500 bg-amber-50 dark:bg-amber-950/40' : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'}`}
                 title={isArchived ? 'Unarchive' : 'Archive'}
+                aria-label={isArchived ? 'Unarchive conversation' : 'Archive conversation'}
               >
                 <Archive className="w-3.5 h-3.5" />
               </button>
@@ -441,6 +440,7 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
           {/* Grid mode: just a subtle continue hint */}
           {gridMode && (
             <button
+              type="button"
               onClick={(e) => { e.stopPropagation(); onContinue(convo.id); }}
               className="mt-2 w-full text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 text-center py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition-colors"
             >
@@ -450,12 +450,12 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
 
           {/* Full Conversation Expansion mapped to Assistant UI */}
           {isExpanded && !gridMode && (
-            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 space-y-4" onClick={(e) => e.stopPropagation()}>
+            <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 space-y-4" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') e.stopPropagation(); }} role="group" aria-label="Expanded conversation view">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest flex items-center gap-1.5">
                   <Sparkles className="w-3 h-3 animate-pulse" /> Assistant Live Mode
                 </span>
-                <button onClick={() => navigate(`/ai/conversation/${convo.id}`)} className="text-[10px] font-bold text-gray-400 hover:text-indigo-500 transition-colors uppercase tracking-widest flex items-center gap-1">
+                <button type="button" onClick={() => navigate(`/ai/conversation/${convo.id}`)} className="text-[10px] font-bold text-gray-400 hover:text-indigo-500 transition-colors uppercase tracking-widest flex items-center gap-1" aria-label="View full conversation">
                   Full View <LayoutList className="w-3 h-3" />
                 </button>
               </div>
@@ -465,8 +465,8 @@ const FeedItemCard: React.FC<FeedItemCardProps> = ({
             </div>
           )}
         </div>
-      </div>
-    </ErrorBoundary>
+        </button>
+      </ErrorBoundary>
   );
 };
 
@@ -934,24 +934,30 @@ export const HomeAssistant: React.FC = () => {
               <option value="messages">Messages</option>
               <option value="title">Title</option>
             </select>
-            <button className="home-view-toggle-btn active w-9 h-9 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800" title="Sort">
+            <button type="button" className="home-view-toggle-btn active w-9 h-9 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800" title="Sort" aria-label="Sort options">
               <SlidersHorizontal className="w-4 h-4" />
             </button>
           </div>
 
           {/* View mode toggle */}
-          <div className="home-view-toggle">
+          <div className="home-view-toggle" role="group" aria-label="View mode">
             <button
+              type="button"
               className={`home-view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
               onClick={() => setViewMode('list')}
               title="List view"
+              aria-label="List view"
+              aria-pressed={viewMode === 'list'}
             >
               <List className="w-4 h-4" />
             </button>
             <button
+              type="button"
               className={`home-view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
               onClick={() => setViewMode('grid')}
               title="Grid view"
+              aria-label="Grid view"
+              aria-pressed={viewMode === 'grid'}
             >
               <Grid2x2 className="w-4 h-4" />
             </button>
@@ -959,7 +965,7 @@ export const HomeAssistant: React.FC = () => {
         </div>
 
         {/* ── Filter Tabs ── */}
-        <div className="home-filter-tabs">
+        <div className="home-filter-tabs" role="tablist" aria-label="Filter conversations">
           {([
             { id: 'all',      label: 'All',      icon: <LayoutList className="w-3 h-3" /> },
             { id: 'recent',   label: 'Recent',   icon: <Clock className="w-3 h-3" /> },
@@ -967,10 +973,14 @@ export const HomeAssistant: React.FC = () => {
             { id: 'archived', label: 'Archived', icon: <Archive className="w-3 h-3" /> },
           ] as {id: FilterTab; label: string; icon: React.ReactNode}[]).map((tab) => (
             <button
+              type="button"
               key={tab.id}
               className={`home-filter-tab ${filterTab === tab.id ? 'active' : ''}`}
               onClick={() => setFilterTab(tab.id)}
               id={`filter-tab-${tab.id}`}
+              role="tab"
+              aria-selected={filterTab === tab.id}
+              aria-controls="conversation-list"
             >
               {tab.icon}
               {tab.label}
@@ -999,8 +1009,10 @@ export const HomeAssistant: React.FC = () => {
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 max-w-xs">{error}</p>
             <button
+              type="button"
               onClick={() => { setError(null); loadConversations(1); }}
               className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 active:scale-95 transition-all"
+              aria-label="Retry loading conversations"
             >
               <RefreshCw className="w-4 h-4" />
               Retry
@@ -1055,8 +1067,10 @@ export const HomeAssistant: React.FC = () => {
               {searchQuery ? `No conversations match "${searchQuery}"` : `No ${filterTab} conversations yet.`}
             </p>
             <button
+              type="button"
               onClick={() => { setSearchQuery(''); setFilterTab('all'); }}
               className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+              aria-label="Clear filters"
             >
               <X className="w-4 h-4" />
               Clear filters
@@ -1211,10 +1225,13 @@ export const HomeAssistant: React.FC = () => {
 
           {/* Main FAB */}
           <button
+            type="button"
             className={`home-fab-main ${fabExpanded ? 'is-expanded' : ''}`}
             onClick={() => setFabExpanded(!fabExpanded)}
             id="home-fab-main"
             title="Quick actions"
+            aria-label="Quick actions"
+            aria-expanded={fabExpanded}
           >
             <Plus className="w-6 h-6" />
           </button>
@@ -1239,12 +1256,14 @@ export const HomeAssistant: React.FC = () => {
       {import.meta.env.DEV && (
         <div className="fixed bottom-[4.5rem] right-[4.5rem] z-[1020]">
           <button
+            type="button"
             onClick={async () => {
               if (!debugPanelOpen) await collectDebugInfo();
               setDebugPanelOpen(!debugPanelOpen);
             }}
             className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 dark:bg-gray-700 hover:bg-gray-900 shadow-lg active:scale-95 transition-all"
             title="Toggle debug panel"
+            aria-label="Toggle debug panel"
           >
             <AlertCircle className="w-5 h-5 text-white" />
           </button>
@@ -1252,10 +1271,10 @@ export const HomeAssistant: React.FC = () => {
       )}
 
       {import.meta.env.DEV && debugPanelOpen && (
-        <div className="fixed bottom-32 right-4 z-20 w-80 max-h-96 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden">
+        <div className="fixed bottom-32 right-4 z-20 w-80 max-h-96 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden" role="dialog" aria-labelledby="debug-panel-title">
           <div className="p-3 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Debug Panel</h3>
-            <button onClick={() => setDebugPanelOpen(false)} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">×</button>
+            <h3 id="debug-panel-title" className="text-sm font-semibold text-gray-900 dark:text-gray-100">Debug Panel</h3>
+            <button type="button" onClick={() => setDebugPanelOpen(false)} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" aria-label="Close debug panel">×</button>
           </div>
           <div className="p-3 overflow-y-auto max-h-80 text-xs">
             {debugInfo
@@ -1264,10 +1283,12 @@ export const HomeAssistant: React.FC = () => {
             }
           </div>
           <div className="p-3 border-t border-gray-200 dark:border-gray-700 flex gap-2">
-            <button onClick={collectDebugInfo} className="flex-1 px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded text-xs hover:bg-blue-200 dark:hover:bg-blue-800">Refresh</button>
+            <button type="button" onClick={collectDebugInfo} className="flex-1 px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded text-xs hover:bg-blue-200 dark:hover:bg-blue-800" aria-label="Refresh debug information">Refresh</button>
             <button
+              type="button"
               onClick={() => { if (debugInfo) { navigator.clipboard.writeText(JSON.stringify(debugInfo, null, 2)); showToast(toast.success('Copied')); } }}
               className="flex-1 px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs hover:bg-gray-200 dark:hover:bg-gray-600"
+              aria-label="Copy debug information to clipboard"
             >Copy</button>
           </div>
         </div>

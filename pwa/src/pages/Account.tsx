@@ -6,6 +6,7 @@ import { IOSButton, IOSSettingsGroup, IOSSettingsSection, IOSSettingsAction } fr
 import { AccountLoadingScreen, LoadingButton } from '../components/auth';
 import { toast } from '../components/ios';
 import { Totem } from '../components/sovereignty/Totem';
+import { Upload } from 'lucide-react';
 
 export function AccountPage() {
   const navigate = useNavigate();
@@ -180,6 +181,17 @@ export function AccountPage() {
         </IOSSettingsGroup>
 
         <IOSSettingsGroup className="mt-6">
+          <IOSSettingsSection title="Import Conversations">
+            <button
+              onClick={() => navigate('/import')}
+              className="w-full px-4 py-3 text-left text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors flex items-center gap-3"
+            >
+              <Upload className="w-5 h-5" />
+              <span className="flex-1">Import ChatGPT Export</span>
+              <span className="text-sm text-gray-400 dark:text-gray-600">.zip file</span>
+            </button>
+          </IOSSettingsSection>
+
           <IOSSettingsSection title="Actions">
             <button
               onClick={handleLogout}

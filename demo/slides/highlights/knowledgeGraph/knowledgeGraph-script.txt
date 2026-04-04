@@ -1,0 +1,54 @@
+================================================================
+VIVIM DEMO SCRIPT: KNOWLEDGE GRAPH
+================================================================
+
+Tagline: See your AI thinking become a living map
+Investor Type: all
+Target Time: 30-40s (core weapon)
+
+----------------------------------------------------------------
+NARRATIVE
+----------------------------------------------------------------
+
+[HOOK] Most AI users have one tab open. Power users have nine. Nobody can find anything.
+
+[1] Every conversation you have — across ChatGPT, Claude, Gemini — gets auto-decomposed into atomic units of knowledge.
+
+[2] VIVIM maps the relationships between all of them. What concepts repeat. What follows from what. What contradicts.
+
+[3] This isn't just a search tool. It's a second brain that actually understands your AI thinking.
+
+[CLOSE] That's the graph. Every node is a thought. Every edge is a relationship. Your AI brain, visible.
+
+----------------------------------------------------------------
+CLICK SCRIPT
+----------------------------------------------------------------
+
+[1] Canvas Graph
+  Archive - Canvas View          /archive
+  Force-directed canvas          /archive?view=canvas -> Pre-position camera on largest cluster
+  ACU Graph detail               /conversation/:graph-seed-id
+
+[2] ACU Relationships
+  Search for concept             /archive/search?q=react+hooks
+  ACU detail with links          /conversation/:acu-id
+
+----------------------------------------------------------------
+SEARCH QUERIES TO VERIFY
+----------------------------------------------------------------
+
+  "react hooks architecture"
+  "postgres indexing"
+  "typescript generics"
+
+----------------------------------------------------------------
+PRE-DEMO CHECKLIST
+----------------------------------------------------------------
+
+[ ] Seed reset complete
+[ ] Embeddings pre-computed
+[ ] All pages load without errors
+[ ] Search queries verified
+[ ] Loom backup recorded
+[ ] Practiced 3+ times
+

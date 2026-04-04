@@ -2,7 +2,7 @@
 
 declare const self: ServiceWorkerGlobalScope;
 
-const CACHE_NAME = 'openscroll-v1';
+const CACHE_NAME = 'vivim-v1';
 const STATIC_ASSETS = [
   '/',
   '/index.html',

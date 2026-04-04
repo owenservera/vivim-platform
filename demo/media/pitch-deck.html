@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIVIM — Investor Pitch Deck</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #0a0a0f;
+      color: #ffffff;
+      overflow: hidden;
+    }
+    
+    .deck-container {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+    
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 80px;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      pointer-events: none;
+    }
+    
+    .slide.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    
+    .slide.split {
+      flex-direction: row;
+      align-items: center;
+      gap: 80px;
+      text-align: left;
+    }
+    
+    .slide-content {
+      flex: 1;
+      max-width: 600px;
+    }
+    
+    .slide-image {
+      flex: 1;
+      max-width: 700px;
+    }
+    
+    .slide-image img {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(239, 159, 39, 0.15);
+    }
+    
+    h1 {
+      font-size: 80px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #EF9F27 0%, #F5C542 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    h2 {
+      font-size: 64px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    
+    .subtitle {
+      font-size: 32px;
+      color: #EF9F27;
+      margin-bottom: 40px;
+      font-weight: 500;
+    }
+    
+    p {
+      font-size: 24px;
+      line-height: 1.8;
+      color: #B4B2A9;
+      max-width: 700px;
+    }
+    
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      margin: 60px 0;
+    }
+    
+    .stat {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 72px;
+      font-weight: 700;
+      color: #EF9F27;
+      display: block;
+    }
+    
+    .stat-label {
+      font-size: 16px;
+      color: #888888;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-top: 8px;
+      display: block;
+    }
+    
+    .feature-list {
+      list-style: none;
+      margin: 40px 0;
+    }
+    
+    .feature-list li {
+      font-size: 24px;
+      padding: 16px 0;
+      padding-left: 40px;
+      position: relative;
+      color: #B4B2A9;
+    }
+    
+    .feature-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #EF9F27;
+      font-weight: 700;
+      font-size: 28px;
+    }
+    
+    .progress-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+    }
+    
+    .progress-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #333344;
+      transition: background 0.3s ease;
+    }
+    
+    .progress-dot.active {
+      background: #EF9F27;
+    }
+    
+    .nav-hint {
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 14px;
+      color: #666666;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    
+    /* Slide-specific styles */
+    .slide-1 .logo {
+      font-size: 120px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #EF9F27 0%, #F5C542 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+    }
+    
+    .slide-1 .tagline {
+      font-size: 32px;
+      color: #888888;
+    }
+    
+    .slide-6 .vision-text {
+      font-size: 48px;
+      text-align: center;
+      line-height: 1.6;
+      color: #B4B2A9;
+    }
+    
+    .slide-6 .vision-highlight {
+      color: #EF9F27;
+      font-weight: 600;
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .slide.active h1,
+    .slide.active h2,
+    .slide.active .subtitle,
+    .slide.active p,
+    .slide.active .stat {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    .slide.active h1 { animation-delay: 0.1s; }
+    .slide.active .subtitle { animation-delay: 0.2s; }
+    .slide.active p { animation-delay: 0.3s; }
+    .slide.active .stat { animation-delay: 0.4s; }
+  </style>
+</head>
+<body>
+  <div class="deck-container">
+    
+    <!-- Slide 1: Title -->
+    <div class="slide slide-1 active" data-slide="0">
+      <div class="logo">VIVIM</div>
+      <div class="tagline">Own Your AI Brain</div>
+      <p style="margin-top: 60px; text-align: center;">Investor Presentation<br/>March 2026</p>
+    </div>
+    
+    <!-- Slide 2: The Problem -->
+    <div class="slide" data-slide="1">
+      <h2>The Problem</h2>
+      <p class="subtitle">Every AI power user lives here</p>
+      <p>
+        Browser tabs filled with ChatGPT, Claude, Gemini...<br/><br/>
+        This is where your most valuable thinking goes to die.
+      </p>
+    </div>
+    
+    <!-- Slide 3: The Solution -->
+    <div class="slide" data-slide="2">
+      <h2>VIVIM</h2>
+      <p class="subtitle">Own Your AI Brain</p>
+      <p style="text-align: center; margin-top: 40px;">
+        Capture. Organize. Surface.<br/>
+        Your AI conversations, unified.
+      </p>
+    </div>
+    
+    <!-- Slide 4: The Archive -->
+    <div class="slide split" data-slide="3">
+      <div class="slide-content">
+        <h2>The Archive</h2>
+        <p class="subtitle">9 AI providers. One timeline.</p>
+        <div class="stat-grid">
+          <div class="stat">
+            <span class="stat-value">320</span>
+            <span class="stat-label">Conversations</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">2,161</span>
+            <span class="stat-label">Insights</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">9</span>
+            <span class="stat-label">Providers</span>
+          </div>
+        </div>
+        <p>One tap captures from ChatGPT, Claude, Gemini, DeepSeek, Grok, Mistral, and more.</p>
+      </div>
+      <div class="slide-image">
+        <img src="screenshots/archive-timeline.svg" alt="Archive Timeline" onerror="this.style.display='none'"/>
+        <div style="background: #1a1a2e; border-radius: 12px; padding: 40px; text-align: center;" 
+             onerror="this.style.display='block'">
+          <p style="color: #888;">[Archive Timeline Mockup]</p>
+          <p style="color: #666; font-size: 14px; margin-top: 10px;">320 conversations · Fully organized</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 5: Knowledge Graph -->
+    <div class="slide split" data-slide="4">
+      <div class="slide-content">
+        <h2>Knowledge Graph</h2>
+        <p class="subtitle">The money shot</p>
+        <div class="stat-grid">
+          <div class="stat">
+            <span class="stat-value">2,161</span>
+            <span class="stat-label">Nodes</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">734</span>
+            <span class="stat-label">Connections</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">&lt;3s</span>
+            <span class="stat-label">Render Time</span>
+          </div>
+        </div>
+        <p>What if your AI conversations could remember each other?</p>
+      </div>
+      <div class="slide-image">
+        <img src="screenshots/knowledge-graph.svg" alt="Knowledge Graph" onerror="this.style.display='none'"/>
+        <div style="background: #1a1a2e; border-radius: 12px; padding: 40px; text-align: center;"
+             onerror="this.style.display='block'">
+          <p style="color: #888;">[Knowledge Graph Mockup]</p>
+          <p style="color: #666; font-size: 14px; margin-top: 10px;">Force-directed · Interactive · Beautiful</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 6: Context Engine -->
+    <div class="slide split" data-slide="5">
+      <div class="slide-content">
+        <h2>Context Engine</h2>
+        <p class="subtitle">AI that actually knows you</p>
+        <ul class="feature-list">
+          <li>8 context layers active</li>
+          <li>Memories automatically loaded</li>
+          <li>Topic profiles & entities</li>
+          <li>Token budget optimization</li>
+        </ul>
+      </div>
+      <div class="slide-image">
+        <img src="screenshots/context-cockpit.svg" alt="Context Cockpit" onerror="this.style.display='none'"/>
+        <div style="background: #1a1a2e; border-radius: 12px; padding: 40px; text-align: center;"
+             onerror="this.style.display='block'">
+          <p style="color: #888;">[Context Cockpit Mockup]</p>
+          <p style="color: #666; font-size: 14px; margin-top: 10px;">8 layers · Real-time assembly</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 7: For You Feed -->
+    <div class="slide split" data-slide="6">
+      <div class="slide-content">
+        <h2>For You Feed</h2>
+        <p class="subtitle">Your AI thinking, curated</p>
+        <div class="stat-grid">
+          <div class="stat">
+            <span class="stat-value">70%+</span>
+            <span class="stat-label">Relevance Score</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">10+</span>
+            <span class="stat-label">Daily Cards</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">6mo</span>
+            <span class="stat-label">Lookback</span>
+          </div>
+        </div>
+        <p>Stop asking the same questions. Start finding answers you already have.</p>
+      </div>
+      <div class="slide-image">
+        <img src="screenshots/for-you-feed.svg" alt="For You Feed" onerror="this.style.display='none'"/>
+        <div style="background: #1a1a2e; border-radius: 12px; padding: 40px; text-align: center;"
+             onerror="this.style.display='block'">
+          <p style="color: #888;">[For You Feed Mockup]</p>
+          <p style="color: #666; font-size: 14px; margin-top: 10px;">Ranked · Relevant · Timely</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Slide 8: The Vision -->
+    <div class="slide slide-6" data-slide="7">
+      <h2 style="margin-bottom: 60px;">The Vision</h2>
+      <div class="vision-text">
+        <span class="vision-highlight">Decentralized.</span> Private. Permanent.<br/><br/>
+        <span class="vision-highlight">Your data.</span> Your keys. Your AI brain.<br/><br/>
+        <span class="vision-highlight" style="font-size: 64px;">VIVIM</span>
+      </div>
+    </div>
+    
+    <!-- Progress Indicator -->
+    <div class="progress-indicator">
+      <div class="progress-dot active"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+      <div class="progress-dot"></div>
+    </div>
+    
+    <!-- Navigation Hint -->
+    <div class="nav-hint">Use ← → arrow keys to navigate</div>
+  </div>
+  
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.progress-dot');
+    const totalSlides = slides.length;
+    
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+      });
+      currentSlide = index;
+    }
+    
+    function nextSlide() {
+      showSlide((currentSlide + 1) % totalSlides);
+    }
+    
+    function prevSlide() {
+      showSlide((currentSlide - 1 + totalSlides) % totalSlides);
+    }
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      } else if (e.key === 'Home') {
+        showSlide(0);
+      } else if (e.key === 'End') {
+        showSlide(totalSlides - 1);
+      }
+    });
+    
+    // Touch navigation for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+    
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 50) {
+        nextSlide();
+      } else if (touchEndX - touchStartX > 50) {
+        prevSlide();
+      }
+    });
+    
+    // Click to advance (except on first slide)
+    document.addEventListener('click', (e) => {
+      if (e.target.tagName !== 'A' && e.target.tagName !== 'BUTTON') {
+        nextSlide();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -66,6 +66,7 @@ export function LikeButton({
 
   return (
     <button
+      type="button"
       className={`like-button ${liked ? 'liked' : ''} size-${size} variant-${variant}`}
       onClick={handleToggle}
       disabled={loading}

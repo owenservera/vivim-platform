@@ -326,8 +326,8 @@ export const ContextCockpit: React.FC<ContextCockpitProps> = ({
           {LAYER_ORDER.map(id => {
             const budget = contextAllocation[id];
             if (!budget?.allocated) return null;
-            return key={id} (
-              <div className="legend-item">
+            return (
+              <div key={id} className="legend-item">
                 <span className="legend-dot" style={{ backgroundColor: LAYER_CONFIG[id]?.color }} />
                 <span className="legend-name">{LAYER_CONFIG[id]?.name}</span>
                 <span className="legend-val">{budget.allocated}</span>

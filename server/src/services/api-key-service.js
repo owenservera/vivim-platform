@@ -1,8 +1,12 @@
 import crypto from 'crypto';
 import { getPrismaClient } from '../lib/database.js';
 import { logger } from '../lib/logger.js';
+import { config } from '../config/index.js';
 
 const prisma = getPrismaClient();
+
+// Development fallback key
+const DEFAULT_DEV_KEY = 'sk-vivim-dev-key-123456789';
 
 export const apiKeyService = {
   /**
@@ -67,6 +71,12 @@ export const apiKeyService = {
   async verifyApiKey(key) {
     if (!key) {
       return null;
+    }
+
+    // Development fallback: accept default dev key without database lookup
+    if (config.isDevelopment && key === DEFAULT_DEV_KEY) {
+      // Return a mock user for development
+      return { id: 'dev-user-001', email: 'dev@example.com' };
     }
 
     const hash = this.hashKey(key);

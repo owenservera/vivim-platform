@@ -17,6 +17,7 @@ const configSchema = z.object({
   enableSwagger: z.boolean().default(false),
   browserWsEndpoint: z.string().optional(),
   skipAuthForDevelopment: z.boolean().default(false),
+  demoUserEmail: z.string().email().optional(),
   redisUrl: z.string().optional(),
   playwrightBrowserPath: z.string().optional(),
   // P2P Configuration
@@ -41,6 +42,7 @@ function loadConfig() {
     browserWsEndpoint: process.env.BROWSER_WS_ENDPOINT,
     skipAuthForDevelopment:
       process.env.SKIP_AUTH_FOR_DEVELOPMENT === 'true' || process.env.NODE_ENV === 'test',
+    demoUserEmail: process.env.DEMO_USER_EMAIL || undefined,
     redisUrl: process.env.REDIS_URL,
     playwrightBrowserPath: process.env.PLAYWRIGHT_BROWSER_PATH,
     // P2P Configuration

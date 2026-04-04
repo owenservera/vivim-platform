@@ -1,0 +1,30 @@
+================================================================================
+SKIPPED FILES REPORT
+================================================================================
+Generated: 2026-03-26 13:48:20
+Total skipped files: 3
+
+Breakdown by action:
+  - archive: 1 files
+  - review: 2 files
+
+================================================================================
+FILES BY ACTION
+================================================================================
+
+--- ARCHIVE (1 files) ---
+
+[  1] ✓ VIVIM.docs\.archive\OPUS_PRIORITIZATION.md
+       → 08-ARCHIVE/OPUS_PRIORITIZATION.md
+       Reason: Scanned from remaining source directories
+
+
+--- REVIEW (2 files) ---
+
+[  1] ✓ VIVIM.docs\vivim-live\full-docs\features\03-secure-collaboration.md
+       → 08-ARCHIVE/03-secure-collaboration.md
+       Reason: Scanned from remaining source directories
+
+[  2] ✓ VIVIM.docs\OPENsource\website\about.md
+       → 08-ARCHIVE/about.md
+       Reason: Scanned from remaining source directories

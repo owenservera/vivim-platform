@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIVIM Open Source Strategy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700&family=Fragment+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #1a1a1a;
+      --surface-elevated: #242424;
+      --border: rgba(255,255,255,0.08);
+      --text: #fafafa;
+      --text-dim: #888;
+      --text-muted: #555;
+      
+      --open: #22c55e;
+      --open-bg: rgba(34,197,94,0.1);
+      --open-border: rgba(34,197,94,0.3);
+      
+      --hybrid: #f59e0b;
+      --hybrid-bg: rgba(245,158,11,0.1);
+      --hybrid-border: rgba(245,158,11,0.3);
+      
+      --closed: #ef4444;
+      --closed-bg: rgba(239,68,68,0.1);
+      --closed-border: rgba(239,68,68,0.3);
+      
+      --accent: #3b82f6;
+      --accent-bg: rgba(59,130,246,0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 48px;
+      line-height: 1.5;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    header {
+      margin-bottom: 64px;
+      text-align: center;
+    }
+    
+    h1 {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #fafafa 0%, #888 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .subtitle {
+      font-family: 'Fragment Mono', monospace;
+      font-size: 14px;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+    
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Fragment Mono', monospace;
+      font-size: 12px;
+    }
+    
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    
+    .legend-dot.open { background: var(--open); }
+    .legend-dot.hybrid { background: var(--hybrid); }
+    .legend-dot.closed { background: var(--closed); }
+    
+    .layers {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    
+    .layer {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .layer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+    
+    .layer.layer-1::before { background: var(--open); }
+    .layer.layer-2::before { background: linear-gradient(90deg, var(--open) 50%, var(--hybrid) 50%); }
+    .layer.layer-3::before { background: linear-gradient(90deg, var(--open) 33%, var(--hybrid) 33%, var(--hybrid) 66%, var(--closed) 66%); }
+    .layer.layer-4::before,
+    .layer.layer-5::before { background: var(--closed); }
+    
+    .layer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .layer-label {
+      font-family: 'Fragment Mono', monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+    }
+    
+    .layer-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    
+    .layer-badge {
+      font-family: 'Fragment Mono', monospace;
+      font-size: 11px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .layer-badge.open {
+      background: var(--open-bg);
+      color: var(--open);
+      border: 1px solid var(--open-border);
+    }
+    
+    .layer-badge.hybrid {
+      background: var(--hybrid-bg);
+      color: var(--hybrid);
+      border: 1px solid var(--hybrid-border);
+    }
+    
+    .layer-badge.closed {
+      background: var(--closed-bg);
+      color: var(--closed);
+      border: 1px solid var(--closed-border);
+    }
+    
+    .components {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    
+    .component {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    
+    .component:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.15);
+    }
+    
+    .component-name {
+      font-weight: 500;
+    }
+    
+    .component-status {
+      font-family: 'Fragment Mono', monospace;
+      font-size: 10px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    
+    .component-status.open {
+      background: var(--open-bg);
+      color: var(--open);
+    }
+    
+    .component-status.hybrid {
+      background: var(--hybrid-bg);
+      color: var(--hybrid);
+    }
+    
+    .component-status.closed {
+      background: var(--closed-bg);
+      color: var(--closed);
+    }
+    
+    .arrows {
+      display: flex;
+      justify-content: center;
+      padding: 16px 0;
+      color: var(--text-muted);
+      font-size: 24px;
+    }
+    
+    .revenue-model {
+      margin-top: 64px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+    }
+    
+    .revenue-model h2 {
+      font-size: 20px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    
+    .tiers {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .tier {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border-radius: 8px;
+      background: var(--surface-elevated);
+    }
+    
+    .tier-label {
+      font-weight: 600;
+      min-width: 120px;
+    }
+    
+    .tier-price {
+      font-family: 'Fragment Mono', monospace;
+      font-size: 14px;
+      color: var(--text-dim);
+      min-width: 100px;
+    }
+    
+    .tier-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      flex: 1;
+    }
+    
+    .footer {
+      margin-top: 64px;
+      text-align: center;
+      font-family: 'Fragment Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    
+    @media (max-width: 768px) {
+      body { padding: 24px; }
+      h1 { font-size: 32px; }
+      .layer-title { font-size: 18px; }
+      .components { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>VIVIM Open Source Strategy</h1>
+      <p class="subtitle">// LAYERED ARCHITECTURE DECISION MATRIX</p>
+    </header>
+    
+    <div class="legend">
+      <div class="legend-item">
+        <span class="legend-dot open"></span>
+        <span>OPEN SOURCE</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot hybrid"></span>
+        <span>OPEN CORE / HYBRID</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot closed"></span>
+        <span>PROPRIETARY</span>
+      </div>
+    </div>
+    
+    <div class="layers">
+      <!-- Layer 1: Developer Surface -->
+      <div class="layer layer-1">
+        <div class="layer-header">
+          <div>
+            <div class="layer-label">Layer 1</div>
+            <div class="layer-title">Developer Surface</div>
+          </div>
+          <span class="layer-badge open">Open</span>
+        </div>
+        <div class="components">
+          <div class="component">
+            <span class="component-name">SDK Public API</span>
+            <span class="component-status open">Open</span>
+          </div>
+          <div class="component">
+            <span class="component-name">CLI Tools</span>
+            <span class="component-status open">Open</span>
+          </div>
+          <div class="component">
+            <span class="component-name">PWA UI Components</span>
+            <span class="component-status open">Open</span>
+          </div>
+          <div class="component">
+            <span class="component-name">Documentation</span>
+            <span class="component-status open">Open</span>
+          </div>
+          <div class="component">
+            <span class="component-name">Admin Panel</span>
+            <span class="component-status open">Open</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Layer 2: Execution -->
+      <div class="layer layer-2">
+        <div class="layer-header">
+          <div>
+            <div class="layer-label">Layer 2</div>
+            <div class="layer-title">Execution Layer</div>
+          </div>
+          <span class="layer-badge hybrid">Hybrid</span>
+        </div>
+        <div class="components">
+          <div class="component">
+            <span class="component-name">API Server (Core)</span>
+            <span class="component-status open">Open</span>
+          </div>
+          <div class="component">
+            <span class="component-name">Network Protocol</span>
+            <span class="component-status open">Open</span>
+          </div>
+          <div class="component">
+            <span class="component-name">CRDT Implementation</span>
+            <span class="component-status open">Open</span>
+          </div>
+          <div class="component">
+            <span class="component-name">Enterprise API</span>
+            <span class="component-status closed">Proprietary</span>
+          </div>
+          <div class="component">
+            <span class="component-name">Advanced Scaling</span>
+            <span class="component-status closed">Proprietary</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Layer 3: Intelligence -->
+      <div class="layer layer-3">
+        <div class="layer-header">
+          <div>
+            <div class="layer-label">Layer 3</div>
+            <div class="layer-title">Intelligence Layer</div>
+          </div>
+          <span class="layer-badge hybrid">Selective</span>
+        </div>
+        <div class="components">
+          <div class="component">
+            <span class="component-name">Connector Framework</span>
+            <span class="component-status open">Open</span>
+          </div>
+          <div class="component">
+            <span class="component-name">Basic Connectors</span>
+            <span class="component-status open">Open</span>
+          </div>
+          <div class="component">
+            <span class="component-name">Provider Connectors</span>
+            <span class="component-status hybrid">Hybrid</span>
+          </div>
+          <div class="component">
+            <span class="component-name">Memory Extraction</span>
+            <span class="component-status closed">Proprietary</span>
+          </div>
+          <div class="component">
+            <span class="component-name">AI Processing</span>
+            <span class="component-status closed">Proprietary</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Layer 4: Data -->
+      <div class="layer layer-4">
+        <div class="layer-header">
+          <div>
+            <div class="layer-label">Layer 4</div>
+            <div class="layer-title">Data Layer</div>
+          </div>
+          <span class="layer-badge closed">Never Open</span>
+        </div>
+        <div class="components">
+          <div class="component">
+            <span class="component-name">User Conversations</span>
+            <span class="component-status closed">Proprietary</span>
+          </div>
+          <div class="component">
+            <span class="component-name">Extracted Memories</span>
+            <span class="component-status closed">Proprietary</span>
+          </div>
+          <div class="component">
+            <span class="component-name">Embeddings / Vectors</span>
+            <span class="component-status closed">Proprietary</span>
+          </div>
+          <div class="component">
+            <span class="component-name">Usage Analytics</span>
+            <span class="component-status closed">Proprietary</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Layer 5: Infrastructure -->
+      <div class="layer layer-5">
+        <div class="layer-header">
+          <div>
+            <div class="layer-label">Layer 5</div>
+            <div class="layer-title">Production Infrastructure</div>
+          </div>
+          <span class="layer-badge closed">Closed</span>
+        </div>
+        <div class="components">
+          <div class="component">
+            <span class="component-name">Hosting Infrastructure</span>
+            <span class="component-status closed">Proprietary</span>
+          </div>
+          <div class="component">
+            <span class="component-name">Scaling Systems</span>
+            <span class="component-status closed">Proprietary</span>
+          </div>
+          <div class="component">
+            <span class="component-name">Encryption Implementation</span>
+            <span class="component-status closed">Proprietary</span>
+          </div>
+          <div class="component">
+            <span class="component-name">Database Operations</span>
+            <span class="component-status closed">Proprietary</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="revenue-model">
+      <h2>Revenue Model Alignment</h2>
+      <div class="tiers">
+        <div class="tier" style="border-left: 4px solid var(--closed);">
+          <span class="tier-label">Enterprise</span>
+          <span class="tier-price">Custom</span>
+          <span class="tier-desc">SSO, SLA, compliance, dedicated support</span>
+        </div>
+        <div class="tier" style="border-left: 4px solid var(--hybrid);">
+          <span class="tier-label">Pro</span>
+          <span class="tier-price">$15/mo</span>
+          <span class="tier-desc">Unlimited providers, advanced AI, API access</span>
+        </div>
+        <div class="tier" style="border-left: 4px solid var(--open);">
+          <span class="tier-label">Free</span>
+          <span class="tier-price">$0</span>
+          <span class="tier-desc">3 providers, 1GB — adoption funnel</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      Generated using Open Source vs Proprietary Strategy Engine<br>
+      VIVIM — Own Your AI Story
+    </div>
+  </div>
+</body>
+</html>

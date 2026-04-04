@@ -31,14 +31,14 @@ export type {
 // ============================================================================
 
 const getApiBaseUrl = () => {
-  const override = typeof localStorage !== 'undefined' ? localStorage.getItem('OPENSCROLL_API_OVERRIDE') : null;
+  const override = typeof localStorage !== 'undefined' ? localStorage.getItem('VIVIM_API_OVERRIDE') : null;
   const baseUrl = override || import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1';
   const root = baseUrl.replace(/\/api\/v1\/?$/, '').replace(/\/api\/?$/, '').replace(/\/$/, '');
   return `${root}/api/v1`;
 };
 
 const getApiKey = () => {
-  const storedApiKey = typeof localStorage !== 'undefined' ? localStorage.getItem('OPENSCROLL_API_KEY') : null;
+  const storedApiKey = typeof localStorage !== 'undefined' ? localStorage.getItem('VIVIM_API_KEY') : null;
   if (storedApiKey) return storedApiKey;
   const envApiKey = import.meta.env.VITE_API_KEY || import.meta.env.REACT_APP_API_KEY;
   if (envApiKey) return envApiKey;

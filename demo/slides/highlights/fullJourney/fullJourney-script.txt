@@ -1,0 +1,60 @@
+================================================================
+VIVIM DEMO SCRIPT: FULL JOURNEY (ALL FEATURES)
+================================================================
+
+Tagline: The complete VIVIM experience — end to end
+Investor Type: all
+Target Time: 90-120s
+
+----------------------------------------------------------------
+NARRATIVE
+----------------------------------------------------------------
+
+[HOOK] Let me show you the full picture.
+
+[1] Capture. Organize. Understand. Share. Remember.
+
+[2] This is what VIVIM looks like after three months of daily use.
+
+[CLOSE] That's VIVIM. Questions?
+
+----------------------------------------------------------------
+CLICK SCRIPT
+----------------------------------------------------------------
+
+[1] Onboarding
+  Login                          /login
+  Archive home                   /archive
+
+[2] Core Features
+  Archive                        /archive
+  Canvas                         /archive?view=canvas
+  For You                        /for-you
+
+[3] Context
+  Cockpit                        /context-cockpit
+  VIVIM AI                       /chat
+
+[4] Social
+  Shared                         /archive/shared
+
+----------------------------------------------------------------
+SEARCH QUERIES TO VERIFY
+----------------------------------------------------------------
+
+  "react hooks"
+  "startup advice"
+  "postgres optimization"
+  "system design"
+
+----------------------------------------------------------------
+PRE-DEMO CHECKLIST
+----------------------------------------------------------------
+
+[ ] Seed reset complete
+[ ] Embeddings pre-computed
+[ ] All pages load without errors
+[ ] Search queries verified
+[ ] Loom backup recorded
+[ ] Practiced 3+ times
+

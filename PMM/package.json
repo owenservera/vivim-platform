@@ -1,0 +1,41 @@
+{
+  "name": "@vivim/pmm",
+  "version": "1.0.0",
+  "description": "VIVIM Project Management Module - Visual Roadmap Hub",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently --kill-others --prefix \"[{name}]\" --names \"PMM-API,PMM-WEB\" --prefix-colors \"blue,cyan\" \"bun run dev:api\" \"bun run dev:web\"",
+    "dev:api": "cd pmm-server && bun run dev",
+    "dev:web": "cd pmm-web && bun run dev",
+    "build": "bun run build:api && bun run build:web",
+    "build:api": "cd pmm-server && bun run build",
+    "build:web": "cd pmm-web && bun run build",
+    "start": "concurrently --kill-others \"bun run start:api\" \"bun run start:web\"",
+    "start:api": "cd pmm-server && bun run start",
+    "start:web": "cd pmm-web && bun run preview",
+    "db:generate": "cd pmm-server && bun run db:generate",
+    "db:migrate": "cd pmm-server && bun run db:migrate",
+    "db:seed": "cd pmm-server && bun run db:seed",
+    "test": "cd pmm-server && bun test && cd ../pmm-web && bun test",
+    "lint": "cd pmm-server && bun run lint && cd ../pmm-web && bun run lint"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.4.2",
+    "@types/multer": "2.1.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "prisma": "^7.4.2",
+    "typescript": "^5.9.3"
+  },
+  "keywords": [
+    "vivim",
+    "project-management",
+    "roadmap",
+    "gantt",
+    "kanban"
+  ],
+  "author": "VIVIM Team",
+  "license": "MIT"
+}

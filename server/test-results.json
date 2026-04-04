@@ -1,0 +1,68 @@
+{
+  "total": 4,
+  "passed": 4,
+  "failed": 0,
+  "byProvider": {
+    "qwen": {
+      "total": 1,
+      "passed": 1,
+      "totalMessages": 6
+    },
+    "kimi": {
+      "total": 2,
+      "passed": 2,
+      "totalMessages": 12
+    },
+    "grok": {
+      "total": 1,
+      "passed": 1,
+      "totalMessages": 6
+    }
+  },
+  "details": [
+    {
+      "name": "Qwen #1",
+      "provider": "qwen",
+      "url": "https://chat.qwen.ai/s/635e4b63-44ec-4cf1-8310-721d69efac61?fev=0.1.40",
+      "passed": true,
+      "messageCount": 6,
+      "userMessages": 3,
+      "assistantMessages": 3,
+      "minMessages": 4,
+      "error": null
+    },
+    {
+      "name": "Kimi #1",
+      "provider": "kimi",
+      "url": "https://www.kimi.com/share/19c43bc0-9c92-89f6-8000-00000d271f59",
+      "passed": true,
+      "messageCount": 6,
+      "userMessages": 3,
+      "assistantMessages": 3,
+      "minMessages": 4,
+      "error": null
+    },
+    {
+      "name": "Kimi #2",
+      "provider": "kimi",
+      "url": "https://www.kimi.com/share/19c43bcc-c9e2-8d4b-8000-00009fdc625b",
+      "passed": true,
+      "messageCount": 6,
+      "userMessages": 3,
+      "assistantMessages": 3,
+      "minMessages": 4,
+      "error": null
+    },
+    {
+      "name": "Grok #1",
+      "provider": "grok",
+      "url": "https://grok.com/share/bGVnYWN5_ae10ced7-c418-4045-aa2c-01f8f4e86e6e",
+      "passed": true,
+      "messageCount": 6,
+      "userMessages": 3,
+      "assistantMessages": 3,
+      "minMessages": 4,
+      "error": null
+    }
+  ]
+}

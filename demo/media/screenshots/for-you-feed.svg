@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1920" height="1080" 
+     xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#0a0a0f"/>
+  
+  <!-- Sidebar -->
+  <rect width="256" height="100%" fill="#1a1a2e" opacity="0.5"/>
+  <text x="32" y="48" font-family="system-ui" font-size="20" font-weight="700" fill="#EF9F27">
+    VIVIM
+  </text>
+  <text x="32" y="100" font-family="system-ui" font-size="14" fill="#ffffff">For You</text>
+  <text x="32" y="130" font-family="system-ui" font-size="14" fill="#888888">Archive</text>
+  <text x="32" y="160" font-family="system-ui" font-size="14" fill="#888888">Graph</text>
+  <text x="32" y="190" font-family="system-ui" font-size="14" fill="#888888">Circles</text>
+  
+  <!-- Main Content -->
+  <rect x="256" width="100%" height="100%" fill="#0a0a0f"/>
+  
+  <!-- Header -->
+  <rect x="256" width="100%" height="80" fill="#1a1a2e" opacity="0.3"/>
+  <text x="288" y="50" font-family="system-ui" font-size="28" font-weight="600" fill="#ffffff">
+    For You Feed
+  </text>
+  <text x="288" y="75" font-family="system-ui" font-size="14" fill="#888888">
+    Curated from your AI thinking
+  </text>
+  
+  <!-- Topic Filters -->
+  <rect x="288" y="100" height="40" width="600" fill="none"/>
+  
+    <rect x="288" y="100" width="80" height="32" rx="16" 
+          fill="#EF9F27"/>
+    <text x="328" y="122" font-family="system-ui" font-size="13" 
+          fill="#000" text-anchor="middle">
+      All
+    </text>
+  
+    <rect x="383" y="100" width="80" height="32" rx="16" 
+          fill="#1a1a2e"/>
+    <text x="423" y="122" font-family="system-ui" font-size="13" 
+          fill="#888888" text-anchor="middle">
+      React
+    </text>
+  
+    <rect x="478" y="100" width="80" height="32" rx="16" 
+          fill="#1a1a2e"/>
+    <text x="518" y="122" font-family="system-ui" font-size="13" 
+          fill="#888888" text-anchor="middle">
+      TypeScript
+    </text>
+  
+    <rect x="573" y="100" width="80" height="32" rx="16" 
+          fill="#1a1a2e"/>
+    <text x="613" y="122" font-family="system-ui" font-size="13" 
+          fill="#888888" text-anchor="middle">
+      Postgres
+    </text>
+  
+    <rect x="668" y="100" width="80" height="32" rx="16" 
+          fill="#1a1a2e"/>
+    <text x="708" y="122" font-family="system-ui" font-size="13" 
+          fill="#888888" text-anchor="middle">
+      AI
+    </text>
+  
+    <rect x="763" y="100" width="80" height="32" rx="16" 
+          fill="#1a1a2e"/>
+    <text x="803" y="122" font-family="system-ui" font-size="13" 
+          fill="#888888" text-anchor="middle">
+      Startup
+    </text>
+  
+  
+  <!-- Feed Cards -->
+  
+    <rect x="288" y="180" 
+          width="300" height="260" rx="12" fill="#1a1a2e"/>
+    
+    <!-- Card Header -->
+    <rect x="288" y="180" 
+          width="300" height="48" rx="12" fill="#0a0a0f" opacity="0.5"/>
+    <text x="304" y="210" 
+          font-family="system-ui" font-size="12" font-weight="600" fill="#EF9F27">
+      ChatGPT
+    </text>
+    <text x="550" y="210" 
+          font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      1h ago
+    </text>
+    
+    <!-- Card Content -->
+    <text x="304" y="250" 
+          font-family="system-ui" font-size="14" font-weight="500" fill="#ffffff" 
+          width="268">
+      Understanding React useEffect Depen...
+    </text>
+    <text x="304" y="275" 
+          font-family="system-ui" font-size="12" fill="#888888" 
+          width="268">
+      Key insights from your conversation abou...
+    </text>
+    
+    <!-- Card Footer -->
+    <text x="304" y="420" 
+          font-family="system-ui" font-size="11" fill="#888888">
+      🔗 1 connections · 💡 Score: 94%
+    </text>
+  
+    <rect x="608" y="180" 
+          width="300" height="260" rx="12" fill="#1a1a2e"/>
+    
+    <!-- Card Header -->
+    <rect x="608" y="180" 
+          width="300" height="48" rx="12" fill="#0a0a0f" opacity="0.5"/>
+    <text x="624" y="210" 
+          font-family="system-ui" font-size="12" font-weight="600" fill="#EF9F27">
+      Claude
+    </text>
+    <text x="870" y="210" 
+          font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      2h ago
+    </text>
+    
+    <!-- Card Content -->
+    <text x="624" y="250" 
+          font-family="system-ui" font-size="14" font-weight="500" fill="#ffffff" 
+          width="268">
+      Postgres Query Optimization Strateg...
+    </text>
+    <text x="624" y="275" 
+          font-family="system-ui" font-size="12" fill="#888888" 
+          width="268">
+      Key insights from your conversation abou...
+    </text>
+    
+    <!-- Card Footer -->
+    <text x="624" y="420" 
+          font-family="system-ui" font-size="11" fill="#888888">
+      🔗 1 connections · 💡 Score: 77%
+    </text>
+  
+    <rect x="928" y="180" 
+          width="300" height="260" rx="12" fill="#1a1a2e"/>
+    
+    <!-- Card Header -->
+    <rect x="928" y="180" 
+          width="300" height="48" rx="12" fill="#0a0a0f" opacity="0.5"/>
+    <text x="944" y="210" 
+          font-family="system-ui" font-size="12" font-weight="600" fill="#EF9F27">
+      Gemini
+    </text>
+    <text x="1190" y="210" 
+          font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      3h ago
+    </text>
+    
+    <!-- Card Content -->
+    <text x="944" y="250" 
+          font-family="system-ui" font-size="14" font-weight="500" fill="#ffffff" 
+          width="268">
+      TypeScript Generic Constraints Expl...
+    </text>
+    <text x="944" y="275" 
+          font-family="system-ui" font-size="12" fill="#888888" 
+          width="268">
+      Key insights from your conversation abou...
+    </text>
+    
+    <!-- Card Footer -->
+    <text x="944" y="420" 
+          font-family="system-ui" font-size="11" fill="#888888">
+      🔗 5 connections · 💡 Score: 71%
+    </text>
+  
+    <rect x="288" y="460" 
+          width="300" height="260" rx="12" fill="#1a1a2e"/>
+    
+    <!-- Card Header -->
+    <rect x="288" y="460" 
+          width="300" height="48" rx="12" fill="#0a0a0f" opacity="0.5"/>
+    <text x="304" y="490" 
+          font-family="system-ui" font-size="12" font-weight="600" fill="#EF9F27">
+      DeepSeek
+    </text>
+    <text x="550" y="490" 
+          font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      4h ago
+    </text>
+    
+    <!-- Card Content -->
+    <text x="304" y="530" 
+          font-family="system-ui" font-size="14" font-weight="500" fill="#ffffff" 
+          width="268">
+      System Design: Monolith vs Microser...
+    </text>
+    <text x="304" y="555" 
+          font-family="system-ui" font-size="12" fill="#888888" 
+          width="268">
+      Key insights from your conversation abou...
+    </text>
+    
+    <!-- Card Footer -->
+    <text x="304" y="700" 
+          font-family="system-ui" font-size="11" fill="#888888">
+      🔗 5 connections · 💡 Score: 70%
+    </text>
+  
+    <rect x="608" y="460" 
+          width="300" height="260" rx="12" fill="#1a1a2e"/>
+    
+    <!-- Card Header -->
+    <rect x="608" y="460" 
+          width="300" height="48" rx="12" fill="#0a0a0f" opacity="0.5"/>
+    <text x="624" y="490" 
+          font-family="system-ui" font-size="12" font-weight="600" fill="#EF9F27">
+      ChatGPT
+    </text>
+    <text x="870" y="490" 
+          font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      5h ago
+    </text>
+    
+    <!-- Card Content -->
+    <text x="624" y="530" 
+          font-family="system-ui" font-size="14" font-weight="500" fill="#ffffff" 
+          width="268">
+      AI Context Window Management
+    </text>
+    <text x="624" y="555" 
+          font-family="system-ui" font-size="12" fill="#888888" 
+          width="268">
+      Key insights from your conversation abou...
+    </text>
+    
+    <!-- Card Footer -->
+    <text x="624" y="700" 
+          font-family="system-ui" font-size="11" fill="#888888">
+      🔗 5 connections · 💡 Score: 81%
+    </text>
+  
+    <rect x="928" y="460" 
+          width="300" height="260" rx="12" fill="#1a1a2e"/>
+    
+    <!-- Card Header -->
+    <rect x="928" y="460" 
+          width="300" height="48" rx="12" fill="#0a0a0f" opacity="0.5"/>
+    <text x="944" y="490" 
+          font-family="system-ui" font-size="12" font-weight="600" fill="#EF9F27">
+      Claude
+    </text>
+    <text x="1190" y="490" 
+          font-family="system-ui" font-size="11" fill="#888888" text-anchor="end">
+      6h ago
+    </text>
+    
+    <!-- Card Content -->
+    <text x="944" y="530" 
+          font-family="system-ui" font-size="14" font-weight="500" fill="#ffffff" 
+          width="268">
+      Startup Validation Framework
+    </text>
+    <text x="944" y="555" 
+          font-family="system-ui" font-size="12" fill="#888888" 
+          width="268">
+      Key insights from your conversation abou...
+    </text>
+    
+    <!-- Card Footer -->
+    <text x="944" y="700" 
+          font-family="system-ui" font-size="11" fill="#888888">
+      🔗 5 connections · 💡 Score: 89%
+    </text>
+  
+</svg>

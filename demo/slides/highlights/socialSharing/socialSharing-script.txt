@@ -1,0 +1,48 @@
+================================================================
+VIVIM DEMO SCRIPT: SOCIAL & SHARING
+================================================================
+
+Tagline: Share your AI brain. Learn from your circle.
+Investor Type: business
+Target Time: 20-25s
+
+----------------------------------------------------------------
+NARRATIVE
+----------------------------------------------------------------
+
+[HOOK] Your startup's best AI learnings are in one person's head. What if the whole team could share?
+
+[1] Circles: private groups for teams, projects, or communities. Share curated knowledge instantly.
+
+[2] Groups: public communities around topics. VIVIM users sharing insights on React, Postgres, startup.
+
+[3] One-tap sharing with full attribution. The person who taught you something gets credit.
+
+[CLOSE] Network effects for AI knowledge. The more people share, the smarter everyone gets.
+
+----------------------------------------------------------------
+CLICK SCRIPT
+----------------------------------------------------------------
+
+[1] Social Features
+  Shared conversations           /archive/shared
+  Sharing settings               /settings/advanced
+
+----------------------------------------------------------------
+SEARCH QUERIES TO VERIFY
+----------------------------------------------------------------
+
+  "team knowledge sharing"
+  "react patterns"
+
+----------------------------------------------------------------
+PRE-DEMO CHECKLIST
+----------------------------------------------------------------
+
+[ ] Seed reset complete
+[ ] Embeddings pre-computed
+[ ] All pages load without errors
+[ ] Search queries verified
+[ ] Loom backup recorded
+[ ] Practiced 3+ times
+

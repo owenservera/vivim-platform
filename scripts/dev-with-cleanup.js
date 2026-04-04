@@ -52,7 +52,7 @@ function forceCleanup() {
   console.log('\n🧹 Force cleanup of VIVIM development processes...\n');
   log('Executing force cleanup');
 
-  const cleanupScript = spawn('node', ['scripts/force-cleanup.js'], {
+  const cleanupScript = spawn('bun', ['scripts/force-cleanup.js'], {
     stdio: 'inherit',
     cwd: process.cwd()
   });

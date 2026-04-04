@@ -1,0 +1,9 @@
+node_modules
+.git
+.github
+.env
+.vercel
+build_log*.txt
+chatgpt-exports
+dist
+*.log

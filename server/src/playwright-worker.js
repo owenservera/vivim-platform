@@ -163,7 +163,7 @@ async function runCapture() {
   try {
     // 2. Setup Files
     const tempDirectory = path.resolve(tempDir || os.tmpdir());
-    const tempFileName = `openscroll-pw-${provider}-${uuidv4()}.html`;
+    const tempFileName = `vivim-pw-${provider}-${uuidv4()}.html`;
     tempFilePath = path.join(tempDirectory, tempFileName);
 
     // 3. Launch Browser

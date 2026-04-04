@@ -38,6 +38,17 @@ router.get('/', async (req, res) => {
     } else if (tab === 'bookmarks') {
       // Logic for bookmarks (placeholder for now)
       conversations = [];
+    } else if (tab === 'scroll') {
+      conversations = await prisma.conversation.findMany({
+        where: { visibility: 'public' },
+        take: parseInt(limit) * 2,
+        orderBy: { capturedAt: 'desc' },
+        include: {
+          messages: {
+            orderBy: { messageIndex: 'asc' },
+          },
+        },
+      });
     }
 
     // 2. Score and Filter

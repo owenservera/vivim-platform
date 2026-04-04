@@ -106,18 +106,18 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    // Plugin to suppress expected proxy errors during server startup
     {
       name: 'suppress-proxy-errors',
       configureServer(server) {
         const originalError = server.config.logger.error;
         
-        // Wrap logger to suppress expected proxy errors
         server.config.logger.error = (msg, options) => {
           const msgStr = typeof msg === 'string' ? msg : String(msg);
-          // Suppress ECONNREFUSED errors during startup (expected)
           if (msgStr.includes('ECONNREFUSED') || msgStr.includes('http proxy error')) {
-            return; // Suppress
+            return;
+          }
+          if (msgStr.includes('No matching HTML proxy module')) {
+            return;
           }
           originalError(msg, options);
         };
@@ -138,16 +138,33 @@ export default defineConfig({
     }),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icon.svg', 'pwa-192x192.svg', 'pwa-512x512.svg'],
+      includeAssets: ['icon.svg', 'pwa-192x192.svg', 'pwa-512x512.svg', 'offline.html'],
       workbox: {
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff,woff2}'],
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
         runtimeCaching: [
           {
             urlPattern: /^https?:\/\/.*\/api\/v1\/(capture|core)/,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          {
+            urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'supabase-cache',
               expiration: {
                 maxEntries: 100,
                 maxAgeSeconds: 60 * 60 * 24
@@ -182,9 +199,9 @@ export default defineConfig({
         ]
       },
       manifest: {
-        name: 'OpenScroll',
-        short_name: 'OpenScroll',
-        description: 'The Sovereign AI Conversation Network - Capture, own, and share your AI conversations with quantum-resistant encryption',
+        name: 'VIVIM - Own Your AI',
+        short_name: 'VIVIM',
+        description: 'The Sovereign AI Conversation Network - Capture, own, and share your AI conversations',
         theme_color: '#000000',
         background_color: '#000000',
         display: 'standalone',
@@ -193,12 +210,6 @@ export default defineConfig({
         start_url: '/',
         categories: ['productivity', 'utilities', 'social'],
         icons: [
-          {
-            src: 'icon.svg',
-            sizes: 'any',
-            type: 'image/svg+xml',
-            purpose: 'any'
-          },
           {
             src: 'pwa-192x192.svg',
             sizes: '192x192',
@@ -227,19 +238,21 @@ export default defineConfig({
             short_name: 'Capture',
             description: 'Capture a new AI conversation',
             url: '/capture',
-            icons: [{ src: 'icon.svg', sizes: 'any' }]
+            icons: [{ src: 'pwa-192x192.svg', sizes: '192x192' }]
           },
           {
             name: 'Search',
             short_name: 'Search',
             description: 'Search your conversation library',
             url: '/search',
-            icons: [{ src: 'icon.svg', sizes: 'any' }]
+            icons: [{ src: 'pwa-192x192.svg', sizes: '192x192' }]
           }
         ]
       },
       devOptions: {
-        enabled: false
+        enabled: false,
+        type: 'module',
+        suppressWarnings: true
       }
     }),
     {
@@ -378,7 +391,15 @@ export default defineConfig({
   build: {
     sourcemap: true,
     target: 'es2020',
-    minify: 'esbuild'
+    minify: 'esbuild',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'supabase': ['@supabase/supabase-js'],
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+        },
+      },
+    },
   },
   esbuild: {
     logOverride: { 'this-is-undefined-in-esm': 'silent' }

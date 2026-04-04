@@ -1,0 +1,611 @@
+// OpenScroll Extended Prisma Schema
+// Combines current extraction schema with blueprint ACU/P2P features
+// Database: PostgreSQL
+// Runtime: Bun
+//
+// This schema extends the existing schema.prisma with:
+// - ACU (Atomic Chat Unit) tables for knowledge graph
+// - Identity management (User, Device)
+// - Sharing infrastructure (Circle)
+// - Vector embeddings support
+// - Graph relationships (ACU Links)
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================================
+// EXISTING TABLES (Keep as-is for backward compatibility)
+// ============================================================================
+
+model Conversation {
+  id          String   @id @default(uuid())
+  
+  // Source Information
+  provider    String
+  sourceUrl   String   @unique
+  contentHash String?  // SHA-256 of raw content
+  
+  // Conversation Metadata
+  title       String   @db.Text
+  model       String?
+  state       String   @default("ACTIVE") // ACTIVE, ARCHIVED, DORMANT
+  
+  // Timestamps
+  createdAt   DateTime @db.Timestamptz
+  updatedAt   DateTime @db.Timestamptz
+  capturedAt  DateTime @default(now()) @db.Timestamptz
+  
+  // Statistics
+  messageCount      Int @default(0)
+  userMessageCount  Int @default(0)
+  aiMessageCount    Int @default(0)
+  totalWords        Int @default(0)
+  totalCharacters   Int @default(0)
+  totalTokens       Int?
+  totalCodeBlocks      Int @default(0)
+  totalImages          Int @default(0)
+  totalTables          Int @default(0)
+  totalLatexBlocks     Int @default(0)
+  totalMermaidDiagrams Int @default(0)
+  totalToolCalls       Int @default(0)
+  
+  // Relationships
+  messages    Message[]
+  acus        AtomicChatUnit[] // NEW: Link to generated ACUs
+  
+  // Metadata
+  metadata    Json @default("{}")
+  tags        String[] // Array of hashtags
+  
+  // NEW: Owner tracking
+  ownerId     String?
+  owner       User? @relation(fields: [ownerId], references: [id])
+  
+  // Indexes
+  @@index([provider])
+  @@index([capturedAt(sort: Desc)])
+  @@index([provider, capturedAt(sort: Desc)])
+  @@index([sourceUrl])
+  @@index([createdAt(sort: Desc)])
+  @@index([ownerId])
+  @@index([tags])
+  @@map("conversations")
+}
+
+model Message {
+  id              String   @id @default(uuid())
+  conversationId  String
+  conversation    Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+  // Message Core Fields
+  role            String
+  author          String?
+  parts           Json
+  contentHash     String? // SHA-256 of parts
+  
+  // Timestamps
+  createdAt       DateTime @db.Timestamptz
+  messageIndex    Int
+  
+  // Status
+  status          String   @default("completed")
+  finishReason    String?
+  tokenCount      Int?
+  metadata        Json @default("{}")
+  
+  // NEW: Link to generated ACUs
+  acus            AtomicChatUnit[]
+  
+  // Indexes
+  @@index([conversationId, messageIndex])
+  @@index([conversationId, createdAt])
+  @@index([role])
+  @@map("messages")
+}
+
+model CaptureAttempt {
+  id          String   @id @default(uuid())
+  sourceUrl   String
+  provider    String?
+  status      String
+  errorCode   String?
+  errorMessage String? @db.Text
+  errorStack  String? @db.Text
+  startedAt   DateTime @db.Timestamptz
+  completedAt DateTime? @db.Timestamptz
+  duration    Int?
+  ipAddress   String?
+  userAgent   String?  @db.Text
+  conversationId String?
+  retryCount  Int @default(0)
+  retryOf     String?
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  
+  @@index([sourceUrl])
+  @@index([status])
+  @@index([createdAt(sort: Desc)])
+  @@index([ipAddress, createdAt(sort: Desc)])
+  @@index([conversationId])
+  @@map("capture_attempts")
+}
+
+model ProviderStats {
+  id              String   @id @default(uuid())
+  provider        String   @unique
+  totalCaptures      Int @default(0)
+  successfulCaptures Int @default(0)
+  failedCaptures     Int @default(0)
+  avgDuration        Float?
+  avgMessageCount    Float?
+  avgTokenCount      Float?
+  totalMessages      Int @default(0)
+  totalCodeBlocks    Int @default(0)
+  totalImages        Int @default(0)
+  totalToolCalls     Int @default(0)
+  lastCaptureAt   DateTime? @db.Timestamptz
+  updatedAt       DateTime @updatedAt @db.Timestamptz
+  
+  @@map("provider_stats")
+}
+
+// ============================================================================
+// NEW: IDENTITY & USER MANAGEMENT (Blueprint)
+// ============================================================================
+
+model User {
+  id          String   @id @default(uuid())
+  
+  // Decentralized Identifier (DID)
+  did         String   @unique // did:key:z6Mk...
+  
+  // Profile
+  displayName String?
+  email       String?  @unique
+  avatarUrl   String?
+  
+  // Cryptographic keys (stored encrypted)
+  publicKey   String   @db.Text // Ed25519 public key
+  encryptedPrivateKey String? @db.Text // Encrypted with device key
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
+  lastSeenAt  DateTime @default(now()) @db.Timestamptz
+  
+  // Relationships
+  devices         Device[]
+  conversations   Conversation[]
+  acus            AtomicChatUnit[]
+  syncCursors     SyncCursor[]
+  circlesOwned    Circle[] @relation("CircleOwner")
+  circleMemberships CircleMember[]
+  aiPersonas      AiPersona[]
+  facts           UserFact[]
+  
+  // Settings (JSONB)
+  settings    Json @default("{}")
+  
+  // Indexes
+  @@index([did])
+  @@index([email])
+  @@map("users")
+}
+
+model Device {
+  id          String   @id @default(uuid())
+  
+  // Owner
+  userId      String
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Device Info
+  deviceId    String   @unique // Unique device identifier
+  deviceName  String   // "iPhone 15 Pro", "Chrome on MacBook"
+  deviceType  String   // "mobile", "desktop", "browser"
+  platform    String   // "ios", "android", "web", "macos", "windows"
+  
+  // Device fingerprint (for security)
+  fingerprint String?  @db.Text
+  
+  // Cryptographic keys
+  publicKey   String   @db.Text
+  
+  // Status
+  isActive    Boolean  @default(true)
+  isTrusted   Boolean  @default(false)
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
+  lastSeenAt  DateTime @default(now()) @db.Timestamptz
+  
+  // Metadata
+  metadata    Json @default("{}")
+  
+  // Indexes
+  @@index([userId])
+  @@index([deviceId])
+  @@index([userId, isActive])
+  @@map("devices")
+}
+
+// ============================================================================
+// NEW: ATOMIC CHAT UNITS (ACUs) - Core Knowledge Graph
+// ============================================================================
+
+model AtomicChatUnit {
+  id          String   @id // Content hash (SHA3-256)
+  
+  // Authorship
+  authorDid   String
+  author      User @relation(fields: [authorDid], references: [did])
+  signature   Bytes    // Ed25519 signature
+  
+  // Content
+  content     String   @db.Text
+  language    String?  // For code snippets
+  
+  // Semantic Classification
+  type        String   // "statement", "question", "answer", "code_snippet", etc.
+  category    String   // "technical", "conceptual", "procedural", "personal"
+  
+  // Embeddings (for semantic search)
+  embedding   Float[] // 384-dimensional vector (stored as array)
+  embeddingModel String? // "phi-3-mini", "all-MiniLM-L6-v2"
+  
+  // Provenance (where this ACU came from)
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  messageId      String
+  message        Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  messageIndex   Int
+  provider       String
+  model          String?
+  sourceTimestamp DateTime @db.Timestamptz
+  
+  // Extraction metadata
+  extractorVersion String?
+  parserVersion    String?
+  
+  // Lifecycle & Security
+  state            String   @default("ACTIVE") // DORMANT, ACTIVE, ARCHIVED
+  securityLevel    Int      @default(0) // 0=normal, 5=PII
+  isPersonal       Boolean  @default(false)
+  level            Int      @default(4) // Granularity level
+  contentType      String   @default("text") // text, code_block, etc.
+  
+  // Quality Metrics
+  qualityOverall        Float? // 0-100 composite score
+  contentRichness       Float?
+  structuralIntegrity   Float?
+  uniqueness            Float?
+  
+  // Usage Statistics
+  viewCount     Int @default(0)
+  shareCount    Int @default(0)
+  quoteCount    Int @default(0)
+  rediscoveryScore Float?
+  
+  // Sharing Policy
+  sharingPolicy String @default("self") // "self", "circle", "network"
+  sharingCircles String[] // Array of circle IDs
+  canView       Boolean @default(true)
+  canAnnotate   Boolean @default(false)
+  canRemix      Boolean @default(false)
+  canReshare    Boolean @default(false)
+  expiresAt     DateTime? @db.Timestamptz
+  
+  // Timestamps
+  createdAt     DateTime @default(now()) @db.Timestamptz
+  indexedAt     DateTime @default(now()) @db.Timestamptz
+  
+  // Relationships
+  linksFrom     AcuLink[] @relation("SourceAcu")
+  linksTo       AcuLink[] @relation("TargetAcu")
+  
+  // Metadata
+  metadata      Json @default("{}")
+  tags          String[]
+  
+  // Indexes
+  @@index([conversationId])
+  @@index([messageId])
+  @@index([authorDid])
+  @@index([type])
+  @@index([category])
+  @@index([qualityOverall(sort: Desc)])
+  @@index([rediscoveryScore(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@index([sharingPolicy])
+  @@index([tags])
+  @@map("atomic_chat_units")
+}
+
+// ============================================================================
+// NEW: ACU GRAPH RELATIONSHIPS
+// ============================================================================
+
+model AcuLink {
+  id          String   @id @default(uuid())
+  
+  // Source and Target ACUs
+  sourceId    String
+  source      AtomicChatUnit @relation("SourceAcu", fields: [sourceId], references: [id], onDelete: Cascade)
+  
+  targetId    String
+  target      AtomicChatUnit @relation("TargetAcu", fields: [targetId], references: [id], onDelete: Cascade)
+  
+  // Relationship Type
+  relation    String   // "next", "previous", "explains", "answers", "similar_to", etc.
+  
+  // Confidence/Weight
+  weight      Float    @default(1.0) // 0.0 - 1.0
+  
+  // Attribution
+  createdByDid String? // DID of who created this link
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  
+  // Metadata
+  metadata    Json @default("{}")
+  
+  // Unique constraint: one relation type per source-target pair
+  @@unique([sourceId, targetId, relation])
+  @@index([sourceId])
+  @@index([targetId])
+  @@index([relation])
+  @@map("acu_links")
+}
+
+// ============================================================================
+// NEW: SHARING & CIRCLES (P2P Foundation)
+// ============================================================================
+
+model Circle {
+  id          String   @id @default(uuid())
+  
+  // Owner
+  ownerId     String
+  owner       User @relation("CircleOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  
+  // Circle Info
+  name        String
+  description String?  @db.Text
+  
+  // Visibility
+  isPublic    Boolean  @default(false)
+  
+  // Members
+  members     CircleMember[]
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
+  
+  // Metadata
+  metadata    Json @default("{}")
+  
+  // Indexes
+  @@index([ownerId])
+  @@index([isPublic])
+  @@map("circles")
+}
+
+model CircleMember {
+  id          String   @id @default(uuid())
+  
+  // Circle
+  circleId    String
+  circle      Circle @relation(fields: [circleId], references: [id], onDelete: Cascade)
+  
+  // Member
+  userId      String
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Role
+  role        String   @default("member") // "owner", "admin", "member"
+  
+  // Permissions
+  canInvite   Boolean  @default(false)
+  canShare    Boolean  @default(true)
+  
+  // Timestamps
+  joinedAt    DateTime @default(now()) @db.Timestamptz
+  
+  // Unique constraint: one membership per user per circle
+  @@unique([circleId, userId])
+  @@index([circleId])
+  @@index([userId])
+  @@map("circle_members")
+}
+
+// ============================================================================
+// P2P SYNC INFRASTRUCTURE (Foundation)
+// ============================================================================
+
+// Tracks what each device has synced (vector clock equivalent)
+model SyncCursor {
+  id          String   @id @default(uuid())
+  userId      String
+  deviceDid   String                                       // Which device
+  tableName   String                                       // Which table
+  lastSyncId  String?                                      // Last synced record ID
+  lastSyncAt  DateTime @default(now()) @db.Timestamptz
+  vectorClock Json     @default("{}")                       // Full vector clock state
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, deviceDid, tableName])
+  @@index([userId, deviceDid])
+  @@map("sync_cursors")
+}
+
+// Operations log for CRDT-style sync between devices
+model SyncOperation {
+  id          String   @id @default(uuid())
+  authorDid   String                                       // Who made this change
+  deviceDid   String                                       // On which device
+  
+  // Entity Information
+  tableName   String                                       // Affected table
+  recordId    String                                       // Affected record ID
+  entityType  String?                                      // e.g., "conversation", "message"
+  entityId    String?                                      // ID of the entity
+  
+  operation   String                                       // INSERT, UPDATE, DELETE
+  payload     Json                                         // The change data (CRDT-friendly)
+  
+  // Sync Logic
+  hlcTimestamp String                                      // Hybrid Logical Clock timestamp
+  vectorClock Json     @default("{}")                       // Vector clock at time of operation
+  isProcessed  Boolean  @default(false)                    // Whether this op has been processed locally
+  
+  // Timestamps
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  appliedAt   DateTime? @db.Timestamptz                 // When applied on this node
+
+  @@index([authorDid])
+  @@index([deviceDid])
+  @@index([tableName, recordId])
+  @@index([entityType, entityId])
+  @@index([hlcTimestamp])
+  @@index([createdAt(sort: Desc)])
+  @@map("sync_operations")
+}
+
+// Connection between peers (Simplified for POC)
+model PeerConnection {
+  id           String   @id @default(uuid())
+  initiatorDid String
+  targetDid    String
+  status       String   @default("pending") // "pending", "accepted", "blocked"
+  trustLevel   String   @default("acquaintance")
+  createdAt    DateTime @default(now()) @db.Timestamptz
+  metadata     Json     @default("{}")
+
+  // Note: Relations to User model would require User to have 'did' as @id or unique index
+  // For POC, we just store the DIDs string for loose coupling
+
+  @@unique([initiatorDid, targetDid])
+  @@index([initiatorDid])
+  @@index([targetDid])
+  @@map("peer_connections")
+}
+
+// ============================================================================
+// OPERATIONAL TABLES (kept from your original, local only)
+// ============================================================================
+
+// Note: Prisma doesn't support views natively, but you can create them
+// manually in migrations. Here's the SQL for reference:
+
+// CREATE VIEW v_conversations_with_acu_count AS
+// SELECT 
+//   c.*,
+//   COUNT(a.id) as acu_count
+// FROM conversations c
+// LEFT JOIN atomic_chat_units a ON c.id = a."conversationId"
+// GROUP BY c.id;
+
+// CREATE VIEW v_top_acus AS
+// SELECT *
+// FROM atomic_chat_units
+// WHERE "qualityOverall" >= 80
+// ORDER BY "rediscoveryScore" DESC
+// LIMIT 100;
+
+// CREATE MATERIALIZED VIEW v_user_reciprocity_scores AS
+// SELECT 
+//   u.did,
+//   COUNT(DISTINCT contrib.id) as contribution_count,
+//   COUNT(DISTINCT consum.id) as consumption_count,
+//   COALESCE(AVG(contrib.quality), 0) as avg_contribution_quality,
+//   CASE 
+//     WHEN COUNT(DISTINCT consum.id) = 0 THEN COUNT(DISTINCT contrib.id) * 2.0
+//     ELSE (COUNT(DISTINCT contrib.id)::float / COUNT(DISTINCT consum.id)::float)
+//   END as reciprocity_score
+// FROM users u
+// LEFT JOIN contributions contrib ON u.did = contrib."contributorDid"
+// LEFT JOIN consumptions consum ON u.did = consum."consumerDid"
+// GROUP BY u.did;
+
+// ============================================================================
+// NEW: OMNI-COMPOSER & INTELLIGENCE LAYERS
+// ============================================================================
+
+model AiPersona {
+  id          String   @id @default(uuid())
+  ownerId     String?  // Null for System Personas
+  name        String   // "Code Tutor", "Devil's Advocate"
+  description String?
+  
+  // The Trigger
+  trigger     String   // "tutor", "devil" (mapped to /tutor)
+  type        String   // "mode", "clone", "agent"
+  
+  // The Brain
+  systemPrompt String  @db.Text
+  provider    String?  // Force specific provider?
+  model       String?  // Force specific model?
+  temperature Float?
+  
+  // The Knowledge (RAG)
+  includeOwnerContext Boolean @default(false)
+  
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
+  
+  owner       User?    @relation(fields: [ownerId], references: [id])
+  
+  @@unique([ownerId, trigger])
+  @@index([type])
+  @@map("ai_personas")
+}
+
+model UserFact {
+  id          String   @id @default(uuid())
+  userId      String
+  content     String   @db.Text
+  category    String   // "bio", "preference", "work"
+  source      String?  // "chat:uuid", "manual"
+  
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@map("user_facts")
+}
+
+model SystemCommand {
+  id          String   @id @default(uuid())
+  trigger     String   @unique // e.g., "clear", "settings"
+  label       String
+  subLabel    String?
+  description String?
+  actionCode  String   // Internal identifier for the frontend handler
+  icon        String?  // Lucide icon name
+  scope       String   @default("global") // "global", "chat"
+  
+  @@map("system_commands")
+}
+
+model SystemAction {
+  id          String   @id @default(uuid())
+  trigger     String   @unique // e.g., "save", "broadcast"
+  label       String
+  subLabel    String?
+  description String?
+  actionCode  String   // Internal identifier
+  icon        String?  // Lucide icon name
+  
+  @@map("system_actions")
+}

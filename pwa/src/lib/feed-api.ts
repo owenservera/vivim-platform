@@ -28,14 +28,14 @@ export class FeedAPI {
    * Get personalized feed
    */
   async getFeed(options: {
-    tab?: 'for-you' | 'following' | 'topics' | 'bookmarks';
+    tab?: 'for-you' | 'following' | 'topics' | 'bookmarks' | 'scroll';
     limit?: number;
     offset?: number;
     topic?: string;
     minQuality?: number;
   } = {}): Promise<FeedResponse> {
-    // If in local mode, use the user feed service
-    if (this.useLocalMode) {
+    // If in local mode, use the user feed service, except for 'scroll' which is always public network
+    if (this.useLocalMode && options.tab !== 'scroll') {
       return userFeedService.getUserFeed(options);
     }
 

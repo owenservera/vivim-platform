@@ -1,0 +1,49 @@
+================================================================
+VIVIM DEMO SCRIPT: AI NATIVE
+================================================================
+
+Tagline: VIVIM AI — built on your memory, not just your prompt
+Investor Type: product
+Target Time: 25-30s
+
+----------------------------------------------------------------
+NARRATIVE
+----------------------------------------------------------------
+
+[HOOK] Generic AI answers generic questions. VIVIM AI answers questions using everything you've ever learned.
+
+[1] Every answer draws from your archive, your memories, your past conversations.
+
+[2] ACU extraction pulls atomic insights from every chat and makes them searchable.
+
+[3] BYOK support: bring your own API key. Use VIVIM's context layer with your preferred AI.
+
+[CLOSE] Not another AI. An AI that knows you.
+
+----------------------------------------------------------------
+CLICK SCRIPT
+----------------------------------------------------------------
+
+[1] VIVIM AI
+  VIVIM AI chat                  /chat
+  BYOK configuration             /byok
+  AI providers                   /settings/providers
+
+----------------------------------------------------------------
+SEARCH QUERIES TO VERIFY
+----------------------------------------------------------------
+
+  "react context"
+  "startup strategy"
+
+----------------------------------------------------------------
+PRE-DEMO CHECKLIST
+----------------------------------------------------------------
+
+[ ] Seed reset complete
+[ ] Embeddings pre-computed
+[ ] All pages load without errors
+[ ] Search queries verified
+[ ] Loom backup recorded
+[ ] Practiced 3+ times
+
