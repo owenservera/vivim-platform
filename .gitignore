@@ -1,93 +1,268 @@
+# =============================================================================
+# VIVIM - Root .gitignore
+# =============================================================================
+
+# =============================================================================
 # Dependencies
+# =============================================================================
 node_modules/
-bun.lockb
+**/node_modules/
+.pnp
+.pnp.js
 
-# Build outputs
+# =============================================================================
+# Build Outputs
+# =============================================================================
 dist/
+**/dist/
 build/
-.tamagui/
-web-build/
-*.apk
-*.ipa
-dev-dist/
+**/build/
+.next/
+out/
 
-# Environment files
+# =============================================================================
+# Environment Files
+# =============================================================================
 .env
 .env.local
-.env.*.local
-.env.production
-!.env.example
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
 
+# =============================================================================
 # Logs
+# =============================================================================
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-server.log
-vite.log
+lerna-debug.log*
+pnpm-debug.log*
+bun-debug.log*
+dev-browser-dump.log
+logs/
+*.log.*
 
-# IDEs and Editors
-.vscode/
+# =============================================================================
+# Testing
+# =============================================================================
+coverage/
+**/coverage/
+.nyc_output/
+.playwright/
+test-results/
+**/test-results/
+playwright-report/
+**/playwright-report/
+
+# =============================================================================
+# Editor Directories & Files
+# =============================================================================
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
 .idea/
 *.swp
 *.swo
 *~
-.history/
-
-# OS files
 .DS_Store
+
+# =============================================================================
+# OS Files
+# =============================================================================
 Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.db
+*.db-journal
 Desktop.ini
+*.lnk
+*.shortcut
+desktop.ini
 
-# Mobile (Android/iOS)
-android/app/build/
-android/.gradle/
-android/local.properties
-ios/Pods/
-ios/build/
-*.xcworkspace
-.xcode.env.local
+# =============================================================================
+# Binary & Media Files (Not needed in repo)
+# =============================================================================
+*.pptx
+*.ppt
+*.pdf
+*.docx
+*.doc
+*.xlsx
+*.xls
+*.psd
+*.ai
+*.sketch
+*.fig
+*.mp4
+*.mp3
+*.mov
+*.avi
+*.wmv
+*.flv
+*.wav
+*.m4a
+*.webm
+*.zip
+*.rar
+*.7z
+*.tar
+*.tar.gz
+*.tgz
+*.bz2
+*.gz
+*.exe
+*.msi
+*.dmg
+*.pkg
+*.app
+*.iso
+*.bak
+*.backup
+*.dump
+*.sqlite
+*.sqlite3
 
-# Temporary / Debug files
-tmp/
-temp/
-*.tmp
-.sisyphus/
-.debug/
-openscroll_dump_*.json
+# =============================================================================
+# Lock Files (keep bun.lock, ignore others)
+# =============================================================================
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
-# Lint & type-check reports (generated, never commit)
-*-eslint-report.json
-eslint-report.json
-tsc_out*.txt
+# =============================================================================
+# Bun
+# =============================================================================
+# Keep bun.lock for reproducible builds
+bun.lockb
+
+# =============================================================================
+# TypeScript/Vite Cache
+# =============================================================================
+*.tsbuildinfo
+.vite/
+**/.vite/
 tsconfig.tsbuildinfo
+.rpt2_cache/
 
-# Build / debug text artifacts
-build_err*.txt
-build_error*.log
-build_out*.txt
-build.log
-server.log
-*.log
-dev.log
-dev_err.log
-error_log.txt
-server_crash_log.txt
-test_log*.txt
-temp_test*.txt
-quick_test.txt
-server_fresh.txt
+# =============================================================================
+# Supabase (keep migrations, ignore temp)
+# =============================================================================
+supabase/.temp/
 
-# Debug HTML exports (browser session dumps)
-debug-chatgpt-*.html
-
-# AI session / chat exports
-roo_task_*.md
-assistant-ui-chat.md
-
-# Project specific
-nul
-session-ses_*.md
-.tmp.driveupload/
-server.zip
+# =============================================================================
+# Vercel
+# =============================================================================
 .vercel
+!pwa/.vercel
+
+# =============================================================================
+# Documentation Archives (Keep only active docs)
+# =============================================================================
+.archive/
+**/.archive/
+_legacy/
+**/_legacy/
+vivim-docs/08-ARCHIVE/
+vivim-docs/VIVIM.docs/.archive/
+vivim-docs/VIVIM.docs/VIVIM.docs/.archive/
+
+# =============================================================================
+# AI Tool Outputs & Sessions
+# =============================================================================
+.omc/
+**/.omc/
+.sisyphus/
+**/.sisyphus/
+.agents/
+**/.agents/
+.analysis/
+**/.analysis/
+.dev/
+**/.dev/
+.qwen/
+**/.qwen/
+
+# =============================================================================
+# Exported/Generated Markdowns (Not source of truth)
+# =============================================================================
+qwen-code-export-*.md
+* export *.md
+*_export_*.md
+
+# =============================================================================
+# Temporary Files
+# =============================================================================
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+*.orig
+*.bak
+*.backup
+*.cache
+
+# =============================================================================
+# Docker
+# =============================================================================
+.dockerenv
+.dockerignore.local
+
+# =============================================================================
+# Misc
+# =============================================================================
+$null
+running_services.txt
+*.pid
+*.seed
+*.pid.lock
+*.cert
+*.pem
+*.key
+!.github/**/*.key (if needed for workflows)
+secrets/
+**/secrets/
+credentials/
+**/credentials/
+
+# =============================================================================
+# Documentation Duplicates
+# =============================================================================
+vivim-docs/VIVIM.docs/VIVIM.docs/
+vivim-docs/VIVIM.docs/vivim.docs.context/
+vivim.docs.context/
+
+# =============================================================================
+# Embedded Repositories
+# =============================================================================
+vivim-pitch/
+**/.git
+
+# =============================================================================
+# Build Artifacts
+# =============================================================================
+*.artifact
+*.meta
+*.d.ts.map
+
+# =============================================================================
+# Prisma
+# =============================================================================
+prisma/migrations/**/README.md
+prisma/migrations/**/migration_lock.toml
+
+# =============================================================================
+# Sentry
+# =============================================================================
+.sentryclirc
+*.js.map (keep for production debugging)
+!pwa/dist/**/*.js.map
+
+# =============================================================================
+# OMC Session Files
+# =============================================================================
+*.jsonl
+agent-replay-*.jsonl
