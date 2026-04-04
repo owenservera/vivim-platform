@@ -6,6 +6,8 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { BackgroundSync } from '@/components/BackgroundSync';
 import { DebugPanel } from '@/components/DebugPanel';
 import { CardSkeleton } from '@/components/ui/Skeleton';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import AuthCallback from '@/pages/AuthCallback';
 
 const Home = lazy(() => import('@/pages/Home').then(m => ({ default: m.HomeWithProvider })));
 const Login = lazy(() => import('@/pages/Login').then(m => ({ default: m.Login })));
@@ -35,24 +37,28 @@ export function AppRoutes() {
   return (
     <Suspense fallback={<PageSkeleton />}>
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/analytics" element={<Analytics />} />
-        <Route path="/bookmarks" element={<Bookmarks />} />
-        <Route path="/capture" element={<Capture />} />
-        <Route path="/simple-capture" element={<CaptureSimple />} />
-        <Route path="/conversation/:id" element={<ConversationView />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/settings/ai" element={<Settings />} />
-        <Route path="/chat" element={<Home />} />
-        <Route path="/ai-conversations" element={<AIConversationsPage />} />
-        <Route path="/ai/conversation/:id" element={<AIConversationsPage />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/conversation/:id/share" element={<Share />} />
         <Route path="/receive/:code" element={<Receive />} />
-        <Route path="/errors" element={<ErrorDashboard />} />
-        <Route path="/account" element={<Account />} />
-        <Route path="/import" element={<Import />} />
+
+        {/* Protected Routes */}
+        <Route path="/search" element={<ProtectedRoute><Search /></ProtectedRoute>} />
+        <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+        <Route path="/bookmarks" element={<ProtectedRoute><Bookmarks /></ProtectedRoute>} />
+        <Route path="/capture" element={<ProtectedRoute><Capture /></ProtectedRoute>} />
+        <Route path="/simple-capture" element={<ProtectedRoute><CaptureSimple /></ProtectedRoute>} />
+        <Route path="/conversation/:id" element={<ProtectedRoute><ConversationView /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+        <Route path="/settings/ai" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+        <Route path="/chat" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="/ai-conversations" element={<ProtectedRoute><AIConversationsPage /></ProtectedRoute>} />
+        <Route path="/ai/conversation/:id" element={<ProtectedRoute><AIConversationsPage /></ProtectedRoute>} />
+        <Route path="/errors" element={<ProtectedRoute><ErrorDashboard /></ProtectedRoute>} />
+        <Route path="/account" element={<ProtectedRoute><Account /></ProtectedRoute>} />
+        <Route path="/import" element={<ProtectedRoute><Import /></ProtectedRoute>} />
       </Routes>
     </Suspense>
   );
