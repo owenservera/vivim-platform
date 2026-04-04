@@ -1,167 +1,113 @@
 /**
- * Auth Context - Global authentication state management
- *
- * NOTE: Server sync operations disabled to allow running without backend
- * But OAuth authentication still works when server is available
- *
- * Provides:
- * - Session validation on app initialization (works with OAuth)
- * - Auto-login when valid session exists (works with OAuth)
- * - Sync between server session and client identity store (DISABLED)
- * - Auth state available to all components
+ * Auth Context - Global authentication state management using Supabase
  */
 
-import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
-import { getCurrentUser, loginWithGoogle, logout as apiLogout, type User } from './auth-api';
-import { useIdentityStore } from './stores';
-import { dataSyncService } from './data-sync-service';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { supabase, isSupabaseConfigured } from './supabase';
+import type { User } from './auth-api';
 
 interface AuthContextValue {
-  // State
   isAuthenticated: boolean;
   isLoading: boolean;
   user: User | null;
-  error: string | null;
-  
-  // Actions
+  isConfigured: boolean;
   login: () => void;
   logout: () => Promise<void>;
-  refreshSession: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export function AuthProvider({ children }: AuthProviderProps) {
-  const [isLoading, setIsLoading] = useState(true);
+export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  
-  // Get identity store actions
-  const setIdentity = useIdentityStore((state) => state.setIdentity);
-  const clearIdentity = useIdentityStore((state) => state.clear);
-  const unlock = useIdentityStore((state) => state.unlock);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Validate session with server - keep for OAuth login but handle failures gracefully
-  const validateSession = useCallback(async (): Promise<User | null> => {
-    try {
-      const validatedUser = await getCurrentUser();
-      return validatedUser;
-    } catch (err) {
-      console.error('Session validation failed:', err);
-      return null; // Return null on failure instead of blocking
-    }
-  }, []);
-
-  // Initialize auth state on mount
   useEffect(() => {
-    let mounted = true;
+    if (!isSupabaseConfigured()) {
+      console.warn('[Auth] Supabase not configured - running in anonymous mode');
+      setIsLoading(false);
+      return;
+    }
 
-    const initAuth = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        // Try to validate session - allow failure to proceed
-        const validatedUser = await validateSession();
-
-        if (!mounted) return;
-
-        if (validatedUser) {
-          console.log('[Auth] Valid session found, auto-login:', validatedUser.email);
-          setUser(validatedUser);
-          setIdentity(validatedUser.did, validatedUser.did, 1, validatedUser.id);
-          unlock();
-          console.log('[Auth] Ready - user authenticated');
-        } else {
-          console.log('[Auth] No valid session - ready for login');
-          setUser(null);
-          clearIdentity();
-        }
-      } catch (err) {
-        console.error('[Auth] Init failed:', err);
-        // Don't block the app if auth fails - just log and continue
-        console.log('[Auth] Ready - authentication unavailable');
-        setUser(null);
-        clearIdentity();
-      } finally {
-        if (mounted) {
-          setIsLoading(false);
-        }
+    // Get initial session
+    supabase!.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser({
+          id: session.user.id,
+          email: session.user.email || '',
+          displayName: session.user.user_metadata?.display_name || null,
+          avatarUrl: session.user.user_metadata?.avatar_url || null,
+        });
       }
-    };
+      setIsLoading(false);
+    });
 
-    initAuth();
+    // Listen for auth changes
+    const { data: { subscription } } = supabase!.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUser({
+          id: session.user.id,
+          email: session.user.email || '',
+          displayName: session.user.user_metadata?.display_name || null,
+          avatarUrl: session.user.user_metadata?.avatar_url || null,
+        });
+      } else {
+        setUser(null);
+      }
+      setIsLoading(false);
+    });
 
-    return () => {
-      mounted = false;
-    };
-  }, [validateSession, setIdentity, clearIdentity, unlock]);
-
-  // Login handler
-  const login = useCallback(() => {
-    loginWithGoogle();
+    return () => subscription.unsubscribe();
   }, []);
 
-  // Logout handler
-  const logout = useCallback(async () => {
-    try {
-      await apiLogout();
-    } catch (err) {
-      console.error('Logout API error:', err);
-    } finally {
-      setUser(null);
-      clearIdentity();
-      window.location.reload();
+  const login = () => {
+    if (!isSupabaseConfigured()) {
+      console.warn('[Auth] Cannot login - Supabase not configured');
+      return;
     }
-  }, [clearIdentity]);
+    supabase!.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    });
+  };
 
-  const refreshSession = useCallback(async (): Promise<boolean> => {
-    const validatedUser = await validateSession();
-    if (validatedUser) {
-      setUser(validatedUser);
-      setIdentity(validatedUser.did, validatedUser.did, 1, validatedUser.id);
-      unlock();
-      setError(null);
-      return true;
-    } else {
+  const logout = async () => {
+    if (!isSupabaseConfigured()) {
       setUser(null);
-      clearIdentity();
-      return false;
+      return;
     }
-  }, [validateSession, setIdentity, clearIdentity, unlock]);
-
-  const value: AuthContextValue = {
-    isAuthenticated: !!user,
-    isLoading,
-    user,
-    error,
-    login,
-    logout,
-    refreshSession,
+    await supabase!.auth.signOut();
+    setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated: !!user,
+        isLoading,
+        user,
+        isConfigured: isSupabaseConfigured(),
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 }
 
-// Hook to use auth context
-export function useAuth() {
+export function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuth must be used within AuthProvider');
   }
   return context;
 }
 
-// Hook to get current user (convenience wrapper)
-export function useCurrentUser() {
-  const { user, isAuthenticated, isLoading } = useAuth();
-  return { user, isAuthenticated, isLoading };
-}
+export { getCurrentUser } from './auth-api';
+export type { User } from './auth-api';
