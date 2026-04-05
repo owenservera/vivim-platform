@@ -24,6 +24,7 @@ const AIConversationsPage = lazy(() => import('@/pages/AIConversationsPage').the
 const ErrorDashboard = lazy(() => import('@/pages/ErrorDashboard').then(m => ({ default: m.default })));
 const Account = lazy(() => import('@/pages/Account').then(m => ({ default: m.AccountPage })));
 const Import = lazy(() => import('@/pages/Import').then(m => ({ default: m.ImportPage })));
+const InvestorPitchDemo = lazy(() => import('@/pages/InvestorPitchDemo').then(m => ({ default: m.InvestorPitchDemoPage })));
 
 function PageSkeleton() {
   return (
@@ -43,6 +44,7 @@ export function AppRoutes() {
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/conversation/:id/share" element={<Share />} />
         <Route path="/receive/:code" element={<Receive />} />
+        <Route path="/demo/investor-pitch" element={<InvestorPitchDemo />} />
 
         {/* Protected Routes */}
         <Route path="/search" element={<ProtectedRoute><Search /></ProtectedRoute>} />

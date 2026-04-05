@@ -14,3 +14,4 @@ export { ErrorDashboard } from './ErrorDashboard';
 export { BYOKChat } from './BYOKChat';
 export { AIConversationsPage } from './AIConversationsPage';
 export { ForYou } from './ForYou';
+export { InvestorPitchDemo } from './InvestorPitchDemo';

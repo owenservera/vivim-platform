@@ -193,3 +193,63 @@ export {
 // Wallet Service
 export { WalletService, createWalletService } from './wallet-service.js';
 export type { WalletServiceConfig } from './wallet-service.js';
+
+// Tool Definition Pattern
+export {
+  buildTool,
+  zodToJsonSchema,
+  type ToolDefinition,
+  type Tool,
+  type ToolHandler,
+  type ToolResult,
+  type ToolProgress,
+  type ToolExecutionContext,
+  type ToolPermission,
+  type ToolPermissionLevel,
+  type ToolCategory,
+  type ToolInputSchema,
+  type ToolInputSchemaJSON,
+  type BuildToolOptions,
+} from './tools.js';
+
+// Tool Registry
+export {
+  ToolRegistry,
+  assembleToolPool,
+  type RegisteredTool,
+  type ToolSource,
+} from './tools/registry.js';
+
+// Permission System
+export {
+  PermissionManager,
+  type PermissionMode,
+  type PermissionAction,
+  type PermissionRule,
+  type PermissionCheckResult,
+  type PermissionContext,
+} from './permissions.js';
+
+// Task Management System
+export {
+  TaskManager,
+  type TaskDefinition,
+  type TaskType,
+  type TaskStatus,
+  type TaskPriority,
+  type CreateTaskInput,
+  type TaskUpdateInput,
+  type TaskQuery,
+  type TaskOutput,
+  type TaskExecutor,
+} from './task-manager.js';
+
+// Agent Spawning System
+export {
+  AgentSpawner,
+  type SpawnAgentConfig,
+  type Agent,
+  type AgentStatus,
+  type AgentResult,
+  type AgentExecutor,
+} from './agents/spawner.js';

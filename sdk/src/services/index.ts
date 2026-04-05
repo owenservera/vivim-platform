@@ -2,6 +2,57 @@
  * VIVIM SDK Services Module Exports
  */
 
+// Memory System (Hierarchical — Project/User/Team)
+export {
+  MemoryDirectoryManager,
+  type MemoryScope,
+  type MemoryFileInfo,
+  type MemoryDirectory,
+} from './memory/directory.js';
+
+export {
+  MemoryStore,
+  type MemoryEntry,
+  type MemoryMetadata,
+  type MemoryQuery,
+  type StorageAdapter,
+  NoOpStorageAdapter,
+} from './memory/store.js';
+
+export {
+  MemoryCommands,
+  type CreateMemoryInput,
+  type UpdateMemoryInput,
+} from './memory/commands.js';
+
+export {
+  MemoryExtractor,
+  type MemoryCandidate,
+  type MemoryCandidateType,
+  type ExtractionResult,
+  type ExtractionRule,
+} from './memory/extractor.js';
+
+export {
+  SessionMemoryManager,
+  type SessionConfig,
+  type SessionMemory,
+} from './memory/session-memory.js';
+
+export {
+  MemoryUsageTracker,
+  type MemoryUsageStats,
+  type MemoryUsageSnapshot,
+} from './memory/usage.js';
+
+export {
+  TeamMemorySync,
+  type TeamSyncState,
+  type SyncDelta,
+  type SyncResult,
+  type ConflictResolutionStrategy,
+} from './memory/team-sync.js';
+
 // Sharing Encryption Service
 export {
   SharingEncryptionService,
@@ -80,3 +131,13 @@ export {
   type AttributeMapping,
   createSSOService,
 } from './sso-service.js';
+
+// Context Compression Service
+export {
+  ContextCompressionService,
+  type CompressionStrategy,
+  type CompressionOptions,
+  type CompressionResult,
+  type CompressedMessage,
+  type SummarizerFn,
+} from './compression.js';

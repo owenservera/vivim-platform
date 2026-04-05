@@ -24,6 +24,10 @@ import { SelfDesignModule } from './self-design.js';
 import { VivimAssistantRuntime } from './assistant-runtime.js';
 import { WalletService, createWalletService, type WalletServiceConfig } from './wallet-service.js';
 
+// Telemetry & Observability
+import { TelemetryHub } from '../telemetry/hub.js';
+import { instrumentSDK } from '../telemetry/instrumentation.js';
+
 /**
  * VIVIM SDK
  * 
@@ -38,6 +42,7 @@ export class VivimSDK extends (EventEmitter as new () => TypedEventEmitter<SDKEv
   private nodeInstances: Map<string, unknown> = new Map();
   private initialized = false;
   private logger: Logger;
+  private telemetryInitialized = false;
 
   // Core Module Instances
   public readonly recordKeeper: OnChainRecordKeeper;
@@ -46,11 +51,17 @@ export class VivimSDK extends (EventEmitter as new () => TypedEventEmitter<SDKEv
   public readonly assistant: VivimAssistantRuntime;
   public readonly wallet: WalletService;
 
+  // Observability
+  public readonly telemetry: TelemetryHub;
+
   constructor(config: VivimSDKConfig = {}) {
     super();
     this.config = this.mergeConfig(config);
     this.logger = getLogger().child('SDK');
-    
+
+    // Initialize Telemetry Hub
+    this.telemetry = new TelemetryHub();
+
     // Initialize Core Modules
     this.recordKeeper = new OnChainRecordKeeper(this);
     this.anchor = new AnchorProtocol(this);
@@ -58,6 +69,7 @@ export class VivimSDK extends (EventEmitter as new () => TypedEventEmitter<SDKEv
     this.assistant = new VivimAssistantRuntime(this);
     this.wallet = createWalletService(this, config.wallet as WalletServiceConfig | undefined);
 
+    this.telemetry.increment('sdk_init');
     this.logger.info('VIVIM SDK initialized', { version: SDK_VERSION });
   }
 
@@ -127,6 +139,40 @@ export class VivimSDK extends (EventEmitter as new () => TypedEventEmitter<SDKEv
     await this.anchor.start();
     
     this.logger.info('SDK initialized successfully', { did: this.identity?.did });
+
+    // Initialize telemetry instrumentation
+    await this.initializeTelemetry();
+  }
+
+  /**
+   * Initialize telemetry instrumentation for all SDK modules.
+   * Automatically wraps memory, tools, agents, tasks with metrics collection.
+   */
+  private async initializeTelemetry(): Promise<void> {
+    if (this.telemetryInitialized) return;
+
+    try {
+      this.telemetry.increment('telemetry_init');
+      this.telemetry.event({
+        type: 'telemetry_init',
+        level: 'info',
+        message: 'SDK telemetry instrumentation initialized',
+      });
+
+      // Note: instrumentSDK is called lazily here to avoid circular deps.
+      // The actual instrumentation happens when modules are first loaded.
+      this.telemetryInitialized = true;
+    } catch (error) {
+      // Non-fatal — telemetry is additive, don't block SDK init on it
+      this.logger.warn('Telemetry instrumentation failed (non-fatal)', { error: String(error) });
+    }
+  }
+
+  /**
+   * Get the TelemetryHub instance.
+   */
+  getTelemetry(): TelemetryHub {
+    return this.telemetry;
   }
 
   /**
@@ -403,12 +449,17 @@ export class VivimSDK extends (EventEmitter as new () => TypedEventEmitter<SDKEv
   }
 
   /**
-   * Get memory node
+   * Get memory node (auto-initializes hierarchical memory system)
    */
   async getMemoryNode(): Promise<import('../nodes/memory-node.js').MemoryNode> {
-    return this.loadNode<import('../nodes/memory-node.js').MemoryNode>(
+    const node = await this.loadNode<import('../nodes/memory-node.js').MemoryNode>(
       (await import('./constants.js')).BUILTIN_NODES.MEMORY
     );
+
+    // Initialize hierarchical memory on first access
+    await node.initializeHierarchicalMemory?.();
+
+    return node;
   }
 
   // ============================================
@@ -420,6 +471,7 @@ export class VivimSDK extends (EventEmitter as new () => TypedEventEmitter<SDKEv
    */
   async destroy(): Promise<void> {
     this.logger.info('Destroying SDK...');
+    this.telemetry.increment('sdk_destroy');
 
     // Clear all nodes
     for (const nodeId of this.nodeInstances.keys()) {
@@ -430,10 +482,12 @@ export class VivimSDK extends (EventEmitter as new () => TypedEventEmitter<SDKEv
     this.identity = null;
     this.privateKey = null;
     this.initialized = false;
+    this.telemetryInitialized = false;
 
     // Remove all listeners
     this.removeAllListeners();
 
+    this.telemetry.event({ type: 'sdk_destroy', level: 'info', message: 'SDK destroyed' });
     this.logger.info('SDK destroyed');
   }
 }

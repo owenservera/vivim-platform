@@ -1,6 +1,6 @@
 /**
  * Memory Node - API Node for knowledge/memory management
- * Enhanced with Communication Protocol
+ * Enhanced with Communication Protocol and Hierarchical Memory System
  */
 
 import type { VivimSDK } from '../core/sdk.js';
@@ -12,6 +12,20 @@ import {
   type CommunicationEvent,
   type NodeMetrics,
 } from '../core/communication.js';
+
+// Hierarchical Memory System (vCode-inspired)
+import {
+  MemoryDirectoryManager,
+  MemoryStore,
+  MemoryCommands,
+  MemoryExtractor,
+  SessionMemoryManager,
+  MemoryUsageTracker,
+  TeamMemorySync,
+  NoOpStorageAdapter,
+  type MemoryEntry as HierarchicalMemoryEntry,
+  type MemoryQuery as HierarchicalMemoryQuery,
+} from '../services/memory/index.js';
 
 /**
  * Memory type
@@ -201,18 +215,80 @@ export interface MemoryStats {
 
 /**
  * Memory Node Implementation
+ * Enhanced with hierarchical memory system (project/user/team scopes)
  */
 export class MemoryNode implements MemoryNodeAPI {
   private memories: Map<string, Memory> = new Map();
   private relations: Map<string, MemoryRelation> = new Map();
   private memoryIndex: Map<string, Set<string>> = new Map(); // type -> ids
-  
+
   private communication: CommunicationProtocol;
   private eventUnsubscribe: (() => void)[] = [];
+
+  // Hierarchical Memory System
+  private dirManager: MemoryDirectoryManager;
+  private memoryStore: MemoryStore;
+  private memoryCommands: MemoryCommands;
+  private memoryExtractor: MemoryExtractor;
+  private sessionMemory: SessionMemoryManager;
+  private usageTracker: MemoryUsageTracker;
+  private teamSync: TeamMemorySync;
+  private hierarchicalInitialized = false;
 
   constructor(private sdk: VivimSDK) {
     this.communication = createCommunicationProtocol('memory-node');
     this.setupEventListeners();
+
+    // Initialize hierarchical memory system
+    const identity = sdk.getIdentity();
+    this.dirManager = new MemoryDirectoryManager({
+      userId: identity?.did ?? 'anonymous',
+      baseDir: '.vivim/memory',
+    });
+
+    this.memoryStore = new MemoryStore(this.dirManager, new NoOpStorageAdapter());
+    this.memoryCommands = new MemoryCommands(this.memoryStore);
+    this.memoryExtractor = new MemoryExtractor(this.memoryCommands);
+    this.sessionMemory = new SessionMemoryManager(this.memoryStore);
+    this.usageTracker = new MemoryUsageTracker();
+    this.teamSync = new TeamMemorySync(this.memoryStore);
+
+    // Wire telemetry from SDK if available
+    const telemetry = sdk.getTelemetry?.();
+    if (telemetry) {
+      telemetry.increment('memory_system_init');
+    }
+  }
+
+  // ============================================
+  // HIERARCHICAL MEMORY ACCESSORS
+  // ============================================
+
+  /** Get the memory commands interface for direct CRUD */
+  getMemoryCommands(): MemoryCommands { return this.memoryCommands; }
+
+  /** Get the memory extractor for auto-extraction from conversations */
+  getMemoryExtractor(): MemoryExtractor { return this.memoryExtractor; }
+
+  /** Get session memory manager */
+  getSessionMemory(): SessionMemoryManager { return this.sessionMemory; }
+
+  /** Get usage tracker for analytics */
+  getUsageTracker(): MemoryUsageTracker { return this.usageTracker; }
+
+  /** Get team sync manager */
+  getTeamSync(): TeamMemorySync { return this.teamSync; }
+
+  /** Initialize hierarchical memory (called after SDK init) */
+  async initializeHierarchicalMemory(): Promise<void> {
+    if (this.hierarchicalInitialized) return;
+    await this.memoryStore.initialize();
+    this.hierarchicalInitialized = true;
+
+    const telemetry = this.sdk.getTelemetry?.();
+    if (telemetry) {
+      telemetry.increment('memory_hierarchical_init');
+    }
   }
 
   private setupEventListeners(): void {

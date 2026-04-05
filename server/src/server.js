@@ -79,6 +79,10 @@ import { importRouter } from './routes/import.js';
 import demoRouter from './routes/demo.js';
 import { bootContextSystem } from './services/context-startup.ts';
 
+// Observability & Demo
+import { createMetricsRoutes, metricsMiddleware, ServerMetricsCollector } from './metrics.js';
+import { createDemoRoutes } from './routes/demo-api.js';
+
 // Validate configuration on startup
 try {
   validateConfig();
@@ -115,6 +119,14 @@ console.log(
 
 // Initialize Express app
 const app = express();
+
+// ============================================================================
+// OBSERVABILITY — METRICS COLLECTION
+// ============================================================================
+const metricsCollector = new ServerMetricsCollector();
+
+// Auto-record all request metrics
+app.use(metricsMiddleware(metricsCollector));
 
 // ============================================================================
 // SERVER LOG BROADCASTING
@@ -524,6 +536,20 @@ app.use('/api/docs', docSearchRouter);
 // Demo API
 app.use('/api/demo', demoRouter);
 
+// Observability & Enhanced Demo API
+const demoApiRouter = createDemoRoutes({
+  metricsCollector,
+  getRunState: () => null, // Connected to journey runner when available
+});
+app.use('/api/v1/observability', createMetricsRoutes(metricsCollector, {
+  getExtraMetrics: async () => ({
+    uptime_human: process.uptime(),
+    node_version: process.version,
+    memory_mb: Math.round(process.memoryUsage().rss / 1024 / 1024),
+  }),
+}));
+app.use('/api/demo/v2', demoApiRouter);
+
 // API Documentation (Swagger)
 if (config.enableSwagger) {
   setupSwagger(app);
@@ -639,6 +665,16 @@ logger.info('🔌 Admin WebSocket service ready for real-time updates');
 
 const shutdown = async (signal) => {
   logger.info({ signal }, 'Shutdown signal received');
+
+  // Record final metrics before shutdown
+  try {
+    const finalMetrics = metricsCollector.getJSON();
+    logger.info({
+      uptime: finalMetrics.uptime_human,
+      totalRequests: Object.values(finalMetrics.requests || {}).reduce((a, b) => a + b, 0),
+      totalErrors: Object.values(finalMetrics.errors || {}).reduce((a, b) => a + b, 0),
+    }, 'Final metrics on shutdown');
+  } catch { /* ignore */ }
 
   // Stop accepting new connections
   server.close(async () => {
