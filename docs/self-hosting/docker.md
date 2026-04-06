@@ -1,5 +1,4 @@
-﻿---
-title: "Docker Deployment"
+﻿itle: "Docker Deployment"
 description: "Deploy VIVIM with Docker Compose for production-ready self-hosting."
 ---
 

@@ -1,5 +1,4 @@
-﻿---
-title: "Network"
+﻿itle: "Network"
 description: "VIVIM's decentralized network layer: libp2p for peer discovery, CRDT for conflict-free synchronization, and ActivityPub for federation."
 ---
 

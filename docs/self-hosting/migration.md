@@ -1,5 +1,4 @@
-﻿---
-title: "Migration Guide"
+﻿itle: "Migration Guide"
 description: "Migrate between storage backends, upgrade VIVIM versions, and import data from AI providers."
 ---
 

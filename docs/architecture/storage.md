@@ -1,5 +1,4 @@
-﻿---
-title: "Storage"
+﻿itle: "Storage"
 description: "VIVIM's multi-backend storage architecture: PostgreSQL, SQLite, IPFS, and S3-compatible storage with encryption at rest."
 ---
 

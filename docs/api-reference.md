@@ -1,5 +1,4 @@
-﻿---
-title: "API Reference"
+﻿itle: "API Reference"
 description: "VIVIM REST API reference for memory management, context assembly, conversations, and federation."
 ---
 

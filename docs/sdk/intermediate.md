@@ -1,5 +1,4 @@
-﻿---
-title: "SDK Intermediate"
+﻿itle: "SDK Intermediate"
 description: "Context recipes, collections, bookmarks, and advanced search patterns."
 ---
 

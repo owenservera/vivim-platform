@@ -1,5 +1,4 @@
-﻿---
-title: "ACU Specification"
+﻿itle: "ACU Specification"
 description: "Atomic Context Units are the canonical building blocks of VIVIM's memory system. Learn the spec, states, and extraction process."
 ---
 

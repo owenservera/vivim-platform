@@ -1,5 +1,4 @@
-﻿---
-title: "Introduction"
+﻿itle: "Introduction"
 description: "VIVIM is sovereign, portable memory for every AI interaction. Open source, encrypted, and fully under your control."
 ---
 

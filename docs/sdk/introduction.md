@@ -1,5 +1,4 @@
-﻿---
-title: "SDK Introduction"
+﻿itle: "SDK Introduction"
 description: "The VIVIM SDK lets you build AI memory into any application. Learn the basics, core types, and integration patterns."
 ---
 

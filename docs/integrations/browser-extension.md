@@ -1,5 +1,4 @@
-﻿---
-title: "Browser Extension"
+﻿itle: "Browser Extension"
 description: "Capture AI conversations directly from your browser with the VIVIM browser extension."
 ---
 

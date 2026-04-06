@@ -1,5 +1,4 @@
-﻿---
-title: "Automation (n8n, Make, Zapier)"
+﻿itle: "Automation (n8n, Make, Zapier)"
 description: "Connect VIVIM to your automation workflows with n8n, Make, and Zapier integrations."
 ---
 

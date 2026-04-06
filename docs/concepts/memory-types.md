@@ -1,5 +1,4 @@
-﻿---
-title: "Memory Types"
+﻿itle: "Memory Types"
 description: "VIVIM classifies memories into 9 distinct types, each with different retrieval strategies, persistence rules, and relevance patterns."
 ---
 

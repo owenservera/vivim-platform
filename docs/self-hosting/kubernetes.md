@@ -1,5 +1,4 @@
-﻿---
-title: "Kubernetes Deployment"
+﻿itle: "Kubernetes Deployment"
 description: "Deploy VIVIM on Kubernetes with Helm charts for scalable, production-grade infrastructure."
 ---
 

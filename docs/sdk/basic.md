@@ -1,5 +1,4 @@
-﻿---
-title: "SDK Basic Usage"
+﻿itle: "SDK Basic Usage"
 description: "Connect to VIVIM, manage memories, and import conversations from AI providers."
 ---
 

@@ -1,5 +1,4 @@
-﻿---
-title: "Context Engine"
+﻿itle: "Context Engine"
 description: "VIVIM's 8-layer context assembly engine builds intelligent context bundles for AI providers. Learn how each layer contributes to smarter AI responses."
 ---
 

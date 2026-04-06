@@ -1,5 +1,4 @@
-﻿---
-title: "LangChain & LlamaIndex"
+﻿itle: "LangChain & LlamaIndex"
 description: "Use VIVIM as a retriever in LangChain and LlamaIndex pipelines for AI memory-augmented applications."
 ---
 

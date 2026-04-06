@@ -1,5 +1,4 @@
-﻿---
-title: "Data Flow"
+﻿itle: "Data Flow"
 description: "How data moves through VIVIM: ingestion from AI providers, context assembly for retrieval, and the complete query lifecycle."
 ---
 

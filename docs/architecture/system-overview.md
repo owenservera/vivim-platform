@@ -1,5 +1,4 @@
-﻿---
-title: "System Overview"
+﻿itle: "System Overview"
 description: "VIVIM's 6-layer architecture: presentation, API, service, intelligence, storage, identity, and network layers."
 ---
 

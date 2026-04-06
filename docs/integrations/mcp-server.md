@@ -1,5 +1,4 @@
-﻿---
-title: "MCP Server"
+﻿itle: "MCP Server"
 description: "Connect VIVIM to Claude Desktop, Cursor, and other MCP-compatible tools for seamless AI memory integration."
 ---
 

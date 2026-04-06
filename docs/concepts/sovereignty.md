@@ -1,5 +1,4 @@
-﻿---
-title: "Sovereignty"
+﻿itle: "Sovereignty"
 description: "VIVIM's sovereignty promise: your data, your keys, your control. Learn about zero-knowledge encryption, decentralized identity, and full self-hosting."
 ---
 

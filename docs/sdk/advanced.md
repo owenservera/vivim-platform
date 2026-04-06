@@ -1,5 +1,4 @@
-﻿---
-title: "SDK Advanced"
+﻿itle: "SDK Advanced"
 description: "Custom integrations, extension points, encryption key management, and building VIVIM-powered applications."
 ---
 

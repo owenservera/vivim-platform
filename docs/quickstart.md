@@ -1,5 +1,4 @@
-﻿---
-title: "Quick Start"
+﻿itle: "Quick Start"
 description: "Get VIVIM running locally in under 2 minutes with four commands."
 ---
 
