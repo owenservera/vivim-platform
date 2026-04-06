@@ -1,4 +1,4 @@
----
+﻿---
 title: "Roadmap"
 description: "VIVIM's open core and commercial layer roadmaps: what's built, what's next, and when."
 ---
@@ -59,6 +59,8 @@ Right now, the team is focused on:
 - **SDK documentation** — Complete API reference and guides
 - **MCP server polish** — Production-ready Claude Desktop integration
 
-<Tip>
+
+::: tip
 This roadmap is a living document. For the latest status, check the [GitHub repository](https://github.com/owenservera/vivim-platform).
-</Tip>
+:::
+

@@ -1,8 +1,8 @@
-# VIVIM — Observability Layer Implementation Guide
+﻿# VIVIM â€” Observability Layer Implementation Guide
 
 **Date**: April 5, 2026
-**Purpose**: Investor POC observability — make the invisible visible
-**Status**: ✅ Complete
+**Purpose**: Investor POC observability â€” make the invisible visible
+**Status**: âœ… Complete
 
 ---
 
@@ -23,7 +23,7 @@ In-memory metrics collection with 4 metric types:
 telemetry.increment('memory_create');
 telemetry.gauge('memory_total', 50000);
 telemetry.record('api_latency', 45);
-telemetry.event({ type: 'magic_moment', level: 'info', message: '✨ Graph rendered' });
+telemetry.event({ type: 'magic_moment', level: 'info', message: 'âœ¨ Graph rendered' });
 ```
 
 ### 2. SDK Instrumentation (`sdk/src/telemetry/instrumentation.ts`)
@@ -50,10 +50,10 @@ instrumentSDK(telemetry, { memoryCommands, toolRegistry, agentSpawner, taskManag
 ### 3. Demo Engine (`sdk/src/telemetry/demo-engine.ts`)
 Scripted investor demo journeys with:
 
-- **`DemoEventBus`** — Pub/sub for cross-component coordination
-- **`JourneyRunner`** — Step-by-step execution with narration, screenshot markers, magic moment triggers
-- **`createInvestorPitchJourney()`** — 90-second cinematic demo (6 steps, 3 magic moments)
-- **`createOnboardingJourney()`** — 45-second quick start demo (3 steps)
+- **`DemoEventBus`** â€” Pub/sub for cross-component coordination
+- **`JourneyRunner`** â€” Step-by-step execution with narration, screenshot markers, magic moment triggers
+- **`createInvestorPitchJourney()`** â€” 90-second cinematic demo (6 steps, 3 magic moments)
+- **`createOnboardingJourney()`** â€” 45-second quick start demo (3 steps)
 
 **Magic Moment System:**
 ```ts
@@ -61,7 +61,7 @@ runner.triggerMagicMoment({
   name: 'The Knowledge Graph',
   metric: 'graph_nodes',
   value: '1,547',
-  story: 'Your AI brain — every conversation, connected.',
+  story: 'Your AI brain â€” every conversation, connected.',
 });
 ```
 
@@ -111,29 +111,29 @@ Investor-facing visualization components:
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    OBSERVABILITY STACK                           │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  SDK Layer              Server Layer           PWA Layer        │
-│  ┌─────────────┐       ┌──────────────┐      ┌──────────────┐  │
-│  │TelemetryHub │──────▶│MetricsCollect│─────▶│MetricCard    │  │
-│  │             │       │              │      │LiveEventFeed │  │
-│  │Instrument   │       │Demo API      │      │HealthDash    │  │
-│  │  Memory     │       │  /journeys   │      │MagicMoment   │  │
-│  │  Tools      │       │  /run/:slug  │      │JourneyBar    │  │
-│  │  Agents     │       │  /seed       │      │StatusBadge   │  │
-│  │  Tasks      │       │  /metrics    │      │              │  │
-│  │  Extract    │       │  /status     │      │              │  │
-│  │  Compress   │       └──────────────┘      └──────────────┘  │
-│  │  Plugins    │                                    │           │
-│  └─────────────┘       ┌──────────────┐             │           │
-│                        │Demo Engine   │◀────────────┘           │
-│                        │JourneyRunner │  Events + Metrics       │
-│                        │DemoEventBus  │                         │
-│                        │Magic Moments │                         │
-│                        └──────────────┘                         │
-└─────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                    OBSERVABILITY STACK                           â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚                                                                  â”‚
+â”‚  SDK Layer              Server Layer           PWA Layer        â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”       â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”      â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  â”‚TelemetryHub â”‚â”€â”€â”€â”€â”€â”€â–¶â”‚MetricsCollectâ”‚â”€â”€â”€â”€â”€â–¶â”‚MetricCard    â”‚  â”‚
+â”‚  â”‚             â”‚       â”‚              â”‚      â”‚LiveEventFeed â”‚  â”‚
+â”‚  â”‚Instrument   â”‚       â”‚Demo API      â”‚      â”‚HealthDash    â”‚  â”‚
+â”‚  â”‚  Memory     â”‚       â”‚  /journeys   â”‚      â”‚MagicMoment   â”‚  â”‚
+â”‚  â”‚  Tools      â”‚       â”‚  /run/:slug  â”‚      â”‚JourneyBar    â”‚  â”‚
+â”‚  â”‚  Agents     â”‚       â”‚  /seed       â”‚      â”‚StatusBadge   â”‚  â”‚
+â”‚  â”‚  Tasks      â”‚       â”‚  /metrics    â”‚      â”‚              â”‚  â”‚
+â”‚  â”‚  Extract    â”‚       â”‚  /status     â”‚      â”‚              â”‚  â”‚
+â”‚  â”‚  Compress   â”‚       â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜      â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â”‚  â”‚  Plugins    â”‚                                    â”‚           â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜       â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”             â”‚           â”‚
+â”‚                        â”‚Demo Engine   â”‚â—€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜           â”‚
+â”‚                        â”‚JourneyRunner â”‚  Events + Metrics       â”‚
+â”‚                        â”‚DemoEventBus  â”‚                         â”‚
+â”‚                        â”‚Magic Moments â”‚                         â”‚
+â”‚                        â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                         â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ---
@@ -172,7 +172,7 @@ runner.triggerMagicMoment({
   name: 'The Archive',
   metric: 'sessions',
   value: '609',
-  story: 'Where AI thinking goes to die — until now.',
+  story: 'Where AI thinking goes to die â€” until now.',
 });
 ```
 **Visual**: Massive timeline scroll of imported conversations from 6+ providers.
@@ -184,7 +184,7 @@ runner.triggerMagicMoment({
   name: 'Knowledge Graph',
   metric: 'graph_nodes',
   value: '1,547',
-  story: 'Your AI brain — every conversation, connected.',
+  story: 'Your AI brain â€” every conversation, connected.',
 });
 ```
 **Visual**: Canvas-based force-directed graph with 1,500+ nodes.
@@ -196,7 +196,7 @@ runner.triggerMagicMoment({
   name: 'Context Cockpit',
   metric: 'memories',
   value: '2,847',
-  story: 'AI that knows you — because it remembers everything.',
+  story: 'AI that knows you â€” because it remembers everything.',
 });
 ```
 **Visual**: 7-layer context stack with live token budgets.
@@ -215,16 +215,16 @@ runner.triggerMagicMoment({
 - [ ] Backup: Record Loom of dry run
 
 ### During Demo
-- [ ] Start with `/api/demo/status` — show system health
-- [ ] Run seed — "Watch as we populate 320 conversations..."
-- [ ] Run journey — investor-pitch (90 seconds)
-- [ ] Point to MetricCards — "50,000+ memories captured"
-- [ ] Trigger Magic Moment #2 — "This is the money shot"
-- [ ] Show LiveEventFeed — "Every operation, visible"
-- [ ] Close with `/api/demo/metrics` — concrete numbers
+- [ ] Start with `/api/demo/status` â€” show system health
+- [ ] Run seed â€” "Watch as we populate 320 conversations..."
+- [ ] Run journey â€” investor-pitch (90 seconds)
+- [ ] Point to MetricCards â€” "50,000+ memories captured"
+- [ ] Trigger Magic Moment #2 â€” "This is the money shot"
+- [ ] Show LiveEventFeed â€” "Every operation, visible"
+- [ ] Close with `/api/demo/metrics` â€” concrete numbers
 
 ### Post-Demo
-- [ ] Export metrics: `GET /api/metrics/json` → save as JSON
+- [ ] Export metrics: `GET /api/metrics/json` â†’ save as JSON
 - [ ] Show cost analysis from exported data
 - [ ] Answer FAQ from journey definitions
 - [ ] Send follow-up with recorded Loom
@@ -257,10 +257,10 @@ runner.triggerMagicMoment({
 
 ## Next Steps (Post-POC)
 
-1. **Persistent metrics** — Replace in-memory TelemetryHub with SQLite/Turso for long-term tracking
-2. **Grafana dashboard** — Connect Prometheus endpoint to Grafana for investor dashboard
-3. **Screenshot capture** — Integrate Playwright to auto-capture journey screenshots
-4. **Session replay** — Record full demo sessions for async investor review
-5. **A/B test narratives** — Test different narration scripts for different investor types
-6. **Real-time WebSocket** — Push metrics to PWA via WebSocket for live updates
-7. **Investor-specific URLs** — `/vivim-pitch/sequoia` vs `/vivim-pitch/a16z` personalization
+1. **Persistent metrics** â€” Replace in-memory TelemetryHub with SQLite/Turso for long-term tracking
+2. **Grafana dashboard** â€” Connect Prometheus endpoint to Grafana for investor dashboard
+3. **Screenshot capture** â€” Integrate Playwright to auto-capture journey screenshots
+4. **Session replay** â€” Record full demo sessions for async investor review
+5. **A/B test narratives** â€” Test different narration scripts for different investor types
+6. **Real-time WebSocket** â€” Push metrics to PWA via WebSocket for live updates
+7. **Investor-specific URLs** â€” `/vivim-pitch/sequoia` vs `/vivim-pitch/a16z` personalization

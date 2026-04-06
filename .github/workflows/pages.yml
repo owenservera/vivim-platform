@@ -1,4 +1,4 @@
-name: Deploy Mintlify Docs to GitHub Pages
+name: Deploy Docs to GitHub Pages
 
 on:
   push:
@@ -23,22 +23,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          node-version: 20
+          cache: npm
+          cache-dependency-path: docs/package.json
 
-      - name: Install Mintlify
-        run: bun install -g mintlify
+      - name: Install dependencies
+        working-directory: ./docs
+        run: npm ci
 
       - name: Build docs
         working-directory: ./docs
-        run: mint build --output ../_site
+        run: npm run docs:build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./_site
+          path: ./docs/.vitepress/dist
 
   deploy:
     environment:

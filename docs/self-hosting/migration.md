@@ -1,0 +1,150 @@
+﻿---
+title: "Migration Guide"
+description: "Migrate between storage backends, upgrade VIVIM versions, and import data from AI providers."
+---
+
+# Migration Guide
+
+Learn to migrate between storage backends, upgrade VIVIM versions, and import data from AI providers.
+
+## Backend migration
+
+### SQLite → PostgreSQL
+
+
+
+1. **Export from SQLite**
+   ```bash
+    bun run db:export --from sqlite:./vivim.db --format sql
+    ```
+
+  
+2. **Create PostgreSQL database**
+   ```bash
+    createdb vivim
+    ```
+
+  
+3. **Run migrations**
+   ```bash
+    DATABASE_URL=postgresql://vivim:vivim@localhost:5432/vivim bun run db:migrate
+    ```
+
+  
+4. **Import data**
+   ```bash
+    bun run db:import --to postgresql://vivim:vivim@localhost:5432/vivim --file export.sql
+    ```
+
+  
+5. **Verify and switch**
+   Update your `DATABASE_URL` in `.env` and restart services.
+
+
+## Version upgrade
+
+### Upgrade between VIVIM versions
+
+```bash
+# Pull latest code
+git pull
+
+# Install updated dependencies
+bun install
+
+# Run database migrations
+bun run db:migrate
+
+# Rebuild services
+bun run build
+
+# Restart
+bun run dev
+```
+
+### Docker upgrade
+
+```bash
+# Pull latest changes
+git pull
+
+# Rebuild and restart
+docker compose up -d --build
+
+# Run migrations
+docker compose run server bun run db:migrate
+```
+
+
+::: warning
+Always backup your database before upgrading. Check the release notes for breaking changes.
+:::
+
+
+## Provider data import
+
+### From ChatGPT
+
+1. Go to [chatgpt.com](https://chatgpt.com) → Settings → Data Controls → Export Data
+2. Download the ZIP file
+3. Extract the `conversations.json` file
+4. Import via VIVIM:
+   ```bash
+   bun run server/src/scripts/import-chatgpt.ts --file conversations.json
+   ```
+
+### From Claude
+
+1. Go to [claude.ai](https://claude.ai) → Settings → Export Data
+2. Download the JSON export
+3. Import via VIVIM:
+   ```bash
+   bun run server/src/scripts/import-claude.ts --file claude-export.json
+   ```
+
+### From Gemini
+
+1. Go to [Google Takeout](https://takeout.google.com)
+2. Select Gemini/AI data
+3. Download and extract
+4. Import via VIVIM:
+   ```bash
+   bun run server/src/scripts/import-gemini.ts --file gemini-data/
+   ```
+
+## Key rotation
+
+Rotating your encryption key requires re-encrypting all data:
+
+```bash
+bun run server/src/scripts/rotate-keys.ts \
+  --old-secret $OLD_SECRET \
+  --new-secret $NEW_SECRET
+```
+
+
+::: warning
+Key rotation is a long-running operation (minutes to hours depending on data size). Run it during a maintenance window.
+:::
+
+
+## Rollback
+
+If something goes wrong:
+
+```bash
+# Revert to previous database state
+pg_restore -d vivim backup.sql
+
+# Revert to previous code version
+git checkout <previous-commit>
+bun install
+bun run build
+bun run dev
+```
+
+
+::: info
+For large-scale migrations (100K+ ACUs), contact the VIVIM team for optimized migration scripts.
+:::
+

@@ -1,4 +1,4 @@
-# VIVIM Roadmap Hub - Technical Specification
+﻿# VIVIM Roadmap Hub - Technical Specification
 
 ## Executive Summary
 
@@ -44,33 +44,33 @@ VIVIM Roadmap Hub provides:
 ### 2.1 High-Level Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                         VIVIM Roadmap Hub                               │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  ┌──────────────────────┐     ┌──────────────────────┐                 │
-│  │   Frontend (React)   │◄───►│   Backend (Bun)      │                 │
-│  │   - Canvas UI        │ WS  │   - REST API         │                 │
-│  │   - Gantt View       │     │   - WebSocket Server │                 │
-│  │   - Kanban Board     │     │   - AI Engine        │                 │
-│  │   - Timeline View    │     │   - Code Inspector   │                 │
-│  └──────────────────────┘     └──────────────────────┘                 │
-│           │                              │                              │
-│           │                              ▼                              │
-│           │                     ┌──────────────────────┐                │
-│           │                     │   Database (Postgres)│                │
-│           │                     │   - Prisma ORM       │                │
-│           │                     └──────────────────────┘                │
-│           │                              │                              │
-│           ▼                              ▼                              │
-│  ┌──────────────────────┐     ┌──────────────────────┐                 │
-│  │   AI Services        │     │   Code Inspection    │                 │
-│  │   - Task Generation  │     │   - AST Parsing      │                 │
-│  │   - Risk Analysis    │     │   - Git Integration  │                 │
-│  │   - Timeline Predict │     │   - Progress Detect  │                 │
-│  └──────────────────────┘     └──────────────────────┘                 │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                         VIVIM Roadmap Hub                               â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚                                                                         â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                 â”‚
+â”‚  â”‚   Frontend (React)   â”‚â—„â”€â”€â”€â–ºâ”‚   Backend (Bun)      â”‚                 â”‚
+â”‚  â”‚   - Canvas UI        â”‚ WS  â”‚   - REST API         â”‚                 â”‚
+â”‚  â”‚   - Gantt View       â”‚     â”‚   - WebSocket Server â”‚                 â”‚
+â”‚  â”‚   - Kanban Board     â”‚     â”‚   - AI Engine        â”‚                 â”‚
+â”‚  â”‚   - Timeline View    â”‚     â”‚   - Code Inspector   â”‚                 â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                 â”‚
+â”‚           â”‚                              â”‚                              â”‚
+â”‚           â”‚                              â–¼                              â”‚
+â”‚           â”‚                     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                â”‚
+â”‚           â”‚                     â”‚   Database (Postgres)â”‚                â”‚
+â”‚           â”‚                     â”‚   - Prisma ORM       â”‚                â”‚
+â”‚           â”‚                     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                â”‚
+â”‚           â”‚                              â”‚                              â”‚
+â”‚           â–¼                              â–¼                              â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                 â”‚
+â”‚  â”‚   AI Services        â”‚     â”‚   Code Inspection    â”‚                 â”‚
+â”‚  â”‚   - Task Generation  â”‚     â”‚   - AST Parsing      â”‚                 â”‚
+â”‚  â”‚   - Risk Analysis    â”‚     â”‚   - Git Integration  â”‚                 â”‚
+â”‚  â”‚   - Timeline Predict â”‚     â”‚   - Progress Detect  â”‚                 â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                 â”‚
+â”‚                                                                         â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ### 2.2 Technology Stack
@@ -105,33 +105,33 @@ VIVIM Roadmap Hub provides:
 
 ```
 Frontend Components
-├── App
-│   ├── RoadmapCanvas (Main visualization)
-│   │   ├── NodeRenderer
-│   │   ├── EdgeRenderer
-│   │   ├── Toolbar
-│   │   └── Minimap
-│   ├── GanttView
-│   │   ├── TimelineHeader
-│   │   ├── TaskBars
-│   │   ├── DependencyLines
-│   │   └── ResourcePanel
-│   ├── KanbanBoard
-│   │   ├── Swimlanes
-│   │   ├── TaskCards
-│   │   └── ColumnHeaders
-│   ├── TimelineView
-│   │   ├── MilestoneMarkers
-│   │   ├── PhaseBands
-│   │   └── ProgressIndicators
-│   ├── Sidebar
-│   │   ├── WorkstreamExplorer
-│   │   ├── FilterPanel
-│   │   └── SearchBox
-│   └── InspectorPanel
-│       ├── TaskDetails
-│       ├── DependencyGraph
-│       └── AIInsights
+â”œâ”€â”€ App
+â”‚   â”œâ”€â”€ RoadmapCanvas (Main visualization)
+â”‚   â”‚   â”œâ”€â”€ NodeRenderer
+â”‚   â”‚   â”œâ”€â”€ EdgeRenderer
+â”‚   â”‚   â”œâ”€â”€ Toolbar
+â”‚   â”‚   â””â”€â”€ Minimap
+â”‚   â”œâ”€â”€ GanttView
+â”‚   â”‚   â”œâ”€â”€ TimelineHeader
+â”‚   â”‚   â”œâ”€â”€ TaskBars
+â”‚   â”‚   â”œâ”€â”€ DependencyLines
+â”‚   â”‚   â””â”€â”€ ResourcePanel
+â”‚   â”œâ”€â”€ KanbanBoard
+â”‚   â”‚   â”œâ”€â”€ Swimlanes
+â”‚   â”‚   â”œâ”€â”€ TaskCards
+â”‚   â”‚   â””â”€â”€ ColumnHeaders
+â”‚   â”œâ”€â”€ TimelineView
+â”‚   â”‚   â”œâ”€â”€ MilestoneMarkers
+â”‚   â”‚   â”œâ”€â”€ PhaseBands
+â”‚   â”‚   â””â”€â”€ ProgressIndicators
+â”‚   â”œâ”€â”€ Sidebar
+â”‚   â”‚   â”œâ”€â”€ WorkstreamExplorer
+â”‚   â”‚   â”œâ”€â”€ FilterPanel
+â”‚   â”‚   â””â”€â”€ SearchBox
+â”‚   â””â”€â”€ InspectorPanel
+â”‚       â”œâ”€â”€ TaskDetails
+â”‚       â”œâ”€â”€ DependencyGraph
+â”‚       â””â”€â”€ AIInsights
 ```
 
 ---

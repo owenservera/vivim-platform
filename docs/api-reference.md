@@ -1,4 +1,4 @@
----
+﻿---
 title: "API Reference"
 description: "VIVIM REST API reference for memory management, context assembly, conversations, and federation."
 ---
@@ -205,6 +205,8 @@ GET /api/v1/observability/metrics
 
 Returns Prometheus-format metrics.
 
-<Note>
+
+::: info
 For detailed parameter documentation and request/response examples, see the full API specification in the [server/docs/](https://github.com/owenservera/vivim-platform/tree/main/server/docs) directory.
-</Note>
+:::
+

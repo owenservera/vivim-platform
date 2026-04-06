@@ -326,3 +326,7 @@ screenshots/*.png
 # Mintlify docs build output
 .mint/
 docs/.mint/
+
+# VitePress docs
+docs/.vitepress/dist/
+docs/node_modules/

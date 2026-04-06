@@ -1,4 +1,4 @@
-# VIVIM Roadmap Hub - Documentation Index
+﻿# VIVIM Roadmap Hub - Documentation Index
 
 ## Welcome to VIVIM Roadmap Hub
 
@@ -11,16 +11,16 @@
 This documentation suite provides everything you need to understand, build, and deploy the VIVIM Roadmap Hub.
 
 ```
-📁 docs/roadmap-hub/
-├── 📘 README.md                        # This file - Documentation index
-├── 📗 TECHNICAL_SPECIFICATION.md       # Product requirements & architecture
-├── 📕 DATA_MODEL_SCHEMA.md             # Database schema & type definitions
-├── 📙 UI_UX_DESIGN_SPEC.md             # UI/UX design & component specs
-├── 📓 API_SPECIFICATION.md             # REST API & WebSocket protocol
-├── 📔 IMPLEMENTATION_ROADMAP.md        # Phased implementation plan
-├── 📓 QUICK_START.md                   # Getting started guide
-├── 📓 AI_CODE_INSPECTION.md            # AI engine technical details
-└── 📓 CHANGELOG.md                     # Version history
+ðŸ“ docs/roadmap-hub/
+â”œâ”€â”€ ðŸ“˜ README.md                        # This file - Documentation index
+â”œâ”€â”€ ðŸ“— TECHNICAL_SPECIFICATION.md       # Product requirements & architecture
+â”œâ”€â”€ ðŸ“• DATA_MODEL_SCHEMA.md             # Database schema & type definitions
+â”œâ”€â”€ ðŸ“™ UI_UX_DESIGN_SPEC.md             # UI/UX design & component specs
+â”œâ”€â”€ ðŸ““ API_SPECIFICATION.md             # REST API & WebSocket protocol
+â”œâ”€â”€ ðŸ“” IMPLEMENTATION_ROADMAP.md        # Phased implementation plan
+â”œâ”€â”€ ðŸ““ QUICK_START.md                   # Getting started guide
+â”œâ”€â”€ ðŸ““ AI_CODE_INSPECTION.md            # AI engine technical details
+â””â”€â”€ ðŸ““ CHANGELOG.md                     # Version history
 ```
 
 ---
@@ -64,7 +64,7 @@ This documentation suite provides everything you need to understand, build, and 
 
 ## Document Summaries
 
-### 📘 TECHNICAL_SPECIFICATION.md
+### ðŸ“˜ TECHNICAL_SPECIFICATION.md
 
 **Purpose**: Comprehensive product requirements and system architecture
 
@@ -84,7 +84,7 @@ This documentation suite provides everything you need to understand, build, and 
 
 ---
 
-### 📕 DATA_MODEL_SCHEMA.md
+### ðŸ“• DATA_MODEL_SCHEMA.md
 
 **Purpose**: Complete database schema and type definitions
 
@@ -104,7 +104,7 @@ This documentation suite provides everything you need to understand, build, and 
 
 ---
 
-### 📙 UI_UX_DESIGN_SPEC.md
+### ðŸ“™ UI_UX_DESIGN_SPEC.md
 
 **Purpose**: User interface design and component specifications
 
@@ -125,7 +125,7 @@ This documentation suite provides everything you need to understand, build, and 
 
 ---
 
-### 📓 API_SPECIFICATION.md
+### ðŸ““ API_SPECIFICATION.md
 
 **Purpose**: REST API and WebSocket protocol documentation
 
@@ -145,7 +145,7 @@ This documentation suite provides everything you need to understand, build, and 
 
 ---
 
-### 📔 IMPLEMENTATION_ROADMAP.md
+### ðŸ“” IMPLEMENTATION_ROADMAP.md
 
 **Purpose**: Phased implementation plan with timelines
 
@@ -165,7 +165,7 @@ This documentation suite provides everything you need to understand, build, and 
 
 ---
 
-### 📓 QUICK_START.md
+### ðŸ““ QUICK_START.md
 
 **Purpose**: Get up and running quickly
 
@@ -184,7 +184,7 @@ This documentation suite provides everything you need to understand, build, and 
 
 ---
 
-### 📓 AI_CODE_INSPECTION.md
+### ðŸ““ AI_CODE_INSPECTION.md
 
 **Purpose**: Technical details of the AI code inspection engine
 
@@ -247,9 +247,9 @@ Reference the [IMPLEMENTATION_ROADMAP.md](./IMPLEMENTATION_ROADMAP.md) for:
 
 ```
 Roadmap (Top-level plan)
-└── Workstream (Logical grouping)
-    └── Feature (Product capability)
-        └── Task (Implementation unit)
+â””â”€â”€ Workstream (Logical grouping)
+    â””â”€â”€ Feature (Product capability)
+        â””â”€â”€ Task (Implementation unit)
 ```
 
 ### View Types
@@ -283,35 +283,35 @@ Roadmap (Top-level plan)
 ## Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                     VIVIM Roadmap Hub                       │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌────────────────────┐         ┌────────────────────┐     │
-│  │   Frontend         │  WS     │   Backend          │     │
-│  │   - React 19       │◄───────►│   - Bun/Express    │     │
-│  │   - React Flow     │         │   - Prisma ORM     │     │
-│  │   - DHTMLX Gantt   │         │   - Socket.IO      │     │
-│  │   - Zustand        │         │   - AI Engine      │     │
-│  └────────────────────┘         └────────────────────┘     │
-│           │                              │                  │
-│           │                              ▼                  │
-│           │                     ┌────────────────────┐     │
-│           │                     │   PostgreSQL       │     │
-│           │                     │   - Roadmaps       │     │
-│           │                     │   - Features       │     │
-│           │                     │   - Tasks          │     │
-│           │                     └────────────────────┘     │
-│           │                              │                  │
-│           ▼                              ▼                  │
-│  ┌────────────────────┐         ┌────────────────────┐     │
-│  │   AI Services      │         │   Code Inspection  │     │
-│  │   - Task Gen       │         │   - AST Parsing    │     │
-│  │   - Risk Analysis  │         │   - Git Integration│     │
-│  │   - Predictions    │         │   - Progress Detect│     │
-│  └────────────────────┘         └────────────────────┘     │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                     VIVIM Roadmap Hub                       â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚                                                             â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”         â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”     â”‚
+â”‚  â”‚   Frontend         â”‚  WS     â”‚   Backend          â”‚     â”‚
+â”‚  â”‚   - React 19       â”‚â—„â”€â”€â”€â”€â”€â”€â”€â–ºâ”‚   - Bun/Express    â”‚     â”‚
+â”‚  â”‚   - React Flow     â”‚         â”‚   - Prisma ORM     â”‚     â”‚
+â”‚  â”‚   - DHTMLX Gantt   â”‚         â”‚   - Socket.IO      â”‚     â”‚
+â”‚  â”‚   - Zustand        â”‚         â”‚   - AI Engine      â”‚     â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜         â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜     â”‚
+â”‚           â”‚                              â”‚                  â”‚
+â”‚           â”‚                              â–¼                  â”‚
+â”‚           â”‚                     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”     â”‚
+â”‚           â”‚                     â”‚   PostgreSQL       â”‚     â”‚
+â”‚           â”‚                     â”‚   - Roadmaps       â”‚     â”‚
+â”‚           â”‚                     â”‚   - Features       â”‚     â”‚
+â”‚           â”‚                     â”‚   - Tasks          â”‚     â”‚
+â”‚           â”‚                     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜     â”‚
+â”‚           â”‚                              â”‚                  â”‚
+â”‚           â–¼                              â–¼                  â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”         â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”     â”‚
+â”‚  â”‚   AI Services      â”‚         â”‚   Code Inspection  â”‚     â”‚
+â”‚  â”‚   - Task Gen       â”‚         â”‚   - AST Parsing    â”‚     â”‚
+â”‚  â”‚   - Risk Analysis  â”‚         â”‚   - Git Integrationâ”‚     â”‚
+â”‚  â”‚   - Predictions    â”‚         â”‚   - Progress Detectâ”‚     â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜         â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜     â”‚
+â”‚                                                             â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ---
@@ -353,22 +353,22 @@ Roadmap (Top-level plan)
 
 ```
 main (production)
-  │
-  ├── develop (staging)
-  │     │
-  │     ├── feature/roadmap-canvas
-  │     ├── feature/gantt-view
-  │     ├── feature/ai-insights
-  │     └── bugfix/dependency-cycle
-  │
-  └── release/v1.0.0
+  â”‚
+  â”œâ”€â”€ develop (staging)
+  â”‚     â”‚
+  â”‚     â”œâ”€â”€ feature/roadmap-canvas
+  â”‚     â”œâ”€â”€ feature/gantt-view
+  â”‚     â”œâ”€â”€ feature/ai-insights
+  â”‚     â””â”€â”€ bugfix/dependency-cycle
+  â”‚
+  â””â”€â”€ release/v1.0.0
 ```
 
 ### Sprint Cycle
 
 ```
-Week 1-2: Sprint Planning → Development → Review
-Week 3-4: Sprint Planning → Development → Review
+Week 1-2: Sprint Planning â†’ Development â†’ Review
+Week 3-4: Sprint Planning â†’ Development â†’ Review
 ...
 
 Every 2 weeks: Sprint Review + Retrospective
@@ -424,7 +424,7 @@ Every 4 weeks: Release planning + stakeholder demo
 ### CI/CD Pipeline
 
 ```
-Push → Lint → Test → Build → Deploy to Staging → E2E Tests → Deploy to Production
+Push â†’ Lint â†’ Test â†’ Build â†’ Deploy to Staging â†’ E2E Tests â†’ Deploy to Production
 ```
 
 ---
@@ -522,14 +522,14 @@ wss://api.vivim.app/ws
 
 ```
 roadmap-hub/
-├── src/
-│   ├── client/      # Frontend code
-│   ├── server/      # Backend code
-│   ├── shared/      # Shared types/utils
-│   └── ai/          # AI engine code
-├── docs/            # Documentation
-├── tests/           # Test files
-└── scripts/         # Build/deploy scripts
+â”œâ”€â”€ src/
+â”‚   â”œâ”€â”€ client/      # Frontend code
+â”‚   â”œâ”€â”€ server/      # Backend code
+â”‚   â”œâ”€â”€ shared/      # Shared types/utils
+â”‚   â””â”€â”€ ai/          # AI engine code
+â”œâ”€â”€ docs/            # Documentation
+â”œâ”€â”€ tests/           # Test files
+â””â”€â”€ scripts/         # Build/deploy scripts
 ```
 
 ---

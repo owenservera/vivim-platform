@@ -1,4 +1,4 @@
-# VIVIM Roadmap Hub - Implementation Roadmap
+﻿# VIVIM Roadmap Hub - Implementation Roadmap
 
 ## Overview
 
@@ -23,29 +23,29 @@ This document outlines the phased implementation plan for the VIVIM Roadmap Hub,
 
 ```
 Phase 1: Foundation (Weeks 1-4)
-    ├── Database & Backend Setup
-    ├── Core API Endpoints
-    └── Basic Frontend Shell
+    â”œâ”€â”€ Database & Backend Setup
+    â”œâ”€â”€ Core API Endpoints
+    â””â”€â”€ Basic Frontend Shell
 
 Phase 2: Core Features (Weeks 5-8)
-    ├── Canvas Visualization
-    ├── Feature Management
-    └── Workstream Organization
+    â”œâ”€â”€ Canvas Visualization
+    â”œâ”€â”€ Feature Management
+    â””â”€â”€ Workstream Organization
 
 Phase 3: Advanced Features (Weeks 9-12)
-    ├── Gantt Chart View
-    ├── Dependencies
-    └── Task Management
+    â”œâ”€â”€ Gantt Chart View
+    â”œâ”€â”€ Dependencies
+    â””â”€â”€ Task Management
 
 Phase 4: AI Integration (Weeks 13-16)
-    ├── Code Inspection Engine
-    ├── AI Insights
-    └── Automated Updates
+    â”œâ”€â”€ Code Inspection Engine
+    â”œâ”€â”€ AI Insights
+    â””â”€â”€ Automated Updates
 
 Phase 5: Polish & Launch (Weeks 17-20)
-    ├── Performance Optimization
-    ├── Testing & QA
-    └── Documentation & Training
+    â”œâ”€â”€ Performance Optimization
+    â”œâ”€â”€ Testing & QA
+    â””â”€â”€ Documentation & Training
 ```
 
 ---
@@ -130,11 +130,11 @@ Phase 5: Polish & Launch (Weeks 17-20)
 **Date:** End of Week 4
 
 **Success Criteria:**
-- ✅ Database schema deployed and tested
-- ✅ All core CRUD endpoints functional
-- ✅ Frontend can list/create roadmaps, workstreams, features
-- ✅ Basic navigation working
-- ✅ Authentication integrated
+- âœ… Database schema deployed and tested
+- âœ… All core CRUD endpoints functional
+- âœ… Frontend can list/create roadmaps, workstreams, features
+- âœ… Basic navigation working
+- âœ… Authentication integrated
 
 **Risks:**
 - Database schema changes may be needed
@@ -223,11 +223,11 @@ Phase 5: Polish & Launch (Weeks 17-20)
 **Date:** End of Week 8
 
 **Success Criteria:**
-- ✅ Canvas fully interactive with drag-drop
-- ✅ Features can be created, edited, moved
-- ✅ Workstreams visually group features
-- ✅ Real-time updates working
-- ✅ Inspector panel for detailed editing
+- âœ… Canvas fully interactive with drag-drop
+- âœ… Features can be created, edited, moved
+- âœ… Workstreams visually group features
+- âœ… Real-time updates working
+- âœ… Inspector panel for detailed editing
 
 **Risks:**
 - Canvas performance with many features
@@ -314,11 +314,11 @@ Phase 5: Polish & Launch (Weeks 17-20)
 **Date:** End of Week 12
 
 **Success Criteria:**
-- ✅ Gantt chart view fully functional
-- ✅ Dependencies can be created and visualized
-- ✅ Task management complete
-- ✅ Export to PDF/PNG working
-- ✅ Critical path calculation accurate
+- âœ… Gantt chart view fully functional
+- âœ… Dependencies can be created and visualized
+- âœ… Task management complete
+- âœ… Export to PDF/PNG working
+- âœ… Critical path calculation accurate
 
 **Risks:**
 - Gantt library licensing (consider Frappe Gantt as fallback)
@@ -406,11 +406,11 @@ Phase 5: Polish & Launch (Weeks 17-20)
 **Date:** End of Week 16
 
 **Success Criteria:**
-- ✅ Code inspection engine running
-- ✅ AI can detect progress from code
-- ✅ Risk identification working
-- ✅ Timeline predictions generated
-- ✅ Task generation functional
+- âœ… Code inspection engine running
+- âœ… AI can detect progress from code
+- âœ… Risk identification working
+- âœ… Timeline predictions generated
+- âœ… Task generation functional
 
 **Risks:**
 - AI accuracy may need tuning
@@ -500,11 +500,11 @@ Phase 5: Polish & Launch (Weeks 17-20)
 **Date:** End of Week 20
 
 **Success Criteria:**
-- ✅ Performance targets met
-- ✅ All tests passing
-- ✅ Documentation complete
-- ✅ Accessibility compliant
-- ✅ Ready for production launch
+- âœ… Performance targets met
+- âœ… All tests passing
+- âœ… Documentation complete
+- âœ… Accessibility compliant
+- âœ… Ready for production launch
 
 ---
 
@@ -514,10 +514,10 @@ Phase 5: Polish & Launch (Weeks 17-20)
 
 ```
 Project Lead (1)
-├── Backend Developers (2)
-├── Frontend Developers (2)
-├── AI/ML Engineer (1)
-└── QA Engineer (1, shared)
+â”œâ”€â”€ Backend Developers (2)
+â”œâ”€â”€ Frontend Developers (2)
+â”œâ”€â”€ AI/ML Engineer (1)
+â””â”€â”€ QA Engineer (1, shared)
 ```
 
 ### Role Responsibilities

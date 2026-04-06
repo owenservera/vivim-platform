@@ -1,4 +1,4 @@
----
+﻿---
 title: "Quick Start"
 description: "Get VIVIM running locally in under 2 minutes with four commands."
 ---
@@ -16,32 +16,35 @@ Get VIVIM running locally in under 2 minutes.
 
 ## Installation
 
-<Steps>
-  <Step title="Clone the repository">
-    ```bash
+
+
+1. **Clone the repository**
+   ```bash
     git clone https://github.com/owenservera/vivim-platform.git
     cd vivim-platform
     ```
-  </Step>
-  <Step title="Install dependencies">
-    ```bash
+
+  
+2. **Install dependencies**
+   ```bash
     bun run setup:deps
     ```
     This installs all workspace packages and their dependencies via `bun install`.
-  </Step>
-  <Step title="Set up the database">
-    ```bash
+
+  
+3. **Set up the database**
+   ```bash
     bun run setup:db
     ```
     This runs Prisma migrations to create all required tables.
-  </Step>
-  <Step title="Start all services">
-    ```bash
+
+  
+4. **Start all services**
+   ```bash
     bun run dev
     ```
     This launches the PWA, server, network engine, and admin panel concurrently.
-  </Step>
-</Steps>
+
 
 ## Access the app
 
@@ -84,18 +87,26 @@ This sets `LOG_LEVEL=debug` and `DEBUG=true` across all services.
 
 ## Troubleshooting
 
-<Accordion title="Port already in use">
-  Stop existing processes on the default ports, or use the `bun run dev:cleanup` script to clear stale processes.
-</Accordion>
 
-<Accordion title="Database connection failed">
-  Ensure PostgreSQL is running and the `DATABASE_URL` in `.env` points to a valid database. Run `bun run setup:db` to create tables.
-</Accordion>
+::: details Port already in use
+Stop existing processes on the default ports, or use the `bun run dev:cleanup` script to clear stale processes.
+:::
 
-<Accordion title="Bun not installed">
-  Install Bun: `curl -fsSL https://bun.sh/install | bash` (macOS/Linux) or `powershell -c "irm bun.sh/install.ps1 | iex"` (Windows).
-</Accordion>
 
-<Tip>
+
+::: details Database connection failed
+Ensure PostgreSQL is running and the `DATABASE_URL` in `.env` points to a valid database. Run `bun run setup:db` to create tables.
+:::
+
+
+
+::: details Bun not installed
+Install Bun: `curl -fsSL https://bun.sh/install | bash` (macOS/Linux) or `powershell -c "irm bun.sh/install.ps1 | iex"` (Windows).
+:::
+
+
+
+::: tip
 For a full system reset including dependencies, run `bun run setup` which reinstalls packages and regenerates the database.
-</Tip>
+:::
+

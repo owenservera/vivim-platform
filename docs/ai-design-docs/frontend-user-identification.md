@@ -1,80 +1,80 @@
-
+﻿
 
 # Zero-Auth User Identity & Memory System
 
 ## Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                        CLIENT SIDE (Browser)                           │
-│                                                                        │
-│  ┌──────────────┐  ┌──────────────────┐  ┌────────────────────────┐   │
-│  │  Fingerprint │  │   Behavioral     │  │   Persistent ID        │   │
-│  │  Collector   │  │   Biometrics     │  │   Manager              │   │
-│  │              │  │                  │  │                        │   │
-│  │ • Canvas     │  │ • Typing rhythm  │  │ • 1st party cookie     │   │
-│  │ • WebGL      │  │ • Mouse dynamics │  │ • localStorage         │   │
-│  │ • Audio      │  │ • Scroll pattern │  │ • IndexedDB            │   │
-│  │ • Fonts      │  │ • Click cadence  │  │ • Service Worker cache │   │
-│  │ • Screen     │  │ • Touch gestures │  │ • URL fragment         │   │
-│  │ • Navigator  │  │ • Dwell times    │  │                        │   │
-│  │ • Timezone   │  │ • Session timing │  │                        │   │
-│  │ • Hardware   │  │                  │  │                        │   │
-│  │ • CSS prefs  │  │                  │  │                        │   │
-│  │ • WebRTC     │  │                  │  │                        │   │
-│  │ • Speech API │  │                  │  │                        │   │
-│  └──────┬───────┘  └────────┬─────────┘  └───────────┬────────────┘   │
-│         │                   │                         │                │
-│         └───────────────────┼─────────────────────────┘                │
-│                             │                                          │
-│                    ┌────────▼────────┐                                 │
-│                    │  Identity Beacon │ ← Encrypted payload            │
-│                    └────────┬────────┘                                 │
-└─────────────────────────────┼──────────────────────────────────────────┘
-                              │ HTTPS
-                              ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                        SERVER SIDE                                      │
-│                                                                        │
-│  ┌──────────────────────────────────────────────────────────────────┐  │
-│  │                    IDENTITY RESOLUTION ENGINE                     │  │
-│  │                                                                   │  │
-│  │  Stage 1: Deterministic Match (Persistent IDs)                   │  │
-│  │  Stage 2: Fingerprint Hash Match (Exact)                         │  │
-│  │  Stage 3: Fuzzy Fingerprint Match (Signal Similarity)            │  │
-│  │  Stage 4: Behavioral Biometric Match                             │  │
-│  │  Stage 5: Temporal + Contextual Pattern Match                    │  │
-│  │                                                                   │  │
-│  │  ┌─────────────────┐  ┌──────────────────┐  ┌────────────────┐  │  │
-│  │  │ Confidence Score │→ │ Decision Engine   │→ │ Identity       │  │  │
-│  │  │ Aggregator       │  │ (threshold logic) │  │ Assignment     │  │  │
-│  │  └─────────────────┘  └──────────────────┘  └────────────────┘  │  │
-│  └──────────────────────────────────────────────────────────────────┘  │
-│                                    │                                    │
-│                                    ▼                                    │
-│  ┌──────────────────────────────────────────────────────────────────┐  │
-│  │              VIRTUAL USER PROFILE MANAGER                        │  │
-│  │                                                                   │  │
-│  │  • Create new virtual user (vuid_xxxx)                           │  │
-│  │  • Merge duplicate profiles                                      │  │
-│  │  • Track identity confidence over time                           │  │
-│  │  • Device graph (multi-device linking)                           │  │
-│  └──────────────────────────────────────────────────────────────────┘  │
-│                                    │                                    │
-│                                    ▼                                    │
-│  ┌──────────────────────────────────────────────────────────────────┐  │
-│  │              VIVIM MEMORY LAYER INTEGRATION                      │  │
-│  │                                                                   │  │
-│  │  L0 Identity Core ←── Virtual User ID + fingerprint metadata     │  │
-│  │  L1 Global Prefs  ←── Behavioral patterns + inferred prefs      │  │
-│  │  L2 Topic Context ←── Accumulated conversation topics            │  │
-│  │  L3 Entity Context←── Extracted entities across sessions         │  │
-│  │  L4 Conv Arc      ←── Current thread continuity                  │  │
-│  │  L5 JIT Retrieval ←── Relevant past knowledge                   │  │
-│  │  L6 Message Hist  ←── Recent messages (per identity)            │  │
-│  │  L7 User Message  ←── Current input                             │  │
-│  └──────────────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                        CLIENT SIDE (Browser)                           â”‚
+â”‚                                                                        â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”‚
+â”‚  â”‚  Fingerprint â”‚  â”‚   Behavioral     â”‚  â”‚   Persistent ID        â”‚   â”‚
+â”‚  â”‚  Collector   â”‚  â”‚   Biometrics     â”‚  â”‚   Manager              â”‚   â”‚
+â”‚  â”‚              â”‚  â”‚                  â”‚  â”‚                        â”‚   â”‚
+â”‚  â”‚ â€¢ Canvas     â”‚  â”‚ â€¢ Typing rhythm  â”‚  â”‚ â€¢ 1st party cookie     â”‚   â”‚
+â”‚  â”‚ â€¢ WebGL      â”‚  â”‚ â€¢ Mouse dynamics â”‚  â”‚ â€¢ localStorage         â”‚   â”‚
+â”‚  â”‚ â€¢ Audio      â”‚  â”‚ â€¢ Scroll pattern â”‚  â”‚ â€¢ IndexedDB            â”‚   â”‚
+â”‚  â”‚ â€¢ Fonts      â”‚  â”‚ â€¢ Click cadence  â”‚  â”‚ â€¢ Service Worker cache â”‚   â”‚
+â”‚  â”‚ â€¢ Screen     â”‚  â”‚ â€¢ Touch gestures â”‚  â”‚ â€¢ URL fragment         â”‚   â”‚
+â”‚  â”‚ â€¢ Navigator  â”‚  â”‚ â€¢ Dwell times    â”‚  â”‚                        â”‚   â”‚
+â”‚  â”‚ â€¢ Timezone   â”‚  â”‚ â€¢ Session timing â”‚  â”‚                        â”‚   â”‚
+â”‚  â”‚ â€¢ Hardware   â”‚  â”‚                  â”‚  â”‚                        â”‚   â”‚
+â”‚  â”‚ â€¢ CSS prefs  â”‚  â”‚                  â”‚  â”‚                        â”‚   â”‚
+â”‚  â”‚ â€¢ WebRTC     â”‚  â”‚                  â”‚  â”‚                        â”‚   â”‚
+â”‚  â”‚ â€¢ Speech API â”‚  â”‚                  â”‚  â”‚                        â”‚   â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜   â”‚
+â”‚         â”‚                   â”‚                         â”‚                â”‚
+â”‚         â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                â”‚
+â”‚                             â”‚                                          â”‚
+â”‚                    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”                                 â”‚
+â”‚                    â”‚  Identity Beacon â”‚ â† Encrypted payload            â”‚
+â”‚                    â””â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”˜                                 â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                              â”‚ HTTPS
+                              â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                        SERVER SIDE                                      â”‚
+â”‚                                                                        â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  â”‚                    IDENTITY RESOLUTION ENGINE                     â”‚  â”‚
+â”‚  â”‚                                                                   â”‚  â”‚
+â”‚  â”‚  Stage 1: Deterministic Match (Persistent IDs)                   â”‚  â”‚
+â”‚  â”‚  Stage 2: Fingerprint Hash Match (Exact)                         â”‚  â”‚
+â”‚  â”‚  Stage 3: Fuzzy Fingerprint Match (Signal Similarity)            â”‚  â”‚
+â”‚  â”‚  Stage 4: Behavioral Biometric Match                             â”‚  â”‚
+â”‚  â”‚  Stage 5: Temporal + Contextual Pattern Match                    â”‚  â”‚
+â”‚  â”‚                                                                   â”‚  â”‚
+â”‚  â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚  â”‚
+â”‚  â”‚  â”‚ Confidence Score â”‚â†’ â”‚ Decision Engine   â”‚â†’ â”‚ Identity       â”‚  â”‚  â”‚
+â”‚  â”‚  â”‚ Aggregator       â”‚  â”‚ (threshold logic) â”‚  â”‚ Assignment     â”‚  â”‚  â”‚
+â”‚  â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚  â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â”‚                                    â”‚                                    â”‚
+â”‚                                    â–¼                                    â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  â”‚              VIRTUAL USER PROFILE MANAGER                        â”‚  â”‚
+â”‚  â”‚                                                                   â”‚  â”‚
+â”‚  â”‚  â€¢ Create new virtual user (vuid_xxxx)                           â”‚  â”‚
+â”‚  â”‚  â€¢ Merge duplicate profiles                                      â”‚  â”‚
+â”‚  â”‚  â€¢ Track identity confidence over time                           â”‚  â”‚
+â”‚  â”‚  â€¢ Device graph (multi-device linking)                           â”‚  â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â”‚                                    â”‚                                    â”‚
+â”‚                                    â–¼                                    â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  â”‚              VIVIM MEMORY LAYER INTEGRATION                      â”‚  â”‚
+â”‚  â”‚                                                                   â”‚  â”‚
+â”‚  â”‚  L0 Identity Core â†â”€â”€ Virtual User ID + fingerprint metadata     â”‚  â”‚
+â”‚  â”‚  L1 Global Prefs  â†â”€â”€ Behavioral patterns + inferred prefs      â”‚  â”‚
+â”‚  â”‚  L2 Topic Context â†â”€â”€ Accumulated conversation topics            â”‚  â”‚
+â”‚  â”‚  L3 Entity Contextâ†â”€â”€ Extracted entities across sessions         â”‚  â”‚
+â”‚  â”‚  L4 Conv Arc      â†â”€â”€ Current thread continuity                  â”‚  â”‚
+â”‚  â”‚  L5 JIT Retrieval â†â”€â”€ Relevant past knowledge                   â”‚  â”‚
+â”‚  â”‚  L6 Message Hist  â†â”€â”€ Recent messages (per identity)            â”‚  â”‚
+â”‚  â”‚  L7 User Message  â†â”€â”€ Current input                             â”‚  â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ---
@@ -83,17 +83,17 @@
 
 ```typescript
 // ============================================================================
-// fingerprint-engine.ts — Comprehensive Browser Fingerprint Collector
+// fingerprint-engine.ts â€” Comprehensive Browser Fingerprint Collector
 // ============================================================================
 
 interface FingerprintSignals {
-  // ── Hardware Signals ──
+  // â”€â”€ Hardware Signals â”€â”€
   screen: ScreenSignals;
   hardware: HardwareSignals;
   gpu: GPUSignals;
   audio: AudioSignals;
 
-  // ── Software Signals ──
+  // â”€â”€ Software Signals â”€â”€
   navigator: NavigatorSignals;
   timezone: TimezoneSignals;
   fonts: FontSignals;
@@ -101,25 +101,25 @@ interface FingerprintSignals {
   cssPreferences: CSSPreferenceSignals;
   speechVoices: string[];
 
-  // ── Rendered Signals (Canvas/WebGL) ──
+  // â”€â”€ Rendered Signals (Canvas/WebGL) â”€â”€
   canvasHash: string;
   webglHash: string;
   webglParams: WebGLParams;
 
-  // ── Network Signals ──
+  // â”€â”€ Network Signals â”€â”€
   connection: ConnectionSignals;
   webrtcIPs: string[];
 
-  // ── Storage Capability Signals ──
+  // â”€â”€ Storage Capability Signals â”€â”€
   storageCapabilities: StorageCapabilities;
 
-  // ── API Availability Signals ──
+  // â”€â”€ API Availability Signals â”€â”€
   apiFingerprint: APIAvailability;
 
-  // ── Behavioral Seed Signals ──
+  // â”€â”€ Behavioral Seed Signals â”€â”€
   performanceTiming: PerformanceSignals;
 
-  // ── Composite ──
+  // â”€â”€ Composite â”€â”€
   signalHash: string;          // SHA-256 of all signals combined
   signalVersion: string;       // Version of collector
   collectedAt: number;         // Timestamp
@@ -309,7 +309,7 @@ export class FingerprintEngine {
     return this.signals as FingerprintSignals;
   }
 
-  // ── Screen Signals ──────────────────────────────────────────────────────
+  // â”€â”€ Screen Signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectScreen(): Promise<void> {
     const s = window.screen;
@@ -327,7 +327,7 @@ export class FingerprintEngine {
     this.entropyBits += 8; // ~256 common resolutions
   }
 
-  // ── Hardware Signals ────────────────────────────────────────────────────
+  // â”€â”€ Hardware Signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectHardware(): Promise<void> {
     this.signals.hardware = {
@@ -350,7 +350,7 @@ export class FingerprintEngine {
     return 'unknown';
   }
 
-  // ── Navigator Signals ───────────────────────────────────────────────────
+  // â”€â”€ Navigator Signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectNavigator(): Promise<void> {
     this.signals.navigator = {
@@ -370,7 +370,7 @@ export class FingerprintEngine {
     this.entropyBits += 10;
   }
 
-  // ── Timezone Signals ────────────────────────────────────────────────────
+  // â”€â”€ Timezone Signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectTimezone(): Promise<void> {
     const now = new Date();
@@ -392,7 +392,7 @@ export class FingerprintEngine {
     this.entropyBits += 5;
   }
 
-  // ── Canvas Fingerprint ──────────────────────────────────────────────────
+  // â”€â”€ Canvas Fingerprint â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectCanvas(): Promise<void> {
     try {
@@ -416,7 +416,7 @@ export class FingerprintEngine {
       // Text with various fonts
       ctx.fillStyle = '#2d3436';
       ctx.font = '18px Arial';
-      ctx.fillText('Cwm fjord bank glyphs vext quiz 🏛️', 2, 2);
+      ctx.fillText('Cwm fjord bank glyphs vext quiz ðŸ›ï¸', 2, 2);
 
       ctx.font = 'bold 14px "Times New Roman"';
       ctx.fillStyle = '#6c5ce7';
@@ -459,7 +459,7 @@ export class FingerprintEngine {
     }
   }
 
-  // ── WebGL Fingerprint ───────────────────────────────────────────────────
+  // â”€â”€ WebGL Fingerprint â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectWebGL(): Promise<void> {
     try {
@@ -559,7 +559,7 @@ export class FingerprintEngine {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
 
-  // ── Audio Fingerprint ───────────────────────────────────────────────────
+  // â”€â”€ Audio Fingerprint â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectAudio(): Promise<void> {
     try {
@@ -614,7 +614,7 @@ export class FingerprintEngine {
     }
   }
 
-  // ── Font Detection ──────────────────────────────────────────────────────
+  // â”€â”€ Font Detection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectFonts(): Promise<void> {
     const testFonts = [
@@ -638,7 +638,7 @@ export class FingerprintEngine {
     ];
 
     const baseFonts = ['monospace', 'sans-serif', 'serif'];
-    const testString = 'mmMwWLli1Iloö0OQ@#$%&';
+    const testString = 'mmMwWLli1IloÃ¶0OQ@#$%&';
     const testSize = '72px';
 
     const canvas = document.createElement('canvas');
@@ -677,7 +677,7 @@ export class FingerprintEngine {
     this.entropyBits += 8;
   }
 
-  // ── CSS Preference Detection ────────────────────────────────────────────
+  // â”€â”€ CSS Preference Detection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectCSSPreferences(): Promise<void> {
     const match = (query: string) => window.matchMedia(query).matches;
@@ -701,7 +701,7 @@ export class FingerprintEngine {
     this.entropyBits += 5;
   }
 
-  // ── Connection Signals ──────────────────────────────────────────────────
+  // â”€â”€ Connection Signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectConnection(): Promise<void> {
     const conn = (navigator as any).connection
@@ -717,7 +717,7 @@ export class FingerprintEngine {
     this.entropyBits += 3;
   }
 
-  // ── Storage Capabilities ────────────────────────────────────────────────
+  // â”€â”€ Storage Capabilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectStorageCapabilities(): Promise<void> {
     let storageEstimate: { quota: number; usage: number } | null = null;
@@ -753,7 +753,7 @@ export class FingerprintEngine {
     }
   }
 
-  // ── API Availability ────────────────────────────────────────────────────
+  // â”€â”€ API Availability â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectAPIAvailability(): Promise<void> {
     this.signals.apiFingerprint = {
@@ -783,7 +783,7 @@ export class FingerprintEngine {
     this.entropyBits += 6;
   }
 
-  // ── Speech Voices ──────────────────────────────────────────────────────
+  // â”€â”€ Speech Voices â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectSpeechVoices(): Promise<void> {
     try {
@@ -809,7 +809,7 @@ export class FingerprintEngine {
     }
   }
 
-  // ── WebRTC IP Detection ─────────────────────────────────────────────────
+  // â”€â”€ WebRTC IP Detection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectWebRTC(): Promise<void> {
     try {
@@ -841,7 +841,7 @@ export class FingerprintEngine {
     }
   }
 
-  // ── Performance Signals ─────────────────────────────────────────────────
+  // â”€â”€ Performance Signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectPerformance(): Promise<void> {
     try {
@@ -878,7 +878,7 @@ export class FingerprintEngine {
     }
   }
 
-  // ── Hash Utilities ──────────────────────────────────────────────────────
+  // â”€â”€ Hash Utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async sha256(data: string): Promise<string> {
     const encoder = new TextEncoder();
@@ -922,13 +922,13 @@ export class FingerprintEngine {
 
 ```typescript
 // ============================================================================
-// behavioral-biometrics.ts — Captures how the user interacts
+// behavioral-biometrics.ts â€” Captures how the user interacts
 // ============================================================================
 
 interface TypingProfile {
   avgKeyDownDuration: number;      // How long keys are held
   avgInterKeyDelay: number;        // Time between keystrokes
-  keyPairTimings: Map<string, number>;  // 'th' → 45ms, 'er' → 52ms (digraph timing)
+  keyPairTimings: Map<string, number>;  // 'th' â†’ 45ms, 'er' â†’ 52ms (digraph timing)
   wordsPerMinute: number;
   errorRate: number;               // Backspace frequency
   burstPatterns: number[];         // Lengths of typing bursts
@@ -1002,7 +1002,7 @@ export class BehavioralBiometricsEngine {
 
     const target = targetElement || document;
 
-    // ── Keyboard Tracking ──
+    // â”€â”€ Keyboard Tracking â”€â”€
     target.addEventListener('keydown', (e: Event) => {
       const ke = e as KeyboardEvent;
       if (!this.keyDownMap.has(ke.key)) {
@@ -1024,7 +1024,7 @@ export class BehavioralBiometricsEngine {
       }
     });
 
-    // ── Mouse Tracking (sampled to reduce overhead) ──
+    // â”€â”€ Mouse Tracking (sampled to reduce overhead) â”€â”€
     let lastMouseTime = 0;
     target.addEventListener('mousemove', (e: Event) => {
       const me = e as MouseEvent;
@@ -1046,14 +1046,14 @@ export class BehavioralBiometricsEngine {
       this.mouseEvents.push({ x: me.clientX, y: me.clientY, time: performance.now(), type: 'up' });
     });
 
-    // ── Scroll Tracking ──
+    // â”€â”€ Scroll Tracking â”€â”€
     target.addEventListener('wheel', (e: Event) => {
       const we = e as WheelEvent;
       this.scrollEvents.push({ delta: we.deltaY, time: performance.now() });
       this.samplesCollected++;
     }, { passive: true });
 
-    // ── Touch Tracking ──
+    // â”€â”€ Touch Tracking â”€â”€
     target.addEventListener('touchstart', (e: Event) => {
       const te = e as TouchEvent;
       if (te.touches.length > 0) {
@@ -1069,7 +1069,7 @@ export class BehavioralBiometricsEngine {
       }
     }, { passive: true });
 
-    // ── Focus/Blur Tracking ──
+    // â”€â”€ Focus/Blur Tracking â”€â”€
     window.addEventListener('focus', () => {
       this.focusEvents.push({ type: 'focus', time: performance.now() });
     });
@@ -1279,7 +1279,7 @@ export class BehavioralBiometricsEngine {
     };
   }
 
-  // ── Math Utilities ──
+  // â”€â”€ Math Utilities â”€â”€
   private average(arr: number[]): number {
     return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
   }
@@ -1303,7 +1303,7 @@ export class BehavioralBiometricsEngine {
 
 ```typescript
 // ============================================================================
-// persistent-id-manager.ts — Multi-layer persistent identity storage
+// persistent-id-manager.ts â€” Multi-layer persistent identity storage
 // ============================================================================
 
 export class PersistentIDManager {
@@ -1361,7 +1361,7 @@ export class PersistentIDManager {
       };
     }
 
-    // No existing ID found — generate new one
+    // No existing ID found â€” generate new one
     const newId = this.generateVUID();
     await this.persistToAllLayers(newId);
     return { id: newId, isNew: true, foundIn: [] };
@@ -1383,7 +1383,7 @@ export class PersistentIDManager {
     ]);
   }
 
-  // ── Cookie Layer ──────────────────────────────────────────────────────
+  // â”€â”€ Cookie Layer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async getFromCookie(): Promise<string | null> {
     const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${this.COOKIE_NAME}=([^;]*)`));
@@ -1396,7 +1396,7 @@ export class PersistentIDManager {
     document.cookie = `${this.COOKIE_NAME}=${encodeURIComponent(id)}; max-age=${maxAge}; path=/; SameSite=Lax${secure}`;
   }
 
-  // ── LocalStorage Layer ────────────────────────────────────────────────
+  // â”€â”€ LocalStorage Layer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async getFromLocalStorage(): Promise<string | null> {
     try {
@@ -1421,7 +1421,7 @@ export class PersistentIDManager {
     } catch {}
   }
 
-  // ── IndexedDB Layer ───────────────────────────────────────────────────
+  // â”€â”€ IndexedDB Layer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private getDB(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
@@ -1465,7 +1465,7 @@ export class PersistentIDManager {
     } catch {}
   }
 
-  // ── Service Worker Cache Layer ────────────────────────────────────────
+  // â”€â”€ Service Worker Cache Layer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async getFromServiceWorkerCache(): Promise<string | null> {
     try {
@@ -1503,7 +1503,7 @@ export class PersistentIDManager {
 
 ```typescript
 // ============================================================================
-// identity-beacon.ts — Orchestrates collection and sends to server
+// identity-beacon.ts â€” Orchestrates collection and sends to server
 // ============================================================================
 
 import { FingerprintEngine, FingerprintSignals } from './fingerprint-engine';
@@ -1696,7 +1696,7 @@ export class IdentityBeacon {
 
 ```typescript
 // ============================================================================
-// identity-resolver.ts — Multi-stage identity resolution
+// identity-resolver.ts â€” Multi-stage identity resolution
 // ============================================================================
 
 import { IdentityBeaconPayload } from './identity-beacon';
@@ -1765,10 +1765,10 @@ interface IdentityMatch {
   virtualUserId: string;
   confidence: number;
   matchStage: string;
-  matchDetails: Record<string, number>;  // Signal → confidence contribution
+  matchDetails: Record<string, number>;  // Signal â†’ confidence contribution
 }
 
-// ── Signal Weights ──────────────────────────────────────────────────────
+// â”€â”€ Signal Weights â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const SIGNAL_WEIGHTS: Record<string, { weight: number; decayDays: number }> = {
   // Deterministic (highest weight)
@@ -1803,8 +1803,8 @@ const SIGNAL_WEIGHTS: Record<string, { weight: number; decayDays: number }> = {
 
 export class IdentityResolver {
   private userStore: Map<string, VirtualUser>;     // In production: database
-  private fingerprintIndex: Map<string, string[]>; // hash → virtualUserIds
-  private persistentIdIndex: Map<string, string>;  // persistentId → virtualUserId
+  private fingerprintIndex: Map<string, string[]>; // hash â†’ virtualUserIds
+  private persistentIdIndex: Map<string, string>;  // persistentId â†’ virtualUserId
 
   constructor(
     private db: DatabaseAdapter  // Your database abstraction
@@ -1823,9 +1823,9 @@ export class IdentityResolver {
   ): Promise<{ virtualUserId: string; confidence: number; isNew: boolean }> {
     const candidates: IdentityMatch[] = [];
 
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // STAGE 1: Deterministic Match (Persistent ID)
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const stage1 = await this.matchByPersistentId(payload.persistentId.id);
     if (stage1) {
       candidates.push(stage1);
@@ -1844,35 +1844,35 @@ export class IdentityResolver {
       }
     }
 
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // STAGE 2: Exact Fingerprint Hash Match
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const stage2 = await this.matchByFingerprintHash(payload.fingerprint.signalHash);
     if (stage2) candidates.push(stage2);
 
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // STAGE 3: Fuzzy Fingerprint Match (Individual Signal Comparison)
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const stage3 = await this.fuzzyFingerprintMatch(payload.fingerprint);
     candidates.push(...stage3);
 
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // STAGE 4: Behavioral Biometric Match
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     if (payload.behavior.confidence > 0.3) {
       const stage4 = await this.matchByBehavior(payload.behavior);
       candidates.push(...stage4);
     }
 
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // STAGE 5: Contextual Match (IP + Timing + Partial Signals)
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const stage5 = await this.contextualMatch(payload, requestIp);
     candidates.push(...stage5);
 
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // DECISION ENGINE: Aggregate confidence across stages
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const decision = this.aggregateCandidates(candidates);
 
     if (decision && decision.confidence >= 0.55) {
@@ -1888,9 +1888,9 @@ export class IdentityResolver {
       }
     }
 
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // NEW USER: Create virtual user profile
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const newUser = await this.createVirtualUser(payload, requestIp);
     return {
       virtualUserId: newUser.id,
@@ -1899,7 +1899,7 @@ export class IdentityResolver {
     };
   }
 
-  // ── Stage 1: Persistent ID Match ─────────────────────────────────────
+  // â”€â”€ Stage 1: Persistent ID Match â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async matchByPersistentId(persistentId: string): Promise<IdentityMatch | null> {
     const userId = await this.db.findUserByPersistentId(persistentId);
@@ -1907,13 +1907,13 @@ export class IdentityResolver {
 
     return {
       virtualUserId: userId,
-      confidence: 0.95,  // Very high — they have our cookie/storage
+      confidence: 0.95,  // Very high â€” they have our cookie/storage
       matchStage: 'persistent_id',
       matchDetails: { persistentId: 0.95 },
     };
   }
 
-  // ── Stage 2: Exact Fingerprint Match ──────────────────────────────────
+  // â”€â”€ Stage 2: Exact Fingerprint Match â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async matchByFingerprintHash(hash: string): Promise<IdentityMatch | null> {
     const userIds = await this.db.findUsersByFingerprintHash(hash);
@@ -1929,7 +1929,7 @@ export class IdentityResolver {
       };
     }
 
-    // Multiple matches — reduce confidence
+    // Multiple matches â€” reduce confidence
     const mostRecent = await this.getMostRecentUser(userIds);
     return {
       virtualUserId: mostRecent,
@@ -1939,7 +1939,7 @@ export class IdentityResolver {
     };
   }
 
-  // ── Stage 3: Fuzzy Fingerprint Match ──────────────────────────────────
+  // â”€â”€ Stage 3: Fuzzy Fingerprint Match â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async fuzzyFingerprintMatch(fingerprint: FingerprintSignals): Promise<IdentityMatch[]> {
     // Get candidate users who share at least some signals
@@ -2121,7 +2121,7 @@ export class IdentityResolver {
     return { totalScore, breakdown };
   }
 
-  // ── Stage 4: Behavioral Match ─────────────────────────────────────────
+  // â”€â”€ Stage 4: Behavioral Match â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async matchByBehavior(behavior: BehavioralProfile): Promise<IdentityMatch[]> {
     if (behavior.confidence < 0.4) return []; // Not enough data
@@ -2242,7 +2242,7 @@ export class IdentityResolver {
     return scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
   }
 
-  // ── Stage 5: Contextual Match ─────────────────────────────────────────
+  // â”€â”€ Stage 5: Contextual Match â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async contextualMatch(
     payload: IdentityBeaconPayload,
@@ -2292,7 +2292,7 @@ export class IdentityResolver {
     return matches;
   }
 
-  // ── Decision Engine ───────────────────────────────────────────────────
+  // â”€â”€ Decision Engine â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private aggregateCandidates(candidates: IdentityMatch[]): IdentityMatch | null {
     if (candidates.length === 0) return null;
@@ -2311,8 +2311,8 @@ export class IdentityResolver {
         allDetails: {},
       };
 
-      // Combine confidences (not simple addition — use noisy-OR model)
-      // P(match) = 1 - ∏(1 - P_i)
+      // Combine confidences (not simple addition â€” use noisy-OR model)
+      // P(match) = 1 - âˆ(1 - P_i)
       existing.totalConfidence = 1 - (1 - existing.totalConfidence) * (1 - candidate.confidence);
       existing.stages.push(candidate.matchStage);
       Object.assign(existing.allDetails, candidate.matchDetails);
@@ -2345,7 +2345,7 @@ export class IdentityResolver {
     };
   }
 
-  // ── User Lifecycle ────────────────────────────────────────────────────
+  // â”€â”€ User Lifecycle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async createVirtualUser(
     payload: IdentityBeaconPayload,
@@ -2507,7 +2507,7 @@ export class IdentityResolver {
     return stableCount / (snapshots.length - 1);
   }
 
-  // ── Utilities ──────────────────────────────────────────────────────────
+  // â”€â”€ Utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private stringSimilarity(a: string, b: string): number {
     if (a === b) return 1;
@@ -2562,7 +2562,7 @@ export class IdentityResolver {
 
 ```typescript
 // ============================================================================
-// vivim-integration.ts — Maps identity system to VIVIM memory layers
+// vivim-integration.ts â€” Maps identity system to VIVIM memory layers
 // ============================================================================
 
 import { VivimSDK, MemoryLayer, MemoryType } from '@vivim/sdk';
@@ -2596,7 +2596,7 @@ export class VivimIdentityIntegration {
   }
 
   /**
-   * Called when identity is resolved — initializes or restores VIVIM memory layers
+   * Called when identity is resolved â€” initializes or restores VIVIM memory layers
    */
   async onIdentityResolved(context: ChatbotIdentityContext): Promise<void> {
     const { virtualUserId, isReturningUser, inferredProfile } = context;
@@ -2615,7 +2615,7 @@ export class VivimIdentityIntegration {
     userId: string,
     context: ChatbotIdentityContext
   ): Promise<void> {
-    // L0: Identity Core — Update with latest session info
+    // L0: Identity Core â€” Update with latest session info
     await this.sdk.memory.update(userId, MemoryLayer.IDENTITY_CORE, {
       type: MemoryType.IDENTITY,
       content: {
@@ -2632,7 +2632,7 @@ export class VivimIdentityIntegration {
       },
     });
 
-    // L1: Global Preferences — Enrich with technical preferences
+    // L1: Global Preferences â€” Enrich with technical preferences
     const existingPrefs = await this.sdk.memory.get(userId, MemoryLayer.GLOBAL_PREFERENCES);
     if (existingPrefs) {
       // Merge technical preferences without overwriting conversational preferences
@@ -2649,7 +2649,7 @@ export class VivimIdentityIntegration {
       });
     }
 
-    // L5: JIT Retrieval — Prepare relevant context from past sessions
+    // L5: JIT Retrieval â€” Prepare relevant context from past sessions
     const relevantMemories = await this.sdk.memory.query(userId, {
       types: [MemoryType.EPISODIC, MemoryType.PROJECT, MemoryType.GOAL],
       recency: 'last_7_days',
@@ -2670,13 +2670,13 @@ export class VivimIdentityIntegration {
       });
     }
 
-    // L4: Conversation Arc — Check if continuing a conversation
+    // L4: Conversation Arc â€” Check if continuing a conversation
     const lastConversation = await this.sdk.memory.get(userId, MemoryLayer.CONVERSATION_ARC);
     if (lastConversation) {
       const hoursSinceLastMessage = (Date.now() - lastConversation.timestamp) / (1000 * 60 * 60);
 
       if (hoursSinceLastMessage < 2) {
-        // Recent conversation — continue the arc
+        // Recent conversation â€” continue the arc
         // (Keep existing L4, just flag it as continued)
       } else {
         // Archive previous arc and start fresh
@@ -2713,7 +2713,7 @@ export class VivimIdentityIntegration {
       },
     });
 
-    // L1: Global Preferences — Seed with technical defaults
+    // L1: Global Preferences â€” Seed with technical defaults
     await this.sdk.memory.set(userId, MemoryLayer.GLOBAL_PREFERENCES, {
       type: MemoryType.PREFERENCE,
       content: {
@@ -2727,7 +2727,7 @@ export class VivimIdentityIntegration {
       },
     });
 
-    // L5: JIT Retrieval — Prime with first-visit context
+    // L5: JIT Retrieval â€” Prime with first-visit context
     await this.sdk.memory.set(userId, MemoryLayer.JIT_RETRIEVAL, {
       type: MemoryType.FACTUAL,
       content: {
@@ -2737,7 +2737,7 @@ export class VivimIdentityIntegration {
   }
 
   /**
-   * Called during chat — extracts and stores memories from conversation
+   * Called during chat â€” extracts and stores memories from conversation
    */
   async onMessage(
     userId: string,
@@ -2827,7 +2827,7 @@ ${currentMessage}
 `.trim();
   }
 
-  // ── Helpers ──
+  // â”€â”€ Helpers â”€â”€
 
   private async extractMemories(message: string): Promise<any[]> {
     // This would use NLP/AI to extract structured memories from free text
@@ -2867,7 +2867,7 @@ ${currentMessage}
   private formatLayer(layer: any, maxTokens: number): string {
     if (!layer) return '[No data]';
     const content = JSON.stringify(layer.content, null, 2);
-    // Rough token estimation (4 chars ≈ 1 token)
+    // Rough token estimation (4 chars â‰ˆ 1 token)
     const maxChars = maxTokens * 4;
     return content.length > maxChars ? content.slice(0, maxChars) + '...' : content;
   }
@@ -2891,7 +2891,7 @@ ${currentMessage}
 
 ```typescript
 // ============================================================================
-// chatbot-identity.ts — Main integration point for the chatbot
+// chatbot-identity.ts â€” Main integration point for the chatbot
 // ============================================================================
 
 import { IdentityBeacon } from './identity-beacon';
@@ -2959,7 +2959,7 @@ export class IdentityAwareChatbot {
   }
 
   /**
-   * Process a user message — with full identity-aware context
+   * Process a user message â€” with full identity-aware context
    */
   async processMessage(message: string): Promise<string> {
     if (!this.currentUserId) {
@@ -3097,7 +3097,7 @@ export class IdentityAwareChatbot {
 
 ```typescript
 // ============================================================================
-// api/identity-routes.ts — Server-side API endpoints
+// api/identity-routes.ts â€” Server-side API endpoints
 // ============================================================================
 
 import { Router, Request, Response } from 'express';
@@ -3108,7 +3108,7 @@ export function createIdentityRoutes(resolver: IdentityResolver): Router {
 
   /**
    * POST /identify
-   * Main identification endpoint — receives beacon payload, resolves identity
+   * Main identification endpoint â€” receives beacon payload, resolves identity
    */
   router.post('/identify', async (req: Request, res: Response) => {
     try {
@@ -3183,70 +3183,70 @@ export function createIdentityRoutes(resolver: IdentityResolver): Router {
 ## 9. Confidence Score Matrix
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    CONFIDENCE SCORING MATRIX                            │
-├────────────────────────┬──────────┬───────────┬────────────────────────┤
-│ Signal                 │ Weight   │ Stability │ Entropy (bits)         │
-├────────────────────────┼──────────┼───────────┼────────────────────────┤
-│ DETERMINISTIC                                                          │
-│ Persistent ID (cookie) │ 35%      │ High*     │ 128                    │
-├────────────────────────┼──────────┼───────────┼────────────────────────┤
-│ STRONG FINGERPRINT                                                     │
-│ Canvas Hash            │ 12%      │ High      │ ~12                    │
-│ WebGL Hash             │ 10%      │ High      │ ~15                    │
-│ Audio Hash             │ 8%       │ Very High │ ~10                    │
-│ Font Hash              │ 6%       │ Medium    │ ~8                     │
-├────────────────────────┼──────────┼───────────┼────────────────────────┤
-│ HARDWARE                                                               │
-│ GPU Renderer           │ 5%       │ Very High │ ~10                    │
-│ Screen Profile         │ 4%       │ High      │ ~8                     │
-│ Hardware (cores/mem)   │ 4%       │ Very High │ ~6                     │
-├────────────────────────┼──────────┼───────────┼────────────────────────┤
-│ SOFTWARE                                                               │
-│ Timezone               │ 3%       │ Very High │ ~5                     │
-│ Language Profile       │ 3%       │ High      │ ~5                     │
-│ CSS Preferences        │ 2%       │ Medium    │ ~5                     │
-│ API Availability       │ 2%       │ Medium    │ ~6                     │
-│ Speech Voices          │ 2%       │ High      │ ~6                     │
-├────────────────────────┼──────────┼───────────┼────────────────────────┤
-│ BEHAVIORAL                                                             │
-│ Typing Biometrics      │ 5%       │ Medium    │ ~15 (with digraphs)    │
-│ Mouse Dynamics         │ 3%       │ Medium    │ ~8                     │
-├────────────────────────┼──────────┼───────────┼────────────────────────┤
-│ CONTEXTUAL                                                             │
-│ IP Address             │ 2%       │ Low       │ ~4                     │
-│ Session Timing         │ 1%       │ Low       │ ~3                     │
-├────────────────────────┼──────────┼───────────┼────────────────────────┤
-│ TOTAL                  │ 100%     │           │ ~90+ bits              │
-└────────────────────────┴──────────┴───────────┴────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                    CONFIDENCE SCORING MATRIX                            â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ Signal                 â”‚ Weight   â”‚ Stability â”‚ Entropy (bits)         â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ DETERMINISTIC                                                          â”‚
+â”‚ Persistent ID (cookie) â”‚ 35%      â”‚ High*     â”‚ 128                    â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ STRONG FINGERPRINT                                                     â”‚
+â”‚ Canvas Hash            â”‚ 12%      â”‚ High      â”‚ ~12                    â”‚
+â”‚ WebGL Hash             â”‚ 10%      â”‚ High      â”‚ ~15                    â”‚
+â”‚ Audio Hash             â”‚ 8%       â”‚ Very High â”‚ ~10                    â”‚
+â”‚ Font Hash              â”‚ 6%       â”‚ Medium    â”‚ ~8                     â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ HARDWARE                                                               â”‚
+â”‚ GPU Renderer           â”‚ 5%       â”‚ Very High â”‚ ~10                    â”‚
+â”‚ Screen Profile         â”‚ 4%       â”‚ High      â”‚ ~8                     â”‚
+â”‚ Hardware (cores/mem)   â”‚ 4%       â”‚ Very High â”‚ ~6                     â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ SOFTWARE                                                               â”‚
+â”‚ Timezone               â”‚ 3%       â”‚ Very High â”‚ ~5                     â”‚
+â”‚ Language Profile       â”‚ 3%       â”‚ High      â”‚ ~5                     â”‚
+â”‚ CSS Preferences        â”‚ 2%       â”‚ Medium    â”‚ ~5                     â”‚
+â”‚ API Availability       â”‚ 2%       â”‚ Medium    â”‚ ~6                     â”‚
+â”‚ Speech Voices          â”‚ 2%       â”‚ High      â”‚ ~6                     â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ BEHAVIORAL                                                             â”‚
+â”‚ Typing Biometrics      â”‚ 5%       â”‚ Medium    â”‚ ~15 (with digraphs)    â”‚
+â”‚ Mouse Dynamics         â”‚ 3%       â”‚ Medium    â”‚ ~8                     â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ CONTEXTUAL                                                             â”‚
+â”‚ IP Address             â”‚ 2%       â”‚ Low       â”‚ ~4                     â”‚
+â”‚ Session Timing         â”‚ 1%       â”‚ Low       â”‚ ~3                     â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ TOTAL                  â”‚ 100%     â”‚           â”‚ ~90+ bits              â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 
 *Persistent ID is high stability when stored, but can be cleared by user
 
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    DECISION THRESHOLDS                                  │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│  ≥ 85% ──→ CONFIDENT MATCH                                            │
-│            Silently identify as existing user                          │
-│            Restore full memory context                                 │
-│            Personalized greeting                                       │
-│                                                                        │
-│  55-84% ─→ PROBABLE MATCH                                             │
-│            Identify as existing user                                   │
-│            Restore memory context                                      │
-│            Soft confirmation: "Welcome back! Were we discussing X?"    │
-│                                                                        │
-│  30-54% ─→ POSSIBLE MATCH                                             │
-│            Create new user profile                                     │
-│            Flag for potential merge                                     │
-│            Generic greeting, but watch for confirming signals          │
-│                                                                        │
-│  < 30% ──→ NEW USER                                                   │
-│            Create new user profile                                     │
-│            Begin fresh memory collection                               │
-│            Welcome greeting                                            │
-│                                                                        │
-└─────────────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                    DECISION THRESHOLDS                                  â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚                                                                        â”‚
+â”‚  â‰¥ 85% â”€â”€â†’ CONFIDENT MATCH                                            â”‚
+â”‚            Silently identify as existing user                          â”‚
+â”‚            Restore full memory context                                 â”‚
+â”‚            Personalized greeting                                       â”‚
+â”‚                                                                        â”‚
+â”‚  55-84% â”€â†’ PROBABLE MATCH                                             â”‚
+â”‚            Identify as existing user                                   â”‚
+â”‚            Restore memory context                                      â”‚
+â”‚            Soft confirmation: "Welcome back! Were we discussing X?"    â”‚
+â”‚                                                                        â”‚
+â”‚  30-54% â”€â†’ POSSIBLE MATCH                                             â”‚
+â”‚            Create new user profile                                     â”‚
+â”‚            Flag for potential merge                                     â”‚
+â”‚            Generic greeting, but watch for confirming signals          â”‚
+â”‚                                                                        â”‚
+â”‚  < 30% â”€â”€â†’ NEW USER                                                   â”‚
+â”‚            Create new user profile                                     â”‚
+â”‚            Begin fresh memory collection                               â”‚
+â”‚            Welcome greeting                                            â”‚
+â”‚                                                                        â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ---
@@ -3255,7 +3255,7 @@ export function createIdentityRoutes(resolver: IdentityResolver): Router {
 
 ```typescript
 // ============================================================================
-// edge-cases.ts — Handling tricky identity scenarios
+// edge-cases.ts â€” Handling tricky identity scenarios
 // ============================================================================
 
 export class EdgeCaseHandler {
@@ -3336,7 +3336,7 @@ export class EdgeCaseHandler {
     isLikelyUpdate: boolean;
     confidence: number;
   } {
-    // If canvas + audio + hardware are same but UA changed → browser update
+    // If canvas + audio + hardware are same but UA changed â†’ browser update
     const canvasSame = oldSnapshot.signals.canvasHash === newSnapshot.signals.canvasHash;
     const audioSame = oldSnapshot.signals.audio?.hash === newSnapshot.signals.audio?.hash;
     const hardwareSame = (
@@ -3454,7 +3454,7 @@ export class EdgeCaseHandler {
 
 ```typescript
 // ============================================================================
-// database-adapter.ts — Database abstraction (implement for your DB)
+// database-adapter.ts â€” Database abstraction (implement for your DB)
 // ============================================================================
 
 export interface DatabaseAdapter {
@@ -3491,13 +3491,13 @@ export interface DatabaseAdapter {
   updateSession(userId: string, sessionId: string, data: Partial<SessionRecord>): Promise<void>;
 }
 
-// ── Example PostgreSQL Implementation ──
+// â”€â”€ Example PostgreSQL Implementation â”€â”€
 
 export class PostgresAdapter implements DatabaseAdapter {
   constructor(private pool: Pool) {}
 
   async findUsersWithSimilarSignals(signals: Record<string, string | undefined>): Promise<string[]> {
-    // Use a scored query — match on any 2+ signals
+    // Use a scored query â€” match on any 2+ signals
     const conditions: string[] = [];
     const values: any[] = [];
     let paramIndex = 1;
@@ -3564,7 +3564,7 @@ const chatbot = new IdentityAwareChatbot({
   db,
 });
 
-// On page load — automatically identify user
+// On page load â€” automatically identify user
 document.addEventListener('DOMContentLoaded', async () => {
   const { userId, isReturning, confidence, greeting } = await chatbot.initialize();
 
@@ -3590,98 +3590,98 @@ chatInput.addEventListener('submit', async (e) => {
 ## Summary: Signal Hierarchy & Resilience
 
 ```
-SCENARIO                    │ PERSISTENT ID │ FINGERPRINT │ BEHAVIORAL │ RESULT
-────────────────────────────┼───────────────┼─────────────┼────────────┼──────────
-Normal return visit         │ ✅ Match      │ ✅ Match    │ ✅ Match   │ 98%
-After clearing cookies      │ ❌ Gone       │ ✅ Match    │ ✅ Match   │ 85%
-Incognito mode              │ ❌ Gone       │ ✅ Match    │ ✅ Match   │ 82%
-Browser update              │ ✅ Match      │ ⚠️ Partial  │ ✅ Match   │ 88%
-OS update                   │ ✅ Match      │ ⚠️ Partial  │ ✅ Match   │ 85%
-VPN/different IP            │ ✅ Match      │ ✅ Match    │ ✅ Match   │ 95%
-New device, same network    │ ❌ Gone       │ ❌ Different│ ✅ Match   │ 45%*
-Different person, same PC   │ ✅ Match      │ ✅ Match    │ ❌ Different│ Detected!
-Privacy browser (Brave/Tor) │ ❌ Gone       │ ⚠️ Limited  │ ✅ Match   │ 55%
+SCENARIO                    â”‚ PERSISTENT ID â”‚ FINGERPRINT â”‚ BEHAVIORAL â”‚ RESULT
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+Normal return visit         â”‚ âœ… Match      â”‚ âœ… Match    â”‚ âœ… Match   â”‚ 98%
+After clearing cookies      â”‚ âŒ Gone       â”‚ âœ… Match    â”‚ âœ… Match   â”‚ 85%
+Incognito mode              â”‚ âŒ Gone       â”‚ âœ… Match    â”‚ âœ… Match   â”‚ 82%
+Browser update              â”‚ âœ… Match      â”‚ âš ï¸ Partial  â”‚ âœ… Match   â”‚ 88%
+OS update                   â”‚ âœ… Match      â”‚ âš ï¸ Partial  â”‚ âœ… Match   â”‚ 85%
+VPN/different IP            â”‚ âœ… Match      â”‚ âœ… Match    â”‚ âœ… Match   â”‚ 95%
+New device, same network    â”‚ âŒ Gone       â”‚ âŒ Differentâ”‚ âœ… Match   â”‚ 45%*
+Different person, same PC   â”‚ âœ… Match      â”‚ âœ… Match    â”‚ âŒ Differentâ”‚ Detected!
+Privacy browser (Brave/Tor) â”‚ âŒ Gone       â”‚ âš ï¸ Limited  â”‚ âœ… Match   â”‚ 55%
 
 * New device requires behavioral + contextual signals or conversation-based matching
 ```
 
-This system achieves **~90+ bits of entropy** across all signals combined, making each browser/device combination statistically unique among millions of users — all without requiring a single authentication step.
+This system achieves **~90+ bits of entropy** across all signals combined, making each browser/device combination statistically unique among millions of users â€” all without requiring a single authentication step.
 
 # Zero-Auth User Identity & Memory System
 
 ## Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                        CLIENT SIDE (Browser)                           │
-│                                                                        │
-│  ┌──────────────┐  ┌──────────────────┐  ┌────────────────────────┐   │
-│  │  Fingerprint │  │   Behavioral     │  │   Persistent ID        │   │
-│  │  Collector   │  │   Biometrics     │  │   Manager              │   │
-│  │              │  │                  │  │                        │   │
-│  │ • Canvas     │  │ • Typing rhythm  │  │ • 1st party cookie     │   │
-│  │ • WebGL      │  │ • Mouse dynamics │  │ • localStorage         │   │
-│  │ • Audio      │  │ • Scroll pattern │  │ • IndexedDB            │   │
-│  │ • Fonts      │  │ • Click cadence  │  │ • Service Worker cache │   │
-│  │ • Screen     │  │ • Touch gestures │  │ • URL fragment         │   │
-│  │ • Navigator  │  │ • Dwell times    │  │                        │   │
-│  │ • Timezone   │  │ • Session timing │  │                        │   │
-│  │ • Hardware   │  │                  │  │                        │   │
-│  │ • CSS prefs  │  │                  │  │                        │   │
-│  │ • WebRTC     │  │                  │  │                        │   │
-│  │ • Speech API │  │                  │  │                        │   │
-│  └──────┬───────┘  └────────┬─────────┘  └───────────┬────────────┘   │
-│         │                   │                         │                │
-│         └───────────────────┼─────────────────────────┘                │
-│                             │                                          │
-│                    ┌────────▼────────┐                                 │
-│                    │  Identity Beacon │ ← Encrypted payload            │
-│                    └────────┬────────┘                                 │
-└─────────────────────────────┼──────────────────────────────────────────┘
-                              │ HTTPS
-                              ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                        SERVER SIDE                                      │
-│                                                                        │
-│  ┌──────────────────────────────────────────────────────────────────┐  │
-│  │                    IDENTITY RESOLUTION ENGINE                     │  │
-│  │                                                                   │  │
-│  │  Stage 1: Deterministic Match (Persistent IDs)                   │  │
-│  │  Stage 2: Fingerprint Hash Match (Exact)                         │  │
-│  │  Stage 3: Fuzzy Fingerprint Match (Signal Similarity)            │  │
-│  │  Stage 4: Behavioral Biometric Match                             │  │
-│  │  Stage 5: Temporal + Contextual Pattern Match                    │  │
-│  │                                                                   │  │
-│  │  ┌─────────────────┐  ┌──────────────────┐  ┌────────────────┐  │  │
-│  │  │ Confidence Score │→ │ Decision Engine   │→ │ Identity       │  │  │
-│  │  │ Aggregator       │  │ (threshold logic) │  │ Assignment     │  │  │
-│  │  └─────────────────┘  └──────────────────┘  └────────────────┘  │  │
-│  └──────────────────────────────────────────────────────────────────┘  │
-│                                    │                                    │
-│                                    ▼                                    │
-│  ┌──────────────────────────────────────────────────────────────────┐  │
-│  │              VIRTUAL USER PROFILE MANAGER                        │  │
-│  │                                                                   │  │
-│  │  • Create new virtual user (vuid_xxxx)                           │  │
-│  │  • Merge duplicate profiles                                      │  │
-│  │  • Track identity confidence over time                           │  │
-│  │  • Device graph (multi-device linking)                           │  │
-│  └──────────────────────────────────────────────────────────────────┘  │
-│                                    │                                    │
-│                                    ▼                                    │
-│  ┌──────────────────────────────────────────────────────────────────┐  │
-│  │              VIVIM MEMORY LAYER INTEGRATION                      │  │
-│  │                                                                   │  │
-│  │  L0 Identity Core ←── Virtual User ID + fingerprint metadata     │  │
-│  │  L1 Global Prefs  ←── Behavioral patterns + inferred prefs      │  │
-│  │  L2 Topic Context ←── Accumulated conversation topics            │  │
-│  │  L3 Entity Context←── Extracted entities across sessions         │  │
-│  │  L4 Conv Arc      ←── Current thread continuity                  │  │
-│  │  L5 JIT Retrieval ←── Relevant past knowledge                   │  │
-│  │  L6 Message Hist  ←── Recent messages (per identity)            │  │
-│  │  L7 User Message  ←── Current input                             │  │
-│  └──────────────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                        CLIENT SIDE (Browser)                           â”‚
+â”‚                                                                        â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”‚
+â”‚  â”‚  Fingerprint â”‚  â”‚   Behavioral     â”‚  â”‚   Persistent ID        â”‚   â”‚
+â”‚  â”‚  Collector   â”‚  â”‚   Biometrics     â”‚  â”‚   Manager              â”‚   â”‚
+â”‚  â”‚              â”‚  â”‚                  â”‚  â”‚                        â”‚   â”‚
+â”‚  â”‚ â€¢ Canvas     â”‚  â”‚ â€¢ Typing rhythm  â”‚  â”‚ â€¢ 1st party cookie     â”‚   â”‚
+â”‚  â”‚ â€¢ WebGL      â”‚  â”‚ â€¢ Mouse dynamics â”‚  â”‚ â€¢ localStorage         â”‚   â”‚
+â”‚  â”‚ â€¢ Audio      â”‚  â”‚ â€¢ Scroll pattern â”‚  â”‚ â€¢ IndexedDB            â”‚   â”‚
+â”‚  â”‚ â€¢ Fonts      â”‚  â”‚ â€¢ Click cadence  â”‚  â”‚ â€¢ Service Worker cache â”‚   â”‚
+â”‚  â”‚ â€¢ Screen     â”‚  â”‚ â€¢ Touch gestures â”‚  â”‚ â€¢ URL fragment         â”‚   â”‚
+â”‚  â”‚ â€¢ Navigator  â”‚  â”‚ â€¢ Dwell times    â”‚  â”‚                        â”‚   â”‚
+â”‚  â”‚ â€¢ Timezone   â”‚  â”‚ â€¢ Session timing â”‚  â”‚                        â”‚   â”‚
+â”‚  â”‚ â€¢ Hardware   â”‚  â”‚                  â”‚  â”‚                        â”‚   â”‚
+â”‚  â”‚ â€¢ CSS prefs  â”‚  â”‚                  â”‚  â”‚                        â”‚   â”‚
+â”‚  â”‚ â€¢ WebRTC     â”‚  â”‚                  â”‚  â”‚                        â”‚   â”‚
+â”‚  â”‚ â€¢ Speech API â”‚  â”‚                  â”‚  â”‚                        â”‚   â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜   â”‚
+â”‚         â”‚                   â”‚                         â”‚                â”‚
+â”‚         â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                â”‚
+â”‚                             â”‚                                          â”‚
+â”‚                    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”                                 â”‚
+â”‚                    â”‚  Identity Beacon â”‚ â† Encrypted payload            â”‚
+â”‚                    â””â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”˜                                 â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                              â”‚ HTTPS
+                              â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                        SERVER SIDE                                      â”‚
+â”‚                                                                        â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  â”‚                    IDENTITY RESOLUTION ENGINE                     â”‚  â”‚
+â”‚  â”‚                                                                   â”‚  â”‚
+â”‚  â”‚  Stage 1: Deterministic Match (Persistent IDs)                   â”‚  â”‚
+â”‚  â”‚  Stage 2: Fingerprint Hash Match (Exact)                         â”‚  â”‚
+â”‚  â”‚  Stage 3: Fuzzy Fingerprint Match (Signal Similarity)            â”‚  â”‚
+â”‚  â”‚  Stage 4: Behavioral Biometric Match                             â”‚  â”‚
+â”‚  â”‚  Stage 5: Temporal + Contextual Pattern Match                    â”‚  â”‚
+â”‚  â”‚                                                                   â”‚  â”‚
+â”‚  â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚  â”‚
+â”‚  â”‚  â”‚ Confidence Score â”‚â†’ â”‚ Decision Engine   â”‚â†’ â”‚ Identity       â”‚  â”‚  â”‚
+â”‚  â”‚  â”‚ Aggregator       â”‚  â”‚ (threshold logic) â”‚  â”‚ Assignment     â”‚  â”‚  â”‚
+â”‚  â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚  â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â”‚                                    â”‚                                    â”‚
+â”‚                                    â–¼                                    â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  â”‚              VIRTUAL USER PROFILE MANAGER                        â”‚  â”‚
+â”‚  â”‚                                                                   â”‚  â”‚
+â”‚  â”‚  â€¢ Create new virtual user (vuid_xxxx)                           â”‚  â”‚
+â”‚  â”‚  â€¢ Merge duplicate profiles                                      â”‚  â”‚
+â”‚  â”‚  â€¢ Track identity confidence over time                           â”‚  â”‚
+â”‚  â”‚  â€¢ Device graph (multi-device linking)                           â”‚  â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â”‚                                    â”‚                                    â”‚
+â”‚                                    â–¼                                    â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  â”‚              VIVIM MEMORY LAYER INTEGRATION                      â”‚  â”‚
+â”‚  â”‚                                                                   â”‚  â”‚
+â”‚  â”‚  L0 Identity Core â†â”€â”€ Virtual User ID + fingerprint metadata     â”‚  â”‚
+â”‚  â”‚  L1 Global Prefs  â†â”€â”€ Behavioral patterns + inferred prefs      â”‚  â”‚
+â”‚  â”‚  L2 Topic Context â†â”€â”€ Accumulated conversation topics            â”‚  â”‚
+â”‚  â”‚  L3 Entity Contextâ†â”€â”€ Extracted entities across sessions         â”‚  â”‚
+â”‚  â”‚  L4 Conv Arc      â†â”€â”€ Current thread continuity                  â”‚  â”‚
+â”‚  â”‚  L5 JIT Retrieval â†â”€â”€ Relevant past knowledge                   â”‚  â”‚
+â”‚  â”‚  L6 Message Hist  â†â”€â”€ Recent messages (per identity)            â”‚  â”‚
+â”‚  â”‚  L7 User Message  â†â”€â”€ Current input                             â”‚  â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ---
@@ -3690,17 +3690,17 @@ This system achieves **~90+ bits of entropy** across all signals combined, makin
 
 ```typescript
 // ============================================================================
-// fingerprint-engine.ts — Comprehensive Browser Fingerprint Collector
+// fingerprint-engine.ts â€” Comprehensive Browser Fingerprint Collector
 // ============================================================================
 
 interface FingerprintSignals {
-  // ── Hardware Signals ──
+  // â”€â”€ Hardware Signals â”€â”€
   screen: ScreenSignals;
   hardware: HardwareSignals;
   gpu: GPUSignals;
   audio: AudioSignals;
 
-  // ── Software Signals ──
+  // â”€â”€ Software Signals â”€â”€
   navigator: NavigatorSignals;
   timezone: TimezoneSignals;
   fonts: FontSignals;
@@ -3708,25 +3708,25 @@ interface FingerprintSignals {
   cssPreferences: CSSPreferenceSignals;
   speechVoices: string[];
 
-  // ── Rendered Signals (Canvas/WebGL) ──
+  // â”€â”€ Rendered Signals (Canvas/WebGL) â”€â”€
   canvasHash: string;
   webglHash: string;
   webglParams: WebGLParams;
 
-  // ── Network Signals ──
+  // â”€â”€ Network Signals â”€â”€
   connection: ConnectionSignals;
   webrtcIPs: string[];
 
-  // ── Storage Capability Signals ──
+  // â”€â”€ Storage Capability Signals â”€â”€
   storageCapabilities: StorageCapabilities;
 
-  // ── API Availability Signals ──
+  // â”€â”€ API Availability Signals â”€â”€
   apiFingerprint: APIAvailability;
 
-  // ── Behavioral Seed Signals ──
+  // â”€â”€ Behavioral Seed Signals â”€â”€
   performanceTiming: PerformanceSignals;
 
-  // ── Composite ──
+  // â”€â”€ Composite â”€â”€
   signalHash: string;          // SHA-256 of all signals combined
   signalVersion: string;       // Version of collector
   collectedAt: number;         // Timestamp
@@ -3916,7 +3916,7 @@ export class FingerprintEngine {
     return this.signals as FingerprintSignals;
   }
 
-  // ── Screen Signals ──────────────────────────────────────────────────────
+  // â”€â”€ Screen Signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectScreen(): Promise<void> {
     const s = window.screen;
@@ -3934,7 +3934,7 @@ export class FingerprintEngine {
     this.entropyBits += 8; // ~256 common resolutions
   }
 
-  // ── Hardware Signals ────────────────────────────────────────────────────
+  // â”€â”€ Hardware Signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectHardware(): Promise<void> {
     this.signals.hardware = {
@@ -3957,7 +3957,7 @@ export class FingerprintEngine {
     return 'unknown';
   }
 
-  // ── Navigator Signals ───────────────────────────────────────────────────
+  // â”€â”€ Navigator Signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectNavigator(): Promise<void> {
     this.signals.navigator = {
@@ -3977,7 +3977,7 @@ export class FingerprintEngine {
     this.entropyBits += 10;
   }
 
-  // ── Timezone Signals ────────────────────────────────────────────────────
+  // â”€â”€ Timezone Signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectTimezone(): Promise<void> {
     const now = new Date();
@@ -3999,7 +3999,7 @@ export class FingerprintEngine {
     this.entropyBits += 5;
   }
 
-  // ── Canvas Fingerprint ──────────────────────────────────────────────────
+  // â”€â”€ Canvas Fingerprint â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectCanvas(): Promise<void> {
     try {
@@ -4023,7 +4023,7 @@ export class FingerprintEngine {
       // Text with various fonts
       ctx.fillStyle = '#2d3436';
       ctx.font = '18px Arial';
-      ctx.fillText('Cwm fjord bank glyphs vext quiz 🏛️', 2, 2);
+      ctx.fillText('Cwm fjord bank glyphs vext quiz ðŸ›ï¸', 2, 2);
 
       ctx.font = 'bold 14px "Times New Roman"';
       ctx.fillStyle = '#6c5ce7';
@@ -4066,7 +4066,7 @@ export class FingerprintEngine {
     }
   }
 
-  // ── WebGL Fingerprint ───────────────────────────────────────────────────
+  // â”€â”€ WebGL Fingerprint â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectWebGL(): Promise<void> {
     try {
@@ -4166,7 +4166,7 @@ export class FingerprintEngine {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
 
-  // ── Audio Fingerprint ───────────────────────────────────────────────────
+  // â”€â”€ Audio Fingerprint â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectAudio(): Promise<void> {
     try {
@@ -4221,7 +4221,7 @@ export class FingerprintEngine {
     }
   }
 
-  // ── Font Detection ──────────────────────────────────────────────────────
+  // â”€â”€ Font Detection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectFonts(): Promise<void> {
     const testFonts = [
@@ -4245,7 +4245,7 @@ export class FingerprintEngine {
     ];
 
     const baseFonts = ['monospace', 'sans-serif', 'serif'];
-    const testString = 'mmMwWLli1Iloö0OQ@#$%&';
+    const testString = 'mmMwWLli1IloÃ¶0OQ@#$%&';
     const testSize = '72px';
 
     const canvas = document.createElement('canvas');
@@ -4284,7 +4284,7 @@ export class FingerprintEngine {
     this.entropyBits += 8;
   }
 
-  // ── CSS Preference Detection ────────────────────────────────────────────
+  // â”€â”€ CSS Preference Detection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectCSSPreferences(): Promise<void> {
     const match = (query: string) => window.matchMedia(query).matches;
@@ -4308,7 +4308,7 @@ export class FingerprintEngine {
     this.entropyBits += 5;
   }
 
-  // ── Connection Signals ──────────────────────────────────────────────────
+  // â”€â”€ Connection Signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectConnection(): Promise<void> {
     const conn = (navigator as any).connection
@@ -4324,7 +4324,7 @@ export class FingerprintEngine {
     this.entropyBits += 3;
   }
 
-  // ── Storage Capabilities ────────────────────────────────────────────────
+  // â”€â”€ Storage Capabilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectStorageCapabilities(): Promise<void> {
     let storageEstimate: { quota: number; usage: number } | null = null;
@@ -4360,7 +4360,7 @@ export class FingerprintEngine {
     }
   }
 
-  // ── API Availability ────────────────────────────────────────────────────
+  // â”€â”€ API Availability â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectAPIAvailability(): Promise<void> {
     this.signals.apiFingerprint = {
@@ -4390,7 +4390,7 @@ export class FingerprintEngine {
     this.entropyBits += 6;
   }
 
-  // ── Speech Voices ──────────────────────────────────────────────────────
+  // â”€â”€ Speech Voices â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectSpeechVoices(): Promise<void> {
     try {
@@ -4416,7 +4416,7 @@ export class FingerprintEngine {
     }
   }
 
-  // ── WebRTC IP Detection ─────────────────────────────────────────────────
+  // â”€â”€ WebRTC IP Detection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectWebRTC(): Promise<void> {
     try {
@@ -4448,7 +4448,7 @@ export class FingerprintEngine {
     }
   }
 
-  // ── Performance Signals ─────────────────────────────────────────────────
+  // â”€â”€ Performance Signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async collectPerformance(): Promise<void> {
     try {
@@ -4485,7 +4485,7 @@ export class FingerprintEngine {
     }
   }
 
-  // ── Hash Utilities ──────────────────────────────────────────────────────
+  // â”€â”€ Hash Utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async sha256(data: string): Promise<string> {
     const encoder = new TextEncoder();
@@ -4529,13 +4529,13 @@ export class FingerprintEngine {
 
 ```typescript
 // ============================================================================
-// behavioral-biometrics.ts — Captures how the user interacts
+// behavioral-biometrics.ts â€” Captures how the user interacts
 // ============================================================================
 
 interface TypingProfile {
   avgKeyDownDuration: number;      // How long keys are held
   avgInterKeyDelay: number;        // Time between keystrokes
-  keyPairTimings: Map<string, number>;  // 'th' → 45ms, 'er' → 52ms (digraph timing)
+  keyPairTimings: Map<string, number>;  // 'th' â†’ 45ms, 'er' â†’ 52ms (digraph timing)
   wordsPerMinute: number;
   errorRate: number;               // Backspace frequency
   burstPatterns: number[];         // Lengths of typing bursts
@@ -4609,7 +4609,7 @@ export class BehavioralBiometricsEngine {
 
     const target = targetElement || document;
 
-    // ── Keyboard Tracking ──
+    // â”€â”€ Keyboard Tracking â”€â”€
     target.addEventListener('keydown', (e: Event) => {
       const ke = e as KeyboardEvent;
       if (!this.keyDownMap.has(ke.key)) {
@@ -4631,7 +4631,7 @@ export class BehavioralBiometricsEngine {
       }
     });
 
-    // ── Mouse Tracking (sampled to reduce overhead) ──
+    // â”€â”€ Mouse Tracking (sampled to reduce overhead) â”€â”€
     let lastMouseTime = 0;
     target.addEventListener('mousemove', (e: Event) => {
       const me = e as MouseEvent;
@@ -4653,14 +4653,14 @@ export class BehavioralBiometricsEngine {
       this.mouseEvents.push({ x: me.clientX, y: me.clientY, time: performance.now(), type: 'up' });
     });
 
-    // ── Scroll Tracking ──
+    // â”€â”€ Scroll Tracking â”€â”€
     target.addEventListener('wheel', (e: Event) => {
       const we = e as WheelEvent;
       this.scrollEvents.push({ delta: we.deltaY, time: performance.now() });
       this.samplesCollected++;
     }, { passive: true });
 
-    // ── Touch Tracking ──
+    // â”€â”€ Touch Tracking â”€â”€
     target.addEventListener('touchstart', (e: Event) => {
       const te = e as TouchEvent;
       if (te.touches.length > 0) {
@@ -4676,7 +4676,7 @@ export class BehavioralBiometricsEngine {
       }
     }, { passive: true });
 
-    // ── Focus/Blur Tracking ──
+    // â”€â”€ Focus/Blur Tracking â”€â”€
     window.addEventListener('focus', () => {
       this.focusEvents.push({ type: 'focus', time: performance.now() });
     });
@@ -4886,7 +4886,7 @@ export class BehavioralBiometricsEngine {
     };
   }
 
-  // ── Math Utilities ──
+  // â”€â”€ Math Utilities â”€â”€
   private average(arr: number[]): number {
     return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
   }
@@ -4910,7 +4910,7 @@ export class BehavioralBiometricsEngine {
 
 ```typescript
 // ============================================================================
-// persistent-id-manager.ts — Multi-layer persistent identity storage
+// persistent-id-manager.ts â€” Multi-layer persistent identity storage
 // ============================================================================
 
 export class PersistentIDManager {
@@ -4968,7 +4968,7 @@ export class PersistentIDManager {
       };
     }
 
-    // No existing ID found — generate new one
+    // No existing ID found â€” generate new one
     const newId = this.generateVUID();
     await this.persistToAllLayers(newId);
     return { id: newId, isNew: true, foundIn: [] };
@@ -4990,7 +4990,7 @@ export class PersistentIDManager {
     ]);
   }
 
-  // ── Cookie Layer ──────────────────────────────────────────────────────
+  // â”€â”€ Cookie Layer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async getFromCookie(): Promise<string | null> {
     const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${this.COOKIE_NAME}=([^;]*)`));
@@ -5003,7 +5003,7 @@ export class PersistentIDManager {
     document.cookie = `${this.COOKIE_NAME}=${encodeURIComponent(id)}; max-age=${maxAge}; path=/; SameSite=Lax${secure}`;
   }
 
-  // ── LocalStorage Layer ────────────────────────────────────────────────
+  // â”€â”€ LocalStorage Layer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async getFromLocalStorage(): Promise<string | null> {
     try {
@@ -5028,7 +5028,7 @@ export class PersistentIDManager {
     } catch {}
   }
 
-  // ── IndexedDB Layer ───────────────────────────────────────────────────
+  // â”€â”€ IndexedDB Layer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private getDB(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
@@ -5072,7 +5072,7 @@ export class PersistentIDManager {
     } catch {}
   }
 
-  // ── Service Worker Cache Layer ────────────────────────────────────────
+  // â”€â”€ Service Worker Cache Layer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async getFromServiceWorkerCache(): Promise<string | null> {
     try {
@@ -5110,7 +5110,7 @@ export class PersistentIDManager {
 
 ```typescript
 // ============================================================================
-// identity-beacon.ts — Orchestrates collection and sends to server
+// identity-beacon.ts â€” Orchestrates collection and sends to server
 // ============================================================================
 
 import { FingerprintEngine, FingerprintSignals } from './fingerprint-engine';
@@ -5303,7 +5303,7 @@ export class IdentityBeacon {
 
 ```typescript
 // ============================================================================
-// identity-resolver.ts — Multi-stage identity resolution
+// identity-resolver.ts â€” Multi-stage identity resolution
 // ============================================================================
 
 import { IdentityBeaconPayload } from './identity-beacon';
@@ -5372,10 +5372,10 @@ interface IdentityMatch {
   virtualUserId: string;
   confidence: number;
   matchStage: string;
-  matchDetails: Record<string, number>;  // Signal → confidence contribution
+  matchDetails: Record<string, number>;  // Signal â†’ confidence contribution
 }
 
-// ── Signal Weights ──────────────────────────────────────────────────────
+// â”€â”€ Signal Weights â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const SIGNAL_WEIGHTS: Record<string, { weight: number; decayDays: number }> = {
   // Deterministic (highest weight)
@@ -5410,8 +5410,8 @@ const SIGNAL_WEIGHTS: Record<string, { weight: number; decayDays: number }> = {
 
 export class IdentityResolver {
   private userStore: Map<string, VirtualUser>;     // In production: database
-  private fingerprintIndex: Map<string, string[]>; // hash → virtualUserIds
-  private persistentIdIndex: Map<string, string>;  // persistentId → virtualUserId
+  private fingerprintIndex: Map<string, string[]>; // hash â†’ virtualUserIds
+  private persistentIdIndex: Map<string, string>;  // persistentId â†’ virtualUserId
 
   constructor(
     private db: DatabaseAdapter  // Your database abstraction
@@ -5430,9 +5430,9 @@ export class IdentityResolver {
   ): Promise<{ virtualUserId: string; confidence: number; isNew: boolean }> {
     const candidates: IdentityMatch[] = [];
 
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // STAGE 1: Deterministic Match (Persistent ID)
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const stage1 = await this.matchByPersistentId(payload.persistentId.id);
     if (stage1) {
       candidates.push(stage1);
@@ -5451,35 +5451,35 @@ export class IdentityResolver {
       }
     }
 
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // STAGE 2: Exact Fingerprint Hash Match
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const stage2 = await this.matchByFingerprintHash(payload.fingerprint.signalHash);
     if (stage2) candidates.push(stage2);
 
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // STAGE 3: Fuzzy Fingerprint Match (Individual Signal Comparison)
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const stage3 = await this.fuzzyFingerprintMatch(payload.fingerprint);
     candidates.push(...stage3);
 
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // STAGE 4: Behavioral Biometric Match
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     if (payload.behavior.confidence > 0.3) {
       const stage4 = await this.matchByBehavior(payload.behavior);
       candidates.push(...stage4);
     }
 
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // STAGE 5: Contextual Match (IP + Timing + Partial Signals)
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const stage5 = await this.contextualMatch(payload, requestIp);
     candidates.push(...stage5);
 
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // DECISION ENGINE: Aggregate confidence across stages
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const decision = this.aggregateCandidates(candidates);
 
     if (decision && decision.confidence >= 0.55) {
@@ -5495,9 +5495,9 @@ export class IdentityResolver {
       }
     }
 
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // NEW USER: Create virtual user profile
-    // ═══════════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     const newUser = await this.createVirtualUser(payload, requestIp);
     return {
       virtualUserId: newUser.id,
@@ -5506,7 +5506,7 @@ export class IdentityResolver {
     };
   }
 
-  // ── Stage 1: Persistent ID Match ─────────────────────────────────────
+  // â”€â”€ Stage 1: Persistent ID Match â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async matchByPersistentId(persistentId: string): Promise<IdentityMatch | null> {
     const userId = await this.db.findUserByPersistentId(persistentId);
@@ -5514,13 +5514,13 @@ export class IdentityResolver {
 
     return {
       virtualUserId: userId,
-      confidence: 0.95,  // Very high — they have our cookie/storage
+      confidence: 0.95,  // Very high â€” they have our cookie/storage
       matchStage: 'persistent_id',
       matchDetails: { persistentId: 0.95 },
     };
   }
 
-  // ── Stage 2: Exact Fingerprint Match ──────────────────────────────────
+  // â”€â”€ Stage 2: Exact Fingerprint Match â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async matchByFingerprintHash(hash: string): Promise<IdentityMatch | null> {
     const userIds = await this.db.findUsersByFingerprintHash(hash);
@@ -5536,7 +5536,7 @@ export class IdentityResolver {
       };
     }
 
-    // Multiple matches — reduce confidence
+    // Multiple matches â€” reduce confidence
     const mostRecent = await this.getMostRecentUser(userIds);
     return {
       virtualUserId: mostRecent,
@@ -5546,7 +5546,7 @@ export class IdentityResolver {
     };
   }
 
-  // ── Stage 3: Fuzzy Fingerprint Match ──────────────────────────────────
+  // â”€â”€ Stage 3: Fuzzy Fingerprint Match â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async fuzzyFingerprintMatch(fingerprint: FingerprintSignals): Promise<IdentityMatch[]> {
     // Get candidate users who share at least some signals
@@ -5728,7 +5728,7 @@ export class IdentityResolver {
     return { totalScore, breakdown };
   }
 
-  // ── Stage 4: Behavioral Match ─────────────────────────────────────────
+  // â”€â”€ Stage 4: Behavioral Match â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async matchByBehavior(behavior: BehavioralProfile): Promise<IdentityMatch[]> {
     if (behavior.confidence < 0.4) return []; // Not enough data
@@ -5849,7 +5849,7 @@ export class IdentityResolver {
     return scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
   }
 
-  // ── Stage 5: Contextual Match ─────────────────────────────────────────
+  // â”€â”€ Stage 5: Contextual Match â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async contextualMatch(
     payload: IdentityBeaconPayload,
@@ -5899,7 +5899,7 @@ export class IdentityResolver {
     return matches;
   }
 
-  // ── Decision Engine ───────────────────────────────────────────────────
+  // â”€â”€ Decision Engine â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private aggregateCandidates(candidates: IdentityMatch[]): IdentityMatch | null {
     if (candidates.length === 0) return null;
@@ -5918,8 +5918,8 @@ export class IdentityResolver {
         allDetails: {},
       };
 
-      // Combine confidences (not simple addition — use noisy-OR model)
-      // P(match) = 1 - ∏(1 - P_i)
+      // Combine confidences (not simple addition â€” use noisy-OR model)
+      // P(match) = 1 - âˆ(1 - P_i)
       existing.totalConfidence = 1 - (1 - existing.totalConfidence) * (1 - candidate.confidence);
       existing.stages.push(candidate.matchStage);
       Object.assign(existing.allDetails, candidate.matchDetails);
@@ -5952,7 +5952,7 @@ export class IdentityResolver {
     };
   }
 
-  // ── User Lifecycle ────────────────────────────────────────────────────
+  // â”€â”€ User Lifecycle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private async createVirtualUser(
     payload: IdentityBeaconPayload,
@@ -6114,7 +6114,7 @@ export class IdentityResolver {
     return stableCount / (snapshots.length - 1);
   }
 
-  // ── Utilities ──────────────────────────────────────────────────────────
+  // â”€â”€ Utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   private stringSimilarity(a: string, b: string): number {
     if (a === b) return 1;
@@ -6169,7 +6169,7 @@ export class IdentityResolver {
 
 ```typescript
 // ============================================================================
-// vivim-integration.ts — Maps identity system to VIVIM memory layers
+// vivim-integration.ts â€” Maps identity system to VIVIM memory layers
 // ============================================================================
 
 import { VivimSDK, MemoryLayer, MemoryType } from '@vivim/sdk';
@@ -6203,7 +6203,7 @@ export class VivimIdentityIntegration {
   }
 
   /**
-   * Called when identity is resolved — initializes or restores VIVIM memory layers
+   * Called when identity is resolved â€” initializes or restores VIVIM memory layers
    */
   async onIdentityResolved(context: ChatbotIdentityContext): Promise<void> {
     const { virtualUserId, isReturningUser, inferredProfile } = context;
@@ -6222,7 +6222,7 @@ export class VivimIdentityIntegration {
     userId: string,
     context: ChatbotIdentityContext
   ): Promise<void> {
-    // L0: Identity Core — Update with latest session info
+    // L0: Identity Core â€” Update with latest session info
     await this.sdk.memory.update(userId, MemoryLayer.IDENTITY_CORE, {
       type: MemoryType.IDENTITY,
       content: {
@@ -6239,7 +6239,7 @@ export class VivimIdentityIntegration {
       },
     });
 
-    // L1: Global Preferences — Enrich with technical preferences
+    // L1: Global Preferences â€” Enrich with technical preferences
     const existingPrefs = await this.sdk.memory.get(userId, MemoryLayer.GLOBAL_PREFERENCES);
     if (existingPrefs) {
       // Merge technical preferences without overwriting conversational preferences
@@ -6256,7 +6256,7 @@ export class VivimIdentityIntegration {
       });
     }
 
-    // L5: JIT Retrieval — Prepare relevant context from past sessions
+    // L5: JIT Retrieval â€” Prepare relevant context from past sessions
     const relevantMemories = await this.sdk.memory.query(userId, {
       types: [MemoryType.EPISODIC, MemoryType.PROJECT, MemoryType.GOAL],
       recency: 'last_7_days',
@@ -6277,13 +6277,13 @@ export class VivimIdentityIntegration {
       });
     }
 
-    // L4: Conversation Arc — Check if continuing a conversation
+    // L4: Conversation Arc â€” Check if continuing a conversation
     const lastConversation = await this.sdk.memory.get(userId, MemoryLayer.CONVERSATION_ARC);
     if (lastConversation) {
       const hoursSinceLastMessage = (Date.now() - lastConversation.timestamp) / (1000 * 60 * 60);
 
       if (hoursSinceLastMessage < 2) {
-        // Recent conversation — continue the arc
+        // Recent conversation â€” continue the arc
         // (Keep existing L4, just flag it as continued)
       } else {
         // Archive previous arc and start fresh
@@ -6320,7 +6320,7 @@ export class VivimIdentityIntegration {
       },
     });
 
-    // L1: Global Preferences — Seed with technical defaults
+    // L1: Global Preferences â€” Seed with technical defaults
     await this.sdk.memory.set(userId, MemoryLayer.GLOBAL_PREFERENCES, {
       type: MemoryType.PREFERENCE,
       content: {
@@ -6334,7 +6334,7 @@ export class VivimIdentityIntegration {
       },
     });
 
-    // L5: JIT Retrieval — Prime with first-visit context
+    // L5: JIT Retrieval â€” Prime with first-visit context
     await this.sdk.memory.set(userId, MemoryLayer.JIT_RETRIEVAL, {
       type: MemoryType.FACTUAL,
       content: {
@@ -6344,7 +6344,7 @@ export class VivimIdentityIntegration {
   }
 
   /**
-   * Called during chat — extracts and stores memories from conversation
+   * Called during chat â€” extracts and stores memories from conversation
    */
   async onMessage(
     userId: string,
@@ -6434,7 +6434,7 @@ ${currentMessage}
 `.trim();
   }
 
-  // ── Helpers ──
+  // â”€â”€ Helpers â”€â”€
 
   private async extractMemories(message: string): Promise<any[]> {
     // This would use NLP/AI to extract structured memories from free text
@@ -6474,7 +6474,7 @@ ${currentMessage}
   private formatLayer(layer: any, maxTokens: number): string {
     if (!layer) return '[No data]';
     const content = JSON.stringify(layer.content, null, 2);
-    // Rough token estimation (4 chars ≈ 1 token)
+    // Rough token estimation (4 chars â‰ˆ 1 token)
     const maxChars = maxTokens * 4;
     return content.length > maxChars ? content.slice(0, maxChars) + '...' : content;
   }
@@ -6498,7 +6498,7 @@ ${currentMessage}
 
 ```typescript
 // ============================================================================
-// chatbot-identity.ts — Main integration point for the chatbot
+// chatbot-identity.ts â€” Main integration point for the chatbot
 // ============================================================================
 
 import { IdentityBeacon } from './identity-beacon';
@@ -6566,7 +6566,7 @@ export class IdentityAwareChatbot {
   }
 
   /**
-   * Process a user message — with full identity-aware context
+   * Process a user message â€” with full identity-aware context
    */
   async processMessage(message: string): Promise<string> {
     if (!this.currentUserId) {
@@ -6704,7 +6704,7 @@ export class IdentityAwareChatbot {
 
 ```typescript
 // ============================================================================
-// api/identity-routes.ts — Server-side API endpoints
+// api/identity-routes.ts â€” Server-side API endpoints
 // ============================================================================
 
 import { Router, Request, Response } from 'express';
@@ -6715,7 +6715,7 @@ export function createIdentityRoutes(resolver: IdentityResolver): Router {
 
   /**
    * POST /identify
-   * Main identification endpoint — receives beacon payload, resolves identity
+   * Main identification endpoint â€” receives beacon payload, resolves identity
    */
   router.post('/identify', async (req: Request, res: Response) => {
     try {
@@ -6790,70 +6790,70 @@ export function createIdentityRoutes(resolver: IdentityResolver): Router {
 ## 9. Confidence Score Matrix
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    CONFIDENCE SCORING MATRIX                            │
-├────────────────────────┬──────────┬───────────┬────────────────────────┤
-│ Signal                 │ Weight   │ Stability │ Entropy (bits)         │
-├────────────────────────┼──────────┼───────────┼────────────────────────┤
-│ DETERMINISTIC                                                          │
-│ Persistent ID (cookie) │ 35%      │ High*     │ 128                    │
-├────────────────────────┼──────────┼───────────┼────────────────────────┤
-│ STRONG FINGERPRINT                                                     │
-│ Canvas Hash            │ 12%      │ High      │ ~12                    │
-│ WebGL Hash             │ 10%      │ High      │ ~15                    │
-│ Audio Hash             │ 8%       │ Very High │ ~10                    │
-│ Font Hash              │ 6%       │ Medium    │ ~8                     │
-├────────────────────────┼──────────┼───────────┼────────────────────────┤
-│ HARDWARE                                                               │
-│ GPU Renderer           │ 5%       │ Very High │ ~10                    │
-│ Screen Profile         │ 4%       │ High      │ ~8                     │
-│ Hardware (cores/mem)   │ 4%       │ Very High │ ~6                     │
-├────────────────────────┼──────────┼───────────┼────────────────────────┤
-│ SOFTWARE                                                               │
-│ Timezone               │ 3%       │ Very High │ ~5                     │
-│ Language Profile       │ 3%       │ High      │ ~5                     │
-│ CSS Preferences        │ 2%       │ Medium    │ ~5                     │
-│ API Availability       │ 2%       │ Medium    │ ~6                     │
-│ Speech Voices          │ 2%       │ High      │ ~6                     │
-├────────────────────────┼──────────┼───────────┼────────────────────────┤
-│ BEHAVIORAL                                                             │
-│ Typing Biometrics      │ 5%       │ Medium    │ ~15 (with digraphs)    │
-│ Mouse Dynamics         │ 3%       │ Medium    │ ~8                     │
-├────────────────────────┼──────────┼───────────┼────────────────────────┤
-│ CONTEXTUAL                                                             │
-│ IP Address             │ 2%       │ Low       │ ~4                     │
-│ Session Timing         │ 1%       │ Low       │ ~3                     │
-├────────────────────────┼──────────┼───────────┼────────────────────────┤
-│ TOTAL                  │ 100%     │           │ ~90+ bits              │
-└────────────────────────┴──────────┴───────────┴────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                    CONFIDENCE SCORING MATRIX                            â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ Signal                 â”‚ Weight   â”‚ Stability â”‚ Entropy (bits)         â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ DETERMINISTIC                                                          â”‚
+â”‚ Persistent ID (cookie) â”‚ 35%      â”‚ High*     â”‚ 128                    â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ STRONG FINGERPRINT                                                     â”‚
+â”‚ Canvas Hash            â”‚ 12%      â”‚ High      â”‚ ~12                    â”‚
+â”‚ WebGL Hash             â”‚ 10%      â”‚ High      â”‚ ~15                    â”‚
+â”‚ Audio Hash             â”‚ 8%       â”‚ Very High â”‚ ~10                    â”‚
+â”‚ Font Hash              â”‚ 6%       â”‚ Medium    â”‚ ~8                     â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ HARDWARE                                                               â”‚
+â”‚ GPU Renderer           â”‚ 5%       â”‚ Very High â”‚ ~10                    â”‚
+â”‚ Screen Profile         â”‚ 4%       â”‚ High      â”‚ ~8                     â”‚
+â”‚ Hardware (cores/mem)   â”‚ 4%       â”‚ Very High â”‚ ~6                     â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ SOFTWARE                                                               â”‚
+â”‚ Timezone               â”‚ 3%       â”‚ Very High â”‚ ~5                     â”‚
+â”‚ Language Profile       â”‚ 3%       â”‚ High      â”‚ ~5                     â”‚
+â”‚ CSS Preferences        â”‚ 2%       â”‚ Medium    â”‚ ~5                     â”‚
+â”‚ API Availability       â”‚ 2%       â”‚ Medium    â”‚ ~6                     â”‚
+â”‚ Speech Voices          â”‚ 2%       â”‚ High      â”‚ ~6                     â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ BEHAVIORAL                                                             â”‚
+â”‚ Typing Biometrics      â”‚ 5%       â”‚ Medium    â”‚ ~15 (with digraphs)    â”‚
+â”‚ Mouse Dynamics         â”‚ 3%       â”‚ Medium    â”‚ ~8                     â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ CONTEXTUAL                                                             â”‚
+â”‚ IP Address             â”‚ 2%       â”‚ Low       â”‚ ~4                     â”‚
+â”‚ Session Timing         â”‚ 1%       â”‚ Low       â”‚ ~3                     â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ TOTAL                  â”‚ 100%     â”‚           â”‚ ~90+ bits              â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 
 *Persistent ID is high stability when stored, but can be cleared by user
 
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    DECISION THRESHOLDS                                  │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                        │
-│  ≥ 85% ──→ CONFIDENT MATCH                                            │
-│            Silently identify as existing user                          │
-│            Restore full memory context                                 │
-│            Personalized greeting                                       │
-│                                                                        │
-│  55-84% ─→ PROBABLE MATCH                                             │
-│            Identify as existing user                                   │
-│            Restore memory context                                      │
-│            Soft confirmation: "Welcome back! Were we discussing X?"    │
-│                                                                        │
-│  30-54% ─→ POSSIBLE MATCH                                             │
-│            Create new user profile                                     │
-│            Flag for potential merge                                     │
-│            Generic greeting, but watch for confirming signals          │
-│                                                                        │
-│  < 30% ──→ NEW USER                                                   │
-│            Create new user profile                                     │
-│            Begin fresh memory collection                               │
-│            Welcome greeting                                            │
-│                                                                        │
-└─────────────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                    DECISION THRESHOLDS                                  â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚                                                                        â”‚
+â”‚  â‰¥ 85% â”€â”€â†’ CONFIDENT MATCH                                            â”‚
+â”‚            Silently identify as existing user                          â”‚
+â”‚            Restore full memory context                                 â”‚
+â”‚            Personalized greeting                                       â”‚
+â”‚                                                                        â”‚
+â”‚  55-84% â”€â†’ PROBABLE MATCH                                             â”‚
+â”‚            Identify as existing user                                   â”‚
+â”‚            Restore memory context                                      â”‚
+â”‚            Soft confirmation: "Welcome back! Were we discussing X?"    â”‚
+â”‚                                                                        â”‚
+â”‚  30-54% â”€â†’ POSSIBLE MATCH                                             â”‚
+â”‚            Create new user profile                                     â”‚
+â”‚            Flag for potential merge                                     â”‚
+â”‚            Generic greeting, but watch for confirming signals          â”‚
+â”‚                                                                        â”‚
+â”‚  < 30% â”€â”€â†’ NEW USER                                                   â”‚
+â”‚            Create new user profile                                     â”‚
+â”‚            Begin fresh memory collection                               â”‚
+â”‚            Welcome greeting                                            â”‚
+â”‚                                                                        â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ---
@@ -6862,7 +6862,7 @@ export function createIdentityRoutes(resolver: IdentityResolver): Router {
 
 ```typescript
 // ============================================================================
-// edge-cases.ts — Handling tricky identity scenarios
+// edge-cases.ts â€” Handling tricky identity scenarios
 // ============================================================================
 
 export class EdgeCaseHandler {
@@ -6943,7 +6943,7 @@ export class EdgeCaseHandler {
     isLikelyUpdate: boolean;
     confidence: number;
   } {
-    // If canvas + audio + hardware are same but UA changed → browser update
+    // If canvas + audio + hardware are same but UA changed â†’ browser update
     const canvasSame = oldSnapshot.signals.canvasHash === newSnapshot.signals.canvasHash;
     const audioSame = oldSnapshot.signals.audio?.hash === newSnapshot.signals.audio?.hash;
     const hardwareSame = (
@@ -7061,7 +7061,7 @@ export class EdgeCaseHandler {
 
 ```typescript
 // ============================================================================
-// database-adapter.ts — Database abstraction (implement for your DB)
+// database-adapter.ts â€” Database abstraction (implement for your DB)
 // ============================================================================
 
 export interface DatabaseAdapter {
@@ -7098,13 +7098,13 @@ export interface DatabaseAdapter {
   updateSession(userId: string, sessionId: string, data: Partial<SessionRecord>): Promise<void>;
 }
 
-// ── Example PostgreSQL Implementation ──
+// â”€â”€ Example PostgreSQL Implementation â”€â”€
 
 export class PostgresAdapter implements DatabaseAdapter {
   constructor(private pool: Pool) {}
 
   async findUsersWithSimilarSignals(signals: Record<string, string | undefined>): Promise<string[]> {
-    // Use a scored query — match on any 2+ signals
+    // Use a scored query â€” match on any 2+ signals
     const conditions: string[] = [];
     const values: any[] = [];
     let paramIndex = 1;
@@ -7171,7 +7171,7 @@ const chatbot = new IdentityAwareChatbot({
   db,
 });
 
-// On page load — automatically identify user
+// On page load â€” automatically identify user
 document.addEventListener('DOMContentLoaded', async () => {
   const { userId, isReturning, confidence, greeting } = await chatbot.initialize();
 
@@ -7197,19 +7197,19 @@ chatInput.addEventListener('submit', async (e) => {
 ## Summary: Signal Hierarchy & Resilience
 
 ```
-SCENARIO                    │ PERSISTENT ID │ FINGERPRINT │ BEHAVIORAL │ RESULT
-────────────────────────────┼───────────────┼─────────────┼────────────┼──────────
-Normal return visit         │ ✅ Match      │ ✅ Match    │ ✅ Match   │ 98%
-After clearing cookies      │ ❌ Gone       │ ✅ Match    │ ✅ Match   │ 85%
-Incognito mode              │ ❌ Gone       │ ✅ Match    │ ✅ Match   │ 82%
-Browser update              │ ✅ Match      │ ⚠️ Partial  │ ✅ Match   │ 88%
-OS update                   │ ✅ Match      │ ⚠️ Partial  │ ✅ Match   │ 85%
-VPN/different IP            │ ✅ Match      │ ✅ Match    │ ✅ Match   │ 95%
-New device, same network    │ ❌ Gone       │ ❌ Different│ ✅ Match   │ 45%*
-Different person, same PC   │ ✅ Match      │ ✅ Match    │ ❌ Different│ Detected!
-Privacy browser (Brave/Tor) │ ❌ Gone       │ ⚠️ Limited  │ ✅ Match   │ 55%
+SCENARIO                    â”‚ PERSISTENT ID â”‚ FINGERPRINT â”‚ BEHAVIORAL â”‚ RESULT
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+Normal return visit         â”‚ âœ… Match      â”‚ âœ… Match    â”‚ âœ… Match   â”‚ 98%
+After clearing cookies      â”‚ âŒ Gone       â”‚ âœ… Match    â”‚ âœ… Match   â”‚ 85%
+Incognito mode              â”‚ âŒ Gone       â”‚ âœ… Match    â”‚ âœ… Match   â”‚ 82%
+Browser update              â”‚ âœ… Match      â”‚ âš ï¸ Partial  â”‚ âœ… Match   â”‚ 88%
+OS update                   â”‚ âœ… Match      â”‚ âš ï¸ Partial  â”‚ âœ… Match   â”‚ 85%
+VPN/different IP            â”‚ âœ… Match      â”‚ âœ… Match    â”‚ âœ… Match   â”‚ 95%
+New device, same network    â”‚ âŒ Gone       â”‚ âŒ Differentâ”‚ âœ… Match   â”‚ 45%*
+Different person, same PC   â”‚ âœ… Match      â”‚ âœ… Match    â”‚ âŒ Differentâ”‚ Detected!
+Privacy browser (Brave/Tor) â”‚ âŒ Gone       â”‚ âš ï¸ Limited  â”‚ âœ… Match   â”‚ 55%
 
 * New device requires behavioral + contextual signals or conversation-based matching
 ```
 
-This system achieves **~90+ bits of entropy** across all signals combined, making each browser/device combination statistically unique among millions of users — all without requiring a single authentication step.
+This system achieves **~90+ bits of entropy** across all signals combined, making each browser/device combination statistically unique among millions of users â€” all without requiring a single authentication step.

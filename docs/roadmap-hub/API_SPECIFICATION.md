@@ -1,4 +1,4 @@
-# VIVIM Roadmap Hub - API Specification
+﻿# VIVIM Roadmap Hub - API Specification
 
 ## Overview
 
@@ -1165,7 +1165,7 @@ const ws = new WebSocket('wss://api.vivim.app/ws', {
 });
 ```
 
-### 3.2 Client → Server Messages
+### 3.2 Client â†’ Server Messages
 
 #### Subscribe to Roadmap
 
@@ -1239,7 +1239,7 @@ const ws = new WebSocket('wss://api.vivim.app/ws', {
 }
 ```
 
-### 3.3 Server → Client Messages
+### 3.3 Server â†’ Client Messages
 
 #### Roadmap Updated
 

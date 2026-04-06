@@ -1,0 +1,150 @@
+﻿---
+title: "Docker Deployment"
+description: "Deploy VIVIM with Docker Compose for production-ready self-hosting."
+---
+
+# Docker Deployment
+
+Deploy VIVIM with Docker Compose for a production-ready, self-hosted instance.
+
+## Prerequisites
+
+- Docker and Docker Compose
+- 2GB+ RAM
+- PostgreSQL 15+ (or use the included container)
+
+## Quick deploy
+
+```bash
+# Clone the repository
+git clone https://github.com/owenservera/vivim-platform.git
+cd vivim-platform
+
+# Start all services
+docker compose up -d
+```
+
+This starts:
+- **API Server** on port 3000
+- **PWA** on port 5173
+- **PostgreSQL** on port 5432 (internal)
+- **Redis** on port 6379 (internal, optional)
+
+## Docker Compose configuration
+
+```yaml
+# docker-compose.yml
+services:
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://vivim:vivim@db:5432/vivim
+      REDIS_URL: redis://redis:6379
+      NODE_ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  pwa:
+    build:
+      context: .
+      dockerfile: pwa/Dockerfile
+    ports:
+      - "5173:80"
+    environment:
+      VITE_API_URL: http://localhost:3000
+    depends_on:
+      - server
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: vivim
+      POSTGRES_PASSWORD: vivim
+      POSTGRES_DB: vivim
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vivim"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+```
+
+## Environment variables
+
+| Variable | Service | Description |
+|---|---|---|
+| `DATABASE_URL` | Server | PostgreSQL connection string |
+| `REDIS_URL` | Server | Redis connection string (optional) |
+| `NODE_ENV` | Server | `production` or `development` |
+| `VITE_API_URL` | PWA | API server URL |
+| `VIVIM_MASTER_SECRET` | Server | Master encryption key secret |
+
+
+
+1. **Create .env file**
+   ```bash
+    cp .env.example .env
+    ```
+    Set `VIVIM_MASTER_SECRET` to a strong random value.
+
+  
+2. **Run migrations**
+   ```bash
+    docker compose run server bun run db:migrate
+    ```
+
+  
+3. **Start services**
+   ```bash
+    docker compose up -d
+    ```
+
+  
+4. **Verify**
+   Open http://localhost:5173 in your browser.
+
+
+## Production considerations
+
+| Aspect | Recommendation |
+|---|---|
+| **Database** | Use managed PostgreSQL (Supabase, Railway, etc.) |
+| **SSL** | Put behind Caddy or nginx with TLS |
+| **Backups** | Regular `pg_dump` of the database |
+| **Monitoring** | Use the observability endpoint at `/api/v1/observability/metrics` |
+| **Scaling** | Server is stateless — run multiple replicas behind a load balancer |
+
+## Updating
+
+```bash
+# Pull latest changes
+git pull
+
+# Rebuild and restart
+docker compose up -d --build
+
+# Run any new migrations
+docker compose run server bun run db:migrate
+```
+
+
+::: warning
+Always backup your database before running migrations in production.
+:::
+

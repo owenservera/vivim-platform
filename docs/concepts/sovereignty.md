@@ -1,0 +1,132 @@
+﻿---
+title: "Sovereignty"
+description: "VIVIM's sovereignty promise: your data, your keys, your control. Learn about zero-knowledge encryption, decentralized identity, and full self-hosting."
+---
+
+# Sovereignty
+
+VIVIM is built on a single, non-negotiable promise: **your AI memory belongs to you, and only you.**
+
+This isn't a feature — it's architecture. Every component that processes user data is open source, auditable, and designed so that VIVIM itself cannot access your memories.
+
+## The sovereignty promise
+
+| Promise | What it means |
+|---|---|
+| **Portable** | Export everything in open formats. Switch providers. Keep your brain. |
+| **Sovereign** | End-to-end encrypted. Zero-knowledge. No backdoors. Ever. |
+| **Auditable** | Read every algorithm that processes your memory. AGPL v3 licensed. |
+| **Permanent** | Your data persists independent of any service. Self-host without VIVIM. |
+
+## Zero-knowledge encryption
+
+VIVIM uses client-side, zero-knowledge encryption throughout the system:
+
+
+
+1. **Key generation**
+   Encryption keys are generated client-side in your browser or device. VIVIM servers never see your private keys.
+
+  
+2. **AES-256-GCM encryption**
+   All memories, ACUs, and conversation data are encrypted with AES-256-GCM before leaving your device.
+
+  
+3. **Server sees only blobs**
+   The server stores and serves encrypted blobs. It cannot decrypt, read, or analyze your data.
+
+  
+4. **Key management**
+   Keys are derived using cryptographic key derivation functions (HKDF) from your master secret. No password is ever stored.
+
+
+### Encryption flow
+
+```
+┌─────────────────────────────────────────────────────┐
+│            Zero-Knowledge Encryption                  │
+├─────────────────────────────────────────────────────┤
+│                                                      │
+│  ┌──────────────┐                                    │
+│  │  Your Device │                                    │
+│  │  ┌────────┐  │     ┌──────────────┐              │
+│  │  │ Memory │  │     │  AES-256-GCM │              │
+│  │  │ (plain)│──┼────▶│  Encrypt     │              │
+│  │  └────────┘  │     └──────┬───────┘              │
+│  │              │            │                        │
+│  │  ┌────────┐  │     ┌──────▼───────┐              │
+│  │  │  Keys  │  │     │  Encrypted   │              │
+│  │  │(local) │  │     │  Blob        │              │
+│  │  └────────┘  │     └──────────────┘              │
+│  └──────────────┘            │                        │
+│                              ▼                        │
+│               ┌──────────────────────┐               │
+│               │  VIVIM Server        │               │
+│               │  (sees only blobs)   │               │
+│               └──────────────────────┘               │
+│                                                      │
+└─────────────────────────────────────────────────────┘
+```
+
+## Decentralized Identity (DID)
+
+VIVIM implements W3C-compliant Decentralized Identifiers (DIDs) for user identity:
+
+| Feature | Description |
+|---|---|
+| **Self-sovereign identity** | You control your identifier — no central authority |
+| **Cryptographic proof** | Identity is proven through public key cryptography |
+| **Portable** | Your DID works across any VIVIM instance or compatible system |
+| **Verifiable credentials** | Attach verifiable claims to your identity (roles, memberships) |
+
+## Self-hosting
+
+VIVIM can be fully self-hosted without any dependency on VIVIM's infrastructure:
+
+| Component | Self-hostable | Method |
+|---|---|---|
+| API Server | Yes | Docker Compose / Kubernetes |
+| PWA | Yes | Static file hosting |
+| Database | Yes | PostgreSQL (any provider) |
+| P2P Network | Yes | libp2p node |
+| Admin Panel | Yes | Static file hosting |
+| Context Engine | Yes | Embedded in server |
+
+
+::: info
+Every algorithm that processes your data is open source under AGPL v3. You can audit, modify, and run the entire stack independently.
+:::
+
+
+## The open/commercial boundary
+
+> Does this require VIVIM to *operate*, or does it require VIVIM to be *trusted*?
+
+| Operate (Open) | Trust (Commercial) |
+|---|---|
+| Context assembly | Managed uptime SLAs |
+| ACU processing | SOC 2, HIPAA compliance |
+| Retrieval algorithms | Enterprise SSO/SAML |
+| Identity primitives | Audit logs and RBAC |
+| Storage backends | Dedicated support |
+
+
+::: warning
+The commercial layer is optional. The open source stack is fully functional and production-capable. The boundary exists to fund development, not to restrict capability.
+:::
+
+
+## Cryptographic identity ownership
+
+Every user owns their identity cryptographically:
+
+- **Ed25519 key pairs** for signing and verification
+- **Multiformats** for content addressing
+- **@noble/crypto** for all cryptographic operations
+- **No centralized key storage** — keys live on your devices
+
+
+::: tip
+For the complete chain of trust design, see the [Chain of Trust research](https://github.com/owenservera/vivim-platform/tree/main/vivim-docs/05-SECURITY/chain-of-trust) in the repository.
+:::
+

@@ -1,4 +1,4 @@
----
+﻿---
 title: "Introduction"
 description: "VIVIM is sovereign, portable memory for every AI interaction. Open source, encrypted, and fully under your control."
 ---
@@ -7,7 +7,6 @@ description: "VIVIM is sovereign, portable memory for every AI interaction. Open
 
 Your AI conversations live in silos — ChatGPT, Claude, Gemini, Grok — disconnected, unsearchable, and lost forever. VIVIM fixes that.
 
-<ViCard title="Sovereign AI memory" icon="shield-check" description="Your data, your keys, your control. End-to-end encrypted, zero-knowledge, fully portable." />
 
 ## What is VIVIM?
 
@@ -82,6 +81,8 @@ VIVIM is open source under AGPL v3. Every component that touches user data is pe
 - **Self-hostable** — full stack via Docker Compose
 - **Commercial layer** — SLAs, compliance, enterprise features
 
-<Info>
+
+::: info
 Ready to get started? Head to the [Quick Start guide](/quickstart) to have VIVIM running in under 2 minutes.
-</Info>
+:::
+

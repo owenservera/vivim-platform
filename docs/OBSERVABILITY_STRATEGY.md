@@ -1,6 +1,6 @@
-# VIVIM — Observability Strategy for Investor POC
+﻿# VIVIM â€” Observability Strategy for Investor POC
 
-**Mission**: Make the invisible visible — show investors that VIVIM's AI memory is real, measurable, and valuable.
+**Mission**: Make the invisible visible â€” show investors that VIVIM's AI memory is real, measurable, and valuable.
 
 **Context**: Stealth mode POC for investors. Every metric, every visual, every interaction must tell a compelling story about sovereignty, intelligence, and scale.
 
@@ -8,45 +8,45 @@
 
 ## Design Principles
 
-1. **Metrics as Storytelling** — Every number has a narrative (ACU count = AI thinking captured, token budget = intelligence density)
-2. **Live over Static** — Real-time data flow beats screenshots. Investors want to see the system breathe.
-3. **Layered Disclosure** — Surface-level wow first, drill-down depth for technical investors.
-4. **Sovereignty Visible** — Show encryption, ownership, and control — don't just claim it.
-5. **Three Magic Moments** — Hook (archive), Money Shot (knowledge graph), Close (context cockpit).
+1. **Metrics as Storytelling** â€” Every number has a narrative (ACU count = AI thinking captured, token budget = intelligence density)
+2. **Live over Static** â€” Real-time data flow beats screenshots. Investors want to see the system breathe.
+3. **Layered Disclosure** â€” Surface-level wow first, drill-down depth for technical investors.
+4. **Sovereignty Visible** â€” Show encryption, ownership, and control â€” don't just claim it.
+5. **Three Magic Moments** â€” Hook (archive), Money Shot (knowledge graph), Close (context cockpit).
 
 ---
 
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    OBSERVABILITY LAYER                       │
-├─────────────────────────────────────────────────────────────┤
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │
-│  │  Metrics     │  │  Tracing     │  │  Demo Engine     │  │
-│  │  Collection  │  │  Pipeline    │  │  (Journey/Story) │  │
-│  └──────┬───────┘  └──────┬───────┘  └────────┬─────────┘  │
-│         │                 │                    │            │
-│  ┌──────▼─────────────────▼────────────────────▼─────────┐  │
-│  │              Telemetry Hub (In-Memory)                  │  │
-│  │  ┌─────────┐ ┌──────────┐ ┌─────────┐ ┌────────────┐  │  │
-│  │  │ Counters│ │ Gauges   │ │ Histograms││ Event Log  │  │  │
-│  │  └─────────┘ └──────────┘ └─────────┘ └────────────┘  │  │
-│  └──────────────────────────┬────────────────────────────┘  │
-│                             │                               │
-│  ┌──────────────────────────▼────────────────────────────┐  │
-│  │           Visualization Layer (React Components)       │  │
-│  │  ┌──────────┐ ┌──────────┐ ┌───────────┐ ┌────────┐  │  │
-│  │  │MetricCard│ │LiveFeed  │ │Graph Canvas│ │Journey │  │  │
-│  │  └──────────┘ └──────────┘ └───────────┘ └────────┘  │  │
-│  └───────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
-         │                    │                    │
-┌────────▼────────┐  ┌───────▼────────┐  ┌────────▼────────┐
-│  SDK Layer      │  │  Server Layer  │  │  Network Layer  │
-│  (Memory, Tools,│  │  (API, AI,     │  │  (P2P, CRDT,    │
-│   Agents, Tasks)│  │   Capture)     │  │   Sync)         │
-└─────────────────┘  └────────────────┘  └─────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                    OBSERVABILITY LAYER                       â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  â”‚  Metrics     â”‚  â”‚  Tracing     â”‚  â”‚  Demo Engine     â”‚  â”‚
+â”‚  â”‚  Collection  â”‚  â”‚  Pipeline    â”‚  â”‚  (Journey/Story) â”‚  â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â”‚         â”‚                 â”‚                    â”‚            â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  â”‚              Telemetry Hub (In-Memory)                  â”‚  â”‚
+â”‚  â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚  â”‚
+â”‚  â”‚  â”‚ Countersâ”‚ â”‚ Gauges   â”‚ â”‚ Histogramsâ”‚â”‚ Event Log  â”‚  â”‚  â”‚
+â”‚  â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚  â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â”‚                             â”‚                               â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚
+â”‚  â”‚           Visualization Layer (React Components)       â”‚  â”‚
+â”‚  â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”  â”‚  â”‚
+â”‚  â”‚  â”‚MetricCardâ”‚ â”‚LiveFeed  â”‚ â”‚Graph Canvasâ”‚ â”‚Journey â”‚  â”‚  â”‚
+â”‚  â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚  â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+         â”‚                    â”‚                    â”‚
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â–¼â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  SDK Layer      â”‚  â”‚  Server Layer  â”‚  â”‚  Network Layer  â”‚
+â”‚  (Memory, Tools,â”‚  â”‚  (API, AI,     â”‚  â”‚  (P2P, CRDT,    â”‚
+â”‚   Agents, Tasks)â”‚  â”‚   Capture)     â”‚  â”‚   Sync)         â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ---
@@ -84,9 +84,9 @@
 ## Implementation Plan
 
 ### Phase 1: Telemetry Hub (Core Infrastructure)
-- `TelemetryHub` — in-memory metrics collection with counters, gauges, histograms, event log
-- `DemoEventBus` — pub/sub for cross-component demo communication
-- `MetricExporter` — export to JSON/CSV for investor reports
+- `TelemetryHub` â€” in-memory metrics collection with counters, gauges, histograms, event log
+- `DemoEventBus` â€” pub/sub for cross-component demo communication
+- `MetricExporter` â€” export to JSON/CSV for investor reports
 
 ### Phase 2: SDK Instrumentation
 - Wrap MemoryCommands with metrics collection
@@ -96,17 +96,17 @@
 - Wrap MemoryExtractor with extraction analytics
 
 ### Phase 3: Demo Engine
-- `DemoJourney` — scripted investor demo journeys with narration
-- `JourneyRunner` — automated journey execution with screenshot capture
-- `DemoMetrics` — demo-specific metrics (wow factor, magic moments)
+- `DemoJourney` â€” scripted investor demo journeys with narration
+- `JourneyRunner` â€” automated journey execution with screenshot capture
+- `DemoMetrics` â€” demo-specific metrics (wow factor, magic moments)
 
 ### Phase 4: Visualization Layer
-- `MetricCard` — animated metric display with trend
-- `LiveEventFeed` — real-time event stream (terminal-style)
-- `SystemHealthDashboard` — server/PWA/network status
-- `KnowledgeGraphCanvas` — interactive graph visualization
-- `ContextCockpit` — 7-layer context intelligence display
-- `JourneyPlayer` — cinematic scroll-driven demo playback
+- `MetricCard` â€” animated metric display with trend
+- `LiveEventFeed` â€” real-time event stream (terminal-style)
+- `SystemHealthDashboard` â€” server/PWA/network status
+- `KnowledgeGraphCanvas` â€” interactive graph visualization
+- `ContextCockpit` â€” 7-layer context intelligence display
+- `JourneyPlayer` â€” cinematic scroll-driven demo playback
 
 ---
 
@@ -117,7 +117,7 @@
 | Memories Created | 50,000+ | "This is how much AI thinking we've captured" |
 | Providers Connected | 9 | "Every AI provider, one platform" |
 | Knowledge Graph Nodes | 1,500+ | "Your AI brain, visualized" |
-| Sync Conflicts Resolved | 99.9% | "CRDT works — even at scale" |
+| Sync Conflicts Resolved | 99.9% | "CRDT works â€” even at scale" |
 | Extraction Accuracy | 85%+ | "AI that learns from itself" |
 | Compression Ratio | 3:1 | "More intelligence, less context" |
 | API Latency (p95) | < 200ms | "Blazing fast, even with full memory" |
@@ -130,17 +130,17 @@
 ### Magic Moment #1: The Archive (0-15s)
 **Visual**: Massive timeline of imported conversations from 9 providers
 **Metric**: "609 sessions across 6 providers, 47,000 messages"
-**Story**: "Where AI thinking goes to die — until now."
+**Story**: "Where AI thinking goes to die â€” until now."
 
 ### Magic Moment #2: The Knowledge Graph (35-60s)
 **Visual**: Canvas-based force-directed graph with 1,500+ nodes
 **Metric**: "1,547 connected memories, 4,892 relationships"
-**Story**: "Your AI brain — every conversation, connected."
+**Story**: "Your AI brain â€” every conversation, connected."
 
 ### Magic Moment #3: The Context Cockpit (60-80s)
 **Visual**: 7-layer context stack with live token budgets
 **Metric**: "2,847 memories, 12,400 tokens, 94% relevance"
-**Story**: "AI that knows you — because it remembers everything."
+**Story**: "AI that knows you â€” because it remembers everything."
 
 ---
 

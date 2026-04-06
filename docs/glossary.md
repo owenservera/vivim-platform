@@ -1,4 +1,4 @@
----
+﻿---
 title: "Glossary"
 description: "Complete glossary of VIVIM terms, memory types, context layers, and technical vocabulary."
 ---

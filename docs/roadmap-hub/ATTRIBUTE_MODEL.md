@@ -1,4 +1,4 @@
-# VIVIM Roadmap Hub - Comprehensive Attribute Model
+﻿# VIVIM Roadmap Hub - Comprehensive Attribute Model
 
 ## Overview
 
@@ -26,21 +26,21 @@ This document defines the complete attribute model for all roadmap objects. Ever
 
 ```
 Level 1: Essential (Always Visible)
-├── Name
-├── Status
-└── Progress
+â”œâ”€â”€ Name
+â”œâ”€â”€ Status
+â””â”€â”€ Progress
 
 Level 2: Standard (On Hover/Expand)
-├── Dates
-├── Priority
-├── Assignee
-└── Dependencies
+â”œâ”€â”€ Dates
+â”œâ”€â”€ Priority
+â”œâ”€â”€ Assignee
+â””â”€â”€ Dependencies
 
 Level 3: Comprehensive (Inspector Panel)
-├── All attributes
-├── History
-├── Metadata
-└── Custom fields
+â”œâ”€â”€ All attributes
+â”œâ”€â”€ History
+â”œâ”€â”€ Metadata
+â””â”€â”€ Custom fields
 ```
 
 ---
@@ -55,27 +55,27 @@ Level 3: Comprehensive (Inspector Panel)
 | `name` | String (100) | Yes | - | **Title text**, 24px, bold |
 | `description` | Text | No | null | Subtitle, 14px, gray |
 | `colorScheme` | Enum | No | blue | Color theme swatch |
-| `icon` | String | No | 📊 | Icon glyph (16px) |
+| `icon` | String | No | ðŸ“Š | Icon glyph (16px) |
 | `version` | String | No | 1.0 | Badge (top-right) |
 
 ### Temporal Attributes
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `startDate` | Date | No | null | 📅 Calendar icon + date |
-| `endDate` | Date | No | null | 🏁 Flag icon + date |
+| `startDate` | Date | No | null | ðŸ“… Calendar icon + date |
+| `endDate` | Date | No | null | ðŸ Flag icon + date |
 | `duration` | Calculated | No | - | Timeline bar length |
-| `quarters` | Array | No | [] | Q1│Q2│Q3│Q4 markers |
+| `quarters` | Array | No | [] | Q1â”‚Q2â”‚Q3â”‚Q4 markers |
 | `fiscalYear` | Number | No | 2026 | FY26 badge |
 
 ### Status Attributes
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `status` | Enum | Yes | active | ● Status dot (color-coded) |
-| `isArchived` | Boolean | No | false | 📦 Archive icon (if true) |
-| `isTemplate` | Boolean | No | false | 📋 Template badge |
-| `visibility` | Enum | Yes | private | 🔒/🌍 icon |
+| `status` | Enum | Yes | active | â— Status dot (color-coded) |
+| `isArchived` | Boolean | No | false | ðŸ“¦ Archive icon (if true) |
+| `isTemplate` | Boolean | No | false | ðŸ“‹ Template badge |
+| `visibility` | Enum | Yes | private | ðŸ”’/ðŸŒ icon |
 | `healthScore` | Number (0-100) | No | - | Circular progress ring |
 
 ### Progress Attributes
@@ -83,38 +83,38 @@ Level 3: Comprehensive (Inspector Panel)
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
 | `overallProgress` | Number (0-100) | No | 0 | Progress bar (horizontal) |
-| `featureCount` | Number | Calculated | 0 | 📋 Count badge |
-| `completedFeatureCount` | Number | Calculated | 0 | ✅ Count badge |
-| `workstreamCount` | Number | Calculated | 0 | 🗂️ Count badge |
-| `milestoneCount` | Number | Calculated | 0 | 🎯 Count badge |
+| `featureCount` | Number | Calculated | 0 | ðŸ“‹ Count badge |
+| `completedFeatureCount` | Number | Calculated | 0 | âœ… Count badge |
+| `workstreamCount` | Number | Calculated | 0 | ðŸ—‚ï¸ Count badge |
+| `milestoneCount` | Number | Calculated | 0 | ðŸŽ¯ Count badge |
 
 ### Ownership Attributes
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `ownerId` | UUID | Yes | - | 👤 Avatar |
+| `ownerId` | UUID | Yes | - | ðŸ‘¤ Avatar |
 | `ownerName` | String | Derived | - | Name text |
-| `members` | Array | No | [] | 👥 Avatar stack |
-| `stakeholders` | Array | No | [] | 🎯 Avatar stack (outlined) |
-| `teamId` | UUID | No | null | 🏢 Team badge |
+| `members` | Array | No | [] | ðŸ‘¥ Avatar stack |
+| `stakeholders` | Array | No | [] | ðŸŽ¯ Avatar stack (outlined) |
+| `teamId` | UUID | No | null | ðŸ¢ Team badge |
 
 ### Quality Attributes
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `riskScore` | Number (0-100) | No | - | ⚠️ Risk meter |
-| `confidenceLevel` | Number (0-100) | No | - | 🎯 Confidence ring |
-| `lastUpdated` | DateTime | Auto | now | 🕐 "Updated X ago" |
-| `dataQuality` | Enum | No | - | ★★★☆☆ rating |
+| `riskScore` | Number (0-100) | No | - | âš ï¸ Risk meter |
+| `confidenceLevel` | Number (0-100) | No | - | ðŸŽ¯ Confidence ring |
+| `lastUpdated` | DateTime | Auto | now | ðŸ• "Updated X ago" |
+| `dataQuality` | Enum | No | - | â˜…â˜…â˜…â˜†â˜† rating |
 
 ### Custom Attributes
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `tags` | Array | No | [] | 🏷️ Tag pills |
+| `tags` | Array | No | [] | ðŸ·ï¸ Tag pills |
 | `customFields` | JSON | No | {} | Custom field widgets |
 | `metadata` | JSON | No | {} | Hidden (internal) |
-| `externalLinks` | Array | No | [] | 🔗 Link icons |
+| `externalLinks` | Array | No | [] | ðŸ”— Link icons |
 
 ---
 
@@ -128,7 +128,7 @@ Level 3: Comprehensive (Inspector Panel)
 | `name` | String (100) | Yes | - | **Card title**, 16px, bold |
 | `description` | Text | No | null | Card subtitle, 13px |
 | `color` | Color | No | #3B82F6 | Background/border color |
-| `icon` | String | No | 📁 | Icon glyph (14px) |
+| `icon` | String | No | ðŸ“ | Icon glyph (14px) |
 | `emoji` | String | No | - | Emoji (16px) |
 | `code` | String (20) | No | - | WS-001 code badge |
 
@@ -140,7 +140,7 @@ Level 3: Comprehensive (Inspector Panel)
 | `level` | Number | Calculated | 0 | Tree depth indicator |
 | `path` | Array | Calculated | [] | Breadcrumb trail |
 | `children` | Array | Calculated | [] | Expand/collapse arrow |
-| `hasChildren` | Boolean | Calculated | false | ▶️ Arrow (if true) |
+| `hasChildren` | Boolean | Calculated | false | â–¶ï¸ Arrow (if true) |
 | `order` | Number | No | 0 | Vertical position |
 | `sortOrder` | Number | No | 0 | Custom sort indicator |
 
@@ -148,10 +148,10 @@ Level 3: Comprehensive (Inspector Panel)
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `startDate` | Date | No | null | 📅 Start marker |
-| `endDate` | Date | No | null | 🏁 End marker |
-| `targetDate` | Date | No | null | 🎯 Target flag (dashed) |
-| `actualEndDate` | Date | No | null | ✅ Green check if on time |
+| `startDate` | Date | No | null | ðŸ“… Start marker |
+| `endDate` | Date | No | null | ðŸ End marker |
+| `targetDate` | Date | No | null | ðŸŽ¯ Target flag (dashed) |
+| `actualEndDate` | Date | No | null | âœ… Green check if on time |
 | `duration` | Calculated | No | - | Timeline span |
 | `quarter` | Enum | No | - | Q1/Q2/Q3/Q4 badge |
 
@@ -160,18 +160,18 @@ Level 3: Comprehensive (Inspector Panel)
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
 | `status` | Enum | Yes | planned | Status pill (color-coded) |
-| `isComplete` | Boolean | No | false | ✅ Check or ○ Circle |
-| `isOnHold` | Boolean | No | false | ⏸️ Pause icon |
-| `isBlocked` | Boolean | No | false | 🚫 Block icon |
-| `completionDate` | Date | No | null | 📅 Completion date |
-| `completedBy` | String | No | null | 👤 Completer avatar |
+| `isComplete` | Boolean | No | false | âœ… Check or â—‹ Circle |
+| `isOnHold` | Boolean | No | false | â¸ï¸ Pause icon |
+| `isBlocked` | Boolean | No | false | ðŸš« Block icon |
+| `completionDate` | Date | No | null | ðŸ“… Completion date |
+| `completedBy` | String | No | null | ðŸ‘¤ Completer avatar |
 
 ### Progress Attributes
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
 | `progress` | Number (0-100) | No | 0 | Progress bar (colored) |
-| `progressTrend` | Enum | No | - | ↑↓→ Trend arrow |
+| `progressTrend` | Enum | No | - | â†‘â†“â†’ Trend arrow |
 | `featureCount` | Number | Calculated | 0 | Feature count |
 | `completedFeatureCount` | Number | Calculated | 0 | Completed count |
 | `taskCount` | Number | Calculated | 0 | Task count |
@@ -184,8 +184,8 @@ Level 3: Comprehensive (Inspector Panel)
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
 | `priority` | Enum | No | medium | Priority badge (color) |
-| `effort` | Enum | No | medium | Effort dots (●●●○○) |
-| `businessValue` | Enum | No | medium | Value stars (★★★☆☆) |
+| `effort` | Enum | No | medium | Effort dots (â—â—â—â—‹â—‹) |
+| `businessValue` | Enum | No | medium | Value stars (â˜…â˜…â˜…â˜†â˜†) |
 | `strategicAlignment` | Number (0-100) | No | - | Alignment meter |
 | `investmentScore` | Number (0-10) | No | - | Investment bar |
 
@@ -193,32 +193,32 @@ Level 3: Comprehensive (Inspector Panel)
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `dependencyCount` | Number | Calculated | 0 | 🔗 Count badge |
-| `upstreamDependencyCount` | Number | Calculated | 0 | ↑ Count (incoming) |
-| `downstreamDependencyCount` | Number | Calculated | 0 | ↓ Count (outgoing) |
-| `crossWorkstreamDeps` | Number | Calculated | 0 | 🌐 Count (cross-team) |
-| `hasCircularDependency` | Boolean | Calculated | false | ⚠️ Warning icon |
-| `criticalPath` | Boolean | Calculated | false | 🔴 Red border if critical |
+| `dependencyCount` | Number | Calculated | 0 | ðŸ”— Count badge |
+| `upstreamDependencyCount` | Number | Calculated | 0 | â†‘ Count (incoming) |
+| `downstreamDependencyCount` | Number | Calculated | 0 | â†“ Count (outgoing) |
+| `crossWorkstreamDeps` | Number | Calculated | 0 | ðŸŒ Count (cross-team) |
+| `hasCircularDependency` | Boolean | Calculated | false | âš ï¸ Warning icon |
+| `criticalPath` | Boolean | Calculated | false | ðŸ”´ Red border if critical |
 
 ### Ownership Attributes
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `leadId` | UUID | No | null | 👤 Lead avatar |
+| `leadId` | UUID | No | null | ðŸ‘¤ Lead avatar |
 | `leadName` | String | No | null | Name text |
-| `assigneeIds` | Array | No | [] | 👥 Avatar stack |
-| `teamId` | UUID | No | null | 🏢 Team badge |
+| `assigneeIds` | Array | No | [] | ðŸ‘¥ Avatar stack |
+| `teamId` | UUID | No | null | ðŸ¢ Team badge |
 | `department` | String | No | null | Dept pill |
-| `stakeholders` | Array | No | [] | 🎯 Avatar stack |
+| `stakeholders` | Array | No | [] | ðŸŽ¯ Avatar stack |
 
 ### Resource Attributes
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `budget` | Number | No | null | 💰 Budget amount |
-| `spentBudget` | Number | No | null | 💸 Spent amount |
+| `budget` | Number | No | null | ðŸ’° Budget amount |
+| `spentBudget` | Number | No | null | ðŸ’¸ Spent amount |
 | `budgetUtilization` | Number (0-100) | Calculated | - | Budget progress bar |
-| `headcount` | Number | No | null | 👥 Headcount |
+| `headcount` | Number | No | null | ðŸ‘¥ Headcount |
 | `capacity` | Number (0-100) | No | - | Capacity gauge |
 | `utilization` | Number (0-100) | No | - | Utilization bar |
 
@@ -228,23 +228,23 @@ Level 3: Comprehensive (Inspector Panel)
 |-----------|------|----------|---------|----------------------|
 | `healthScore` | Number (0-100) | No | - | Health ring (color) |
 | `riskScore` | Number (0-100) | No | - | Risk meter |
-| `riskLevel` | Enum | Calculated | - | 🟢🟡🔴 Risk dot |
+| `riskLevel` | Enum | Calculated | - | ðŸŸ¢ðŸŸ¡ðŸ”´ Risk dot |
 | `confidenceLevel` | Number (0-100) | No | - | Confidence ring |
 | `qualityScore` | Number (0-100) | No | - | Quality stars |
-| `techDebt` | Enum | No | - | 📉 Debt indicator |
+| `techDebt` | Enum | No | - | ðŸ“‰ Debt indicator |
 
 ### Custom Attributes
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `tags` | Array | No | [] | 🏷️ Tag pills |
-| `objectives` | Array | No | [] | 🎯 Objective list |
-| `keyResults` | Array | No | [] | 📊 KR list with progress |
+| `tags` | Array | No | [] | ðŸ·ï¸ Tag pills |
+| `objectives` | Array | No | [] | ðŸŽ¯ Objective list |
+| `keyResults` | Array | No | [] | ðŸ“Š KR list with progress |
 | `customFields` | JSON | No | {} | Custom field widgets |
 | `metadata` | JSON | No | {} | Hidden |
-| `externalLinks` | Array | No | [] | 🔗 Link icons |
-| `attachments` | Array | No | [] | 📎 Count badge |
-| `comments` | Number | Calculated | 0 | 💬 Count badge |
+| `externalLinks` | Array | No | [] | ðŸ”— Link icons |
+| `attachments` | Array | No | [] | ðŸ“Ž Count badge |
+| `comments` | Number | Calculated | 0 | ðŸ’¬ Count badge |
 
 ---
 
@@ -274,20 +274,20 @@ Level 3: Comprehensive (Inspector Panel)
 | `width` | Number | No | 280 | Card width (px) |
 | `height` | Number | No | 160 | Card height (px) |
 | `rotation` | Number | No | 0 | Rotation angle (degrees) |
-| `isPinned` | Boolean | No | false | 📌 Pin icon |
-| `isHidden` | Boolean | No | false | 👁️ Hidden (eye slash) |
+| `isPinned` | Boolean | No | false | ðŸ“Œ Pin icon |
+| `isHidden` | Boolean | No | false | ðŸ‘ï¸ Hidden (eye slash) |
 
 ### Temporal Attributes
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `startDate` | Date | No | null | 📅 Start marker |
-| `endDate` | Date | No | null | 🏁 End marker |
-| `targetDate` | Date | No | null | 🎯 Target flag |
-| `dueDate` | Date | No | null | ⏰ Due date (red if overdue) |
-| `actualStartDate` | Date | No | null | ✅ Actual start (green) |
-| `actualEndDate` | Date | No | null | ✅ Actual end (green) |
-| `completedAt` | Date | No | null | 🎉 Completion confetti |
+| `startDate` | Date | No | null | ðŸ“… Start marker |
+| `endDate` | Date | No | null | ðŸ End marker |
+| `targetDate` | Date | No | null | ðŸŽ¯ Target flag |
+| `dueDate` | Date | No | null | â° Due date (red if overdue) |
+| `actualStartDate` | Date | No | null | âœ… Actual start (green) |
+| `actualEndDate` | Date | No | null | âœ… Actual end (green) |
+| `completedAt` | Date | No | null | ðŸŽ‰ Completion confetti |
 | `duration` | Calculated | No | - | Timeline bar length |
 | `remainingDays` | Calculated | No | - | "X days left" badge |
 | `overdueDays` | Calculated | No | - | "X days overdue" (red) |
@@ -297,12 +297,12 @@ Level 3: Comprehensive (Inspector Panel)
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
 | `status` | Enum | Yes | backlog | Status pill (7 colors) |
-| `isComplete` | Boolean | No | false | ✅ Check or ○ Circle |
-| `isBlocked` | Boolean | No | false | 🚫 Block overlay |
-| `blockReason` | String | No | null | ⚠️ Tooltip with reason |
-| `isOnHold` | Boolean | No | false | ⏸️ Pause badge |
-| `isArchived` | Boolean | No | false | 📦 Archive icon |
-| `isReleased` | Boolean | No | false | 🚀 Release badge |
+| `isComplete` | Boolean | No | false | âœ… Check or â—‹ Circle |
+| `isBlocked` | Boolean | No | false | ðŸš« Block overlay |
+| `blockReason` | String | No | null | âš ï¸ Tooltip with reason |
+| `isOnHold` | Boolean | No | false | â¸ï¸ Pause badge |
+| `isArchived` | Boolean | No | false | ðŸ“¦ Archive icon |
+| `isReleased` | Boolean | No | false | ðŸš€ Release badge |
 | `releaseVersion` | String | No | null | v1.0 version tag |
 
 ### Progress Attributes
@@ -310,14 +310,14 @@ Level 3: Comprehensive (Inspector Panel)
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
 | `progress` | Number (0-100) | No | 0 | Progress bar (colored) |
-| `progressSource` | Enum | No | manual | 🤖 Auto / ✋ Manual badge |
-| `taskCount` | Number | Calculated | 0 | 📋 Task count |
-| `completedTaskCount` | Number | Calculated | 0 | ✅ Done count |
-| `blockedTaskCount` | Number | Calculated | 0 | 🚫 Blocked count |
+| `progressSource` | Enum | No | manual | ðŸ¤– Auto / âœ‹ Manual badge |
+| `taskCount` | Number | Calculated | 0 | ðŸ“‹ Task count |
+| `completedTaskCount` | Number | Calculated | 0 | âœ… Done count |
+| `blockedTaskCount` | Number | Calculated | 0 | ðŸš« Blocked count |
 | `storyPoints` | Number | No | null | Story points (fibonacci) |
 | `completedStoryPoints` | Number | Calculated | 0 | Completed SP |
-| `acceptanceCriteriaCount` | Number | Calculated | 0 | ✓ Count |
-| `passedAcceptanceCriteriaCount` | Number | Calculated | 0 | ✓✓ Passed count |
+| `acceptanceCriteriaCount` | Number | Calculated | 0 | âœ“ Count |
+| `passedAcceptanceCriteriaCount` | Number | Calculated | 0 | âœ“âœ“ Passed count |
 
 ### Priority & Effort Attributes
 
@@ -325,7 +325,7 @@ Level 3: Comprehensive (Inspector Panel)
 |-----------|------|----------|---------|----------------------|
 | `priority` | Enum | No | medium | Priority badge (4 colors) |
 | `effort` | Enum | No | medium | Effort size (XS-XL) |
-| `businessValue` | Enum | No | medium | Value dots (●●●○○) |
+| `businessValue` | Enum | No | medium | Value dots (â—â—â—â—‹â—‹) |
 | `urgency` | Enum | No | medium | Urgency meter |
 | `impact` | Enum | No | medium | Impact stars |
 | `confidence` | Enum | No | high | Confidence (H/M/L) |
@@ -336,40 +336,40 @@ Level 3: Comprehensive (Inspector Panel)
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `dependencyCount` | Number | Calculated | 0 | 🔗 Link count |
-| `upstreamDependencies` | Array | Calculated | [] | ↑ Incoming arrows |
-| `downstreamDependencies` | Array | Calculated | [] | ↓ Outgoing arrows |
+| `dependencyCount` | Number | Calculated | 0 | ðŸ”— Link count |
+| `upstreamDependencies` | Array | Calculated | [] | â†‘ Incoming arrows |
+| `downstreamDependencies` | Array | Calculated | [] | â†“ Outgoing arrows |
 | `dependencyType` | Enum | No | - | FS/SS/FF/SF badge |
-| `hasCircularDependency` | Boolean | Calculated | false | ⚠️ Cycle warning |
-| `isOnCriticalPath` | Boolean | Calculated | false | 🔴 Critical highlight |
-| `blockingFeatureCount` | Number | Calculated | 0 | 🚫 Blocking count |
+| `hasCircularDependency` | Boolean | Calculated | false | âš ï¸ Cycle warning |
+| `isOnCriticalPath` | Boolean | Calculated | false | ðŸ”´ Critical highlight |
+| `blockingFeatureCount` | Number | Calculated | 0 | ðŸš« Blocking count |
 | `blockedByFeatureCount` | Number | Calculated | 0 |  Blocked by count |
 
 ### Ownership Attributes
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `reporterId` | UUID | No | null | 👤 Reporter avatar |
+| `reporterId` | UUID | No | null | ðŸ‘¤ Reporter avatar |
 | `reporterName` | String | No | null | Name text |
-| `assigneeIds` | Array | No | [] | 👥 Avatar stack (max 3) |
-| `reviewerIds` | Array | No | [] | 👓 Reviewer avatars |
-| `approverIds` | Array | No | [] | ✅ Approver avatars |
-| `contributorIds` | Array | No | [] | 👥 Contributor avatars |
-| `teamId` | UUID | No | null | 🏢 Team badge |
+| `assigneeIds` | Array | No | [] | ðŸ‘¥ Avatar stack (max 3) |
+| `reviewerIds` | Array | No | [] | ðŸ‘“ Reviewer avatars |
+| `approverIds` | Array | No | [] | âœ… Approver avatars |
+| `contributorIds` | Array | No | [] | ðŸ‘¥ Contributor avatars |
+| `teamId` | UUID | No | null | ðŸ¢ Team badge |
 
 ### Technical Attributes
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `component` | String | No | null | 🧩 Component badge |
-| `technology` | Array | No | [] | ⚙️ Tech stack icons |
-| `repository` | String | No | null | 📁 Repo link |
-| `branch` | String | No | null | 🌿 Branch name |
-| `pullRequestCount` | Number | Calculated | 0 | 🔀 PR count |
-| `commitCount` | Number | Calculated | 0 | 💾 Commit count |
+| `component` | String | No | null | ðŸ§© Component badge |
+| `technology` | Array | No | [] | âš™ï¸ Tech stack icons |
+| `repository` | String | No | null | ðŸ“ Repo link |
+| `branch` | String | No | null | ðŸŒ¿ Branch name |
+| `pullRequestCount` | Number | Calculated | 0 | ðŸ”€ PR count |
+| `commitCount` | Number | Calculated | 0 | ðŸ’¾ Commit count |
 | `codeCompletion` | Number (0-100) | Calculated | - | Code progress bar |
-| `testCoverage` | Number (0-100) | No | - | 🧪 Coverage badge |
-| `techDebt` | Enum | No | - | 📉 Debt level |
+| `testCoverage` | Number (0-100) | No | - | ðŸ§ª Coverage badge |
+| `techDebt` | Enum | No | - | ðŸ“‰ Debt level |
 
 ### Quality Attributes
 
@@ -377,29 +377,29 @@ Level 3: Comprehensive (Inspector Panel)
 |-----------|------|----------|---------|----------------------|
 | `healthScore` | Number (0-100) | No | - | Health ring |
 | `riskScore` | Number (0-100) | No | - | Risk meter |
-| `riskLevel` | Enum | Calculated | - | 🟢🟡🔴 Risk dot |
+| `riskLevel` | Enum | Calculated | - | ðŸŸ¢ðŸŸ¡ðŸ”´ Risk dot |
 | `qualityScore` | Number (0-100) | No | - | Quality stars |
 | `stability` | Enum | No | - | Stability indicator |
 | `complexity` | Enum | No | - | Complexity gauge |
-| `aiConfidence` | Number (0-100) | No | - | 🤖 AI confidence |
+| `aiConfidence` | Number (0-100) | No | - | ðŸ¤– AI confidence |
 
 ### Custom Attributes
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `tags` | Array | No | [] | 🏷️ Tag pills (color) |
-| `epic` | String | No | null | 📖 Epic link |
-| `initiative` | String | No | null | 🎯 Initiative link |
-| `theme` | String | No | null | 🎨 Theme badge |
-| `customerImpact` | Enum | No | - | 👥 Impact level |
-| `userStories` | Array | No | [] | 📝 Story list |
-| `acceptanceCriteria` | Array | No | [] | ✓ Criteria checklist |
+| `tags` | Array | No | [] | ðŸ·ï¸ Tag pills (color) |
+| `epic` | String | No | null | ðŸ“– Epic link |
+| `initiative` | String | No | null | ðŸŽ¯ Initiative link |
+| `theme` | String | No | null | ðŸŽ¨ Theme badge |
+| `customerImpact` | Enum | No | - | ðŸ‘¥ Impact level |
+| `userStories` | Array | No | [] | ðŸ“ Story list |
+| `acceptanceCriteria` | Array | No | [] | âœ“ Criteria checklist |
 | `customFields` | JSON | No | {} | Custom field widgets |
 | `metadata` | JSON | No | {} | Hidden |
-| `externalLinks` | Array | No | [] | 🔗 Link icons |
-| `attachments` | Array | No | [] | 📎 Attachment count |
-| `comments` | Number | Calculated | 0 | 💬 Comment count |
-| `views` | Number | Calculated | 0 | 👁️ View count |
+| `externalLinks` | Array | No | [] | ðŸ”— Link icons |
+| `attachments` | Array | No | [] | ðŸ“Ž Attachment count |
+| `comments` | Number | Calculated | 0 | ðŸ’¬ Comment count |
+| `views` | Number | Calculated | 0 | ðŸ‘ï¸ View count |
 
 ---
 
@@ -420,22 +420,22 @@ Level 3: Comprehensive (Inspector Panel)
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `startDate` | Date | No | null | 📅 Start |
-| `endDate` | Date | No | null | 🏁 End |
-| `dueDate` | Date | No | null | ⏰ Due (red if overdue) |
-| `estimatedHours` | Number | No | null | ⏱️ Estimate |
-| `actualHours` | Number | No | null | ⏲️ Actual |
-| `timeRemaining` | Number | No | null | ⏳ Remaining |
-| `completedAt` | Date | No | null | ✅ Completion date |
+| `startDate` | Date | No | null | ðŸ“… Start |
+| `endDate` | Date | No | null | ðŸ End |
+| `dueDate` | Date | No | null | â° Due (red if overdue) |
+| `estimatedHours` | Number | No | null | â±ï¸ Estimate |
+| `actualHours` | Number | No | null | â²ï¸ Actual |
+| `timeRemaining` | Number | No | null | â³ Remaining |
+| `completedAt` | Date | No | null | âœ… Completion date |
 
 ### Status Attributes
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
 | `status` | Enum | Yes | todo | Status pill |
-| `isComplete` | Boolean | No | false | ☐ Checkbox |
-| `isBlocked` | Boolean | No | false | 🚫 Block |
-| `blockReason` | String | No | null | ⚠️ Reason |
+| `isComplete` | Boolean | No | false | â˜ Checkbox |
+| `isBlocked` | Boolean | No | false | ðŸš« Block |
+| `blockReason` | String | No | null | âš ï¸ Reason |
 
 ### Progress Attributes
 
@@ -458,9 +458,9 @@ Level 3: Comprehensive (Inspector Panel)
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `assigneeId` | UUID | No | null | 👤 Assignee |
+| `assigneeId` | UUID | No | null | ðŸ‘¤ Assignee |
 | `assigneeName` | String | No | null | Name |
-| `reviewerId` | UUID | No | null | 👓 Reviewer |
+| `reviewerId` | UUID | No | null | ðŸ‘“ Reviewer |
 
 ### Custom Attributes
 
@@ -469,8 +469,8 @@ Level 3: Comprehensive (Inspector Panel)
 | `tags` | Array | No | [] | Tiny tags |
 | `parentTaskId` | UUID | No | null | Parent link |
 | `dependencyIds` | Array | No | [] | Dependency links |
-| `attachments` | Array | No | [] | 📎 Count |
-| `comments` | Number | Calculated | 0 | 💬 Count |
+| `attachments` | Array | No | [] | ðŸ“Ž Count |
+| `comments` | Number | Calculated | 0 | ðŸ’¬ Count |
 
 ---
 
@@ -483,24 +483,24 @@ Level 3: Comprehensive (Inspector Panel)
 | `id` | UUID | Yes | Auto | Hidden |
 | `name` | String (100) | Yes | - | **Milestone name**, 15px |
 | `description` | Text | No | null | Description |
-| `icon` | String | No | 🎯 | Milestone icon |
+| `icon` | String | No | ðŸŽ¯ | Milestone icon |
 | `type` | Enum | No | milestone | Type (milestone/release/event) |
 
 ### Temporal Attributes
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
-| `targetDate` | Date | Yes | - | 🎯 Target date |
-| `actualDate` | Date | No | null | ✅ Actual date |
-| `isPastDue` | Boolean | Calculated | false | ⚠️ Overdue highlight |
+| `targetDate` | Date | Yes | - | ðŸŽ¯ Target date |
+| `actualDate` | Date | No | null | âœ… Actual date |
+| `isPastDue` | Boolean | Calculated | false | âš ï¸ Overdue highlight |
 
 ### Status Attributes
 
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
 | `status` | Enum | Yes | upcoming | Status (upcoming/achieved/missed) |
-| `isAchieved` | Boolean | No | false | ✅ Check or ○ |
-| `isCritical` | Boolean | No | false | 🔴 Critical highlight |
+| `isAchieved` | Boolean | No | false | âœ… Check or â—‹ |
+| `isCritical` | Boolean | No | false | ðŸ”´ Critical highlight |
 
 ### Progress Attributes
 
@@ -538,9 +538,9 @@ Level 3: Comprehensive (Inspector Panel)
 | Attribute | Type | Required | Default | Visual Representation |
 |-----------|------|----------|---------|----------------------|
 | `status` | Enum | Calculated | active | Dependency status |
-| `isBlocking` | Boolean | Calculated | false | 🚫 Block indicator |
-| `isAtRisk` | Boolean | Calculated | false | ⚠️ Risk highlight |
-| `isBroken` | Boolean | Calculated | false | 💔 Broken link |
+| `isBlocking` | Boolean | Calculated | false | ðŸš« Block indicator |
+| `isAtRisk` | Boolean | Calculated | false | âš ï¸ Risk highlight |
+| `isBroken` | Boolean | Calculated | false | ðŸ’” Broken link |
 
 ### Custom Attributes
 
@@ -654,50 +654,50 @@ const statusColors = {
 ```typescript
 const iconMapping = {
   // Entity Types
-  roadmap: '📊',
-  workstream: '🗂️',
-  feature: '✨',
-  task: '📋',
-  milestone: '🎯',
-  dependency: '🔗',
+  roadmap: 'ðŸ“Š',
+  workstream: 'ðŸ—‚ï¸',
+  feature: 'âœ¨',
+  task: 'ðŸ“‹',
+  milestone: 'ðŸŽ¯',
+  dependency: 'ðŸ”—',
   
   // Status
-  complete: '✅',
-  incomplete: '○',
-  blocked: '🚫',
-  onHold: '⏸️',
-  archived: '📦',
-  released: '🚀',
+  complete: 'âœ…',
+  incomplete: 'â—‹',
+  blocked: 'ðŸš«',
+  onHold: 'â¸ï¸',
+  archived: 'ðŸ“¦',
+  released: 'ðŸš€',
   
   // Time
-  startDate: '📅',
-  endDate: '🏁',
-  dueDate: '⏰',
-  overdue: '⚠️',
+  startDate: 'ðŸ“…',
+  endDate: 'ðŸ',
+  dueDate: 'â°',
+  overdue: 'âš ï¸',
   
   // Priority
-  critical: '🔴',
-  high: '🟠',
-  medium: '🟡',
-  low: '🟢',
+  critical: 'ðŸ”´',
+  high: 'ðŸŸ ',
+  medium: 'ðŸŸ¡',
+  low: 'ðŸŸ¢',
   
   // Ownership
-  assignee: '👤',
-  team: '🏢',
-  stakeholder: '🎯',
+  assignee: 'ðŸ‘¤',
+  team: 'ðŸ¢',
+  stakeholder: 'ðŸŽ¯',
   
   // Quality
-  risk: '⚠️',
-  health: '💚',
-  quality: '⭐',
+  risk: 'âš ï¸',
+  health: 'ðŸ’š',
+  quality: 'â­',
   
   // Actions
-  edit: '✏️',
-  delete: '🗑️',
-  duplicate: '📋',
-  link: '🔗',
-  comment: '💬',
-  attachment: '📎',
+  edit: 'âœï¸',
+  delete: 'ðŸ—‘ï¸',
+  duplicate: 'ðŸ“‹',
+  link: 'ðŸ”—',
+  comment: 'ðŸ’¬',
+  attachment: 'ðŸ“Ž',
 };
 ```
 

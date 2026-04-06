@@ -1,4 +1,4 @@
-
+﻿
 
 # VIVIM Corpus Context Engine & Dual-Engine Architecture
 ## Company Chatbot with Intelligent Corpus + User Context Fusion
@@ -11,7 +11,7 @@
 
 ## Executive Summary
 
-This document architects the **Corpus Context Engine** — a second context engine purpose-built for company chatbot deployments where the AI must primarily answer from an authoritative document corpus while simultaneously building and leveraging deep per-user memory. The design introduces a **Dual-Engine Orchestrator** that dynamically balances between the existing User Context Engine and the new Corpus Context Engine based on query intent, user maturity, and conversation state.
+This document architects the **Corpus Context Engine** â€” a second context engine purpose-built for company chatbot deployments where the AI must primarily answer from an authoritative document corpus while simultaneously building and leveraging deep per-user memory. The design introduces a **Dual-Engine Orchestrator** that dynamically balances between the existing User Context Engine and the new Corpus Context Engine based on query intent, user maturity, and conversation state.
 
 The key insight: **the corpus is the company's "memory" and the user store is the visitor's "memory."** The chatbot must fluently draw from both, weighted by context, while making every returning user feel like they have their own personal AI that knows them, knows the product, and knows their history.
 
@@ -37,30 +37,30 @@ A company deploys a chatbot on their website. This chatbot needs to:
 
 - **Answer product/service questions** from documentation (corpus-dominant)
 - **Remember each visitor** across sessions without login (user-dominant)
-- **Blend both** — "You asked about our API rate limits last week. Since then, we've updated the docs. Here's what changed."
+- **Blend both** â€” "You asked about our API rate limits last week. Since then, we've updated the docs. Here's what changed."
 
-The existing VIVIM system is **user-centric** — it builds context around who the user is. The chatbot use case is **corpus-centric with user personalization** — it builds context around what the company knows, flavored by who is asking.
+The existing VIVIM system is **user-centric** â€” it builds context around who the user is. The chatbot use case is **corpus-centric with user personalization** â€” it builds context around what the company knows, flavored by who is asking.
 
 ### 1.2 User Avatar Definitions
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         FOUR USER AVATARS                                    │
-│                                                                              │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐    │
-│  │   STRANGER    │  │  ACQUAINTANCE│  │   FAMILIAR   │  │    KNOWN     │    │
-│  │              │  │              │  │              │  │              │    │
-│  │ First visit  │  │ 2-5 visits   │  │ 6-20 visits  │  │ 20+ visits   │    │
-│  │ 0 memories   │  │ 1-10 memories│  │ 11-50 memories│ │ 50+ memories │    │
-│  │ 0 conversations│ │ 1-5 convos  │  │ 6-20 convos  │  │ 20+ convos   │    │
-│  │              │  │              │  │              │  │              │    │
-│  │ Context:     │  │ Context:     │  │ Context:     │  │ Context:     │    │
-│  │ 95% Corpus   │  │ 80% Corpus   │  │ 60% Corpus   │  │ 40% Corpus   │    │
-│  │  5% User     │  │ 20% User     │  │ 40% User     │  │ 60% User     │    │
-│  └──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘    │
-│                                                                              │
-│  Context ratio shifts organically as we learn more about the user            │
-└─────────────────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                         FOUR USER AVATARS                                    â”‚
+â”‚                                                                              â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚   STRANGER    â”‚  â”‚  ACQUAINTANCEâ”‚  â”‚   FAMILIAR   â”‚  â”‚    KNOWN     â”‚    â”‚
+â”‚  â”‚              â”‚  â”‚              â”‚  â”‚              â”‚  â”‚              â”‚    â”‚
+â”‚  â”‚ First visit  â”‚  â”‚ 2-5 visits   â”‚  â”‚ 6-20 visits  â”‚  â”‚ 20+ visits   â”‚    â”‚
+â”‚  â”‚ 0 memories   â”‚  â”‚ 1-10 memoriesâ”‚  â”‚ 11-50 memoriesâ”‚ â”‚ 50+ memories â”‚    â”‚
+â”‚  â”‚ 0 conversationsâ”‚ â”‚ 1-5 convos  â”‚  â”‚ 6-20 convos  â”‚  â”‚ 20+ convos   â”‚    â”‚
+â”‚  â”‚              â”‚  â”‚              â”‚  â”‚              â”‚  â”‚              â”‚    â”‚
+â”‚  â”‚ Context:     â”‚  â”‚ Context:     â”‚  â”‚ Context:     â”‚  â”‚ Context:     â”‚    â”‚
+â”‚  â”‚ 95% Corpus   â”‚  â”‚ 80% Corpus   â”‚  â”‚ 60% Corpus   â”‚  â”‚ 40% Corpus   â”‚    â”‚
+â”‚  â”‚  5% User     â”‚  â”‚ 20% User     â”‚  â”‚ 40% User     â”‚  â”‚ 60% User     â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚                                                                              â”‚
+â”‚  Context ratio shifts organically as we learn more about the user            â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ### 1.3 User Journey: The Stranger (First Visit)
@@ -70,46 +70,46 @@ SCENARIO: Sarah visits acme.com for the first time.
 She clicks the chatbot widget.
 
 STEP 1: Identification
-├── Fingerprint SDK generates device fingerprint
-├── No match found → Create new VirtualUser
-├── Avatar classification: STRANGER
-├── Confidence: LOW
-└── Consent modal shown
+â”œâ”€â”€ Fingerprint SDK generates device fingerprint
+â”œâ”€â”€ No match found â†’ Create new VirtualUser
+â”œâ”€â”€ Avatar classification: STRANGER
+â”œâ”€â”€ Confidence: LOW
+â””â”€â”€ Consent modal shown
 
 STEP 2: Sarah asks "What's your pricing for teams?"
-├── Intent Detection: CORPUS_QUERY (product information)
-├── Corpus Engine: PRIMARY (weight 0.95)
-│   ├── Semantic search across pricing docs
-│   ├── Retrieve pricing ACUs (3-5 chunks)
-│   ├── Include FAQ entries about teams
-│   └── Assemble corpus context bundle
-├── User Engine: MINIMAL (weight 0.05)
-│   ├── No memories exist
-│   ├── No conversation history
-│   └── Only session metadata (timezone, language)
-├── Response: Clean, authoritative answer from docs
-└── Memory Extraction:
-    ├── FACTUAL: "User asked about team pricing"
-    ├── GOAL: "User evaluating team plan"
-    └── PREFERENCE: "User is on the pricing page"
+â”œâ”€â”€ Intent Detection: CORPUS_QUERY (product information)
+â”œâ”€â”€ Corpus Engine: PRIMARY (weight 0.95)
+â”‚   â”œâ”€â”€ Semantic search across pricing docs
+â”‚   â”œâ”€â”€ Retrieve pricing ACUs (3-5 chunks)
+â”‚   â”œâ”€â”€ Include FAQ entries about teams
+â”‚   â””â”€â”€ Assemble corpus context bundle
+â”œâ”€â”€ User Engine: MINIMAL (weight 0.05)
+â”‚   â”œâ”€â”€ No memories exist
+â”‚   â”œâ”€â”€ No conversation history
+â”‚   â””â”€â”€ Only session metadata (timezone, language)
+â”œâ”€â”€ Response: Clean, authoritative answer from docs
+â””â”€â”€ Memory Extraction:
+    â”œâ”€â”€ FACTUAL: "User asked about team pricing"
+    â”œâ”€â”€ GOAL: "User evaluating team plan"
+    â””â”€â”€ PREFERENCE: "User is on the pricing page"
 
 STEP 3: Sarah asks "Do you integrate with Slack?"
-├── Intent Detection: CORPUS_QUERY (integration info)
-├── Corpus Engine: PRIMARY
-│   ├── Search integration docs
-│   └── Find Slack-specific content
-├── User Engine: LIGHT
-│   ├── Now has 1 prior message context
-│   └── Knows she's evaluating teams → mention team integrations
-├── Response: "Yes! And since you're looking at team plans,
-│             our Slack integration is included in all team tiers."
-└── Memory Extraction:
-    ├── FACTUAL: "User interested in Slack integration"
-    └── GOAL: "User evaluating team tooling"
+â”œâ”€â”€ Intent Detection: CORPUS_QUERY (integration info)
+â”œâ”€â”€ Corpus Engine: PRIMARY
+â”‚   â”œâ”€â”€ Search integration docs
+â”‚   â””â”€â”€ Find Slack-specific content
+â”œâ”€â”€ User Engine: LIGHT
+â”‚   â”œâ”€â”€ Now has 1 prior message context
+â”‚   â””â”€â”€ Knows she's evaluating teams â†’ mention team integrations
+â”œâ”€â”€ Response: "Yes! And since you're looking at team plans,
+â”‚             our Slack integration is included in all team tiers."
+â””â”€â”€ Memory Extraction:
+    â”œâ”€â”€ FACTUAL: "User interested in Slack integration"
+    â””â”€â”€ GOAL: "User evaluating team tooling"
 
 EXPERIENCE: Sarah gets accurate product answers.
 The bot subtly connects her questions but doesn't overreach.
-She doesn't feel tracked — she feels helped.
+She doesn't feel tracked â€” she feels helped.
 ```
 
 ### 1.4 User Journey: The Acquaintance (Return Visitor)
@@ -119,46 +119,46 @@ SCENARIO: Sarah returns 3 days later. Different browser tab,
 same device.
 
 STEP 1: Identification
-├── Fingerprint match: HIGH confidence (82%)
-├── Session restored from cookie
-├── Avatar classification: ACQUAINTANCE
-├── Memories loaded: 4 memories from last visit
-└── Previous conversations: 1 conversation, 6 messages
+â”œâ”€â”€ Fingerprint match: HIGH confidence (82%)
+â”œâ”€â”€ Session restored from cookie
+â”œâ”€â”€ Avatar classification: ACQUAINTANCE
+â”œâ”€â”€ Memories loaded: 4 memories from last visit
+â””â”€â”€ Previous conversations: 1 conversation, 6 messages
 
 STEP 2: Sarah asks "I'm back. Can you remind me about the
          team pricing?"
-├── Intent Detection: MIXED (corpus + recall request)
-├── User Engine: ELEVATED (weight 0.35)
-│   ├── Memory recall: "User asked about team pricing 3 days ago"
-│   ├── Memory recall: "User interested in Slack integration"
-│   └── Conversation summary from last visit
-├── Corpus Engine: PRIMARY (weight 0.65)
-│   ├── Fresh pricing doc retrieval
-│   └── Check for doc updates since last visit
-├── Response: "Welcome back! Last time you were looking at our
-│             Team plan at $29/seat/month. You were also
-│             interested in the Slack integration — that's
-│             included. Nothing's changed in pricing since
-│             Tuesday. Want me to walk through setup?"
-└── Memory Extraction:
-    ├── EPISODIC: "User returned after 3 days, asked for pricing recap"
-    └── GOAL: "User moving closer to decision"
+â”œâ”€â”€ Intent Detection: MIXED (corpus + recall request)
+â”œâ”€â”€ User Engine: ELEVATED (weight 0.35)
+â”‚   â”œâ”€â”€ Memory recall: "User asked about team pricing 3 days ago"
+â”‚   â”œâ”€â”€ Memory recall: "User interested in Slack integration"
+â”‚   â””â”€â”€ Conversation summary from last visit
+â”œâ”€â”€ Corpus Engine: PRIMARY (weight 0.65)
+â”‚   â”œâ”€â”€ Fresh pricing doc retrieval
+â”‚   â””â”€â”€ Check for doc updates since last visit
+â”œâ”€â”€ Response: "Welcome back! Last time you were looking at our
+â”‚             Team plan at $29/seat/month. You were also
+â”‚             interested in the Slack integration â€” that's
+â”‚             included. Nothing's changed in pricing since
+â”‚             Tuesday. Want me to walk through setup?"
+â””â”€â”€ Memory Extraction:
+    â”œâ”€â”€ EPISODIC: "User returned after 3 days, asked for pricing recap"
+    â””â”€â”€ GOAL: "User moving closer to decision"
 
 STEP 3: Sarah asks "Actually, what's the difference between
          Team and Enterprise?"
-├── Intent Detection: CORPUS_QUERY (comparison)
-├── Corpus Engine: PRIMARY (weight 0.70)
-│   ├── Retrieve Team tier docs
-│   ├── Retrieve Enterprise tier docs
-│   └── Comparison context assembled
-├── User Engine: SUPPORTIVE (weight 0.30)
-│   ├── Knows she was evaluating Team → frame comparison accordingly
-│   └── Knows she cares about Slack → highlight relevant differences
-├── Response: Comparison table with personalized emphasis on
-│             features she's shown interest in
-└── Memory Extraction:
-    ├── FACTUAL: "User comparing Team vs Enterprise"
-    └── GOAL: "User may need Enterprise features"
+â”œâ”€â”€ Intent Detection: CORPUS_QUERY (comparison)
+â”œâ”€â”€ Corpus Engine: PRIMARY (weight 0.70)
+â”‚   â”œâ”€â”€ Retrieve Team tier docs
+â”‚   â”œâ”€â”€ Retrieve Enterprise tier docs
+â”‚   â””â”€â”€ Comparison context assembled
+â”œâ”€â”€ User Engine: SUPPORTIVE (weight 0.30)
+â”‚   â”œâ”€â”€ Knows she was evaluating Team â†’ frame comparison accordingly
+â”‚   â””â”€â”€ Knows she cares about Slack â†’ highlight relevant differences
+â”œâ”€â”€ Response: Comparison table with personalized emphasis on
+â”‚             features she's shown interest in
+â””â”€â”€ Memory Extraction:
+    â”œâ”€â”€ FACTUAL: "User comparing Team vs Enterprise"
+    â””â”€â”€ GOAL: "User may need Enterprise features"
 
 EXPERIENCE: Sarah feels recognized. The bot remembers her
 without being creepy. It pulls from docs but personalizes
@@ -172,36 +172,36 @@ SCENARIO: Sarah has visited 12 times over 3 weeks.
 She's now a paying customer on the Team plan.
 
 STEP 1: Identification
-├── Fingerprint match: VERY HIGH confidence (94%)
-├── Avatar classification: FAMILIAR
-├── Memories loaded: 35 memories
-├── Conversations: 11 past conversations
-└── Known topics: pricing, integrations, API, team management
+â”œâ”€â”€ Fingerprint match: VERY HIGH confidence (94%)
+â”œâ”€â”€ Avatar classification: FAMILIAR
+â”œâ”€â”€ Memories loaded: 35 memories
+â”œâ”€â”€ Conversations: 11 past conversations
+â””â”€â”€ Known topics: pricing, integrations, API, team management
 
 STEP 2: Sarah asks "I'm getting a 429 error on the API"
-├── Intent Detection: SUPPORT_QUERY (technical issue)
-├── Corpus Engine: TARGETED (weight 0.55)
-│   ├── Search: API rate limiting docs
-│   ├── Search: 429 error troubleshooting
-│   ├── Search: Team plan API limits
-│   └── Include relevant code examples
-├── User Engine: SUBSTANTIAL (weight 0.45)
-│   ├── Memory: "User is on Team plan" → Team rate limits
-│   ├── Memory: "User uses Slack integration" → check if
-│   │           Slack webhook calls count toward limit
-│   ├── Memory: "User prefers concise technical responses"
-│   ├── Previous conversation: discussed API setup 1 week ago
-│   └── Check: any related past issues?
-├── Response: "The Team plan has a 1000 req/min limit. Since
-│             you're using the Slack integration, those webhook
-│             calls count toward your limit too. Based on your
-│             setup from last week, you might want to add
-│             request batching. Here's how: [code example
-│             tailored to her known stack]"
-└── Memory Extraction:
-    ├── EPISODIC: "User hit API rate limit (429)"
-    ├── FACTUAL: "User's API usage approaching Team plan limits"
-    └── GOAL: "May need to optimize API usage or upgrade"
+â”œâ”€â”€ Intent Detection: SUPPORT_QUERY (technical issue)
+â”œâ”€â”€ Corpus Engine: TARGETED (weight 0.55)
+â”‚   â”œâ”€â”€ Search: API rate limiting docs
+â”‚   â”œâ”€â”€ Search: 429 error troubleshooting
+â”‚   â”œâ”€â”€ Search: Team plan API limits
+â”‚   â””â”€â”€ Include relevant code examples
+â”œâ”€â”€ User Engine: SUBSTANTIAL (weight 0.45)
+â”‚   â”œâ”€â”€ Memory: "User is on Team plan" â†’ Team rate limits
+â”‚   â”œâ”€â”€ Memory: "User uses Slack integration" â†’ check if
+â”‚   â”‚           Slack webhook calls count toward limit
+â”‚   â”œâ”€â”€ Memory: "User prefers concise technical responses"
+â”‚   â”œâ”€â”€ Previous conversation: discussed API setup 1 week ago
+â”‚   â””â”€â”€ Check: any related past issues?
+â”œâ”€â”€ Response: "The Team plan has a 1000 req/min limit. Since
+â”‚             you're using the Slack integration, those webhook
+â”‚             calls count toward your limit too. Based on your
+â”‚             setup from last week, you might want to add
+â”‚             request batching. Here's how: [code example
+â”‚             tailored to her known stack]"
+â””â”€â”€ Memory Extraction:
+    â”œâ”€â”€ EPISODIC: "User hit API rate limit (429)"
+    â”œâ”€â”€ FACTUAL: "User's API usage approaching Team plan limits"
+    â””â”€â”€ GOAL: "May need to optimize API usage or upgrade"
 
 EXPERIENCE: Sarah feels like she has a personal support engineer
 who knows her setup, her plan, and her history. The answer is
@@ -215,36 +215,36 @@ SCENARIO: Sarah has 50+ visits, 80+ memories, 25+ conversations
 over 3 months. She's now an admin managing 15 team members.
 
 STEP 1: Identification
-├── Fingerprint match: MAXIMUM confidence (98%)
-├── Avatar classification: KNOWN
-├── Memories loaded: 83 memories (prioritized by relevance)
-├── Conversations: 27 past conversations
-└── Rich profile: role, plan, team size, tech stack, preferences,
+â”œâ”€â”€ Fingerprint match: MAXIMUM confidence (98%)
+â”œâ”€â”€ Avatar classification: KNOWN
+â”œâ”€â”€ Memories loaded: 83 memories (prioritized by relevance)
+â”œâ”€â”€ Conversations: 27 past conversations
+â””â”€â”€ Rich profile: role, plan, team size, tech stack, preferences,
     past issues, feature requests
 
 STEP 2: Sarah asks "Any updates on the bulk import feature
          I asked about?"
-├── Intent Detection: USER_RECALL (referencing past interaction)
-├── User Engine: DOMINANT (weight 0.70)
-│   ├── Memory search: "bulk import feature request"
-│   ├── Found: EPISODIC memory from 6 weeks ago
-│   │          "User requested bulk CSV import for team members"
-│   ├── Found: GOAL memory "wants to onboard 50 new team members"
-│   └── Conversation context: full exchange about the feature
-├── Corpus Engine: SUPPLEMENTARY (weight 0.30)
-│   ├── Search: bulk import in current docs
-│   ├── Search: recent changelog/release notes
-│   └── Found: "Bulk import released in v2.3 (2 weeks ago)"
-├── Response: "Great news! The bulk CSV import you asked about
-│             on April 15th is now live — it shipped in v2.3
-│             two weeks ago. Since you mentioned needing to
-│             onboard 50 team members, here's the quickstart:
-│             [personalized guide based on her admin role and
-│             team structure]"
-└── Memory Extraction:
-    ├── EPISODIC: "Informed user about bulk import feature release"
-    ├── FACTUAL: "User aware of v2.3 features"
-    └── UPDATE existing GOAL: "bulk onboarding — feature now available"
+â”œâ”€â”€ Intent Detection: USER_RECALL (referencing past interaction)
+â”œâ”€â”€ User Engine: DOMINANT (weight 0.70)
+â”‚   â”œâ”€â”€ Memory search: "bulk import feature request"
+â”‚   â”œâ”€â”€ Found: EPISODIC memory from 6 weeks ago
+â”‚   â”‚          "User requested bulk CSV import for team members"
+â”‚   â”œâ”€â”€ Found: GOAL memory "wants to onboard 50 new team members"
+â”‚   â””â”€â”€ Conversation context: full exchange about the feature
+â”œâ”€â”€ Corpus Engine: SUPPLEMENTARY (weight 0.30)
+â”‚   â”œâ”€â”€ Search: bulk import in current docs
+â”‚   â”œâ”€â”€ Search: recent changelog/release notes
+â”‚   â””â”€â”€ Found: "Bulk import released in v2.3 (2 weeks ago)"
+â”œâ”€â”€ Response: "Great news! The bulk CSV import you asked about
+â”‚             on April 15th is now live â€” it shipped in v2.3
+â”‚             two weeks ago. Since you mentioned needing to
+â”‚             onboard 50 team members, here's the quickstart:
+â”‚             [personalized guide based on her admin role and
+â”‚             team structure]"
+â””â”€â”€ Memory Extraction:
+    â”œâ”€â”€ EPISODIC: "Informed user about bulk import feature release"
+    â”œâ”€â”€ FACTUAL: "User aware of v2.3 features"
+    â””â”€â”€ UPDATE existing GOAL: "bulk onboarding â€” feature now available"
 
 EXPERIENCE: Sarah feels like this is HER AI assistant. It
 tracked a feature request across weeks, connected it to a
@@ -255,24 +255,24 @@ This is the full promise of the system.
 ### 1.7 Intent Classification Matrix
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      INTENT → ENGINE WEIGHT MATRIX                          │
-│                                                                              │
-│  Intent Type          │ Corpus Weight │ User Weight │ Example                │
-│  ─────────────────────┼───────────────┼─────────────┼──────────────────────  │
-│  CORPUS_QUERY         │ 0.85-0.95     │ 0.05-0.15   │ "What's your API?"    │
-│  CORPUS_DEEP_DIVE     │ 0.90-0.95     │ 0.05-0.10   │ "Explain OAuth flow"  │
-│  SUPPORT_QUERY        │ 0.50-0.70     │ 0.30-0.50   │ "Getting 429 errors"  │
-│  USER_RECALL          │ 0.10-0.30     │ 0.70-0.90   │ "What did we discuss?"│
-│  COMPARISON           │ 0.70-0.80     │ 0.20-0.30   │ "Team vs Enterprise?" │
-│  HOW_TO               │ 0.60-0.80     │ 0.20-0.40   │ "How do I set up X?"  │
-│  STATUS_CHECK         │ 0.20-0.40     │ 0.60-0.80   │ "Any update on X?"    │
-│  GENERAL_CHAT         │ 0.20-0.40     │ 0.60-0.80   │ "Hi, remember me?"    │
-│  FEEDBACK             │ 0.10-0.20     │ 0.80-0.90   │ "Feature X is broken" │
-│  ACCOUNT_SPECIFIC     │ 0.30-0.50     │ 0.50-0.70   │ "What's my plan?"     │
-│                                                                              │
-│  Note: Weights are further modified by avatar maturity level                 │
-└─────────────────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                      INTENT â†’ ENGINE WEIGHT MATRIX                          â”‚
+â”‚                                                                              â”‚
+â”‚  Intent Type          â”‚ Corpus Weight â”‚ User Weight â”‚ Example                â”‚
+â”‚  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€  â”‚
+â”‚  CORPUS_QUERY         â”‚ 0.85-0.95     â”‚ 0.05-0.15   â”‚ "What's your API?"    â”‚
+â”‚  CORPUS_DEEP_DIVE     â”‚ 0.90-0.95     â”‚ 0.05-0.10   â”‚ "Explain OAuth flow"  â”‚
+â”‚  SUPPORT_QUERY        â”‚ 0.50-0.70     â”‚ 0.30-0.50   â”‚ "Getting 429 errors"  â”‚
+â”‚  USER_RECALL          â”‚ 0.10-0.30     â”‚ 0.70-0.90   â”‚ "What did we discuss?"â”‚
+â”‚  COMPARISON           â”‚ 0.70-0.80     â”‚ 0.20-0.30   â”‚ "Team vs Enterprise?" â”‚
+â”‚  HOW_TO               â”‚ 0.60-0.80     â”‚ 0.20-0.40   â”‚ "How do I set up X?"  â”‚
+â”‚  STATUS_CHECK         â”‚ 0.20-0.40     â”‚ 0.60-0.80   â”‚ "Any update on X?"    â”‚
+â”‚  GENERAL_CHAT         â”‚ 0.20-0.40     â”‚ 0.60-0.80   â”‚ "Hi, remember me?"    â”‚
+â”‚  FEEDBACK             â”‚ 0.10-0.20     â”‚ 0.80-0.90   â”‚ "Feature X is broken" â”‚
+â”‚  ACCOUNT_SPECIFIC     â”‚ 0.30-0.50     â”‚ 0.50-0.70   â”‚ "What's my plan?"     â”‚
+â”‚                                                                              â”‚
+â”‚  Note: Weights are further modified by avatar maturity level                 â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ---
@@ -284,36 +284,36 @@ This is the full promise of the system.
 The Corpus Context Engine is the company's knowledge counterpart to the User Context Engine. Where the User Engine answers "who is this person and what do they need?", the Corpus Engine answers "what does the company know that's relevant to this question?"
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      CORPUS CONTEXT ENGINE                                   │
-│                                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                    INGESTION PIPELINE                                │    │
-│  │  Documents → Chunking → Embedding → Indexing → Metadata Tagging    │    │
-│  └──────────────────────────────┬──────────────────────────────────────┘    │
-│                                 │                                            │
-│                                 ▼                                            │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                    CORPUS STORE                                      │    │
-│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐               │    │
-│  │  │CorpusDoc │ │CorpusChunk│ │CorpusTopic│ │CorpusFAQ │              │    │
-│  │  │(source)  │ │(indexed) │ │(taxonomy)│ │(Q&A)    │               │    │
-│  │  └──────────┘ └──────────┘ └──────────┘ └──────────┘               │    │
-│  └──────────────────────────────┬──────────────────────────────────────┘    │
-│                                 │                                            │
-│                                 ▼                                            │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                    RETRIEVAL ENGINE                                   │    │
-│  │  Semantic Search → Hybrid Retrieval → Re-ranking → Freshness Check │    │
-│  └──────────────────────────────┬──────────────────────────────────────┘    │
-│                                 │                                            │
-│                                 ▼                                            │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                    CORPUS CONTEXT ASSEMBLY                           │    │
-│  │  5-Layer System (C0-C4) → Budget Allocation → Prompt Compilation   │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                      CORPUS CONTEXT ENGINE                                   â”‚
+â”‚                                                                              â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚                    INGESTION PIPELINE                                â”‚    â”‚
+â”‚  â”‚  Documents â†’ Chunking â†’ Embedding â†’ Indexing â†’ Metadata Tagging    â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚                                 â”‚                                            â”‚
+â”‚                                 â–¼                                            â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚                    CORPUS STORE                                      â”‚    â”‚
+â”‚  â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”               â”‚    â”‚
+â”‚  â”‚  â”‚CorpusDoc â”‚ â”‚CorpusChunkâ”‚ â”‚CorpusTopicâ”‚ â”‚CorpusFAQ â”‚              â”‚    â”‚
+â”‚  â”‚  â”‚(source)  â”‚ â”‚(indexed) â”‚ â”‚(taxonomy)â”‚ â”‚(Q&A)    â”‚               â”‚    â”‚
+â”‚  â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜               â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚                                 â”‚                                            â”‚
+â”‚                                 â–¼                                            â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚                    RETRIEVAL ENGINE                                   â”‚    â”‚
+â”‚  â”‚  Semantic Search â†’ Hybrid Retrieval â†’ Re-ranking â†’ Freshness Check â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚                                 â”‚                                            â”‚
+â”‚                                 â–¼                                            â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚                    CORPUS CONTEXT ASSEMBLY                           â”‚    â”‚
+â”‚  â”‚  5-Layer System (C0-C4) â†’ Budget Allocation â†’ Prompt Compilation   â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚                                                                              â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ### 2.2 Corpus Ingestion Pipeline
@@ -322,69 +322,69 @@ The ingestion pipeline transforms raw company documents into searchable, embedda
 
 ```
 Raw Document (MD, PDF, HTML, API spec, etc.)
-     │
-     ▼
-┌─────────────────────────┐
-│  1. PARSER              │
-│  - Markdown parser      │
-│  - PDF extractor        │
-│  - HTML sanitizer       │
-│  - API spec parser      │
-│  - Structured data      │
-│    (JSON/YAML)          │
-└───────────┬─────────────┘
-            │
-            ▼
-┌─────────────────────────┐
-│  2. PREPROCESSOR        │
-│  - Section extraction   │
-│  - Header hierarchy     │
-│  - Code block isolation │
-│  - Table preservation   │
-│  - Link resolution      │
-│  - Metadata extraction  │
-└───────────┬─────────────┘
-            │
-            ▼
-┌─────────────────────────┐
-│  3. CHUNKER             │
-│  - Semantic chunking    │
-│    (section-aware)      │
-│  - Overlap: 50-100 tokens│
-│  - Target: 300-500 tokens│
-│  - Preserve code blocks │
-│  - Preserve tables      │
-│  - Parent-child linking │
-└───────────┬─────────────┘
-            │
-            ▼
-┌─────────────────────────┐
-│  4. ENRICHER            │
-│  - Generate embeddings  │
-│  - Extract keywords     │
-│  - Classify topic       │
-│  - Detect content type  │
-│  - Generate summary     │
-│  - Generate Q&A pairs   │
-│  - Difficulty level     │
-│  - Freshness score      │
-└───────────┬─────────────┘
-            │
-            ▼
-┌─────────────────────────┐
-│  5. INDEXER             │
-│  - Store in PostgreSQL  │
-│  - Index in pgvector    │
-│  - Update topic graph   │
-│  - Update FAQ index     │
-│  - Invalidate caches    │
-│  - Version tracking     │
-└─────────────────────────┘
+     â”‚
+     â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  1. PARSER              â”‚
+â”‚  - Markdown parser      â”‚
+â”‚  - PDF extractor        â”‚
+â”‚  - HTML sanitizer       â”‚
+â”‚  - API spec parser      â”‚
+â”‚  - Structured data      â”‚
+â”‚    (JSON/YAML)          â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+            â”‚
+            â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  2. PREPROCESSOR        â”‚
+â”‚  - Section extraction   â”‚
+â”‚  - Header hierarchy     â”‚
+â”‚  - Code block isolation â”‚
+â”‚  - Table preservation   â”‚
+â”‚  - Link resolution      â”‚
+â”‚  - Metadata extraction  â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+            â”‚
+            â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  3. CHUNKER             â”‚
+â”‚  - Semantic chunking    â”‚
+â”‚    (section-aware)      â”‚
+â”‚  - Overlap: 50-100 tokensâ”‚
+â”‚  - Target: 300-500 tokensâ”‚
+â”‚  - Preserve code blocks â”‚
+â”‚  - Preserve tables      â”‚
+â”‚  - Parent-child linking â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+            â”‚
+            â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  4. ENRICHER            â”‚
+â”‚  - Generate embeddings  â”‚
+â”‚  - Extract keywords     â”‚
+â”‚  - Classify topic       â”‚
+â”‚  - Detect content type  â”‚
+â”‚  - Generate summary     â”‚
+â”‚  - Generate Q&A pairs   â”‚
+â”‚  - Difficulty level     â”‚
+â”‚  - Freshness score      â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+            â”‚
+            â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  5. INDEXER             â”‚
+â”‚  - Store in PostgreSQL  â”‚
+â”‚  - Index in pgvector    â”‚
+â”‚  - Update topic graph   â”‚
+â”‚  - Update FAQ index     â”‚
+â”‚  - Invalidate caches    â”‚
+â”‚  - Version tracking     â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 #### Chunking Strategy
 
-The chunker is **section-aware** — it respects document structure rather than splitting arbitrarily:
+The chunker is **section-aware** â€” it respects document structure rather than splitting arbitrarily:
 
 ```typescript
 interface ChunkingConfig {
@@ -395,14 +395,14 @@ interface ChunkingConfig {
   overlapSize: number;           // 75 tokens (context window)
 
   // Structure preservation
-  respectHeadings: boolean;       // true — never split across H1/H2
-  preserveCodeBlocks: boolean;    // true — keep code blocks intact
-  preserveTables: boolean;        // true — keep tables intact
-  preserveLists: boolean;         // true — keep list items together
+  respectHeadings: boolean;       // true â€” never split across H1/H2
+  preserveCodeBlocks: boolean;    // true â€” keep code blocks intact
+  preserveTables: boolean;        // true â€” keep tables intact
+  preserveLists: boolean;         // true â€” keep list items together
 
   // Hierarchy
-  generateParentChunks: boolean;  // true — create section-level summaries
-  maxHierarchyDepth: number;      // 3 levels (doc → section → chunk)
+  generateParentChunks: boolean;  // true â€” create section-level summaries
+  maxHierarchyDepth: number;      // 3 levels (doc â†’ section â†’ chunk)
 }
 ```
 
@@ -551,64 +551,64 @@ The retrieval engine finds the most relevant corpus content for a given query. I
 
 ```
 User Query
-     │
-     ▼
-┌─────────────────────────┐
-│  1. QUERY ANALYSIS      │
-│  - Intent classification│
-│  - Topic detection      │
-│  - Entity extraction    │
-│  - Query expansion      │
-│  - Difficulty assessment│
-└───────────┬─────────────┘
-            │
-            ▼
-┌─────────────────────────┐
-│  2. MULTI-PATH RETRIEVAL│
-│  ┌─────────┐ ┌────────┐│
-│  │Semantic │ │Keyword ││
-│  │Search   │ │Search  ││
-│  │(vector) │ │(BM25)  ││
-│  └────┬────┘ └───┬────┘│
-│       │          │      │
-│  ┌────┴──────────┴────┐│
-│  │   Q&A Matching     ││
-│  │   (question→question)│
-│  └────────┬───────────┘│
-└───────────┼─────────────┘
-            │
-            ▼
-┌─────────────────────────┐
-│  3. CANDIDATE SCORING   │
-│  - Semantic similarity  │
-│  - Keyword relevance    │
-│  - Q&A match score      │
-│  - Freshness score      │
-│  - Topic alignment      │
-│  - Section authority    │
-│  - Quality score        │
-└───────────┬─────────────┘
-            │
-            ▼
-┌─────────────────────────┐
-│  4. RE-RANKING          │
-│  - Cross-encoder        │
-│    (query, chunk) pairs │
-│  - Diversity filter     │
-│    (avoid redundancy)   │
-│  - Parent expansion     │
-│    (include section     │
-│     context if needed)  │
-└───────────┬─────────────┘
-            │
-            ▼
-┌─────────────────────────┐
-│  5. CONTEXT FORMATION   │
-│  - Rank-ordered chunks  │
-│  - Token budget fitting │
-│  - Citation preparation │
-│  - Confidence scoring   │
-└─────────────────────────┘
+     â”‚
+     â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  1. QUERY ANALYSIS      â”‚
+â”‚  - Intent classificationâ”‚
+â”‚  - Topic detection      â”‚
+â”‚  - Entity extraction    â”‚
+â”‚  - Query expansion      â”‚
+â”‚  - Difficulty assessmentâ”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+            â”‚
+            â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  2. MULTI-PATH RETRIEVALâ”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”â”‚
+â”‚  â”‚Semantic â”‚ â”‚Keyword â”‚â”‚
+â”‚  â”‚Search   â”‚ â”‚Search  â”‚â”‚
+â”‚  â”‚(vector) â”‚ â”‚(BM25)  â”‚â”‚
+â”‚  â””â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”¬â”€â”€â”€â”€â”˜â”‚
+â”‚       â”‚          â”‚      â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”â”‚
+â”‚  â”‚   Q&A Matching     â”‚â”‚
+â”‚  â”‚   (questionâ†’question)â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+            â”‚
+            â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  3. CANDIDATE SCORING   â”‚
+â”‚  - Semantic similarity  â”‚
+â”‚  - Keyword relevance    â”‚
+â”‚  - Q&A match score      â”‚
+â”‚  - Freshness score      â”‚
+â”‚  - Topic alignment      â”‚
+â”‚  - Section authority    â”‚
+â”‚  - Quality score        â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+            â”‚
+            â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  4. RE-RANKING          â”‚
+â”‚  - Cross-encoder        â”‚
+â”‚    (query, chunk) pairs â”‚
+â”‚  - Diversity filter     â”‚
+â”‚    (avoid redundancy)   â”‚
+â”‚  - Parent expansion     â”‚
+â”‚    (include section     â”‚
+â”‚     context if needed)  â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+            â”‚
+            â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚  5. CONTEXT FORMATION   â”‚
+â”‚  - Rank-ordered chunks  â”‚
+â”‚  - Token budget fitting â”‚
+â”‚  - Citation preparation â”‚
+â”‚  - Confidence scoring   â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 #### Multi-Path Retrieval
@@ -816,40 +816,40 @@ function assessRetrievalConfidence(
 The Corpus Context Engine uses its own **5-layer system (C0-C4)**, analogous to but distinct from the User Context Engine's L0-L7:
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│              CORPUS CONTEXT LAYERS (C0-C4)                                   │
-│                                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  C0: COMPANY IDENTITY CORE                              [FIXED]     │    │
-│  │  Company name, product overview, brand voice, guardrails            │    │
-│  │  Budget: 200-400 tokens │ Elasticity: 0.0 (non-negotiable)        │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  C1: TOPIC FRAMEWORK                                    [SEMI-FIXED]│    │
-│  │  Relevant topic taxonomy, related topics, navigation hints          │    │
-│  │  Budget: 100-300 tokens │ Elasticity: 0.2                          │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  C2: RETRIEVED KNOWLEDGE (PRIMARY)                      [ELASTIC]   │    │
-│  │  Top-ranked corpus chunks, Q&A pairs, direct answers               │    │
-│  │  Budget: 1000-4000 tokens │ Elasticity: 0.4                        │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  C3: SUPPORTING CONTEXT                                [ELASTIC]    │    │
-│  │  Related chunks, parent summaries, cross-references                │    │
-│  │  Budget: 500-2000 tokens │ Elasticity: 0.7                         │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  C4: FRESHNESS & CHANGELOG                             [ELASTIC]    │    │
-│  │  Recent updates, version changes, deprecation notices              │    │
-│  │  Budget: 200-500 tokens │ Elasticity: 0.8                          │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚              CORPUS CONTEXT LAYERS (C0-C4)                                   â”‚
+â”‚                                                                              â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚  C0: COMPANY IDENTITY CORE                              [FIXED]     â”‚    â”‚
+â”‚  â”‚  Company name, product overview, brand voice, guardrails            â”‚    â”‚
+â”‚  â”‚  Budget: 200-400 tokens â”‚ Elasticity: 0.0 (non-negotiable)        â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚                                                                              â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚  C1: TOPIC FRAMEWORK                                    [SEMI-FIXED]â”‚    â”‚
+â”‚  â”‚  Relevant topic taxonomy, related topics, navigation hints          â”‚    â”‚
+â”‚  â”‚  Budget: 100-300 tokens â”‚ Elasticity: 0.2                          â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚                                                                              â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚  C2: RETRIEVED KNOWLEDGE (PRIMARY)                      [ELASTIC]   â”‚    â”‚
+â”‚  â”‚  Top-ranked corpus chunks, Q&A pairs, direct answers               â”‚    â”‚
+â”‚  â”‚  Budget: 1000-4000 tokens â”‚ Elasticity: 0.4                        â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚                                                                              â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚  C3: SUPPORTING CONTEXT                                [ELASTIC]    â”‚    â”‚
+â”‚  â”‚  Related chunks, parent summaries, cross-references                â”‚    â”‚
+â”‚  â”‚  Budget: 500-2000 tokens â”‚ Elasticity: 0.7                         â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚                                                                              â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚  C4: FRESHNESS & CHANGELOG                             [ELASTIC]    â”‚    â”‚
+â”‚  â”‚  Recent updates, version changes, deprecation notices              â”‚    â”‚
+â”‚  â”‚  Budget: 200-500 tokens â”‚ Elasticity: 0.8                          â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚                                                                              â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 #### Layer Details
@@ -883,7 +883,7 @@ code examples when relevant.
 Rules:
 - Never share internal pricing formulas
 - Never guarantee uptime SLAs beyond published numbers
-- If unsure, say "I'm not certain — let me connect you with support"
+- If unsure, say "I'm not certain â€” let me connect you with support"
 - Always cite documentation sections when answering technical questions
 - If the user's question seems urgent, offer to create a support ticket
 
@@ -902,7 +902,7 @@ interface TopicFramework {
 ```
 
 **C2: Retrieved Knowledge (Primary)**
-The main knowledge payload — the top-ranked chunks from retrieval:
+The main knowledge payload â€” the top-ranked chunks from retrieval:
 ```typescript
 interface RetrievedKnowledge {
   chunks: ScoredCorpusChunk[];       // Ranked by relevance
@@ -1028,33 +1028,33 @@ interface CorpusTopic {
 ### 2.6 Corpus Caching Strategy
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    CORPUS CACHE LAYERS                                       │
-│                                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  L1: HOT CACHE (In-Memory)                         TTL: 15 min     │    │
-│  │  - C0 Company Identity (per tenant)                                │    │
-│  │  - Top 50 most-queried chunks (per tenant)                         │    │
-│  │  - Topic taxonomy (per tenant)                                     │    │
-│  │  - Pre-computed Q&A embeddings                                     │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  L2: WARM CACHE (Redis)                             TTL: 2 hours    │    │
-│  │  - Assembled corpus contexts (query hash → context)                │    │
-│  │  - Retrieval results (query hash → chunks)                         │    │
-│  │  - Topic framework bundles                                         │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │  L3: COLD CACHE (Database Query Cache)              TTL: 24 hours   │    │
-│  │  - Full chunk content                                              │    │
-│  │  - Document metadata                                               │    │
-│  │  - Version history                                                 │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-│  Invalidation: On document update, all caches for affected topics cleared   │
-└─────────────────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                    CORPUS CACHE LAYERS                                       â”‚
+â”‚                                                                              â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚  L1: HOT CACHE (In-Memory)                         TTL: 15 min     â”‚    â”‚
+â”‚  â”‚  - C0 Company Identity (per tenant)                                â”‚    â”‚
+â”‚  â”‚  - Top 50 most-queried chunks (per tenant)                         â”‚    â”‚
+â”‚  â”‚  - Topic taxonomy (per tenant)                                     â”‚    â”‚
+â”‚  â”‚  - Pre-computed Q&A embeddings                                     â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚                                                                              â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚  L2: WARM CACHE (Redis)                             TTL: 2 hours    â”‚    â”‚
+â”‚  â”‚  - Assembled corpus contexts (query hash â†’ context)                â”‚    â”‚
+â”‚  â”‚  - Retrieval results (query hash â†’ chunks)                         â”‚    â”‚
+â”‚  â”‚  - Topic framework bundles                                         â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚                                                                              â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚  L3: COLD CACHE (Database Query Cache)              TTL: 24 hours   â”‚    â”‚
+â”‚  â”‚  - Full chunk content                                              â”‚    â”‚
+â”‚  â”‚  - Document metadata                                               â”‚    â”‚
+â”‚  â”‚  - Version history                                                 â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚                                                                              â”‚
+â”‚  Invalidation: On document update, all caches for affected topics cleared   â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 **Cache Key Strategy:**
@@ -1121,55 +1121,55 @@ interface TopicGap {
 The **Dual-Engine Orchestrator** is the central intelligence that decides how to blend the User Context Engine and Corpus Context Engine for each interaction. It is the critical new component that makes the chatbot feel both knowledgeable (corpus) and personal (user memory).
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                     DUAL-ENGINE ORCHESTRATOR                                 │
-│                                                                              │
-│  User Message                                                               │
-│       │                                                                      │
-│       ▼                                                                      │
-│  ┌─────────────────────────────────────────┐                                │
-│  │         INTENT CLASSIFIER               │                                │
-│  │  - Query type detection                 │                                │
-│  │  - Corpus vs User signal analysis       │                                │
-│  │  - Multi-turn context awareness         │                                │
-│  └────────────────┬────────────────────────┘                                │
-│                   │                                                          │
-│                   ▼                                                          │
-│  ┌─────────────────────────────────────────┐                                │
-│  │         WEIGHT CALCULATOR               │                                │
-│  │  - Intent weight                        │                                │
-│  │  - Avatar maturity modifier             │                                │
-│  │  - Conversation arc modifier            │                                │
-│  │  - Explicit signal override             │                                │
-│  └────────────┬───────────┬────────────────┘                                │
-│               │           │                                                  │
-│          ┌────┘           └────┐                                            │
-│          ▼                     ▼                                             │
-│  ┌───────────────┐    ┌───────────────┐                                    │
-│  │  USER CONTEXT │    │ CORPUS CONTEXT│                                    │
-│  │  ENGINE       │    │ ENGINE        │                                    │
-│  │  (L0-L7)      │    │ (C0-C4)       │                                    │
-│  │               │    │               │                                    │
-│  │  Weight: 0.35 │    │  Weight: 0.65 │    ← Dynamic per query             │
-│  │  Budget: 3500 │    │  Budget: 6500 │    ← Proportional allocation       │
-│  └───────┬───────┘    └───────┬───────┘                                    │
-│          │                     │                                             │
-│          └──────────┬──────────┘                                            │
-│                     ▼                                                        │
-│  ┌─────────────────────────────────────────┐                                │
-│  │         CONTEXT MERGER                  │                                │
-│  │  - Interleave corpus + user context     │                                │
-│  │  - Deduplicate information              │                                │
-│  │  - Resolve conflicts (user memory vs    │                                │
-│  │    outdated docs)                       │                                │
-│  │  - Final prompt assembly                │                                │
-│  └────────────────┬────────────────────────┘                                │
-│                   │                                                          │
-│                   ▼                                                          │
-│          ASSEMBLED SYSTEM PROMPT                                            │
-│          (Ready for LLM inference)                                          │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                     DUAL-ENGINE ORCHESTRATOR                                 â”‚
+â”‚                                                                              â”‚
+â”‚  User Message                                                               â”‚
+â”‚       â”‚                                                                      â”‚
+â”‚       â–¼                                                                      â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                                â”‚
+â”‚  â”‚         INTENT CLASSIFIER               â”‚                                â”‚
+â”‚  â”‚  - Query type detection                 â”‚                                â”‚
+â”‚  â”‚  - Corpus vs User signal analysis       â”‚                                â”‚
+â”‚  â”‚  - Multi-turn context awareness         â”‚                                â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                                â”‚
+â”‚                   â”‚                                                          â”‚
+â”‚                   â–¼                                                          â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                                â”‚
+â”‚  â”‚         WEIGHT CALCULATOR               â”‚                                â”‚
+â”‚  â”‚  - Intent weight                        â”‚                                â”‚
+â”‚  â”‚  - Avatar maturity modifier             â”‚                                â”‚
+â”‚  â”‚  - Conversation arc modifier            â”‚                                â”‚
+â”‚  â”‚  - Explicit signal override             â”‚                                â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                                â”‚
+â”‚               â”‚           â”‚                                                  â”‚
+â”‚          â”Œâ”€â”€â”€â”€â”˜           â””â”€â”€â”€â”€â”                                            â”‚
+â”‚          â–¼                     â–¼                                             â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                                    â”‚
+â”‚  â”‚  USER CONTEXT â”‚    â”‚ CORPUS CONTEXTâ”‚                                    â”‚
+â”‚  â”‚  ENGINE       â”‚    â”‚ ENGINE        â”‚                                    â”‚
+â”‚  â”‚  (L0-L7)      â”‚    â”‚ (C0-C4)       â”‚                                    â”‚
+â”‚  â”‚               â”‚    â”‚               â”‚                                    â”‚
+â”‚  â”‚  Weight: 0.35 â”‚    â”‚  Weight: 0.65 â”‚    â† Dynamic per query             â”‚
+â”‚  â”‚  Budget: 3500 â”‚    â”‚  Budget: 6500 â”‚    â† Proportional allocation       â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”˜    â””â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”˜                                    â”‚
+â”‚          â”‚                     â”‚                                             â”‚
+â”‚          â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                                            â”‚
+â”‚                     â–¼                                                        â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                                â”‚
+â”‚  â”‚         CONTEXT MERGER                  â”‚                                â”‚
+â”‚  â”‚  - Interleave corpus + user context     â”‚                                â”‚
+â”‚  â”‚  - Deduplicate information              â”‚                                â”‚
+â”‚  â”‚  - Resolve conflicts (user memory vs    â”‚                                â”‚
+â”‚  â”‚    outdated docs)                       â”‚                                â”‚
+â”‚  â”‚  - Final prompt assembly                â”‚                                â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                                â”‚
+â”‚                   â”‚                                                          â”‚
+â”‚                   â–¼                                                          â”‚
+â”‚          ASSEMBLED SYSTEM PROMPT                                            â”‚
+â”‚          (Ready for LLM inference)                                          â”‚
+â”‚                                                                              â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ### 3.2 Intent Classifier
@@ -1531,7 +1531,7 @@ class DualBudgetAllocator {
     const messageReserve = 100;         // User message (L7)
     const remaining = totalBudget - systemInstructions - messageReserve;
     
-    // Conversation history is SHARED — both engines contribute to it
+    // Conversation history is SHARED â€” both engines contribute to it
     // but it's managed once to avoid duplication
     const historyBudget = hasConversation
       ? Math.min(
@@ -1670,15 +1670,15 @@ class DualContextMerger implements ContextMerger {
     // 1. Orchestrator meta-instructions (always first)
     sections.push(orchestratorInstructions);
     
-    // 2. Company identity (C0) — always present
+    // 2. Company identity (C0) â€” always present
     sections.push(corpusContext.layers.C0.content);
     
-    // 3. User identity (L0) — if available
+    // 3. User identity (L0) â€” if available
     if (userContext.layers?.L0?.content) {
       sections.push(`## About This User\n${userContext.layers.L0.content}`);
     }
     
-    // 4. User preferences (L1) — if available
+    // 4. User preferences (L1) â€” if available
     if (userContext.layers?.L1?.content) {
       sections.push(`## User Preferences\n${userContext.layers.L1.content}`);
     }
@@ -1688,7 +1688,7 @@ class DualContextMerger implements ContextMerger {
       sections.push(`## Topic Context\n${corpusContext.layers.C1.content}`);
     }
     
-    // 6. PRIMARY: Retrieved knowledge (C2) — the main corpus payload
+    // 6. PRIMARY: Retrieved knowledge (C2) â€” the main corpus payload
     if (corpusContext.layers.C2.content) {
       sections.push(
         `## Relevant Documentation\n` +
@@ -1706,7 +1706,7 @@ class DualContextMerger implements ContextMerger {
       );
     }
     
-    // 8. User context — JIT memories (L5)
+    // 8. User context â€” JIT memories (L5)
     if (userContext.layers?.L5?.content) {
       sections.push(
         `## User History & Context\n` +
@@ -1923,7 +1923,7 @@ class DualEngineOrchestrator {
     // 6. Generate query embedding (shared by both engines)
     const queryEmbedding = await this.embeddingService.embed(params.message);
     
-    // 7. Parallel assembly — both engines run simultaneously
+    // 7. Parallel assembly â€” both engines run simultaneously
     const [corpusContext, userContext, conversationHistory] = await Promise.all([
       // Corpus engine
       this.corpusAssembler.assemble({
@@ -2007,38 +2007,38 @@ The chatbot's user memory system builds on the existing VIVIM Memory Engine but 
 ### 4.2 Conversation Awareness System
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                CONVERSATION AWARENESS SYSTEM                                 │
-│                                                                              │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                  CONVERSATION INDEX                                  │    │
-│  │  All conversations indexed for instant retrieval                    │    │
-│  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐              │    │
-│  │  │Conv #1   │ │Conv #2   │ │Conv #3   │ │Conv #N   │              │    │
-│  │  │Summary   │ │Summary   │ │Summary   │ │Summary   │              │    │
-│  │  │Topics    │ │Topics    │ │Topics    │ │Topics    │              │    │
-│  │  │Key Facts │ │Key Facts │ │Key Facts │ │Key Facts │              │    │
-│  │  │Embedding │ │Embedding │ │Embedding │ │Embedding │              │    │
-│  │  └──────────┘ └──────────┘ └──────────┘ └──────────┘              │    │
-│  └──────────────────────────────┬──────────────────────────────────────┘    │
-│                                 │                                            │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                  PROGRESSIVE MEMORY                                  │    │
-│  │                                                                      │    │
-│  │  Real-Time Extraction → Session Summary → Long-Term Memory          │    │
-│  │       (per message)       (end of session)    (consolidated)        │    │
-│  └──────────────────────────────┬──────────────────────────────────────┘    │
-│                                 │                                            │
-│  ┌─────────────────────────────────────────────────────────────────────┐    │
-│  │                  USER PROFILE EVOLUTION                              │    │
-│  │                                                                      │    │
-│  │  Session 1: name?, topic interest                                   │    │
-│  │  Session 3: plan, role, tech stack                                  │    │
-│  │  Session 8: team size, integration setup, preferences               │    │
-│  │  Session 15+: full profile, behavior patterns, expertise level      │    │
-│  └─────────────────────────────────────────────────────────────────────┘    │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                CONVERSATION AWARENESS SYSTEM                                 â”‚
+â”‚                                                                              â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚                  CONVERSATION INDEX                                  â”‚    â”‚
+â”‚  â”‚  All conversations indexed for instant retrieval                    â”‚    â”‚
+â”‚  â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”              â”‚    â”‚
+â”‚  â”‚  â”‚Conv #1   â”‚ â”‚Conv #2   â”‚ â”‚Conv #3   â”‚ â”‚Conv #N   â”‚              â”‚    â”‚
+â”‚  â”‚  â”‚Summary   â”‚ â”‚Summary   â”‚ â”‚Summary   â”‚ â”‚Summary   â”‚              â”‚    â”‚
+â”‚  â”‚  â”‚Topics    â”‚ â”‚Topics    â”‚ â”‚Topics    â”‚ â”‚Topics    â”‚              â”‚    â”‚
+â”‚  â”‚  â”‚Key Facts â”‚ â”‚Key Facts â”‚ â”‚Key Facts â”‚ â”‚Key Facts â”‚              â”‚    â”‚
+â”‚  â”‚  â”‚Embedding â”‚ â”‚Embedding â”‚ â”‚Embedding â”‚ â”‚Embedding â”‚              â”‚    â”‚
+â”‚  â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜              â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚                                 â”‚                                            â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚                  PROGRESSIVE MEMORY                                  â”‚    â”‚
+â”‚  â”‚                                                                      â”‚    â”‚
+â”‚  â”‚  Real-Time Extraction â†’ Session Summary â†’ Long-Term Memory          â”‚    â”‚
+â”‚  â”‚       (per message)       (end of session)    (consolidated)        â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚                                 â”‚                                            â”‚
+â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”‚
+â”‚  â”‚                  USER PROFILE EVOLUTION                              â”‚    â”‚
+â”‚  â”‚                                                                      â”‚    â”‚
+â”‚  â”‚  Session 1: name?, topic interest                                   â”‚    â”‚
+â”‚  â”‚  Session 3: plan, role, tech stack                                  â”‚    â”‚
+â”‚  â”‚  Session 8: team size, integration setup, preferences               â”‚    â”‚
+â”‚  â”‚  Session 15+: full profile, behavior patterns, expertise level      â”‚    â”‚
+â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â”‚
+â”‚                                                                              â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 ### 4.3 Conversation Index
@@ -2271,28 +2271,28 @@ class ConversationRecall {
 Memory extraction happens at three temporal scales:
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                  PROGRESSIVE MEMORY EXTRACTION                               │
-│                                                                              │
-│  TIME SCALE          │ WHAT                │ WHEN                           │
-│  ────────────────────┼─────────────────────┼──────────────────────────      │
-│  REAL-TIME           │ Important facts     │ After every 3-5 messages       │
-│  (micro-extraction)  │ Plan/role mentions  │ Triggered by signal detection  │
-│                      │ Preferences stated  │                                │
-│                      │ Problems reported   │                                │
-│  ────────────────────┼─────────────────────┼──────────────────────────      │
-│  SESSION-END         │ Conversation summary│ When conversation ends or      │
-│  (session-extraction)│ Topic mapping       │ after 30 min inactivity        │
-│                      │ Key decisions       │                                │
-│                      │ Unresolved issues   │                                │
-│                      │ Action items        │                                │
-│  ────────────────────┼─────────────────────┼──────────────────────────      │
-│  PERIODIC            │ Memory consolidation│ Daily background job           │
-│  (consolidation)     │ Profile evolution   │ After every 5 conversations    │
-│                      │ Conflict resolution │                                │
-│                      │ Stale memory decay  │                                │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                  PROGRESSIVE MEMORY EXTRACTION                               â”‚
+â”‚                                                                              â”‚
+â”‚  TIME SCALE          â”‚ WHAT                â”‚ WHEN                           â”‚
+â”‚  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€      â”‚
+â”‚  REAL-TIME           â”‚ Important facts     â”‚ After every 3-5 messages       â”‚
+â”‚  (micro-extraction)  â”‚ Plan/role mentions  â”‚ Triggered by signal detection  â”‚
+â”‚                      â”‚ Preferences stated  â”‚                                â”‚
+â”‚                      â”‚ Problems reported   â”‚                                â”‚
+â”‚  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€      â”‚
+â”‚  SESSION-END         â”‚ Conversation summaryâ”‚ When conversation ends or      â”‚
+â”‚  (session-extraction)â”‚ Topic mapping       â”‚ after 30 min inactivity        â”‚
+â”‚                      â”‚ Key decisions       â”‚                                â”‚
+â”‚                      â”‚ Unresolved issues   â”‚                                â”‚
+â”‚                      â”‚ Action items        â”‚                                â”‚
+â”‚  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€      â”‚
+â”‚  PERIODIC            â”‚ Memory consolidationâ”‚ Daily background job           â”‚
+â”‚  (consolidation)     â”‚ Profile evolution   â”‚ After every 5 conversations    â”‚
+â”‚                      â”‚ Conflict resolution â”‚                                â”‚
+â”‚                      â”‚ Stale memory decay  â”‚                                â”‚
+â”‚                                                                              â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
 #### Real-Time Extraction (Micro)
@@ -2469,7 +2469,7 @@ class SessionEndExtractor {
     // 4. Update user profile evolution
     await this.profileEvolver.evolve(virtualUserId);
     
-    // 5. Check for unresolved issues → create follow-up memory
+    // 5. Check for unresolved issues â†’ create follow-up memory
     const unresolvedIssues = await this.detectUnresolvedIssues(messages);
     for (const issue of unresolvedIssues) {
       await this.memoryService.createMemory(virtualUserId, {
@@ -2632,7 +2632,7 @@ class UserProfileEvolver {
 
 ### 4.6 Proactive Awareness Features
 
-The system doesn't just passively recall — it proactively monitors for situations where it should speak up:
+The system doesn't just passively recall â€” it proactively monitors for situations where it should speak up:
 
 ```typescript
 interface ProactiveAwareness {
@@ -2734,7 +2734,7 @@ class ProactiveAwarenessEngine {
     }
     
     // 4. Check for pattern-based insights
-    // e.g., user keeps hitting the same error → suggest a different approach
+    // e.g., user keeps hitting the same error â†’ suggest a different approach
     const pattern = await this.detectRepeatedPatterns(virtualUserId, currentQuery);
     if (pattern) {
       insights.push({
@@ -2774,7 +2774,7 @@ The culmination of all these systems creates the "personal AI" feeling:
 // Session 8 (FAMILIAR):
 // User: "Hey"
 // Bot: "Hi! Welcome back. Last time we troubleshot your Slack webhook 
-//       rate limit issue — did that fix work? Also, I noticed the API docs 
+//       rate limit issue â€” did that fix work? Also, I noticed the API docs 
 //       were updated last week with a new batch endpoint that might help 
 //       with the throughput issues you've been having."
 //       [Proactive: remembers unresolved issue + doc update notification]
@@ -2783,7 +2783,7 @@ The culmination of all these systems creates the "personal AI" feeling:
 // User: "Anything new?"
 // Bot: "Yes! Three things relevant to you:
 //       1. The bulk CSV import feature you requested on April 15th shipped 
-//          in v2.3 — perfect for onboarding those 50 team members.
+//          in v2.3 â€” perfect for onboarding those 50 team members.
 //       2. We updated the Slack integration to support thread replies 
 //          (I know you asked about that).
 //       3. Based on your API usage patterns, you might benefit from our 
@@ -3438,82 +3438,82 @@ app.post('/api/v1/corpus/documents/ingest',
 
 ```
 Week 1: Data Models + Ingestion
-├── Create Prisma schema (Tenant, CorpusDocument, CorpusChunk, CorpusTopic, CorpusFAQ)
-├── Build document parser (Markdown, HTML)
-├── Build semantic chunker (section-aware)
-├── Build enricher (embeddings, keywords, Q&A generation)
-└── Build indexer (PostgreSQL + pgvector storage)
+â”œâ”€â”€ Create Prisma schema (Tenant, CorpusDocument, CorpusChunk, CorpusTopic, CorpusFAQ)
+â”œâ”€â”€ Build document parser (Markdown, HTML)
+â”œâ”€â”€ Build semantic chunker (section-aware)
+â”œâ”€â”€ Build enricher (embeddings, keywords, Q&A generation)
+â””â”€â”€ Build indexer (PostgreSQL + pgvector storage)
 
 Week 2: Retrieval Engine
-├── Multi-path retrieval (semantic + keyword + Q&A matching)
-├── Scoring formula implementation
-├── Re-ranking with diversity filter
-├── Parent expansion logic
-├── Confidence assessment
-└── Corpus caching layer
+â”œâ”€â”€ Multi-path retrieval (semantic + keyword + Q&A matching)
+â”œâ”€â”€ Scoring formula implementation
+â”œâ”€â”€ Re-ranking with diversity filter
+â”œâ”€â”€ Parent expansion logic
+â”œâ”€â”€ Confidence assessment
+â””â”€â”€ Corpus caching layer
 
 Week 3: Corpus Context Assembly
-├── 5-layer system (C0-C4)
-├── Company identity core configuration
-├── Topic framework builder
-├── Budget allocation for corpus layers
-├── Citation generation
-└── Integration tests
+â”œâ”€â”€ 5-layer system (C0-C4)
+â”œâ”€â”€ Company identity core configuration
+â”œâ”€â”€ Topic framework builder
+â”œâ”€â”€ Budget allocation for corpus layers
+â”œâ”€â”€ Citation generation
+â””â”€â”€ Integration tests
 ```
 
 ### Phase 2: Dual-Engine Orchestrator (Weeks 4-5)
 
 ```
 Week 4: Orchestrator Core
-├── Intent classifier (rule-based + LLM fallback)
-├── Weight calculator
-├── Budget allocator (dual-engine split)
-├── Context merger
-├── Orchestrator meta-instructions generator
-└── Avatar classifier
+â”œâ”€â”€ Intent classifier (rule-based + LLM fallback)
+â”œâ”€â”€ Weight calculator
+â”œâ”€â”€ Budget allocator (dual-engine split)
+â”œâ”€â”€ Context merger
+â”œâ”€â”€ Orchestrator meta-instructions generator
+â””â”€â”€ Avatar classifier
 
 Week 5: Integration + Optimization
-├── Parallel assembly pipeline (corpus + user engines simultaneous)
-├── Shared conversation history management
-├── Conflict detection (corpus vs user memory)
-├── Telemetry logging
-├── Performance optimization (target: < 800ms assembly)
-└── End-to-end integration tests
+â”œâ”€â”€ Parallel assembly pipeline (corpus + user engines simultaneous)
+â”œâ”€â”€ Shared conversation history management
+â”œâ”€â”€ Conflict detection (corpus vs user memory)
+â”œâ”€â”€ Telemetry logging
+â”œâ”€â”€ Performance optimization (target: < 800ms assembly)
+â””â”€â”€ End-to-end integration tests
 ```
 
 ### Phase 3: Intelligent User Memory (Weeks 6-7)
 
 ```
 Week 6: Conversation Awareness
-├── ConversationIndex model + builder
-├── Session-end indexing pipeline
-├── Conversation recall (semantic search across indices)
-├── Real-time micro-extraction engine
-├── Session-end extraction engine
-└── Progressive memory pipeline
+â”œâ”€â”€ ConversationIndex model + builder
+â”œâ”€â”€ Session-end indexing pipeline
+â”œâ”€â”€ Conversation recall (semantic search across indices)
+â”œâ”€â”€ Real-time micro-extraction engine
+â”œâ”€â”€ Session-end extraction engine
+â””â”€â”€ Progressive memory pipeline
 
 Week 7: Personal AI Features
-├── User profile evolution engine
-├── Proactive awareness engine
-│   ├── Doc update detection
-│   ├── Feature release matching
-│   ├── Unresolved issue tracking
-│   └── Pattern detection
-├── Avatar-based behavior customization
-└── Integration with chat endpoint
+â”œâ”€â”€ User profile evolution engine
+â”œâ”€â”€ Proactive awareness engine
+â”‚   â”œâ”€â”€ Doc update detection
+â”‚   â”œâ”€â”€ Feature release matching
+â”‚   â”œâ”€â”€ Unresolved issue tracking
+â”‚   â””â”€â”€ Pattern detection
+â”œâ”€â”€ Avatar-based behavior customization
+â””â”€â”€ Integration with chat endpoint
 ```
 
 ### Phase 4: Polish + Multi-Tenant (Week 8)
 
 ```
 Week 8: Production Readiness
-├── Multi-tenant isolation (data partitioning, cache namespacing)
-├── Tenant admin dashboard (document management, analytics)
-├── Corpus analytics (gap analysis, query patterns, confidence tracking)
-├── Rate limiting + abuse prevention
-├── Consent flow adaptation for chatbot widget
-├── Documentation + SDK updates
-└── Load testing (target: 100 concurrent users per tenant)
+â”œâ”€â”€ Multi-tenant isolation (data partitioning, cache namespacing)
+â”œâ”€â”€ Tenant admin dashboard (document management, analytics)
+â”œâ”€â”€ Corpus analytics (gap analysis, query patterns, confidence tracking)
+â”œâ”€â”€ Rate limiting + abuse prevention
+â”œâ”€â”€ Consent flow adaptation for chatbot widget
+â”œâ”€â”€ Documentation + SDK updates
+â””â”€â”€ Load testing (target: 100 concurrent users per tenant)
 ```
 
 ---
@@ -3521,80 +3521,80 @@ Week 8: Production Readiness
 ## Summary: Architecture Diagram
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      COMPANY CHATBOT WIDGET                                  │
-│                      (Website Embed)                                         │
-└────────────────────────────┬────────────────────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    VIRTUAL USER IDENTIFICATION                               │
-│                    (Fingerprint + Session)                                    │
-└────────────────────────────┬────────────────────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                                                                              │
-│                    DUAL-ENGINE ORCHESTRATOR                                   │
-│                                                                              │
-│    ┌──────────────┐     ┌──────────────┐     ┌──────────────┐              │
-│    │   INTENT      │     │   WEIGHT      │     │   BUDGET      │              │
-│    │   CLASSIFIER  │────▶│   CALCULATOR  │────▶│   ALLOCATOR   │              │
-│    └──────────────┘     └──────────────┘     └──────┬───────┘              │
-│                                                      │                       │
-│                              ┌───────────────────────┼──────────────┐       │
-│                              │                       │              │       │
-│                              ▼                       ▼              │       │
-│    ┌─────────────────────────────┐  ┌──────────────────────────┐   │       │
-│    │    USER CONTEXT ENGINE      │  │   CORPUS CONTEXT ENGINE   │   │       │
-│    │    (Existing VIVIM L0-L7)   │  │   (New C0-C4)             │   │       │
-│    │                             │  │                            │   │       │
-│    │  ┌─────────────────────┐   │  │  ┌──────────────────────┐ │   │       │
-│    │  │ Memory Engine       │   │  │  │ Retrieval Engine      │ │   │       │
-│    │  │ (9 memory types)    │   │  │  │ (semantic+keyword+QA) │ │   │       │
-│    │  └─────────────────────┘   │  │  └──────────────────────┘ │   │       │
-│    │  ┌─────────────────────┐   │  │  ┌──────────────────────┐ │   │       │
-│    │  │ Profile Evolution   │   │  │  │ Corpus Store          │ │   │       │
-│    │  │ (avatar tracking)   │   │  │  │ (docs, chunks, FAQs) │ │   │       │
-│    │  └─────────────────────┘   │  │  └──────────────────────┘ │   │       │
-│    │  ┌─────────────────────┐   │  │  ┌──────────────────────┐ │   │       │
-│    │  │ Conversation Index  │   │  │  │ Topic Taxonomy        │ │   │       │
-│    │  │ (full history aware)│   │  │  │ (navigation + scope)  │ │   │       │
-│    │  └─────────────────────┘   │  │  └──────────────────────┘ │   │       │
-│    │  ┌─────────────────────┐   │  │  ┌──────────────────────┐ │   │       │
-│    │  │ Proactive Awareness │   │  │  │ Version Tracking      │ │   │       │
-│    │  │ (insights engine)   │   │  │  │ (change detection)    │ │   │       │
-│    │  └─────────────────────┘   │  │  └──────────────────────┘ │   │       │
-│    └─────────────┬───────────────┘  └──────────────┬───────────┘   │       │
-│                  │                                  │               │       │
-│                  └──────────────┬───────────────────┘               │       │
-│                                │                                    │       │
-│                                ▼                                    │       │
-│                  ┌──────────────────────────┐                      │       │
-│                  │     CONTEXT MERGER       │◀─────────────────────┘       │
-│                  │  (dedup + conflict       │   Shared Conv History        │
-│                  │   resolve + assemble)    │                              │
-│                  └──────────┬───────────────┘                              │
-│                             │                                               │
-│                             ▼                                               │
-│                  ┌──────────────────────────┐                              │
-│                  │   MERGED SYSTEM PROMPT   │                              │
-│                  └──────────────────────────┘                              │
-│                                                                              │
-└─────────────────────────────────┬───────────────────────────────────────────┘
-                                  │
-                                  ▼
-                    ┌──────────────────────────┐
-                    │      LLM INFERENCE       │
-                    │  (OpenAI, Anthropic, etc) │
-                    └──────────┬───────────────┘
-                               │
-                               ▼
-                    ┌──────────────────────────┐
-                    │   RESPONSE + MEMORY      │
-                    │   EXTRACTION (async)      │
-                    │   + CONVERSATION INDEX    │
-                    └──────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                      COMPANY CHATBOT WIDGET                                  â”‚
+â”‚                      (Website Embed)                                         â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                             â”‚
+                             â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                    VIRTUAL USER IDENTIFICATION                               â”‚
+â”‚                    (Fingerprint + Session)                                    â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                             â”‚
+                             â–¼
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚                                                                              â”‚
+â”‚                    DUAL-ENGINE ORCHESTRATOR                                   â”‚
+â”‚                                                                              â”‚
+â”‚    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”              â”‚
+â”‚    â”‚   INTENT      â”‚     â”‚   WEIGHT      â”‚     â”‚   BUDGET      â”‚              â”‚
+â”‚    â”‚   CLASSIFIER  â”‚â”€â”€â”€â”€â–¶â”‚   CALCULATOR  â”‚â”€â”€â”€â”€â–¶â”‚   ALLOCATOR   â”‚              â”‚
+â”‚    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜     â””â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”˜              â”‚
+â”‚                                                      â”‚                       â”‚
+â”‚                              â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”       â”‚
+â”‚                              â”‚                       â”‚              â”‚       â”‚
+â”‚                              â–¼                       â–¼              â”‚       â”‚
+â”‚    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”‚       â”‚
+â”‚    â”‚    USER CONTEXT ENGINE      â”‚  â”‚   CORPUS CONTEXT ENGINE   â”‚   â”‚       â”‚
+â”‚    â”‚    (Existing VIVIM L0-L7)   â”‚  â”‚   (New C0-C4)             â”‚   â”‚       â”‚
+â”‚    â”‚                             â”‚  â”‚                            â”‚   â”‚       â”‚
+â”‚    â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”‚  â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”‚   â”‚       â”‚
+â”‚    â”‚  â”‚ Memory Engine       â”‚   â”‚  â”‚  â”‚ Retrieval Engine      â”‚ â”‚   â”‚       â”‚
+â”‚    â”‚  â”‚ (9 memory types)    â”‚   â”‚  â”‚  â”‚ (semantic+keyword+QA) â”‚ â”‚   â”‚       â”‚
+â”‚    â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜   â”‚  â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â”‚   â”‚       â”‚
+â”‚    â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”‚  â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”‚   â”‚       â”‚
+â”‚    â”‚  â”‚ Profile Evolution   â”‚   â”‚  â”‚  â”‚ Corpus Store          â”‚ â”‚   â”‚       â”‚
+â”‚    â”‚  â”‚ (avatar tracking)   â”‚   â”‚  â”‚  â”‚ (docs, chunks, FAQs) â”‚ â”‚   â”‚       â”‚
+â”‚    â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜   â”‚  â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â”‚   â”‚       â”‚
+â”‚    â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”‚  â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”‚   â”‚       â”‚
+â”‚    â”‚  â”‚ Conversation Index  â”‚   â”‚  â”‚  â”‚ Topic Taxonomy        â”‚ â”‚   â”‚       â”‚
+â”‚    â”‚  â”‚ (full history aware)â”‚   â”‚  â”‚  â”‚ (navigation + scope)  â”‚ â”‚   â”‚       â”‚
+â”‚    â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜   â”‚  â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â”‚   â”‚       â”‚
+â”‚    â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”   â”‚  â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”‚   â”‚       â”‚
+â”‚    â”‚  â”‚ Proactive Awareness â”‚   â”‚  â”‚  â”‚ Version Tracking      â”‚ â”‚   â”‚       â”‚
+â”‚    â”‚  â”‚ (insights engine)   â”‚   â”‚  â”‚  â”‚ (change detection)    â”‚ â”‚   â”‚       â”‚
+â”‚    â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜   â”‚  â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â”‚   â”‚       â”‚
+â”‚    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜   â”‚       â”‚
+â”‚                  â”‚                                  â”‚               â”‚       â”‚
+â”‚                  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜               â”‚       â”‚
+â”‚                                â”‚                                    â”‚       â”‚
+â”‚                                â–¼                                    â”‚       â”‚
+â”‚                  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                      â”‚       â”‚
+â”‚                  â”‚     CONTEXT MERGER       â”‚â—€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜       â”‚
+â”‚                  â”‚  (dedup + conflict       â”‚   Shared Conv History        â”‚
+â”‚                  â”‚   resolve + assemble)    â”‚                              â”‚
+â”‚                  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                              â”‚
+â”‚                             â”‚                                               â”‚
+â”‚                             â–¼                                               â”‚
+â”‚                  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                              â”‚
+â”‚                  â”‚   MERGED SYSTEM PROMPT   â”‚                              â”‚
+â”‚                  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                              â”‚
+â”‚                                                                              â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                                  â”‚
+                                  â–¼
+                    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+                    â”‚      LLM INFERENCE       â”‚
+                    â”‚  (OpenAI, Anthropic, etc) â”‚
+                    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+                               â”‚
+                               â–¼
+                    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+                    â”‚   RESPONSE + MEMORY      â”‚
+                    â”‚   EXTRACTION (async)      â”‚
+                    â”‚   + CONVERSATION INDEX    â”‚
+                    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
-This architecture delivers the complete vision: a company chatbot that answers authoritatively from documentation while building deep, persistent relationships with every visitor — making each returning user feel like they have their own personal AI assistant that knows their history, their needs, and proactively works on their behalf.
+This architecture delivers the complete vision: a company chatbot that answers authoritatively from documentation while building deep, persistent relationships with every visitor â€” making each returning user feel like they have their own personal AI assistant that knows their history, their needs, and proactively works on their behalf.
