@@ -266,3 +266,59 @@ prisma/migrations/**/migration_lock.toml
 # =============================================================================
 *.jsonl
 agent-replay-*.jsonl
+
+# =============================================================================
+# Cleanup Prevention - Debug/Test Artifacts
+# =============================================================================
+# Session dumps
+session-*.md
+session-*.json
+
+# Ad-hoc test files (root level)
+test-*.ts
+test-*.js
+verify-*.ts
+capture-*.ts
+cleanup-*.ts
+setup-*.ts
+
+# Server root debug files (keep index.js, eslint.config.js, vitest.config.js)
+server/analyze-*.js
+server/check-*.js
+server/debug-*.js
+server/find-*.js
+server/quick-*.js
+server/*_test.js
+server/test-*.js
+server/test-*.cjs
+server/debug-*.html
+server/bun-test*.txt
+server/test-*-log*.txt
+
+# Compiled JS in common/ (TypeScript build artifacts)
+common/*.js
+common/*.js.map
+common/*.d.ts
+common/*.d.ts.map
+network/src/common/*.js
+network/src/common/*.js.map
+network/src/common/*.d.ts
+network/src/common/*.d.ts.map
+
+# Windows reserved names (prevents accidental creation)
+nul
+con
+prn
+aux
+
+# PWA dev service worker outputs
+pwa/dev-dist/
+
+# ChatGPT exports extracted data
+chatgpt-exports/extracted/
+
+# Screenshot artifacts
+screenshots/*.png
+
+# AI design docs in root (should be in docs/)
+* opus *.md

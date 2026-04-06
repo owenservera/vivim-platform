@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(supabase *)"
+      "Bash(supabase *)",
+      "Bash(vercel *)",
+      "WebFetch(github.com)",
+      "Bash(cat *)",
+      "Bash(echo *)"
     ]
-  }
+  },
+  "$version": 3
 }
