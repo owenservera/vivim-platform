@@ -1,0 +1,154 @@
+---
+title: "LangChain & LlamaIndex"
+description: "Use VIVIM as a retriever in LangChain and LlamaIndex pipelines for AI memory-augmented applications."
+---
+
+# LangChain & LlamaIndex
+
+Integrate VIVIM's memory graph into LangChain and LlamaIndex pipelines to build AI applications with persistent, personalized context.
+
+## LangChain integration
+
+### Install dependencies
+
+```bash
+bun add @vivim/sdk langchain @langchain/openai
+```
+
+### Create a VIVIM retriever
+
+```typescript
+import { VIVIM } from '@vivim/sdk';
+import { VIVIMRetriever } from '@vivim/sdk/langchain';
+
+const vivim = new VIVIM({
+  apiUrl: process.env.VIVIM_API_URL,
+});
+
+const retriever = new VIVIMRetriever({
+  vivim,
+  searchKwargs: {
+    limit: 5,
+    includeBookmarks: true,
+  },
+});
+
+// Use in a RAG chain
+import { ChatOpenAI } from '@langchain/openai';
+import { createStuffDocumentsChain } from 'langchain/chains/combine_documents';
+import { createRetrievalChain } from 'langchain/chains/retrieval';
+
+const llm = new ChatOpenAI({ model: 'gpt-4' });
+const chain = await createRetrievalChain({
+  retriever,
+  combineDocsChain: await createStuffDocumentsChain({ llm }),
+});
+
+const result = await chain.invoke({
+  input: 'What do I know about deployment?',
+});
+
+console.log(result.answer);
+```
+
+### As a memory store
+
+```typescript
+import { VIVIMChatMessageHistory } from '@vivim/sdk/langchain';
+
+const history = new VIVIMChatMessageHistory({
+  vivim,
+  sessionId: 'my-conversation',
+});
+
+// Use with a conversational chain
+const chain = ConversationalChain.fromLLM(llm, {
+  memory: { chatHistory: history },
+});
+```
+
+## LlamaIndex integration
+
+### Install dependencies
+
+```bash
+bun add @vivim/sdk llamaindex
+```
+
+### Create a VIVIM index
+
+```typescript
+import { VIVIM } from '@vivim/sdk';
+import { VIVIMIndex, VIVIMRetriever } from '@vivim/sdk/llamaindex';
+import { OpenAI } from 'llamaindex';
+
+const vivim = new VIVIM({
+  apiUrl: process.env.VIVIM_API_URL,
+});
+
+// Query your VIVIM memories through LlamaIndex
+const index = new VIVIMIndex({ vivim });
+const retriever = new VIVIMRetriever({ index, similarityTopK: 5 });
+
+const llm = new OpenAI({ model: 'gpt-4' });
+const queryEngine = index.asQueryEngine({
+  retriever,
+  llm,
+});
+
+const response = await queryEngine.query({
+  query: 'What are my team's deployment practices?',
+});
+
+console.log(response.response);
+```
+
+## Example: AI assistant with persistent memory
+
+```typescript
+import { VIVIM } from '@vivim/sdk';
+import { VIVIMRetriever } from '@vivim/sdk/langchain';
+import { ChatOpenAI } from '@langchain/openai';
+import { ChatPromptTemplate } from '@langchain/core/prompts';
+
+const vivim = new VIVIM({ apiUrl: process.env.VIVIM_API_URL });
+const retriever = new VIVIMRetriever({ vivim, searchKwargs: { limit: 3 } });
+const llm = new ChatOpenAI({ model: 'gpt-4' });
+
+async function chatWithMemory(userInput: string) {
+  // Search relevant memories
+  const memories = await retriever.invoke(userInput);
+
+  // Build context from memories
+  const context = memories.map((doc) => doc.pageContent).join('\n\n');
+
+  // Create prompt with context
+  const prompt = ChatPromptTemplate.fromMessages([
+    ['system', `You are a helpful assistant. Use this context from the user's memory:\n\n{context}`],
+    ['human', userInput],
+  ]);
+
+  // Get response
+  const chain = prompt.pipe(llm);
+  const response = await chain.invoke({ context });
+
+  // Store the conversation
+  await vivim.conversations.import({
+    provider: 'custom',
+    messages: [
+      { role: 'user', content: userInput },
+      { role: 'assistant', content: response.content },
+    ],
+  });
+
+  return response.content;
+}
+
+// Usage
+const answer = await chatWithMemory('How do I deploy this project?');
+console.log(answer);
+```
+
+<Note>
+The LangChain and LlamaIndex adapters are community-maintained. For the latest API, see the SDK source code.
+</Note>

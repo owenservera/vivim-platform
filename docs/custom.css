@@ -1,0 +1,52 @@
+/* VIVIM Brand Customization for Mintlify */
+
+:root {
+  --mint-primary: #6366F1;
+  --mint-primary-light: #818CF8;
+  --mint-primary-dark: #4F46E5;
+  --mint-accent: #8B5CF6;
+  --mint-border: rgba(99, 102, 241, 0.15);
+  --mint-card-bg: rgba(99, 102, 241, 0.04);
+  --mint-text-secondary: #6B7280;
+}
+
+[data-theme='dark'] {
+  --mint-border: rgba(99, 102, 241, 0.2);
+  --mint-card-bg: rgba(99, 102, 241, 0.06);
+  --mint-text-secondary: #9CA3AF;
+}
+
+/* Code blocks — indigo tint */
+pre code {
+  border: 1px solid var(--mint-border);
+}
+
+/* Card hover effect */
+.card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+}
+
+/* Architecture diagrams — monospace blocks */
+pre:not([class]) {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* Custom badge for open source */
+.badge-opensource {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: #22C55E;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 500;
+}

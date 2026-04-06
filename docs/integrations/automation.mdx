@@ -1,0 +1,117 @@
+---
+title: "Automation (n8n, Make, Zapier)"
+description: "Connect VIVIM to your automation workflows with n8n, Make, and Zapier integrations."
+---
+
+# Automation
+
+Connect VIVIM to your automation workflows with n8n, Make, and Zapier to build AI memory-augmented pipelines.
+
+## n8n integration
+
+### HTTP Request node
+
+Use n8n's HTTP Request node to interact with VIVIM's API:
+
+<Steps>
+  <Step title="Add an HTTP Request node">
+    Configure the node with your VIVIM API URL and authentication headers.
+  </Step>
+  <Step title="Set the method and URL">
+    - **Method:** `GET` or `POST`
+    - **URL:** `https://api.vivim.app/api/v1/memory/search`
+  </Step>
+  <Step title="Configure authentication">
+    Add the `Authorization` header with your API key: `Bearer {{ $credentials.vivimApiKey }}`.
+  </Step>
+  <Step title="Map the response">
+    Use the response data in downstream nodes for context-aware automation.
+  </Step>
+</Steps>
+
+### Example: Auto-capture conversation
+
+```json
+{
+  "nodes": [
+    {
+      "name": "VIVIM Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.vivim.app/api/v1/memory/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $json.query }}"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
+```
+
+## Make (Integromat)
+
+### HTTP module
+
+Use Make's HTTP module to call VIVIM's REST API:
+
+| Operation | Method | URL Pattern |
+|---|---|---|
+| Search memories | `POST` | `/api/v1/memory/search` |
+| Create memory | `POST` | `/api/v1/memory` |
+| Get conversation | `GET` | `/api/v1/conversations/{id}` |
+| List collections | `GET` | `/api/v1/collections` |
+
+### Example workflow: AI meeting notes → VIVIM memory
+
+1. **Trigger:** New Google Calendar event (meeting)
+2. **Action:** Transcribe with Whisper API
+3. **Action:** Send to VIVIM API (`POST /api/v1/conversations/import`)
+4. **Action:** VIVIM extracts and classifies memories automatically
+5. **Action:** Store extracted ACU IDs in Google Sheets for review
+
+## Zapier integration
+
+### Webhook trigger → VIVIM action
+
+| Step | App | Action |
+|---|---|---|
+| 1 | Zapier Webhook | Trigger on incoming data |
+| 2 | HTTP (POST) | Call VIVIM API to search/create memories |
+| 3 | Google Docs | Append results to a document |
+| 4 | Slack | Notify team of new memories |
+
+### Example: Email → VIVIM memory
+
+```
+Email Received (Gmail trigger)
+    ↓
+Extract Body (Zapier Formatter)
+    ↓
+POST to VIVIM /api/v1/conversations/import
+    ↓
+Store ACU IDs (Google Sheets)
+```
+
+## Webhook events
+
+VIVIM can send webhooks for important events:
+
+| Event | Payload | Use Case |
+|---|---|---|
+| `memory.created` | `{ acuId, type, content }` | Notify on important extractions |
+| `sync.completed` | `{ peerId, records }` | Trigger downstream sync |
+| `conversation.imported` | `{ conversationId, acuCount }` | Post-import processing |
+
+Configure webhooks in your VIVIM admin panel under **Settings → Webhooks**.
+
+<Note>
+Native Zapier and Make apps for VIVIM are planned for Q3 2025. Until then, use the HTTP/REST API with the patterns documented above.
+</Note>

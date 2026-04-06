@@ -322,3 +322,7 @@ screenshots/*.png
 
 # AI design docs in root (should be in docs/)
 * opus *.md
+
+# Mintlify docs build output
+.mint/
+docs/.mint/

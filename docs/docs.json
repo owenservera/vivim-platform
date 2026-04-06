@@ -1,0 +1,147 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "VIVIM",
+  "logo": {
+    "light": "/images/logo.svg",
+    "dark": "/images/logo.svg"
+  },
+  "favicon": "/images/logo.svg",
+  "css": ["custom.css"],
+  "colors": {
+    "primary": "#6366F1",
+    "light": "#818CF8",
+    "dark": "#4F46E5",
+    "anchors": {
+      "from": "#6366F1",
+      "to": "#8B5CF6"
+    }
+  },
+  "styling": {
+    "eyebrows": "serif",
+    "codeblocks": "dark",
+    "bars": "floating"
+  },
+  "font": {
+    "headings": {
+      "family": "Inter",
+      "weight": 600
+    },
+    "body": {
+      "family": "Inter",
+      "weight": 400
+    },
+    "code": {
+      "family": "JetBrains Mono"
+    }
+  },
+  "modeToggle": {
+    "default": "dark",
+    "isHidden": false
+  },
+  "background": {
+    "style": "windows"
+  },
+  "topbarLinks": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/owenservera/vivim-platform"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Live Demo",
+    "url": "https://vivim-platform.vercel.app/demo/investor-pitch"
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Docs",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "index",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Concepts",
+            "pages": [
+              "concepts/acu-specification",
+              "concepts/context-engine",
+              "concepts/memory-types",
+              "concepts/sovereignty"
+            ]
+          },
+          {
+            "group": "Architecture",
+            "pages": [
+              "architecture/system-overview",
+              "architecture/data-flow",
+              "architecture/storage",
+              "architecture/network"
+            ]
+          },
+          {
+            "group": "SDK Guide",
+            "pages": [
+              "sdk/introduction",
+              "sdk/basic",
+              "sdk/intermediate",
+              "sdk/advanced"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/mcp-server",
+              "integrations/langchain-llamaindex",
+              "integrations/automation",
+              "integrations/browser-extension"
+            ]
+          },
+          {
+            "group": "Self-Hosting",
+            "pages": [
+              "self-hosting/docker",
+              "self-hosting/kubernetes",
+              "self-hosting/storage-backends",
+              "self-hosting/migration"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "api-reference",
+              "roadmap",
+              "glossary"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "integrations": [],
+  "redirects": [],
+  "seo": {
+    "indexing": "all",
+    "metatags": {
+      "title": "VIVIM Docs — Sovereign AI Memory",
+      "description": "Documentation for VIVIM: portable, encrypted AI memory across all providers. Open source, self-hostable, zero-knowledge.",
+      "image": "/images/logo.svg",
+      "twitterSite": "@vivim"
+    }
+  },
+  "api": {
+    "baseUrl": "https://api.vivim.app"
+  },
+  "footerSocials": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/owenservera/vivim-platform"
+    },
+    {
+      "name": "Website",
+      "url": "https://vivim.app"
+    }
+  ]
+}

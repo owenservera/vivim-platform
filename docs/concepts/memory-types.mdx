@@ -1,0 +1,96 @@
+---
+title: "Memory Types"
+description: "VIVIM classifies memories into 9 distinct types, each with different retrieval strategies, persistence rules, and relevance patterns."
+---
+
+# Memory Types
+
+VIVIM classifies every extracted memory (ACU) into one of 9 distinct types. Each type has different retrieval strategies, persistence rules, and relevance patterns.
+
+## The 9 memory types
+
+| Type | Description | Example | Persistence |
+|---|---|---|---|
+| **Episodic** | Specific events and conversations | "On March 3, we discussed the deployment strategy" | Medium (decays over time) |
+| **Semantic** | General knowledge and facts | "We use Bun as the runtime" | High (stable facts) |
+| **Procedural** | How-to knowledge and workflows | "Deploy via `bun run build` then push to Vercel" | High (until process changes) |
+| **Factual** | Concrete, verifiable facts | "The API runs on port 3000" | Very high (rarely changes) |
+| **Preference** | Personal likes, dislikes, habits | "Prefers TypeScript with strict mode" | High (core preferences) |
+| **Identity** | Self-concept and roles | "Full-stack developer with blockchain experience" | Very high (stable identity) |
+| **Relationship** | Social dynamics and interactions | "Team prefers async communication" | Medium (social context) |
+| **Goal** | Objectives and targets | "Building decentralized AI memory" | Medium (until achieved) |
+| **Project** | Project-specific context | "This repo uses Prisma with PostgreSQL" | Low (project lifecycle) |
+
+## Memory type behaviors
+
+Each type behaves differently in the retrieval and thermodynamics systems:
+
+### Episodic memories
+- **Decay rate**: Fast — specific events become less relevant quickly
+- **Retrieval pattern**: Chronological + keyword
+- **Use case**: Conversation history, session context
+
+### Semantic and factual memories
+- **Decay rate**: Slow — facts remain relevant
+- **Retrieval pattern**: Semantic similarity
+- **Use case**: Knowledge base, reference information
+
+### Procedural memories
+- **Decay rate**: Very slow — workflows are stable
+- **Retrieval pattern**: Keyword + graph traversal
+- **Use case**: How-to guides, deployment procedures
+
+### Preference and identity memories
+- **Decay rate**: Minimal — core to who you are
+- **Retrieval pattern**: Always included in L0-L1 layers
+- **Use case**: Personalization, consistent behavior
+
+### Goal memories
+- **Decay rate**: Medium — until achieved or abandoned
+- **Retrieval pattern**: Active goal filtering
+- **Use case**: Current objectives, project targets
+
+### Relationship memories
+- **Decay rate**: Medium — social context shifts
+- **Retrieval pattern**: Social graph traversal
+- **Use case**: Team dynamics, communication patterns
+
+### Project memories
+- **Decay rate**: Tied to project lifecycle
+- **Retrieval pattern**: Project-scoped queries
+- **Use case**: Workspace-specific conventions
+
+## Classification pipeline
+
+Memories are classified through a multi-stage pipeline:
+
+<Steps>
+  <Step title="Initial extraction">
+    The extraction pipeline identifies candidate memories from AI conversations, tagging them with preliminary types based on linguistic patterns.
+  </Step>
+  <Step title="Confidence scoring">
+    Each classification receives a confidence score (0-1) based on extraction certainty.
+  </Step>
+  <Step title="Cross-validation">
+    The classification engine validates against existing memories — a new "factual" memory should not contradict established facts without a version change.
+  </Step>
+  <Step title="Graph enrichment">
+    Classified memories are linked to related ACUs in the knowledge graph, strengthening type-based retrieval patterns.
+  </Step>
+</Steps>
+
+## Memory type statistics
+
+Current VIVIM deployment statistics:
+
+| Metric | Value |
+|---|---|
+| Total memories classified | 50,000+ |
+| Most common type | Episodic (conversation-heavy) |
+| Highest retention | Identity and Factual |
+| Average confidence | 0.87 |
+| Re-classification rate | <2% (stable taxonomy) |
+
+<Note>
+Memory type classification is configurable. You can adjust decay rates, retrieval weights, and persistence rules per type in your instance configuration.
+</Note>
